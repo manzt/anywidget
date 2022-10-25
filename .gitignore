@@ -1,0 +1,16 @@
+__pycache__/
+
+*.egg-info/
+.eggs/*
+
+.ipynb_checkpoints/
+notebooks/
+
+node_modules/
+
+anywidget/nbextension/index.js
+anywidget/labextension/package.json
+anywidget/labextension/static/*
+
+dist/
+dist-python/
