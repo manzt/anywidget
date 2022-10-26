@@ -4,7 +4,6 @@ __pycache__/
 .eggs/*
 
 .ipynb_checkpoints/
-notebooks/
 
 node_modules/
 

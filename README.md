@@ -4,6 +4,7 @@ create custom jupyter widgets without tooling hell
 
 [![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
 [![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
 
 ```
 pip install anywidget
@@ -50,7 +51,7 @@ export function render(view) {
 # ESM = "http://localhost:5173/index.js"
 
 class CounterWidget(anywidget.AnyWidget):
-    _module = traitlets.Unicode(ESM).tag(sync=True)
+    _module = traitlets.Unicode(ESM).tag(sync=True) # required, must be ESM
     count = traitlets.Int(0).tag(sync=True)
 ```
 
