@@ -1,15 +1,20 @@
 {
 	"name": "anywidget",
-	"main": "src/index.js",
+	"type": "module",
+	"main": "dist/index.js",
 	"version": "0.0.0",
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"files": ["dist"],
+	"exports": {
+		".": "./dist/index.js",
+		"./vite": "./dist/vite.js"
+	},
 	"scripts": {
 		"build": "npm run build:nb && npm run build:lab",
 		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
 		"build:lab": "jupyter labextension build .",
-		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js"
+		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && cp vite-plugin.js dist/vite.js"
 	},
 	"dependencies": {},
 	"devDependencies": {
