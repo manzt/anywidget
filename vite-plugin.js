@@ -5,7 +5,7 @@ import.meta.hot.accept("${src}", (newModule) => {
 });
 
 export async function render(view) {
-	if (!import.meta.hot.render) {
+	if (!import.meta.hot.data.render) {
 		let m = await import("${src}");
 		import.meta.hot.data.render = m.render;
 	}
