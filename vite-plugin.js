@@ -30,10 +30,9 @@ async function refresh() {
 }
 
 function showErrorOverlay(err) {
-	let ErrorOverlay = customElements.get("view-error-overlay");
+	let ErrorOverlay = customElements.get("vite-error-overlay");
 	// don't open outside vite environment
-	// if (!ErrorOverlay) return;
-	console.log(err);
+	if (!ErrorOverlay) return;
 	let overlay = new ErrorOverlay(err);
 	document.body.appendChild(overlay);
 }
