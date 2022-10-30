@@ -1,4 +1,4 @@
-name: publish
+name: Release
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  deploy:
+  release:
     # this will run when you have tagged a commit, starting with "v*"
     # and requires that you have put your twine API key in your 
     # github secrets (see readme for details)
