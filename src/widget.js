@@ -14,31 +14,23 @@ export default function (base) {
 
 	class AnyView extends base.DOMWidgetView {
 		async render() {
-			let url, cleanup;
+			let widget;
 			let esm = this.model.get("_module");
 
 			if (
 				esm.startsWith("http://") ||
 				esm.startsWith("https://")
 			) {
-				url = esm;
-				cleanup = () => {};
+				widget = await import(/* webpackIgnore: true */ esm);
 			} else {
-				let blob = new Blob([esm], { type: "text/javascript" });
-				url = URL.createObjectURL(blob);
-				cleanup = () => URL.revokeObjectURL(url);
+				let url = URL.createObjectURL(
+					new Blob([esm], { type: "text/javascript" }),
+				);
+				widget = await import(/* webpackIgnore: true */ url);
+				URL.revokeObjectURL(url);
 			}
 
-			let anywidget = await import(/* webpackIgnore: true */ url).catch(
-				(err) => {
-					console.error("Failed to load `anywidget` ESM");
-					throw err;
-				},
-			);
-
-			await anywidget.render(this);
-
-			cleanup();
+			await widget.render(this);
 		}
 	}
 
