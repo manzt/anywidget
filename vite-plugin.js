@@ -38,7 +38,7 @@ function showErrorOverlay(err) {
 }
 
 window.addEventListener("error", showErrorOverlay);
-window.addEventListener("unhandledrejection", (e) =>  showErrorOverlay(e.reason));
+window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
 `;
 
 /** @returns {import("vite").Plugin} */
