@@ -1,10 +1,18 @@
 # anywidget
 
-create custom jupyter widgets without tooling hell
-
 [![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
 [![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
+
+simple, custom jupyter widgets that "just work"
+
+- create widgets **without complicated cookiecutter templates**
+- **publish to PyPI** like any other Python package
+- prototype **within** `.ipynb` or `.py` files
+- run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
+
+### installation
 
 ```
 pip install anywidget
@@ -57,18 +65,25 @@ class CounterWidget(anywidget.AnyWidget):
 
 <img alt="Counter with increment and decrement buttons" src="https://user-images.githubusercontent.com/24403730/197911403-88843b90-d905-4877-8cb5-f55b193f2158.png">
 
-
 ### why
 
-The official
-[widget cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
-include complicated build configuration to ensure widgets may be published and
-correctly installed in a variety of notebook environments. I want to make
-widgets quickly and the overhead to create and maintain a project derived from
-one of these templates is challenging.
+**anywidget** simplifies the creation of custom Jupyter widgets – no complicated
+build steps or bundling required.
 
-**anywidget** is an experiment to enable the creation of custom widgets via
-simple Python modules – no complicated build steps or bundling.
+While the official
+[cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
+provide the defacto approach for creating a custom Jupyter widget, derived
+projects are bootstrapped with complicated packaging and distribution scripts
+which must ulitmately be maintained by the widget author. Although this setup
+ensures the module is compatabile with various notebook or notebook-like
+environments, it places a substantial developer burden on _every_ derived
+project to ensure the packaging and distribution code for both Python _and_
+JavaScript stays up to date.
+
+Creating custom widgets fun and easy with **anywidget**. You can start
+prototyping _within_ a notebook and publish on PyPI like any other Python
+module. No need to create a new cookiecutter repo or maintain complicated build
+scripts.
 
 ### how
 
