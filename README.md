@@ -26,32 +26,39 @@ import traitlets
 
 ESM = """
 export function render(view) {
-    function setCount(update) {
-        p.innerText = update;
-        view.model.set("count", update);
-        view.model.save_changes();
+  let root = document.createElement("div");
+  root.style.display = "grid";
+  root.style.gridAutoFlow = "column";
+  root.style.textAlign = "center";
+
+  let decrement = Object.assign(document.createElement("button"), {
+    innerText: "-",
+    onclick: () => {
+      view.model.set("count", view.model.get("count") - 1);
+      view.model.save_changes();
     }
-    let root = document.createElement("div");
-    Object.assign(root.style, {
-        display: "grid",
-        gridAutoFlow: "column",
-        textAlign: "center",
-    })
-    let p = Object.assign(document.createElement("p"), {
-        innerText: view.model.get("count") ?? 0,
-    });
-    let decrement = Object.assign(document.createElement("button"), {
-        innerText: "-",
-        onclick: () => setCount(view.model.get("count") - 1),
-    });
-    let increment = Object.assign(document.createElement("button"), {
-        innerText: "+",
-        onclick: () => setCount(view.model.get("count") + 1),
-    });
-    root.appendChild(decrement);
-    root.appendChild(p);
-    root.appendChild(increment);
-    view.el.appendChild(root);
+  });
+
+  let p = Object.assign(document.createElement("p"), {
+    innerText: view.model.get("count") ?? 0,
+  });
+
+  let increment = Object.assign(document.createElement("button"), {
+    innerText: "+",
+    onclick: () => {
+      view.model.set("count", view.model.get("count") + 1);
+      view.model.save_changes();
+    }
+  });
+
+  view.model.on("change:count", () => {
+    p.innerText = view.model.get("count");
+  });
+
+  root.appendChild(decrement);
+  root.appendChild(p);
+  root.appendChild(increment);
+  view.el.appendChild(root);
 }
 """
 
@@ -70,20 +77,22 @@ class CounterWidget(anywidget.AnyWidget):
 **anywidget** simplifies the creation of custom Jupyter widgets – no complicated
 build steps or bundling required.
 
-While the official
+Official
 [cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
-provide the defacto approach for creating a custom Jupyter widget, derived
+provide the defacto approach for creating custom Jupyter widgets, but derived
 projects are bootstrapped with complicated packaging and distribution scripts
-which must ulitmately be maintained by the widget author. Although this setup
-ensures the module is compatabile with various notebook or notebook-like
-environments, it places a substantial developer burden on _every_ derived
-project to ensure the packaging and distribution code for both Python _and_
-JavaScript stays up to date.
+which must ulitmately be maintained by the widget author. While the
+cookiecutters initially ensure compatability with various notebook or
+notebook-like environments, widget authors incur a substantial developer burden
+just to keep the vendored tooling from breaking over time.
 
-Creating custom widgets fun and easy with **anywidget**. You can start
-prototyping _within_ a notebook and publish on PyPI like any other Python
-module. No need to create a new cookiecutter repo or maintain complicated build
-scripts.
+**anywidget** aims to reduce this burden and improve developer experience when
+creating custom Jupyter widgets. It takes care of ensuring your widget's
+compatability with the fractured Jupyter ecosystem rather than requiring each
+author to solve this same multi-platform packaging problem. Creating custom
+widgets with **anywidget** is fun and easy.You can start prototyping _within_ a
+notebook and publish on PyPI like any other Python module. No need to create a
+new cookiecutter repo or maintain complicated build scripts.
 
 ### how
 
@@ -96,8 +105,8 @@ and subscribing and publishing changes via `view.model` in the client `render`
 function.
 
 > **Note** Your JS code _must_ be vaid ESM. You can import dependencies from a
-> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler to
-> target ESM.
+> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler which
+> targets ESM.
 
 ### development
 
