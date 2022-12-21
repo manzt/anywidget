@@ -81,18 +81,18 @@ Official
 [cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
 provide the defacto approach for creating custom Jupyter widgets, but derived
 projects are bootstrapped with complicated packaging and distribution scripts
-which must ulitmately be maintained by the widget author. While the
-cookiecutters initially ensure compatability with various notebook or
-notebook-like environments, widget authors incur a substantial developer burden
-just to keep the vendored tooling from breaking over time.
+which must be maintained by the widget author. While the cookiecutters initially
+ensure compatability with various notebook or notebook-like environments,
+substantial developer effort is required to keep the vendored tooling from
+breaking over time.
 
-**anywidget** aims to reduce this burden and improve developer experience when
-creating custom Jupyter widgets. It takes care of ensuring your widget's
-compatability with the fractured Jupyter ecosystem rather than requiring each
-author to solve this same multi-platform packaging problem. Creating custom
-widgets with **anywidget** is fun and easy.You can start prototyping _within_ a
-notebook and publish on PyPI like any other Python module. No need to create a
-new cookiecutter repo or maintain complicated build scripts.
+**anywidget** reduces this burden and improves the Jupyter widget developer
+experience. It ensures your widget's compatability with the fractured Jupyter
+ecosystem rather than requiring each author to solve this same multi-platform
+packaging problem. Creating custom widgets with **anywidget** is fun and easy.
+You can start prototyping _within_ a notebook and publish on PyPI like any other
+Python module. No need to create a new cookiecutter repo or maintain complicated
+build scripts.
 
 ### how
 
