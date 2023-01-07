@@ -1,4 +1,91 @@
+// @ts-check
 import { name, version } from "../package.json";
+
+/**
+ *  @typedef AnyWidgetRenderer
+ *  @prop render {(view: import("@jupyter-widgets/base").DOMWidgetView) => Promise<void>}
+ */
+
+/**
+ * Returns a hash code from a string
+ * @param  {string} str The string to hash.
+ * @return A 32bit integer
+ * @see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+ */
+function hash_code(str) {
+	let hash = 0;
+	for (let i = 0, len = str.length; i < len; i++) {
+		let chr = str.charCodeAt(i);
+		hash = (hash << 5) - hash + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+	return hash;
+}
+
+/**
+ * @param {string} str
+ * @returns {str is "https://${string}" | "http://${string}"}
+ */
+function is_href(str) {
+	return str.startsWith("http://") || str.startsWith("https://");
+}
+
+/**
+ * @param {string} href
+ * @returns {Promise<void>}
+ */
+async function load_css_href(href) {
+	if (document.querySelector(`link[href='${href}']`)) return;
+	return new Promise((resolve) => {
+		let link = Object.assign(document.createElement("link"), {
+			rel: "stylesheet",
+			href,
+			onload: resolve,
+		});
+		document.head.appendChild(link);
+	});
+}
+
+/**
+ * @param {string} css_text
+ * @returns {void}
+ */
+function load_css_text(css_text) {
+	let hash = hash_code(css_text).toString();
+	if (document.querySelector(`style[id='${hash}']`)) return;
+	let style = Object.assign(document.createElement("style"), {
+		id: hash,
+		type: "text/css",
+	});
+	style.appendChild(document.createTextNode(css_text));
+	document.head.appendChild(style);
+}
+
+/**
+ * @param {string | undefined} css
+ * @returns {Promise<void>}
+ */
+async function load_css(css) {
+	if (!css) return;
+	if (is_href(css)) return load_css_href(css);
+	return load_css_text(css);
+}
+
+/**
+ * @param {string} esm
+ * @returns {Promise<AnyWidgetRenderer>}
+ */
+async function load_esm(esm) {
+	if (is_href(esm)) {
+		return import(/* webpackIgnore: true */ esm);
+	}
+	let url = URL.createObjectURL(
+		new Blob([esm], { type: "text/javascript" }),
+	);
+	let widget = await import(/* webpackIgnore: true */ url);
+	URL.revokeObjectURL(url);
+	return widget;
+}
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function (base) {
@@ -14,22 +101,8 @@ export default function (base) {
 
 	class AnyView extends base.DOMWidgetView {
 		async render() {
-			let widget;
-			let esm = this.model.get("_module");
-
-			if (
-				esm.startsWith("http://") ||
-				esm.startsWith("https://")
-			) {
-				widget = await import(/* webpackIgnore: true */ esm);
-			} else {
-				let url = URL.createObjectURL(
-					new Blob([esm], { type: "text/javascript" }),
-				);
-				widget = await import(/* webpackIgnore: true */ url);
-				URL.revokeObjectURL(url);
-			}
-
+			await load_css(this.model.get("_css"));
+			let widget = await load_esm(this.model.get("_module"));
 			await widget.render(this);
 		}
 	}
