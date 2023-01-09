@@ -16,10 +16,24 @@ function is_href(str) {
 
 /**
  * @param {string} href
+ * @param {string} anywidget_id
  * @returns {Promise<void>}
  */
-async function load_css_href(href) {
-	if (document.querySelector(`link[href='${href}']`)) return;
+async function load_css_href(href, anywidget_id) {
+	/** @type {HTMLLinkElement | null} */
+	let prev = document.querySelector(`link[id='${anywidget_id}']`);
+
+	// Adapted from https://github.com/vitejs/vite/blob/d59e1acc2efc0307488364e9f2fad528ec57f204/packages/vite/src/client/client.ts#L185-L201
+	// Swaps out old styles with new, but avoids flash of unstyled content.
+	// No need to await the load since we already have styles applied.
+	if (prev) {
+		let newLink = /** @type {HTMLLinkElement} */ (prev.cloneNode());
+		newLink.href = href;
+		newLink.addEventListener("load", () => prev?.remove());
+		prev.after(newLink);
+		return;
+	}
+
 	return new Promise((resolve) => {
 		let link = Object.assign(document.createElement("link"), {
 			rel: "stylesheet",
@@ -58,7 +72,7 @@ function load_css_text(css_text, anywidget_id) {
  */
 async function load_css(css, anywidget_id) {
 	if (!css) return;
-	if (is_href(css)) return load_css_href(css);
+	if (is_href(css)) return load_css_href(css, anywidget_id);
 	return load_css_text(css, anywidget_id);
 }
 
@@ -93,7 +107,9 @@ export default function (base) {
 	class AnyView extends base.DOMWidgetView {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
-			let widget = await load_esm(this.model.get("_esm") ?? this.model.get("_module"));
+			let widget = await load_esm(
+				this.model.get("_esm") ?? this.model.get("_module"),
+			);
 			await widget.render(this);
 		}
 	}
