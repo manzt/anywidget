@@ -48,13 +48,19 @@ async function load_css_href(href) {
 
 /**
  * @param {string} css_text
+ * @param {string} anywidget_id
  * @returns {void}
  */
-function load_css_text(css_text) {
-	let hash = hash_code(css_text).toString();
-	if (document.querySelector(`style[id='${hash}']`)) return;
+function load_css_text(css_text, anywidget_id) {
+	/** @type {HTMLStyleElement | null} */
+	let prev = document.querySelector(`style[id='${anywidget_id}']`);
+	if (prev) {
+		// replace instead of creating a new DOM node
+		prev.textContent = css_text;
+		return;
+	}
 	let style = Object.assign(document.createElement("style"), {
-		id: hash,
+		id: anywidget_id,
 		type: "text/css",
 	});
 	style.appendChild(document.createTextNode(css_text));
@@ -63,12 +69,13 @@ function load_css_text(css_text) {
 
 /**
  * @param {string | undefined} css
+ * @param {string} anywidget_id
  * @returns {Promise<void>}
  */
-async function load_css(css) {
+async function load_css(css, anywidget_id) {
 	if (!css) return;
 	if (is_href(css)) return load_css_href(css);
-	return load_css_text(css);
+	return load_css_text(css, anywidget_id);
 }
 
 /**
@@ -101,7 +108,7 @@ export default function (base) {
 
 	class AnyView extends base.DOMWidgetView {
 		async render() {
-			await load_css(this.model.get("_css"));
+			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_module"));
 			await widget.render(this);
 		}
