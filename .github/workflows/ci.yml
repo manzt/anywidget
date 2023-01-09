@@ -6,13 +6,39 @@ on:
       - main
     tags:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches: main
 
 jobs:
 
-  release:
-    # this will run when you have tagged a commit, starting with "v*"
-    # and requires that you have put your twine API key in your 
-    # github secrets (see readme for details)
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install anywidget
+        run: |
+          pip install -e .[test]
+
+      - name: Check style
+        run: |
+          black --check anywidget tests
+
+      - name: Run tests
+        run: |
+          pytest ./tests
+
+  # this will run when you have tagged a commit, starting with "v*"
+  # and requires that you have put your twine API key in your 
+  # github secrets (see readme for details)
+  Release:
+    needs: [Test]
     runs-on: ubuntu-latest
     if: contains(github.ref, 'tags')
     steps:

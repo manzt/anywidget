@@ -5,7 +5,7 @@ from .widget import AnyWidget
 
 try:
     if "google.colab" in sys.modules:
-        from google.colab import output
+        from google.colab import output  # type: ignore
 
         output.enable_custom_widget_manager()
 except ImportError:
