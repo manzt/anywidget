@@ -241,7 +241,7 @@ major feature: a modern development server that enables extremely fast
 
 ##### Dev
 
-Fontend development tools have evolved rapidly in the last few years to enable
+Frontend development tools have evolved rapidly in the last few years to enable
 instant, precise updates to client code without reloading the page or blowing
 away application state. Unfortunately, the cookiecutter templates for custom
 Jupyter Widgets have not caught up with the times and still require full page
