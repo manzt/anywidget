@@ -24,53 +24,41 @@ pip install anywidget
 import anywidget
 import traitlets
 
-ESM = """
-export function render(view) {
-  let root = document.createElement("div");
-  root.style.display = "grid";
-  root.style.gridAutoFlow = "column";
-  root.style.textAlign = "center";
-
-  let decrement = Object.assign(document.createElement("button"), {
-    innerText: "-",
-    onclick: () => {
-      view.model.set("count", view.model.get("count") - 1);
-      view.model.save_changes();
-    }
-  });
-
-  let p = Object.assign(document.createElement("p"), {
-    innerText: view.model.get("count") ?? 0,
-  });
-
-  let increment = Object.assign(document.createElement("button"), {
-    innerText: "+",
-    onclick: () => {
-      view.model.set("count", view.model.get("count") + 1);
-      view.model.save_changes();
-    }
-  });
-
-  view.model.on("change:count", () => {
-    p.innerText = view.model.get("count");
-  });
-
-  root.appendChild(decrement);
-  root.appendChild(p);
-  root.appendChild(increment);
-  view.el.appendChild(root);
+CSS = """
+.counter-btn {
+  background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 50px;
 }
 """
 
-# Alternatively, a URL
-# ESM = "http://localhost:5173/index.js"
+ESM = """
+export function render(view) {
+  let counter = Object.assign(document.createElement("button"), {
+    className: "counter-btn",
+    innerHTML: `count is ${view.model.get("count")}`,
+    onclick: () => {
+      view.model.set("count", view.model.get("count") + 1);
+      view.model.save_changes();
+    },
+  });
+  view.model.on("change:count", () => {
+    counter.innerHTML = `count is ${view.model.get("count")}`;
+  });
+  view.el.appendChild(counter);
+}
+"""
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM # required, must be ESM
+    _esm = ESM # required, must export `render`
+    _css = CSS # optional
     count = traitlets.Int(0).tag(sync=True)
+
+CounterWidget()
 ```
 
-<img alt="Counter with increment and decrement buttons" src="https://user-images.githubusercontent.com/24403730/197911403-88843b90-d905-4877-8cb5-f55b193f2158.png">
+<img alt="button indicating the number of times it has been clicked" src="https://user-images.githubusercontent.com/24403730/211375729-4e382bb0-8459-42ab-82f7-06d91d8b14d2.png">
 
 ### why
 
