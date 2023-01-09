@@ -66,7 +66,7 @@ export function render(view) {
 # ESM = "http://localhost:5173/index.js"
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = traitlets.Unicode(ESM).tag(sync=True) # required, must be ESM
+    _esm = ESM # required, must be ESM
     count = traitlets.Int(0).tag(sync=True)
 ```
 
