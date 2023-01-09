@@ -16,7 +16,18 @@ class AnyWidget(ipywidgets.DOMWidget):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
+        # Add anywidget JS/CSS source as traits if not registered
+        anywidget_traits = {
+            k: t.Unicode(getattr(self, k)).tag(sync=True)
+            for k in ("_esm", "_module", "_css")
+            if hasattr(self, k) and not self.has_trait(k)
+        }
+
         # TODO: a better way to uniquely identify this subclasses?
-        # We use the fully-qualified name to get an id which we can use to update CSS if necessary.
-        _anywidget_id = f"{self.__class__.__module__}.{self.__class__.__name__}"
-        self.add_traits(_anywidget_id=t.Unicode(_anywidget_id).tag(sync=True))
+        # We use the fully-qualified name to get an id which we
+        # can use to update CSS if necessary.
+        anywidget_traits["_anywidget_id"] = t.Unicode(
+            f"{self.__class__.__module__}.{self.__class__.__name__}"
+        ).tag(sync=True)
+
+        self.add_traits(**anywidget_traits)
