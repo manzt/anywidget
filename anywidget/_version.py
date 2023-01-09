@@ -1,10 +1,9 @@
-import json
-import pathlib
+try:
+    from importlib.metadata import PackageNotFoundError, version
+except ImportError:
+    from importlib_metadata import PackageNotFoundError, version
 
-here = pathlib.Path(__file__).parent
-
-# This file is writen by `jupyter labextension build .`
-with open(here / "labextension" / "package.json") as f:
-    pkg = json.load(f)
-
-__version__ = pkg["version"]
+try:
+    __version__ = version("anywidget")
+except PackageNotFoundError:
+    __version__ = "uninstalled"
