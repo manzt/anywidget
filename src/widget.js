@@ -2,25 +2,9 @@
 import { name, version } from "../package.json";
 
 /**
- *  @typedef AnyWidgetRenderer
+ *  @typedef AnyWidgetModule
  *  @prop render {(view: import("@jupyter-widgets/base").DOMWidgetView) => Promise<void>}
  */
-
-/**
- * Returns a hash code from a string
- * @param  {string} str The string to hash.
- * @return A 32bit integer
- * @see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
- */
-function hash_code(str) {
-	let hash = 0;
-	for (let i = 0, len = str.length; i < len; i++) {
-		let chr = str.charCodeAt(i);
-		hash = (hash << 5) - hash + chr;
-		hash |= 0; // Convert to 32bit integer
-	}
-	return hash;
-}
 
 /**
  * @param {string} str
@@ -80,7 +64,7 @@ async function load_css(css, anywidget_id) {
 
 /**
  * @param {string} esm
- * @returns {Promise<AnyWidgetRenderer>}
+ * @returns {Promise<AnyWidgetModule>}
  */
 async function load_esm(esm) {
 	if (is_href(esm)) {
