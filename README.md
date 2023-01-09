@@ -303,7 +303,7 @@ _DEV = True # switch to False for production
 
 if _DEV:
   # from `pnpm vite`
-  ESM = "https://localhost:5173/src/index.js?anywidget"
+  ESM = "http://localhost:5173/src/index.js?anywidget"
   CSS = ""
 else:
   # from `pnpm vite build`
