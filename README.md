@@ -79,8 +79,8 @@ experience. It ensures your widget's compatability with the fractured Jupyter
 ecosystem rather than requiring each author to solve this same multi-platform
 packaging problem. Creating custom widgets with **anywidget** is fun and easy.
 You can start prototyping _within_ a notebook and publish on PyPI like any other
-Python module. No need to create a new cookiecutter repo or maintain complicated
-build scripts.
+Python module. No need to create a new cookiecutter repo, maintain complicated
+build scripts, or understand JavaScript dependency/build tooling to get started.
 
 ### how
 
@@ -93,8 +93,80 @@ and subscribing and publishing changes via `view.model` in the client `render`
 function.
 
 > **Note** Your JS code _must_ be vaid ESM. You can import dependencies from a
-> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler which
-> targets ESM.
+> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler targeting
+> ESM.
+
+### advanced: bundling + vite integration
+
+Often the ESM required to connect a JavaScript library to Python with **anywidget**
+is minimal and can easily be inlined _within_ the Python module as a string.
+This feature allows Python developers to be productive with **anywidget**
+immediately without requiring intimite knowledge frontend tooling (e.g.,
+`npm`/`yarn`/`pnpm`, Webpack/Vite).
+
+As **anywidget** projects mature, however, it is recommended to organize the JavaScript
+source into separate files which can be merged together into a single optimized file.
+This merging process is called _bundling_ and is required with popular fontend
+frameworks (e.g., React, Vue, Solid, Svelte) that include unsupported ESM syntax.
+
+```python
+# counter_widget/counter.py
+import pathlib
+import anywidget
+import traitlets
+
+bundled_assets_dir = pathlib.Path(__file__).parent / "static"
+
+class CounterWidget(anywidget.AnyWidget):
+  _esm = (bundled_assets_dir / "index.js").read()
+  _css = (bundled_assets_dir / "styles.css").read()
+  count = traitlets.Int(0).tag(sync=True)
+```
+
+We recommend using [Vite](https://vitejs.dev/) while developing your widget at
+this stage. It is simple to configure, and our custom plugin allows for
+best-in-class developer experience with live-reloading.
+
+```bash
+npm install -D vite anywidget
+```
+
+```javascript
+// vite.config.js
+import { defineConfig } from "vite";
+import anywidget from "anywidget/vite";
+
+export default defineConfig({
+  build: {
+    entry: "src/index.js",
+    formats: ["es"],
+    outDir: ["counter_widget/static"],
+  },
+  plugins: [anywidget()]
+});
+```
+
+```python
+# counter_widget/counter.py
+import pathlib
+import anywidget
+import traitlets
+
+_DEV = True
+
+if _DEV:
+  ESM = "https://localhost:5173/src/index.js"
+  CSS = ""
+else:
+  bundled_assets_dir = pathlib.Path(__file__).parent / "static"
+  ESM = (bundled_assets_dir / "index.js").read()
+  CSS = (bundled_assets_dir / "styles.css").read()
+
+class CounterWidget(anywidget.AnyWidget):
+  _esm = ESM
+  _css = CSS
+  count = traitlets.Int(0).tag(sync=True)
+```
 
 ### development
 
