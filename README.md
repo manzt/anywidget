@@ -115,9 +115,6 @@ unsupported browser syntax.
 If using a bundler, make sure to load the final bundled assets in your widget
 and not the original/untransformed JavaScript source files.
 
-> **Note** The following examples use the [`pnpm`](https://pnpm.io/) package
-> manager. `npm` and `yarn` should also work but the commands slightly differ.
-
 #### Example (esbuild)
 
 ##### Setup
@@ -142,7 +139,7 @@ We can bundle these assets into `hello_widget/static` with
 (or install):
 
 ```bash
-pnpx esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js
+npx esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js
 #
 #  hello_widget/static/index.js   150b
 #  hello_widget/static/index.css   81b
@@ -183,7 +180,7 @@ best-in-class developer experience.
 From the root of the project structure above.
 
 ```bash
-pnpm install -D vite
+npm install -D vite
 ```
 
 Create a `vite.config.js` file with the following configuration:
@@ -208,12 +205,12 @@ Your project structure should now look like:
 ```bash
 hello_widget/
 ├── pyproject.toml
-├── hello_widget
+├── hello_widget/
 │  └── __init__.py
-├── node_modules
+├── node_modules/
+├── package-lock.json
 ├── package.json
-├── pnpm-lock.yaml
-├── src
+├── src/
 │  ├── index.js
 │  └── styles.css
 └── vite.config.js
@@ -226,7 +223,7 @@ esbuild. Again, make sure the final bundled assets are loaded by the Python
 module.
 
 ```bash
-pnpm vite build
+npx vite build
 # vite v4.0.4 building for production...
 # ✓ 2 modules transformed.
 # hello_widget/static/style.css  0.05 kB │ gzip: 0.06 kB
@@ -258,7 +255,7 @@ To get started with HMR for your widget, install the `anywidget` Plugin and add
 the following to your `vite.config.js`:
 
 ```bash
-pnpm install -D anywidget
+npm install -D anywidget
 ```
 
 ```diff
@@ -281,7 +278,7 @@ export default defineConfig({
 Start the development server from the root of your project:
 
 ```bash
-pnpm vite
+npx vite
 #
 #  VITE v4.0.4  ready in 321 ms
 #
@@ -302,11 +299,11 @@ import traitlets
 _DEV = True # switch to False for production
 
 if _DEV:
-  # from `pnpm vite`
+  # from `npx vite`
   ESM = "http://localhost:5173/src/index.js?anywidget"
   CSS = ""
 else:
-  # from `pnpm vite build`
+  # from `npx vite build`
   bundled_assets_dir = pathlib.Path(__file__).parent / "static"
   ESM = (bundled_assets_dir / "index.mjs").read()
   CSS = (bundled_assets_dir / "styles.css").read()
