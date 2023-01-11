@@ -43,5 +43,10 @@ data_files = get_data_files([
 ])
 
 if __name__ == "__main__":
-    setup(version=version, cmdclass=cmdclass, data_files=data_files)
-
+    setup(
+        packages=["anywidget"],
+        include_package_data=True,
+        version=version,
+        cmdclass=cmdclass,
+        data_files=data_files,
+    )

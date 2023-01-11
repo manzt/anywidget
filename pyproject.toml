@@ -1,3 +1,24 @@
 [build-system]
-requires = ["jupyter_packaging>=0.10,<2", "jupyterlab==3.*"]
+requires = ["jupyter_packaging>=0.10,<2", "jupyterlab==3.*", "setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "anywidget"
+authors = [
+    { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" },
+]
+description = "simple, custom Jupyter widgets"
+readme = "README.md"
+dependencies = [
+    "ipywidgets"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "black",
+    "pytest"
+]
+
+[project.urls]
+homepage = "https://github.com/manzt/anywidget"
