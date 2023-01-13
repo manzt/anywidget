@@ -24,10 +24,6 @@
 		"build:vite-plugin": "esbuild --format=cjs --outfile=dist/vite.cjs vite-plugin.js && cp vite-plugin.js dist/vite.mjs",
 		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && npm run build:vite-plugin"
 	},
-	"dependencies": {
-		"vitepress": "^1.0.0-alpha.35",
-		"vue": "^3.2.45"
-	},
 	"devDependencies": {
 		"@jupyter-widgets/base": "^6.0.1",
 		"@jupyterlab/builder": "^3.5.0",
