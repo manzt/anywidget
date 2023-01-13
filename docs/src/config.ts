@@ -6,8 +6,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
 	image: {
-		src:
-			"https://github.com/withastro/astro/blob/main/assets/social/banner-minimal.png?raw=true",
+		src: "https://github.com/withastro/astro/blob/main/assets/social/banner-minimal.png?raw=true",
 		alt:
 			"astro logo on a starry expanse of space," +
 			" with a purple saturn-like planet floating in the right foreground",
@@ -44,7 +43,7 @@ export const ALGOLIA = {
 };
 
 export type Sidebar = Record<
-	typeof KNOWN_LANGUAGE_CODES[number],
+	(typeof KNOWN_LANGUAGE_CODES)[number],
 	Record<string, { text: string; link: string }[]>
 >;
 export const SIDEBAR: Sidebar = {

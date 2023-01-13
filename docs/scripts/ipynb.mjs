@@ -1,6 +1,7 @@
 // @ts-check
 import * as child_process from "node:child_process";
 import * as fs from "node:fs/promises";
+import * as crypto from "node:crypto";
 
 import { renderMarkdown } from "@astrojs/markdown-remark";
 import matter from "gray-matter";
@@ -10,7 +11,7 @@ import { fileURLToPath } from "node:url";
 /**
  * @typedef CellOutput
  * @prop {"execute_result"} output_type
- * @prop {{ "text/plain"?: string, "application/vnd.jupyter.widget-view+json"?:  { version_major: number, version_minor: number, model_id: "492c1feadd27415aa213a5c46638bfc5" }}} data
+ * @prop {{ "text/plain"?: string, "application/vnd.jupyter.widget-view+json"?:  { version_major: number, version_minor: number, model_id: string }}} data
  */
 
 /**
@@ -35,8 +36,14 @@ import { fileURLToPath } from "node:url";
 /** @typedef {MarkdownCell | RawCell | CodeCell} Cell */
 
 /**
+ * @typedef Widget
+ * @prop {string} id
+ */
+
+/**
  * @typedef JupyterNotebook
  * @prop {Cell[]} cells
+ * @prop {{ widgets: Record<"application/vnd.jupyter.widget-state+json", any>}} metadata
  */
 
 /**
@@ -73,7 +80,7 @@ function appendForwardSlash(path) {
  */
 export function getFileInfo(id, config) {
 	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base,
+		config.site ? new URL(config.base, config.site).pathname : config.base
 	);
 
 	// Try to grab the file's actual URL
@@ -133,8 +140,8 @@ async function readNotebook(fileId, execute = false) {
 // absolute path of "astro/jsx-runtime"
 const astroJsxRuntimeModulePath = normalizePath(
 	fileURLToPath(
-		new URL("../node_modules/astro/dist/jsx-runtime/index.js", import.meta.url),
-	),
+		new URL("../node_modules/astro/dist/jsx-runtime/index.js", import.meta.url)
+	)
 );
 
 /** @param {Cell | undefined} cell */
@@ -148,39 +155,60 @@ function extractMarkdownContent(cell) {
 	let source = extractCellSource(cell);
 	if (cell.cell_type == "markdown") return source;
 	if (cell.cell_type == "raw") return `\`\`\`\n${source}\n\`\`\`\n`;
-	let md = `\`\`\`python\n${source}\n\`\`\`\n`;
-	for (let output of cell.outputs) {
-		if (output.data["application/vnd.jupyter.widget-view+json"]) {
-			md += `\t<Widget/>\n\n`;
-			continue;
-		}
-		if (output.data["text/plain"]) {
-			md += `\t${output.data["text/plain"]}\n\n`;
-		}
-	}
-	return md;
+	return `\`\`\`python\n${source}\n\`\`\`\n`;
 }
 
 /**
- * @param {Cell[]} cells
+ * @param {JupyterNotebook} nb
  * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any> }} options
  */
-async function renderCellsMarkdown(cells, options) {
-	let raw = "",
-		html = "";
-	let headings;
-	for (let cell of cells) {
-		let content = extractMarkdownContent(cell);
-		let renderResult = await renderMarkdown(content, {
+async function renderCellsMarkdown(nb, options) {
+	/** @param {string} content */
+	function _renderMarkdown(content) {
+		return renderMarkdown(content, {
 			...options.config.markdown,
 			fileURL: new URL(`file://${options.fileId}`),
 			contentDir: new URL("./content/", options.config.srcDir),
 			// @ts-expect-error
 			frontmatter: options.frontmatter,
 		});
+	}
+	let raw = "",
+		html = "";
+	let headings;
+
+	for (let cell of nb.cells) {
+		let content = extractMarkdownContent(cell);
+		let renderResult = await _renderMarkdown(content);
 		if (!headings) headings = renderResult.metadata.headings;
 		raw += content;
 		html += renderResult.code;
+
+		if (cell.cell_type === "code") {
+			for (let output of cell.outputs) {
+				let wdata = output.data["application/vnd.jupyter.widget-view+json"];
+				if (
+					wdata &&
+					wdata.model_id in
+						nb.metadata?.widgets?.["application/vnd.jupyter.widget-state+json"]
+							.state
+				) {
+					let uuid = crypto.randomUUID();
+					html += `\
+					<div id="${uuid}" class="jupyter-widgets jp-OutputArea-output jp-OutputArea-executeResult">
+						<script type="text/javascript">
+							var element = document.getElementById('${uuid}');
+						</script>
+						<script type="application/vnd.jupyter.widget-view+json">
+							${JSON.stringify(output.data["application/vnd.jupyter.widget-view+json"])}
+						</script>
+					</div>
+					`;
+				} else if (output.data["text/plain"]) {
+					html += `<pre>${output.data["text/plain"]}</pre>`;
+				}
+			}
+		}
 	}
 	return { raw, html, headings };
 }
@@ -204,11 +232,22 @@ function vitePlugin(options) {
 				frontmatter = parseFrontmatter(rawSource, id).data;
 			}
 
-			let { raw, html, headings } = await renderCellsMarkdown(nb.cells, {
+			let { raw, html, headings } = await renderCellsMarkdown(nb, {
 				fileId,
 				frontmatter,
 				config: options.config,
 			});
+
+			html =
+				`\
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
+<script type="application/vnd.jupyter.widget-state+json">
+	${JSON.stringify(
+		nb.metadata.widgets["application/vnd.jupyter.widget-state+json"]
+	)}
+</script>\n` + html;
+
 			let { layout } = frontmatter;
 
 			// adapted from https://github.com/withastro/astro/blob/main/packages/astro/src/vite-plugin-markdown/index.ts
@@ -235,7 +274,9 @@ function vitePlugin(options) {
 					content.url = url;
 					content.astro = {};
 					const contentFragment = h(Fragment, { 'set:html': html });
-					return ${layout ? `h(Layout, {
+					return ${
+						layout
+							? `h(Layout, {
 						file,
 						url,
 						content,
@@ -245,7 +286,9 @@ function vitePlugin(options) {
 						compiledContent,
 						'server:root': true,
 						children: contentFragment
-					})` : `contentFragment`};
+					})`
+							: `contentFragment`
+					};
 				}
 				Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};
 				export default Content;
