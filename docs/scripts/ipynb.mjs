@@ -73,7 +73,7 @@ function appendForwardSlash(path) {
  */
 export function getFileInfo(id, config) {
 	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base
+		config.site ? new URL(config.base, config.site).pathname : config.base,
 	);
 
 	// Try to grab the file's actual URL
@@ -108,12 +108,15 @@ export function getFileInfo(id, config) {
  * @returns {Promise<JupyterNotebook>}
  */
 async function executeAndReadNotebookFromStdout(fileId) {
-	return new Promise((resolve) => {
-		child_process.execFile(
-			fileURLToPath(new URL("./render.py", import.meta.url)),
-			[fileId],
-			(_err, stdout) => resolve(JSON.parse(stdout))
-		);
+	let file = fileURLToPath(new URL("./render.py", import.meta.url));
+	return new Promise((resolve, reject) => {
+		child_process.execFile(file, [fileId], (err, stdout) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(JSON.parse(stdout));
+			}
+		});
 	});
 }
 
@@ -130,8 +133,8 @@ async function readNotebook(fileId, execute = false) {
 // absolute path of "astro/jsx-runtime"
 const astroJsxRuntimeModulePath = normalizePath(
 	fileURLToPath(
-		new URL("./node_modules/astro/dist/jsx-runtime/index.js", import.meta.url)
-	)
+		new URL("../node_modules/astro/dist/jsx-runtime/index.js", import.meta.url),
+	),
 );
 
 /** @param {Cell | undefined} cell */
@@ -232,9 +235,7 @@ function vitePlugin(options) {
 					content.url = url;
 					content.astro = {};
 					const contentFragment = h(Fragment, { 'set:html': html });
-					return ${
-						layout
-							? `h(Layout, {
+					return ${layout ? `h(Layout, {
 						file,
 						url,
 						content,
@@ -244,9 +245,7 @@ function vitePlugin(options) {
 						compiledContent,
 						'server:root': true,
 						children: contentFragment
-					})`
-							: `contentFragment`
-					};
+					})` : `contentFragment`};
 				}
 				Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};
 				export default Content;
