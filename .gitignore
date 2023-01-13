@@ -13,3 +13,6 @@ anywidget/labextension/static/*
 
 dist/
 dist-python/
+
+
+docs/.vitepress/cache

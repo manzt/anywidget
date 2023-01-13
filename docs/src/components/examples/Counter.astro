@@ -1,0 +1,70 @@
+---
+import CodeHero from "../CodeHero.astro";
+
+let widgetCode = `
+import anywidget
+import traitlets
+
+ESM = """
+export function render(view) {
+  let count = () => view.model.get("value");
+  let btn = document.createElement("button");
+  btn.innerHTML = \`count is \${count()}\`;
+  btn.addEventListener("click", () => {
+    view.model.set("value", count() + 1);
+    view.model.save_changes();
+  });
+  view.model.on("change:count", () => {
+    btn.innerHTML = \`count is \${count()}\`;
+  });
+  view.el.appendChild(btn);
+}
+"""
+
+class CounterWidget(anywidget.AnyWidget):
+    _esm = ESM
+    value = traitlets.Int(0).tag(sync=True)
+`;
+
+let notebookCode = `\
+from mywidget import CounterWidget 
+
+counter = CounterWidget()
+counter`;
+---
+
+<CodeHero
+	filename="mywidget/__init__.py"
+	lang="python"
+	code={widgetCode}
+	url={"localhost:8888/Demo.ipynb"}
+	showGrid={true}
+>
+	<div class="text-xs flex flex-col space-y-4">
+		<pre
+			class="p-2 rounded border border-gray-400 col-span-4 w-full">{notebookCode}</pre>
+
+		<div class="col-span-4">
+			<button
+				class="py-2 px-4 hover:bg-primary-800 bg-primary-600 rounded shadow"
+				id="btn"></button>
+		</div>
+
+		<pre
+			class="col-span-4 p-2 rounded border border-gray-400 w-full">counter.value</pre>
+
+		<pre class="pl-1" id="pyoutput"></pre>
+	</div>
+</CodeHero>
+
+<script is:inline>
+	let count = 0;
+	let btn = document.querySelector("#btn");
+	let pyoutput = document.querySelector("#pyoutput");
+	function setCount(value) {
+		btn.innerHTML = `count is ${value}`;
+		pyoutput.innerHTML = value;
+	}
+	btn.addEventListener("click", () => setCount(++count));
+	setCount(0);
+</script>

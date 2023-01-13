@@ -1,0 +1,36 @@
+---
+import HeadCommon from "../components/HeadCommon.astro";
+import HeadSEO from "../components/HeadSEO.astro";
+import Header from "../components/Header/Header.astro";
+import * as CONFIG from "../config";
+import type { MarkdownHeading } from "astro";
+import Footer from "../components/Footer/Footer.astro";
+
+type Props = {
+	frontmatter?: CONFIG.Frontmatter;
+	headings?: MarkdownHeading[];
+};
+
+const { frontmatter } = Astro.props as Props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const currentPage = Astro.url.pathname;
+const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
+---
+
+<html
+	dir={frontmatter?.dir ?? "ltr"}
+	lang={frontmatter?.lang ?? "en-us"}
+	class="initial"
+>
+	<head>
+		<HeadCommon />
+		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
+		<title>anywidget</title>
+	</head>
+
+	<body>
+		<Header currentPage={currentPage} />
+		<slot />
+		<Footer path={currentFile} />
+	</body>
+</html>
