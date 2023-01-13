@@ -1,6 +1,6 @@
 export const SITE = {
 	title: "anywidget",
-	description: "simple, custom Jupyter widgets",
+	description: "custom jupyter widgets, made simple",
 	defaultLanguage: "en_US",
 };
 
@@ -11,7 +11,7 @@ export const OPEN_GRAPH = {
 			"astro logo on a starry expanse of space," +
 			" with a purple saturn-like planet floating in the right foreground",
 	},
-	twitter: "astrodotbuild",
+	twitter: "trevmanz",
 };
 
 // This is the type of the frontmatter you put in the docs markdown files.
@@ -53,6 +53,8 @@ export const SIDEBAR: Sidebar = {
 			{ text: "Page 2", link: "en/page-2" },
 			{ text: "Page 3", link: "en/page-3" },
 		],
-		Notebooks: [{ text: "Example", link: "en/Example" }],
+		Notebooks: [
+			{ text: "Example", link: "en/Example" },
+		],
 	},
 };

@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
+import nbclient
 import nbformat
-import nbconvert
 import json
 
 import sys
 
-if __name__ == "__main__":
+def main():
     nb = nbformat.read(sys.argv[1], as_version=4)
-    nb = nbconvert.preprocessors.ExecutePreprocessor().preprocess(nb)[0]
+    client = nbclient.NotebookClient(nb)
+    client.execute()
     print(json.dumps(nb))
+
+if __name__ == "__main__":
+    main()

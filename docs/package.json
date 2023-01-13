@@ -10,7 +10,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"format": "prettier --use-tabs --write ."
+		"format": "prettier --ignore-path ../.gitignore --use-tabs --write ."
 	},
 	"dependencies": {
 		"@algolia/client-search": "^4.13.1",
