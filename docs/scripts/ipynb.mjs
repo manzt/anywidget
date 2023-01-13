@@ -1,12 +1,22 @@
 // @ts-check
-import * as child_process from "node:child_process";
 import * as fs from "node:fs/promises";
+import * as child_process from "node:child_process";
 import * as crypto from "node:crypto";
+import { fileURLToPath } from "node:url";
 
 import { renderMarkdown } from "@astrojs/markdown-remark";
-import matter from "gray-matter";
-import { normalizePath } from "vite";
-import { fileURLToPath } from "node:url";
+import {
+	createAstroComponentString,
+	getFileInfo,
+	parseFrontmatter,
+} from "./utils.mjs";
+
+let WIDGET_VIEW_MIMETYPE = /** @type {const} */ (
+	"application/vnd.jupyter.widget-view+json"
+);
+let WIDGET_STATE_MIMETYPE = /** @type {const} */ (
+	"application/vnd.jupyter.widget-state+json"
+);
 
 /**
  * @typedef CellOutput
@@ -17,6 +27,7 @@ import { fileURLToPath } from "node:url";
 /**
  * @typedef CodeCell
  * @prop {"code"} cell_type
+ * @prop {string} id
  * @prop {string | string[]} source
  * @prop {CellOutput[]} outputs
  */
@@ -36,6 +47,13 @@ import { fileURLToPath } from "node:url";
 /** @typedef {MarkdownCell | RawCell | CodeCell} Cell */
 
 /**
+ * @typedef WidgetStateData
+ * @prop {number} version_major
+ * @prop {number} version_minor
+ * @prop {Record<string, any>} state
+ */
+
+/**
  * @typedef Widget
  * @prop {string} id
  */
@@ -43,72 +61,8 @@ import { fileURLToPath } from "node:url";
 /**
  * @typedef JupyterNotebook
  * @prop {Cell[]} cells
- * @prop {{ widgets: Record<"application/vnd.jupyter.widget-state+json", any>}} metadata
+ * @prop {{ widgets?: { "application/vnd.jupyter.widget-state+json"?: WidgetStateData } }} metadata
  */
-
-/**
- * @param {string} code
- * @param {string} id
- * @see https://github.com/withastro/astro/blob/c53b1fca073136e1e1a6f5d0b32d7c023e98c675/packages/integrations/mdx/src/utils.ts#L45-L63
- */
-export function parseFrontmatter(code, id) {
-	try {
-		return matter(code);
-	} catch (e) {
-		if (e.name === "YAMLException") {
-			/** @type {import('astro').SSRError} */
-			const err = e;
-			err.id = id;
-			err.loc = { file: e.id, line: e.mark.line + 1, column: e.mark.column };
-			err.message = e.reason;
-			throw err;
-		} else {
-			throw e;
-		}
-	}
-}
-
-/** @param {string} path */
-function appendForwardSlash(path) {
-	return path.endsWith("/") ? path : path + "/";
-}
-
-/**
- * @param {string} id
- * @param {import('astro').AstroConfig} config
- * @returns {{ fileId: string, fileUrl: string}}
- */
-export function getFileInfo(id, config) {
-	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base
-	);
-
-	// Try to grab the file's actual URL
-	/** @type {URL | undefined} */
-	let url = undefined;
-	try {
-		url = new URL(`file://${id}`);
-	} catch {}
-
-	const fileId = id.split("?")[0];
-	/** @type {string} */
-	let fileUrl;
-	const isPage = fileId.includes("/pages/");
-	if (isPage) {
-		fileUrl = fileId
-			.replace(/^.*?\/pages\//, sitePathname)
-			.replace(/(\/index)?\.mdx$/, "");
-	} else if (url && url.pathname.startsWith(config.root.pathname)) {
-		fileUrl = url.pathname.slice(config.root.pathname.length);
-	} else {
-		fileUrl = fileId;
-	}
-
-	if (fileUrl && config.trailingSlash === "always") {
-		fileUrl = appendForwardSlash(fileUrl);
-	}
-	return { fileId, fileUrl };
-}
 
 /**
  * @param {string} fileId
@@ -137,13 +91,6 @@ async function readNotebook(fileId, execute = false) {
 	return fs.readFile(fileId, { encoding: "utf-8" }).then(JSON.parse);
 }
 
-// absolute path of "astro/jsx-runtime"
-const astroJsxRuntimeModulePath = normalizePath(
-	fileURLToPath(
-		new URL("../node_modules/astro/dist/jsx-runtime/index.js", import.meta.url)
-	)
-);
-
 /** @param {Cell | undefined} cell */
 function extractCellSource(cell) {
 	if (!cell) return "";
@@ -159,8 +106,47 @@ function extractMarkdownContent(cell) {
 }
 
 /**
+ * @param {CellOutput} output
+ * @param {WidgetStateData | undefined} widgetState
+ */
+function outputHtml(output, widgetState) {
+	let widgetStateIds = new Set(Object.keys(widgetState?.state ?? {}));
+	let widgetData = output.data[WIDGET_VIEW_MIMETYPE];
+
+	if (widgetData && widgetStateIds.has(widgetData.model_id)) {
+		let uuid = crypto.randomUUID();
+		return `\
+		<div id="${uuid}" class="jupyter-widgets jp-OutputArea-output jp-OutputArea-executeResult">
+			<script type="text/javascript">
+				var element = document.getElementById("${uuid}");
+			</script>
+			<script type="application/vnd.jupyter.widget-view+json">
+				${JSON.stringify(widgetData)}
+			</script>
+		</div>
+		`;
+	}
+
+	if (output.data["text/plain"]) {
+		return `<pre>${output.data["text/plain"]}</pre>`;
+	}
+
+	return "";
+}
+
+/** @param {WidgetStateData} widgetState */
+function widgetClientHtml(widgetState) {
+	return `\
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+	<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
+	<script type="application/vnd.jupyter.widget-state+json">${JSON.stringify(
+		widgetState
+	)}</script>\n`;
+}
+
+/**
  * @param {JupyterNotebook} nb
- * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any> }} options
+ * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any>, widgetState?: WidgetStateData }} options
  */
 async function renderCellsMarkdown(nb, options) {
 	/** @param {string} content */
@@ -186,27 +172,7 @@ async function renderCellsMarkdown(nb, options) {
 
 		if (cell.cell_type === "code") {
 			for (let output of cell.outputs) {
-				let wdata = output.data["application/vnd.jupyter.widget-view+json"];
-				if (
-					wdata &&
-					wdata.model_id in
-						nb.metadata?.widgets?.["application/vnd.jupyter.widget-state+json"]
-							.state
-				) {
-					let uuid = crypto.randomUUID();
-					html += `\
-					<div id="${uuid}" class="jupyter-widgets jp-OutputArea-output jp-OutputArea-executeResult">
-						<script type="text/javascript">
-							var element = document.getElementById('${uuid}');
-						</script>
-						<script type="application/vnd.jupyter.widget-view+json">
-							${JSON.stringify(output.data["application/vnd.jupyter.widget-view+json"])}
-						</script>
-					</div>
-					`;
-				} else if (output.data["text/plain"]) {
-					html += `<pre>${output.data["text/plain"]}</pre>`;
-				}
+				html += outputHtml(output, options.widgetState);
 			}
 		}
 	}
@@ -227,74 +193,34 @@ function vitePlugin(options) {
 			let nb = await readNotebook(fileId, options.execute);
 
 			let frontmatter = {};
+
 			if (nb.cells[0].cell_type == "raw") {
 				let rawSource = extractCellSource(nb.cells.shift());
 				frontmatter = parseFrontmatter(rawSource, id).data;
 			}
 
+			let widgetState = nb.metadata?.widgets?.[WIDGET_STATE_MIMETYPE];
+
 			let { raw, html, headings } = await renderCellsMarkdown(nb, {
 				fileId,
 				frontmatter,
+				widgetState,
 				config: options.config,
 			});
 
-			html =
-				`\
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
-<script type="application/vnd.jupyter.widget-state+json">
-	${JSON.stringify(
-		nb.metadata.widgets["application/vnd.jupyter.widget-state+json"]
-	)}
-</script>\n` + html;
+			if (widgetState) {
+				html = widgetClientHtml(widgetState) + html;
+			}
 
-			let { layout } = frontmatter;
-
-			// adapted from https://github.com/withastro/astro/blob/main/packages/astro/src/vite-plugin-markdown/index.ts
-			// deno-fmt-ignore
-			let code = `
-				import { Fragment, jsx as h } from ${JSON.stringify(astroJsxRuntimeModulePath)};
-				${layout ? `import Layout from ${JSON.stringify(layout)};` : ""}
-				const html = ${JSON.stringify(html)};
-				export const frontmatter = ${JSON.stringify(frontmatter)};
-				export const file = ${JSON.stringify(fileId)};
-				export const url = ${JSON.stringify(fileUrl)};
-				export function rawContent() {
-					return ${JSON.stringify(raw)};
-				}
-				export function compiledContent() {
-					return html;
-				}
-				export function getHeadings() {
-					return ${JSON.stringify(headings)};
-				}
-				export async function Content() {
-					const { layout, ...content } = frontmatter;
-					content.file = file;
-					content.url = url;
-					content.astro = {};
-					const contentFragment = h(Fragment, { 'set:html': html });
-					return ${
-						layout
-							? `h(Layout, {
-						file,
-						url,
-						content,
-						frontmatter: content,
-						headings: getHeadings(),
-						rawContent,
-						compiledContent,
-						'server:root': true,
-						children: contentFragment
-					})`
-							: `contentFragment`
-					};
-				}
-				Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};
-				export default Content;
-			`;
 			return {
-				code,
+				code: createAstroComponentString({
+					raw,
+					html,
+					headings,
+					frontmatter,
+					fileId,
+					fileUrl,
+				}),
 				meta: {
 					astro: {
 						hydratedComponents: [],
