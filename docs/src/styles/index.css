@@ -287,8 +287,6 @@ blockquote code {
 
 @media (min-width: 37.75em) {
 	pre {
-		--padding-inline: 1.25rem;
-		border-radius: 8px;
 		margin-left: 0;
 		margin-right: 0;
 	}
@@ -305,11 +303,6 @@ blockquote {
 
 img {
 	max-width: 100%;
-}
-
-.flex {
-	display: flex;
-	align-items: center;
 }
 
 button {
@@ -337,7 +330,8 @@ h2.heading {
 
 .header-link {
 	font-size: 1em;
-	transition: border-inline-start-color 100ms ease-out, background-color 200ms ease-out;
+	transition: border-inline-start-color 100ms ease-out,
+		background-color 200ms ease-out;
 	border-left: 4px solid var(--theme-divider);
 }
 

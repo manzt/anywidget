@@ -1,5 +1,16 @@
+---
+import Layout from "../layouts/SplashLayout.astro";
+import Counter from "../components/Counter.astro";
+---
+
+<Layout>
+	<h1>anywidget</h1>
+	<p>custom jupyter widget, made simple</p>
+	<Counter />
+</Layout>
+
 <script is:inline>
 	// Redirect your homepage to the first page of documentation.
 	// If you have a landing page, remove this script and add it here!
-	window.location.pathname = `/en/getting-started`;
+	// window.location.pathname = `/en/getting-started`;
 </script>

@@ -5,7 +5,7 @@ import Footer from "../components/Footer/Footer.astro";
 import * as CONFIG from "../config";
 
 type Props = {
-	frontmatter: CONFIG.Frontmatter;
+	frontmatter?: CONFIG.Frontmatter;
 };
 
 const { frontmatter } = Astro.props as Props;
@@ -20,7 +20,13 @@ const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 >
 	<head>
 		<HeadCommon />
-		<title>{`${frontmatter.title} 🚀 ${CONFIG.SITE.title}`}</title>
+		<title>
+			{
+				frontmatter?.title
+					? `${frontmatter.title} 🚀 ${CONFIG.SITE.title}`
+					: CONFIG.SITE.title
+			}
+		</title>
 		<style>
 			html,
 			body,

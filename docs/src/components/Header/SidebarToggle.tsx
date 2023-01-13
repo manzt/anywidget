@@ -5,7 +5,6 @@ import { useState, useEffect } from "preact/hooks";
 import "../Header/HeaderButton.css";
 import "./SidebarToggle.css";
 
-
 const MenuToggle: FunctionalComponent = () => {
 	const [sidebarShown, setSidebarShown] = useState(false);
 
