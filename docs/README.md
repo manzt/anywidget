@@ -19,4 +19,3 @@ To deploy your site to production, check out our
 
 Welcome! Check out [our documentation](https://docs.astro.build) or jump into
 our [Discord server](https://astro.build/chat).
-

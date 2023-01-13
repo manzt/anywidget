@@ -9,11 +9,6 @@ export default defineConfig({
 	markdown: {
 		shikiConfig: { theme: "poimandres" },
 	},
-	integrations: [
-		preact(),
-		react(),
-		tailwind(),
-		ipynb({ execute: false }),
-	],
+	integrations: [preact(), react(), tailwind(), ipynb({ execute: false })],
 	site: `https://manzt.github.io`,
 });

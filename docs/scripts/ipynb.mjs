@@ -73,7 +73,7 @@ function appendForwardSlash(path) {
  */
 export function getFileInfo(id, config) {
 	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base,
+		config.site ? new URL(config.base, config.site).pathname : config.base
 	);
 
 	// Try to grab the file's actual URL
@@ -88,10 +88,9 @@ export function getFileInfo(id, config) {
 	let fileUrl;
 	const isPage = fileId.includes("/pages/");
 	if (isPage) {
-		fileUrl = fileId.replace(/^.*?\/pages\//, sitePathname).replace(
-			/(\/index)?\.mdx$/,
-			"",
-		);
+		fileUrl = fileId
+			.replace(/^.*?\/pages\//, sitePathname)
+			.replace(/(\/index)?\.mdx$/, "");
 	} else if (url && url.pathname.startsWith(config.root.pathname)) {
 		fileUrl = url.pathname.slice(config.root.pathname.length);
 	} else {
@@ -113,7 +112,7 @@ async function executeAndReadNotebookFromStdout(fileId) {
 		child_process.execFile(
 			fileURLToPath(new URL("./render.py", import.meta.url)),
 			[fileId],
-			(_err, stdout) => resolve(JSON.parse(stdout)),
+			(_err, stdout) => resolve(JSON.parse(stdout))
 		);
 	});
 }
@@ -131,8 +130,8 @@ async function readNotebook(fileId, execute = false) {
 // absolute path of "astro/jsx-runtime"
 const astroJsxRuntimeModulePath = normalizePath(
 	fileURLToPath(
-		new URL("./node_modules/astro/dist/jsx-runtime/index.js", import.meta.url),
-	),
+		new URL("./node_modules/astro/dist/jsx-runtime/index.js", import.meta.url)
+	)
 );
 
 /** @param {Cell | undefined} cell */
@@ -164,7 +163,8 @@ function extractMarkdownContent(cell) {
  * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any> }} options
  */
 async function renderCellsMarkdown(cells, options) {
-	let raw = "", html = "";
+	let raw = "",
+		html = "";
 	let headings;
 	for (let cell of cells) {
 		let content = extractMarkdownContent(cell);
@@ -232,7 +232,9 @@ function vitePlugin(options) {
 					content.url = url;
 					content.astro = {};
 					const contentFragment = h(Fragment, { 'set:html': html });
-					return ${layout ? `h(Layout, {
+					return ${
+						layout
+							? `h(Layout, {
 						file,
 						url,
 						content,
@@ -242,7 +244,9 @@ function vitePlugin(options) {
 						compiledContent,
 						'server:root': true,
 						children: contentFragment
-					})` : `contentFragment`};
+					})`
+							: `contentFragment`
+					};
 				}
 				Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};
 				export default Content;
