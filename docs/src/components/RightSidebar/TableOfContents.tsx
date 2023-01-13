@@ -1,7 +1,7 @@
 import { unescape } from "html-escaper";
 import type { MarkdownHeading } from "astro";
 import type { FunctionalComponent } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 
 type ItemOffsets = {
 	id: string;

@@ -1,5 +1,5 @@
 import type { FunctionalComponent } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import "./ThemeToggleButton.css";
 
 const themes = ["light", "dark"];

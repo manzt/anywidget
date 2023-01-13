@@ -1,53 +1,147 @@
 ---
-import { Sprite } from "astro-icon";
+import { getLanguageFromURL, KNOWN_LANGUAGE_CODES } from "../../languages";
+import * as CONFIG from "../../config";
 import AnyWidgetLogo from "./AnyWidgetLogo.astro";
 import SkipToContent from "./SkipToContent.astro";
 import SidebarToggle from "./SidebarToggle";
 import LanguageSelect from "./LanguageSelect";
-import ThemeToggleButton from "../RightSidebar/ThemeToggleButton";
+import ThemeToggleButton from "./ThemeToggleButton";
+import Search from "./Search";
 
 type Props = {
 	currentPage: string;
 };
 
 const { currentPage } = Astro.props as Props;
+const lang = getLanguageFromURL(currentPage);
 ---
 
 <header>
 	<SkipToContent />
-	<nav
-		class="flex justify-between items-center h-14 sm:px-8 px-2"
-		title="Top Navigation"
-	>
-		<a class="flex items-center font-semibold gap-2" href="/">
-			<AnyWidgetLogo size={28} />
-			anywidget
-		</a>
-
-		<div class="flex items-center divide-x h-8">
-			<a class="px-4 h-full" href="/en/introduction">Guide</a>
-			<a class="px-4 h-full" href="/en/Example">Notebooks</a>
-			<div class="px-4 h-full">
-				<ThemeToggleButton client:visible />
-			</div>
-			<div class="flex px-2 h-full">
-				<a
-					class="px-2"
-					href="https://github.com/manzt/anywidget"
-					target="_blank"
-					rel="noreferrer"
-				>
-					<Sprite size={25} name="mdi:github" />
-				</a>
-				<a
-					class="px-2"
-					href="https://twitter.com/trevmanz"
-					target="_blank"
-					rel="noreferrer"
-				>
-					<Sprite size={25} name="mdi:twitter" />
-				</a>
-			</div>
+	<nav class="nav-wrapper" title="Top Navigation">
+		<div class="logo">
+			<a href="/">
+				<AnyWidgetLogo size={38} />
+				<h1>{CONFIG.SITE.title}</h1>
+			</a>
 		</div>
+		<div style="flex-grow: 1;"></div>
+		<ThemeToggleButton client:visible />
+		{
+			KNOWN_LANGUAGE_CODES.length > 1 && (
+				<LanguageSelect lang={lang} client:idle />
+			)
+		}
+		<Search client:idle />
+		<SidebarToggle client:idle />
 	</nav>
 </header>
+
+<style>
+	header {
+		z-index: 11;
+		height: var(--theme-navbar-height);
+		width: 100%;
+		background-color: var(--theme-navbar-bg);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		position: sticky;
+		top: 0;
+	}
+
+	.logo {
+		flex: 1;
+		display: flex;
+		overflow: hidden;
+		width: 30px;
+		font-size: 2rem;
+		flex-shrink: 0;
+		font-weight: 600;
+		line-height: 1;
+		gap: 0.25em;
+		z-index: -1;
+	}
+
+	.logo a {
+		display: flex;
+		padding: 0.5em 0.25em;
+		margin: -0.5em -0.25em;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	.logo h1 {
+		display: none;
+		font: inherit;
+		color: var(--theme-text);
+		margin: 0;
+		margin-left: 0.6rem;
+	}
+
+	.nav-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 1em;
+		width: 100%;
+		max-width: 82em;
+		padding: 0 1rem;
+	}
+
+	@media (min-width: 50em) {
+		header {
+			position: static;
+			padding: 2rem 0rem;
+		}
+
+		.logo {
+			width: auto;
+			margin: 0;
+			z-index: 0;
+		}
+
+		.logo h1 {
+			display: initial;
+		}
+	}
+
+	/** Style Algolia */
+	:root {
+		--docsearch-primary-color: var(--theme-accent);
+		--docsearch-logo-color: var(--theme-text);
+	}
+
+	.search-item {
+		display: none;
+		position: relative;
+		z-index: 10;
+		flex-grow: 1;
+		padding-right: 0.7rem;
+		display: flex;
+		max-width: 200px;
+	}
+
+	@media (min-width: 50em) {
+		.search-item {
+			max-width: 400px;
+		}
+	}
+
+</style>
+
+<style is:global>
+	.search-item > * {
+		flex-grow: 1;
+	}
+
+	.logo svg {
+		transition: transform 0.5s ease-in;
+	}
+
+	.logo a:hover svg,
+	.logo a:focus svg {
+		transform: rotate(180deg);
+	}
+</style>

@@ -20,7 +20,7 @@
 
 	--color-base-white: 0, 0%;
 	--color-base-black: 240, 100%;
-	--color-base-gray: 215, 14%;
+	--color-base-gray: 214, 14%;
 	--color-base-blue: 212, 100%;
 	--color-base-blue-dark: 212, 72%;
 	--color-base-green: 158, 79%;
@@ -28,6 +28,7 @@
 	--color-base-purple: 269, 79%;
 	--color-base-red: 351, 100%;
 	--color-base-yellow: 41, 100%;
+	--color-base-teal: 180, 100%;
 
 	/*
    * Color palettes are made using --color-base 
@@ -55,30 +56,35 @@
 	--color-purple: var(--color-base-purple), 54%;
 	--color-red: var(--color-base-red), 54%;
 	--color-yellow: var(--color-base-yellow), 59%;
+	--color-teal: var(--color-base-teal), 30%;
 }
 
 :root {
 	color-scheme: light;
-	--theme-accent: hsla(var(--color-blue), 1);
-	--theme-text-accent: hsla(var(--color-blue), 1);
+	--theme-accent: hsla(var(--color-teal), 1);
+	--theme-text-accent: hsla(var(--color-teal), 1);
 	--theme-accent-opacity: 0.15;
-	--theme-divider: hsla(var(--color-gray-95), 1);
+	--theme-accent-secondary: hsla(var(--color-teal), 1);
+	/* --theme-divider: hsla(var(--color-gray-95), 1); */
+	--theme-divider: hsla(var(--color-teal), var(--theme-accent-opacity));
+	--theme-shade-subtle: hsla(var(--color-teal), 0.3);
 	--theme-text: hsla(var(--color-gray-10), 1);
-	--theme-text-light: hsla(var(--color-gray-40), 1);
+	--theme-text-light: hsla(var(--color-gray-30), 1);
 	/* @@@: not used anywhere */
-	--theme-text-lighter: hsla(var(--color-gray-80), 1);
+	--theme-text-lighter: hsla(var(--color-gray-40), 1);
 	--theme-bg: hsla(var(--color-base-white), 100%, 1);
 	--theme-bg-hover: hsla(var(--color-gray-95), 1);
 	--theme-bg-offset: hsla(var(--color-gray-90), 1);
-	--theme-bg-accent: hsla(var(--color-blue), var(--theme-accent-opacity));
-	--theme-code-inline-bg: hsla(var(--color-gray-95), 1);
+	--theme-bg-accent: hsla(var(--color-teal), var(--theme-accent-opacity));
+	/* --theme-code-inline-bg: hsla(var(--color-gray-95), 1); */
+	--theme-code-inline-bg: hsla(var(--color-teal), var(--theme-accent-opacity));
 	--theme-code-inline-text: var(--theme-text);
 	--theme-code-bg: hsla(217, 19%, 27%, 1);
 	--theme-code-text: hsla(var(--color-gray-95), 1);
 	--theme-navbar-bg: hsla(var(--color-base-white), 100%, 1);
 	--theme-navbar-height: 6rem;
-	--theme-selection-color: hsla(var(--color-blue), 1);
-	--theme-selection-bg: hsla(var(--color-blue), var(--theme-accent-opacity));
+	--theme-selection-color: hsla(var(--color-teal), 1);
+	--theme-selection-bg: hsla(var(--color-teal), var(--theme-accent-opacity));
 }
 
 body {
@@ -89,14 +95,15 @@ body {
 :root.theme-dark {
 	color-scheme: dark;
 	--theme-accent-opacity: 0.15;
-	--theme-accent: hsla(var(--color-blue), 1);
-	--theme-text-accent: hsla(var(--color-blue), 1);
+	--theme-accent: hsla(var(--color-teal), 1);
+	--theme-text-accent: hsla(var(--color-teal), 1);
 	--theme-divider: hsla(var(--color-gray-10), 1);
+	--theme-shade-subtle: hsla(var(--color-gray-95), 0.4);
 	--theme-text: hsla(var(--color-gray-90), 1);
 	--theme-text-light: hsla(var(--color-gray-80), 1);
 
 	/* @@@: not used anywhere */
-	--theme-text-lighter: hsla(var(--color-gray-40), 1);
+	--theme-text-lighter: hsla(var(--color-gray-70), 1);
 	--theme-bg: hsla(215, 28%, 17%, 1);
 	--theme-bg-hover: hsla(var(--color-gray-40), 1);
 	--theme-bg-offset: hsla(var(--color-gray-5), 1);

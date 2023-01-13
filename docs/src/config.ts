@@ -11,14 +11,14 @@ export const OPEN_GRAPH = {
 			"astro logo on a starry expanse of space," +
 			" with a purple saturn-like planet floating in the right foreground",
 	},
-	twitter: "trevmanz",
+	twitter: "astrodotbuild",
 };
 
 // This is the type of the frontmatter you put in the docs markdown files.
 export type Frontmatter = {
 	title: string;
 	description: string;
-	layout?: string;
+	layout: string;
 	image?: { src: string; alt: string };
 	dir?: "ltr" | "rtl";
 	ogLocale?: string;
@@ -28,12 +28,11 @@ export type Frontmatter = {
 export const KNOWN_LANGUAGES = {
 	English: "en",
 } as const;
-
 export const KNOWN_LANGUAGE_CODES = Object.values(KNOWN_LANGUAGES);
 
-export const GITHUB_EDIT_URL = `https://github.com/manzt/anywidget/tree/main/docs`;
-
-export const COMMUNITY_INVITE_URL = `https://astro.build/chat`;
+export const GITHUB_URL = `https://github.com/manzt/anywidget`;
+export const GITHUB_EDIT_URL = `${GITHUB_URL}/tree/main/docs`;
+export const COMMUNITY_INVITE_URL = '';
 
 // See "Algolia" section of the README for more information.
 export const ALGOLIA = {
@@ -49,12 +48,11 @@ export type Sidebar = Record<
 export const SIDEBAR: Sidebar = {
 	en: {
 		Guide: [
-			{ text: "Introduction", link: "en/introduction" },
+			{ text: "Getting Started", link: "en/getting-started" },
 			{ text: "Page 2", link: "en/page-2" },
 			{ text: "Page 3", link: "en/page-3" },
+			{ text: "Page 4", link: "en/page-4" },
 		],
-		Notebooks: [
-			{ text: "Example", link: "en/Example" },
-		],
+		Tutorials: [{ text: "Build a Counter Widget", link: "en/counter" }],
 	},
 };

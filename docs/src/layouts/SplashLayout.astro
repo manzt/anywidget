@@ -1,18 +1,14 @@
 ---
 import HeadCommon from "../components/HeadCommon.astro";
-import HeadSEO from "../components/HeadSEO.astro";
 import Header from "../components/Header/Header.astro";
-import * as CONFIG from "../config";
-import type { MarkdownHeading } from "astro";
 import Footer from "../components/Footer/Footer.astro";
+import * as CONFIG from "../config";
 
 type Props = {
-	frontmatter?: CONFIG.Frontmatter;
-	headings?: MarkdownHeading[];
+	frontmatter: CONFIG.Frontmatter;
 };
 
 const { frontmatter } = Astro.props as Props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const currentPage = Astro.url.pathname;
 const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 ---
@@ -24,13 +20,31 @@ const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 >
 	<head>
 		<HeadCommon />
-		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
-		<title>anywidget</title>
+		<title>{`${frontmatter.title} 🚀 ${CONFIG.SITE.title}`}</title>
+		<style>
+			html,
+			body,
+			main {
+				height: 100%;
+			}
+			main {
+				display: grid;
+				place-items: center;
+				padding-inline: var(--min-spacing-inline);
+			}
+			:global(#menu-toggle) {
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
 		<Header currentPage={currentPage} />
-		<slot />
+		<main class="layout splash-layout">
+			<article>
+				<slot />
+			</article>
+		</main>
 		<Footer path={currentFile} />
 	</body>
 </html>

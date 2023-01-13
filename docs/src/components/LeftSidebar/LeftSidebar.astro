@@ -18,27 +18,25 @@ const sidebar = SIDEBAR[langCode];
 	<ul class="nav-groups">
 		{
 			Object.entries(sidebar).map(([header, children]) => (
-				<li>
-					<div class="nav-group">
-						<h2>{header}</h2>
-						<ul>
-							{children.map((child) => {
-								const url = Astro.site?.pathname + child.link;
-								return (
-									<li class="nav-link">
-										<a
-											href={url}
-											aria-current={
-												currentPageMatch === child.link ? "page" : false
-											}
-										>
-											{child.text}
-										</a>
-									</li>
-								);
-							})}
-						</ul>
-					</div>
+				<li class:list={["nav-group"]}>
+					<h2 class="nav-group-title">{header}</h2>
+					<ul>
+						{children.map((child) => {
+							const url = Astro.site?.pathname + child.link;
+							return (
+								<li class="nav-link">
+									<a
+										href={url}
+										aria-current={
+											currentPageMatch === child.link ? "page" : false
+										}
+									>
+										{child.text}
+									</a>
+								</li>
+							);
+						})}
+					</ul>
 				</li>
 			))
 		}
@@ -82,11 +80,9 @@ const sidebar = SIDEBAR[langCode];
 	}
 
 	.nav-group-title {
-		font-size: 1rem;
+		font-size: 1em;
 		font-weight: 700;
-		padding: 0.1rem 1rem;
-		text-transform: uppercase;
-		margin-bottom: 0.5rem;
+		margin: 0;
 	}
 
 	.nav-link a {
@@ -94,31 +90,39 @@ const sidebar = SIDEBAR[langCode];
 		margin: 1px;
 		padding: 0.3rem 1rem;
 		font: inherit;
-		color: inherit;
+		color: var(--color-text-lighter);
 		text-decoration: none;
 		display: block;
 	}
 
 	.nav-link a:hover,
 	.nav-link a:focus {
-		background-color: var(--theme-bg-hover);
+		background-color: var(--theme-bg-accent);
 	}
 
 	.nav-link a[aria-current="page"] {
-		color: var(--theme-text-accent);
+		color: var(--theme-text);
 		background-color: var(--theme-bg-accent);
-		font-weight: 600;
+		font-weight: 500;
 	}
 
 	@media (min-width: 50em) {
 		.nav-groups {
 			padding: 0;
 		}
+		.nav-group-title,
+		.nav-link a {
+			padding: 0.2rem 1rem;
+		}
 	}
+
 </style>
 
 <style is:global>
+	:root.theme-dark .nav-link a {
+		color: hsla(var(--color-gray-70), 1);
+	}
 	:root.theme-dark .nav-link a[aria-current="page"] {
-		color: hsla(var(--color-base-white), 100%, 1);
+		color: var(--theme-text);
 	}
 </style>
