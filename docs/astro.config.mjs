@@ -20,7 +20,7 @@ export default defineConfig({
 		// Enable React for the Algolia search component.
 		react(),
 		// Support .ipynb pages
-		ipynb({ execute: true }),
+		ipynb({ execute: false }),
 		// Added for custom landing page
 		tailwind(),
 		// Suports components in markdown
