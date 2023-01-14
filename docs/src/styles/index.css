@@ -153,6 +153,10 @@ article > section li > :is(p, pre, blockquote):not(:first-child) {
 	margin-top: 1rem;
 }
 
+article ul {
+	list-style-type: circle;
+}
+
 article > section :is(ul, ol) {
 	padding-left: 1em;
 }

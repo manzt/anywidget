@@ -49,9 +49,7 @@ export const SIDEBAR: Sidebar = {
 	en: {
 		Guide: [
 			{ text: "Getting Started", link: "en/getting-started" },
-			{ text: "Page 2", link: "en/page-2" },
-			{ text: "Page 3", link: "en/page-3" },
-			{ text: "Page 4", link: "en/page-4" },
+			{ text: "Advanced: Bundling", link: "en/bundling" },
 		],
 		Tutorials: [{ text: "Build a Counter Widget", link: "en/counter" }],
 	},

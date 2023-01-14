@@ -4,23 +4,94 @@ description: Docs intro
 layout: ../../layouts/MainLayout.astro
 ---
 
-**Welcome to Astro!**
+- create widgets **without complicated cookiecutter templates**
+- **publish to PyPI** like any other Python package
+- prototype **within** `.ipynb` or `.py` files
+- run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
-This is the `docs` starter template. It contains all of the features that you need to build a Markdown-powered documentation site, including:
+## What is anywidget?
 
-- ✅ **Full Markdown support**
-- ✅ **Responsive mobile-friendly design**
-- ✅ **Sidebar navigation**
-- ✅ **Search (powered by Algolia)**
-- ✅ **Multi-language i18n**
-- ✅ **Automatic table of contents**
-- ✅ **Automatic list of contributors**
-- ✅ (and, best of all) **dark mode**
+**anywidget** jupyter widgets, made easy
 
-## Getting Started
+## Installation
 
-To get started with this theme, check out the `README.md` in your new project directory. It provides documentation on how to use and customize this template for your own project. Keep the README around so that you can always refer back to it as you build.
+```
+pip install anywidget
+```
 
-Found a missing feature that you can't live without? Please suggest it on Discord [(#ideas-and-suggestions channel)](https://astro.build/chat) and even consider adding it yourself on GitHub! Astro is an open source project and contributions from developers like you are how we grow!
+## Usage
 
-Good luck out there, Astronaut. 🧑‍🚀
+```python
+import anywidget
+import traitlets
+
+CSS = """
+.counter-btn {
+  background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 50px;
+}
+"""
+
+ESM = """
+export function render(view) {
+  let counter = Object.assign(document.createElement("button"), {
+    className: "counter-btn",
+    innerHTML: `count is ${view.model.get("count")}`,
+    onclick: () => {
+      view.model.set("count", view.model.get("count") + 1);
+      view.model.save_changes();
+    },
+  });
+  view.model.on("change:count", () => {
+    counter.innerHTML = `count is ${view.model.get("count")}`;
+  });
+  view.el.appendChild(counter);
+}
+"""
+
+class CounterWidget(anywidget.AnyWidget):
+    _esm = ESM # required, must export `render`
+    _css = CSS # optional
+    count = traitlets.Int(0).tag(sync=True)
+
+CounterWidget()
+```
+
+## Why
+
+**anywidget** simplifies the creation of custom Jupyter widgets – no complicated
+build steps or bundling required.
+
+Official
+[cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
+provide the defacto approach for creating custom Jupyter widgets, but derived
+projects are bootstrapped with complicated packaging and distribution scripts
+which must be maintained by the widget author. While the cookiecutters initially
+ensure compatability with various notebook or notebook-like environments,
+substantial developer effort is required to keep the vendored tooling from
+breaking over time.
+
+**anywidget** reduces this burden and improves the Jupyter widget developer
+experience. It ensures your widget's compatability with the fractured Jupyter
+ecosystem rather than requiring each author to solve this same multi-platform
+packaging problem. Creating custom widgets with **anywidget** is fun and easy.
+You can start prototyping _within_ a notebook and publish on PyPI like any other
+Python module. No need to create a new cookiecutter repo, maintain complicated
+build scripts, or understand JavaScript dependency/build tooling to get started.
+
+## How
+
+Widgets are defined by combining an
+[ECMAScript Module](https://nodejs.org/api/esm.html) with a Python class which
+derives from `anywidget.AnyWidget`. The provided ECMAScript Module _must_
+include a named export called `render` to render the corresponding view. You can
+add and sync new properties by adding `traitlets` in your derived Python classes
+and subscribing and publishing changes via `view.model` in the client `render`
+function.
+
+> **Note** Your JS code _must_ be vaid ESM. You can import dependencies from a
+> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler
+> targeting ESM.
