@@ -1,13 +1,11 @@
 ---
-import Layout from "../layouts/SplashLayout.astro";
-import Counter from "../components/examples/Counter.astro";
+import SplashLayout from "../layouts/SplashLayout.astro";
+import Hero from "../components/Hero.astro";
 ---
 
-<Layout>
-	<h1>anywidget</h1>
-	<p>custom jupyter widget, made simple</p>
-	<Counter />
-</Layout>
+<SplashLayout>
+	<Hero />
+</SplashLayout>
 
 <script is:inline>
 	// Redirect your homepage to the first page of documentation.

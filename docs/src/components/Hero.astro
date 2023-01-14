@@ -2,42 +2,58 @@
 import Counter from "./examples/Counter.astro";
 ---
 
-<main
-	class="grid lg:grid-cols-2 place-items-center pt-16 pb-8 md:pt-12 md:pb-24"
->
-	<div class="tpy-6 md:order-1 hidden md:block"><Counter /></div>
-
-	<div>
-		<div class="flex gap-2">
-			<h1
-				class="text-5xl lg:text-6xl xl:text-7xl font-bold lg:tracking-tight xl:tracking-tighter"
+<section class="pt-24 pb-8 overflow-hidden relative z-10">
+	<div class="mx-auto max-w-7xl px-4 sm:px-6">
+		<div class="lg:grid lg:grid-cols-12 mx-auto lg:gap-16 justify-center">
+			<div
+				class="relative z-10 px-4 mb-8 sm:px-6 sm:text-center sm:mb-16 lg:mb-0 lg:px-0 lg:text-left lg:flex col-span-5"
 			>
-				anywidget
-			</h1>
-		</div>
-
-		<p class="text-lg mt-4 text-slate-500 max-w-xl">
-			custom jupyter widgets, made simple
-		</p>
-
-		<div class="mt-6 flex flex-col sm:flex-row gap-3">
-			<Link
-				href="/en/introduction"
-				class="flex gap-1 items-center justify-center"
-			>
-				Getting Started
-			</Link>
-
-			<Link
-				size="lg"
-				style="outline"
-				rel="noopener"
-				href="https://github.com/manzt/anywidget"
-				class="flex gap-1 items-center justify-center"
-				target="_blank"
-			>
-				GitHub Repo
-			</Link>
+				<div class="lg:py-24">
+					<h1 class="mt-4 text-4xl sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
+						<span>anywidget</span>
+					</h1>
+					<p
+						class="mt-3 sm:mx-auto lg:mx-0 max-w-lg text-lg sm:text-2xl sm:mt-5"
+					>
+						custom jupyter widgets, made simple
+					</p>
+					<div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+						<div>
+							<a
+								href="/en/getting-started/"
+								class="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-md text-base -medium no-underline md:text-lg text-primary-700 bg-primary-100 hover:bg-primary-200"
+							>
+								Get Started
+							</a>
+						</div>
+						<div class="relative mt-3 sm:mt-0 sm:ml-3">
+							<div
+								class="font-mono bg-neutral-900 text-neutral-50 rounded-md flex items-center justify-center pl-3 pr-4 py-3 border border-transparent md:text-lg shadow-primary-700"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="text-secondary-500 mr-2"
+									width="1em"
+									height="1em"
+									preserveAspectRatio="xMidYMid meet"
+									viewBox="0 0 20 20"
+									><path
+										fill="currentColor"
+										fill-rule="evenodd"
+										d="M7.293 14.707a1 1 0 0 1 0-1.414L10.586 10L7.293 6.707a1 1 0 0 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0Z"
+										clip-rule="evenodd"></path></svg
+								>
+								<span id="heroCommand" class="select-all"
+									>pip install anywidget</span
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-span-7">
+				<Counter />
+			</div>
 		</div>
 	</div>
-</main>
+</section>

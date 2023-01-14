@@ -243,9 +243,6 @@ pre {
 	--padding-block: 1rem;
 	--padding-inline: 2rem;
 	padding: var(--padding-block) var(--padding-inline);
-	padding-right: calc(var(--padding-inline) * 2);
-	margin-left: calc(var(--padding-inline) * -1);
-	margin-right: calc(var(--padding-inline) * -1);
 	font-family: var(--font-mono);
 
 	line-height: 1.5;
@@ -287,6 +284,7 @@ blockquote code {
 
 @media (min-width: 37.75em) {
 	pre {
+		--padding-inline: 1.25rem;
 		margin-left: 0;
 		margin-right: 0;
 	}

@@ -124,6 +124,13 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 				top: 2rem;
 			}
 
+			table,
+			pre {
+				padding-right: calc(var(--padding-inline) * 2);
+				margin-left: calc(var(--padding-inline) * -1);
+				margin-right: calc(var(--padding-inline) * -1);
+			}
+
 			@media (min-width: 37.75em) {
 				pre {
 					--padding-inline: 1.25rem;

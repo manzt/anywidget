@@ -28,15 +28,12 @@ const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 			}
 		</title>
 		<style>
-			html,
-			body,
-			main {
-				height: 100%;
-			}
-			main {
+			body {
+				width: 100%;
 				display: grid;
-				place-items: center;
-				padding-inline: var(--min-spacing-inline);
+				grid-template-rows: var(--theme-navbar-height) 1fr;
+				--gutter: 0.5rem;
+				--doc-padding: 2rem;
 			}
 			:global(#menu-toggle) {
 				display: none;
