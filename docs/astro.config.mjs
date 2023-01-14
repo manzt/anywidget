@@ -22,7 +22,7 @@ export default defineConfig({
 		ipynb({
 			execute: true,
 		}),
-		tailwind(),
+		tailwind({ config: { applyBaseStyles: false } }),
 	],
 	site: `https://astro.build`,
 });

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -57,6 +61,10 @@ body {
 	font-size: clamp(0.9rem, 0.75rem + 0.375vw + var(--user-font-scale), 1rem);
 	line-height: 1.5;
 	max-width: 100vw;
+}
+
+ul {
+	list-style-type: disc;
 }
 
 nav ul {
