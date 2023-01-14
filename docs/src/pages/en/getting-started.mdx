@@ -1,0 +1,125 @@
+---
+title: Getting Started
+description: Docs getting started
+layout: ../../layouts/MainLayout.astro
+---
+
+import CounterButton from "../../components/CounterButton.astro";
+
+## What is anywidget?
+
+**anywidget** is a Python library that simplifies creating and publishing
+custom Jupyter widgets. No messy build configuration or complicated cookiecutter templates.
+
+It is <u>**not**</u> a new interactive widgets framework, but rather
+an abstraction for creating custom Jupyter widgets using modern web standards.
+**anywidget** solves the multi-platform packaging problem for the fragmented Jupyter
+ecosystem, allowing your widget to run automatically in **Jupyter Notebooks**,
+**Jupyter Lab**, **Google Colab**, **VSCode**, and more.
+
+## Key features
+
+- Create widgets **without complicated cookiecutter templates**
+- **Build and publish to PyPI** like a pure Python package
+- Prototype **within** `.ipynb` or `.py` files
+- Run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- Develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
+
+## Example
+
+```
+pip install anywidget
+```
+
+```python
+import anywidget
+import traitlets
+
+ESM = """
+export function render(view) {
+  let count = () => view.model.get("value");
+  let btn = document.createElement("button");
+  btn.classList.add("counter-button");
+  btn.innerHTML = `count is ${count()}`;
+  btn.addEventListener("click", () => {
+    view.model.set("value", count() + 1);
+    view.model.save_changes();
+  });
+  view.model.on("change:count", () => {
+    btn.innerHTML = `count is ${count()}`;
+  });
+  view.el.appendChild(btn);
+}
+"""
+
+CSS = """
+.counter-button { background-color: #db2777; };
+.counter-button:hover { background-color: #9d174d; }:
+"""
+
+class CounterWidget(anywidget.AnyWidget):
+    _esm = ESM # required
+    _css = CSS # optional
+    value = traitlets.Int(0).tag(sync=True) # widget-specific
+
+counter = CounterWidget()
+counter.value = 10
+counter
+```
+
+<CounterButton size={"lg"} initialValue={10} />
+
+What's going on here:
+
+- `value` is a stateful property for that both the client JavaScript and Python have access to.
+  Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
+  keyword argument.
+
+- `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
+  in the global scope if using this feature, so take care in avoid global overrides.
+
+- `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
+  It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
+
+```javascript
+/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+	// Render model contents and setup dynamic updates
+	// See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
+}
+```
+
+ECMAScript modules are the offical standard format to package JavaScript code for reuse and are supported
+natively across [all major browsers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#javascript.statements.export).
+Therefore, dependencies can be imported directly via a fully qualified URL.
+
+```javascript
+import * as d3 from "https://esm.sh/d3@7";
+
+/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+	let selection = d3.select(view.el);
+	/* ... */
+}
+```
+
+You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
+
+## Why
+
+Official
+[cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
+provide the defacto approach for creating custom Jupyter widgets, but derived
+projects are bootstrapped with complicated packaging and distribution scripts
+which must be maintained by the widget author. While the cookiecutters initially
+ensure compatability with various notebook or notebook-like environments,
+substantial developer effort is required to keep the vendored tooling from
+breaking over time.
+
+**anywidget** reduces this burden and improves the Jupyter widget developer
+experience. It ensures your widget's compatability with the fractured Jupyter
+ecosystem rather than requiring each author to solve this same multi-platform
+packaging problem. Creating custom widgets with **anywidget** is fun and easy.
+You can start prototyping _within_ a notebook and publish on PyPI like any other
+Python module. No need to create a new cookiecutter repo, maintain complicated
+build scripts, or understand JavaScript dependency/build tooling to get started.

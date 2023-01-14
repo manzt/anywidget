@@ -1,0 +1,71 @@
+/** Style Algolia */
+:root {
+	--docsearch-primary-color: var(--theme-accent);
+	--docsearch-logo-color: var(--theme-text);
+}
+.search-input {
+	position: relative;
+	display: flex;
+	place-items: center;
+	gap: 0.25em;
+}
+.search-input:hover,
+.search-input:focus {
+	color: var(--theme-text);
+	border-color: var(--theme-text-light);
+}
+.search-input:hover::placeholder,
+.search-input:focus::placeholder {
+	color: var(--theme-text-light);
+}
+.search-input::placeholder {
+	color: var(--theme-text-light);
+}
+.search-placeholder {
+	text-align: initial;
+	margin-inline-start: 0.25rem;
+	margin-inline-end: 3rem;
+	display: none;
+}
+.search-hint {
+	position: absolute;
+	inset-inline-end: 0.75rem;
+	padding: 3px 5px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+	font-family: var(--font-mono);
+	letter-spacing: 0.125rem;
+	line-height: 14px;
+	pointer-events: none;
+	border-color: var(--theme-shade-subtle);
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 0.25rem;
+}
+
+@media (min-width: 50em) {
+	.search-input {
+		border-radius: 9e9px;
+		padding-inline: 1rem;
+		width: min(16.5rem, 100%);
+	}
+
+	.search-hint {
+		display: flex;
+	}
+
+	.search-placeholder {
+		display: flex;
+	}
+}
+
+/* ------------------------------------------------------------ *\
+	DocSearch (Algolia)
+\* ------------------------------------------------------------ */
+
+.DocSearch-Modal .DocSearch-Hit a {
+	box-shadow: none;
+	border: 1px solid var(--theme-accent);
+}

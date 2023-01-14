@@ -1,0 +1,121 @@
+---
+import type { ShikiConfig } from "astro";
+import { Code } from "astro/components";
+import type { Props as CodeProps } from "astro/components/Code.astro";
+export interface Props {
+	code: CodeProps["code"];
+	filename?: string;
+	lang?: CodeProps["lang"];
+	url?: string;
+	theme?: ShikiConfig["theme"];
+	showGrid?: boolean;
+}
+const {
+	code,
+	theme = "poimandres",
+	filename,
+	url = "",
+	lang = "astro",
+	showGrid = false,
+} = Astro.props as Props;
+---
+
+<figure
+	class="my-10 -mx-6 xs:mx-auto max-w-3xl min-h-[22rem] grid grid-cols-9 grid-rows-[repeat(6,_auto)] sm:grid-rows-6 relative"
+>
+	<figcaption class="sr-only">{filename} code example</figcaption>
+
+	{
+		showGrid && (
+			<div class="grid-lines col-start-1 row-start-1 col-span-full row-span-full -z-10">
+				<div class="right-1/4 vertical" />
+				<div class="right-1/2 vertical" />
+				<div class="right-3/4 vertical" />
+				<div class="top-1/2 horizontal" />
+				<div class="right-0 vertical" />
+				<div class="bottom-0 horizontal" />
+				<div class="left-0 vertical" />
+				<div class="top-0 horizontal" />
+				<div class="-right-[25%] vertical outer" />
+				<div class="-left-[25%] vertical outer" />
+			</div>
+		)
+	}
+
+	<!-- Example website application frame -->
+	<div
+		class="col-span-8 sm:col-span-4 col-start-1 sm:col-start-1 row-start-1 sm:row-start-2 row-span-2 sm:row-span-4 opacity-90"
+	>
+		<div
+			class="rounded-lg shadow-2xl border border-primary-400 shadow-primary-400/50 bg-primary-200/70 h-full overflow-hidden"
+		>
+			<div
+				class="flex border-b border-primary-400 items-center pr-12"
+				aria-hidden="true"
+			>
+				<!-- Application buttons -->
+				<div class="flex space-x-1 px-2">
+					<div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+					<div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+					<div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+				</div>
+				<!-- URL bar -->
+				<div
+					class="flex grow items-center space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="1em"
+						height="1em"
+						preserveAspectRatio="xMidYMid meet"
+						viewBox="0 0 32 32"
+						><path
+							fill="currentColor"
+							d="M24 14h-2V8a6 6 0 0 0-12 0v6H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM12 8a4 4 0 0 1 8 0v6h-8Zm12 20H8V16h16Z"
+						></path></svg
+					>
+					<span>{url}</span>
+				</div>
+			</div>
+			<!-- Webpage -->
+			<div class="p-4 pb-8 text-neutral-200 bg-neutral-800 h-full">
+				<slot />
+			</div>
+		</div>
+	</div>
+
+	<!-- Code sample window -->
+	<section
+		class="-mt-5 sm:mt-0 code-sample rounded overflow-hidden col-start-2 sm:col-start-4 col-span-8 sm:col-span-6 row-span-5 row-start-3 sm:row-span-full opacity-95 flex flex-col justify-items-stretch border border-primary-400/50 shadow-2xl shadow-primary-500/50"
+	>
+		<h3
+			class="text-center mb-0 text-xs p-1 w-full whitespace-nowrap bg-black text-neutral-50/80 border-b border-primary-400/30"
+		>
+			{filename}
+		</h3>
+		<div class="w-full">
+			<Code theme={theme} lang={lang} code={code.trim()} />
+		</div>
+	</section>
+</figure>
+
+<style>
+	.code-sample :global(> pre) {
+		@apply text-sm px-4 py-2 h-full;
+	}
+	.grid-lines {
+		transform: perspective(1000px) translate3d(0, 0, -40px);
+	}
+	.grid-lines > div {
+		@apply absolute from-accent-300/0 via-accent-300 to-accent-300/0 -z-10;
+	}
+	.grid-lines > .vertical {
+		@apply w-px -top-1/2 h-[200%] bg-gradient-to-b;
+	}
+	.grid-lines > .horizontal {
+		@apply h-px -left-1/2 w-[200%] bg-gradient-to-r;
+	}
+	.grid-lines > .outer {
+		@apply via-accent-300/50;
+	}
+</style>

@@ -1,0 +1,49 @@
+---
+import HeadCommon from "../components/HeadCommon.astro";
+import Header from "../components/Header/Header.astro";
+import Footer from "../components/Footer/Footer.astro";
+import * as CONFIG from "../config";
+
+type Props = {
+	frontmatter?: CONFIG.Frontmatter;
+};
+
+const { frontmatter } = Astro.props as Props;
+const currentPage = Astro.url.pathname;
+const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
+---
+
+<html
+	dir={frontmatter?.dir ?? "ltr"}
+	lang={frontmatter?.lang ?? "en-us"}
+	class="initial"
+>
+	<head>
+		<HeadCommon />
+		<title>
+			{
+				frontmatter?.title
+					? `${frontmatter.title} 🚀 ${CONFIG.SITE.title}`
+					: CONFIG.SITE.title
+			}
+		</title>
+		<style>
+			.layout {
+				height: calc(100vh - var(--theme-navbar-height));
+			}
+			:global(#menu-toggle) {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<Header currentPage={currentPage} />
+		<main class="layout">
+			<article>
+				<slot />
+			</article>
+		</main>
+		<Footer path={currentFile} />
+	</body>
+</html>

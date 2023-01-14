@@ -1,0 +1,28 @@
+---
+type Props = {
+	size?: "xs" | "sm" | "lg" | "sm";
+	initialValue?: number;
+};
+
+let { size = "xs", initialValue = 0 } = Astro.props as Props;
+---
+
+<button
+	class:list={[
+		`text-${size}`,
+		"text-white py-2 px-4 hover:bg-secondary-800 bg-secondary-600 rounded shadow",
+	]}
+	id="btn"
+	data-initial-value={initialValue}
+>
+</button>
+
+<script is:inline>
+	let btn = document.querySelector("#btn");
+	let count = +btn.getAttribute("data-initial-value");
+	function setCount(value) {
+		btn.innerHTML = `count is ${value}`;
+	}
+	btn.addEventListener("click", () => setCount(++count));
+	setCount(count);
+</script>
