@@ -4,9 +4,9 @@ type Props = {
 	path: string;
 };
 const { path } = Astro.props as Props;
-const resolvedPath = `examples/docs/${path}`;
-const url = `https://api.github.com/repos/withastro/astro/commits?path=${resolvedPath}`;
-const commitsURL = `https://github.com/withastro/astro/commits/main/${resolvedPath}`;
+const resolvedPath = `docs/${path}`;
+const url = `https://api.github.com/repos/manzt/anywidget/commits?path=${resolvedPath}`;
+const commitsURL = `https://github.com/manzt/anywidget/commits/main/${resolvedPath}`;
 
 type Commit = {
 	author: {
