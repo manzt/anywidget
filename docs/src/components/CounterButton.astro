@@ -1,9 +1,10 @@
 ---
 type Props = {
 	size?: "xs" | "sm" | "lg" | "sm";
+	initialValue?: number;
 };
 
-let { size = "xs" } = Astro.props as Props;
+let { size = "xs", initialValue = 0 } = Astro.props as Props;
 ---
 
 <button
@@ -12,16 +13,16 @@ let { size = "xs" } = Astro.props as Props;
 		"text-white py-2 px-4 hover:bg-primary-800 bg-primary-600 rounded shadow",
 	]}
 	id="btn"
+	data-initial-value={initialValue}
 >
 </button>
 
 <script is:inline>
-	let count = 0;
 	let btn = document.querySelector("#btn");
+	let count = +btn.getAttribute("data-initial-value");
 	function setCount(value) {
 		btn.innerHTML = `count is ${value}`;
-		pyoutput.innerHTML = value;
 	}
 	btn.addEventListener("click", () => setCount(++count));
-	setCount(0);
+	setCount(count);
 </script>

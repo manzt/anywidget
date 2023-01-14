@@ -8,24 +8,28 @@ import CounterButton from "../../components/CounterButton.astro";
 
 ## What is anywidget?
 
-**anywidget** is a Python library that simplifies the
-creation of custom Jupyter widgets. No messy build configuration or complicated cookiecutter templates.
+**anywidget** is a Python library that simplifies creating and publishing
+custom Jupyter widgets. No messy build configuration or complicated cookiecutter templates.
+
+It is <u>**not**</u> a new interactive widgets framework, but rather
+an abstraction for creating custom Jupyter widgets using modern web standards.
+**anywidget** solves the multi-platform packaging problem for the fragmented Jupyter
+ecosystem, allowing your widget to run automatically in **Jupyter Notebooks**,
+**Jupyter Lab**, **Google Colab**, **VSCode**, and more.
 
 ## Key features
 
-- create widgets **without complicated cookiecutter templates**
-- **publish to PyPI** like any other Python package
-- prototype **within** `.ipynb` or `.py` files
-- run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
-- develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
+- Create widgets **without complicated cookiecutter templates**
+- **Build and publish to PyPI** like a pure Python package
+- Prototype **within** `.ipynb` or `.py` files
+- Run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- Develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
-## Installation
+## Example
 
 ```
 pip install anywidget
 ```
-
-## Usage
 
 ```python
 import anywidget
@@ -51,10 +55,45 @@ class CounterWidget(anywidget.AnyWidget):
     _esm = ESM
     value = traitlets.Int(0).tag(sync=True)
 
-CounterWidget()
+counter = CounterWidget()
+counter.value = 10
+counter
 ```
 
-<CounterButton size={"lg"} />
+<CounterButton size={"lg"} initialValue={10} />
+
+What's going on here:
+
+- `value` is a stateful property for that both the client JavaScript and Python have access to.
+  Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
+  keyword argument.
+
+- `_esm` specifies a required [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
+  It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
+
+```javascript
+/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+	// Render model contents and setup dynamic updates
+	// See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
+}
+```
+
+ECMAScript modules are the offical standard format to package JavaScript code for reuse and are supported
+natively across [all major browsers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#javascript.statements.export).
+Therefore, dependencies can be imported directly via a fully qualified URL.
+
+```javascript
+import * as d3 from "https://esm.sh/d3@7";
+
+/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+	let selection = d3.select(view.el);
+	/* ... */
+}
+```
+
+You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
 
 ## Why
 
@@ -74,17 +113,3 @@ packaging problem. Creating custom widgets with **anywidget** is fun and easy.
 You can start prototyping _within_ a notebook and publish on PyPI like any other
 Python module. No need to create a new cookiecutter repo, maintain complicated
 build scripts, or understand JavaScript dependency/build tooling to get started.
-
-## How
-
-Widgets are defined by combining an
-[ECMAScript Module](https://nodejs.org/api/esm.html) with a Python class which
-derives from `anywidget.AnyWidget`. The provided ECMAScript Module _must_
-include a named export called `render` to render the corresponding view. You can
-add and sync new properties by adding `traitlets` in your derived Python classes
-and subscribing and publishing changes via `view.model` in the client `render`
-function.
-
-> **Note** Your JS code _must_ be vaid ESM. You can import dependencies from a
-> CDN (e.g., `import * as d3 from "https://esm.sh/d3"`) or use a bundler
-> targeting ESM.
