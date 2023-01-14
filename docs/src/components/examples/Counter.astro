@@ -1,5 +1,5 @@
 ---
-import CodeHero from "./CodeHero.astro";
+import CodeHero from "../CodeHero.astro";
 
 let widgetCode = `
 import anywidget
@@ -40,9 +40,8 @@ counter`;
 	url={"localhost:8888/Demo.ipynb"}
 	showGrid={true}
 >
-	<div class="bg-transparent text-xs flex flex-col space-y-4">
-		<pre
-			class="bg-transparent p-2 rounded border border-gray-400 col-span-4 w-full">{notebookCode}</pre>
+	<div class="text-sm bg-transparent flex flex-col space-y-4">
+		<pre class="bg-transparent p-2 rounded border border-gray-400 col-span-4 w-full">{notebookCode}</pre>
 
 		<div class="col-span-4">
 			<button
@@ -55,7 +54,7 @@ counter`;
 		<pre
 			class="bg-transparent col-span-4 p-2 rounded border border-gray-400 w-full">counter.value</pre>
 
-		<pre class="bg-transparent pl-1" id="pyoutput"></pre>
+		<pre class="text-sm bg-transparent pl-1 py-0" id="pyoutput"></pre>
 	</div>
 </CodeHero>
 
