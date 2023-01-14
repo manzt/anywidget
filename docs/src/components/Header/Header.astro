@@ -136,11 +136,21 @@ const lang = getLanguageFromURL(currentPage);
 	}
 
 	.logo svg {
-		transition: transform 0.5s ease-in;
+		transition: transform 0.2s ease-in;
+	}
+
+	.logo h1 {
+		transition: transform 0.2s ease-in;
 	}
 
 	.logo a:hover svg,
 	.logo a:focus svg {
-		transform: rotate(180deg);
+		transform: rotate(135deg);
+	}
+
+	.logo a:hover h1,
+	.logo a:focus h1 {
+		margin-top: -0.1rem;
+		margin-left: 0.5rem;
 	}
 </style>
