@@ -6,14 +6,11 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				neutral: colors.slate,
 				primary: colors.teal,
-				secondary: colors.orange,
+				secondary: colors.pink,
 				accent: colors.sky,
 			},
-			screens: {
-				xs: "420px",
-			},
+			screens: { xs: "420px" },
 		},
 	},
 	plugins: [],

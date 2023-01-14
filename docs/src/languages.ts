@@ -1,5 +1,5 @@
-import { KNOWN_LANGUAGES, KNOWN_LANGUAGE_CODES } from "./config";
-export { KNOWN_LANGUAGES, KNOWN_LANGUAGE_CODES };
+import { KNOWN_LANGUAGE_CODES, KNOWN_LANGUAGES } from "./config";
+export { KNOWN_LANGUAGE_CODES, KNOWN_LANGUAGES };
 
 export const langPathRegex = /\/([a-z]{2}-?[A-Z]{0,2})\//;
 

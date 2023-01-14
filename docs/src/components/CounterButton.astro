@@ -1,0 +1,27 @@
+---
+type Props = {
+	size?: "xs" | "sm" | "lg" | "sm";
+};
+
+let { size = "xs" } = Astro.props as Props;
+---
+
+<button
+	class:list={[
+		`text-${size}`,
+		"text-white py-2 px-4 hover:bg-primary-800 bg-primary-600 rounded shadow",
+	]}
+	id="btn"
+>
+</button>
+
+<script is:inline>
+	let count = 0;
+	let btn = document.querySelector("#btn");
+	function setCount(value) {
+		btn.innerHTML = `count is ${value}`;
+		pyoutput.innerHTML = value;
+	}
+	btn.addEventListener("click", () => setCount(++count));
+	setCount(0);
+</script>

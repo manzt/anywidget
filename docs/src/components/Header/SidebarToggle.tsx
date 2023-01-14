@@ -1,6 +1,6 @@
 /** @jsxImportSource preact */
 import type { FunctionalComponent } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import "../Header/HeaderButton.css";
 import "./SidebarToggle.css";

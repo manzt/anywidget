@@ -1,18 +1,23 @@
 ---
-title: Introduction
-description: Docs intro
+title: Getting Started
+description: Docs getting started
 layout: ../../layouts/MainLayout.astro
 ---
+
+import CounterButton from "../../components/CounterButton.astro";
+
+## What is anywidget?
+
+**anywidget** is a Python library that simplifies the
+creation of custom Jupyter widgets. No messy build configuration or complicated cookiecutter templates.
+
+## Key features
 
 - create widgets **without complicated cookiecutter templates**
 - **publish to PyPI** like any other Python package
 - prototype **within** `.ipynb` or `.py` files
 - run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
-
-## What is anywidget?
-
-**anywidget** jupyter widgets, made easy
 
 ## Installation
 
@@ -26,44 +31,32 @@ pip install anywidget
 import anywidget
 import traitlets
 
-CSS = """
-.counter-btn {
-  background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 50px;
-}
-"""
-
 ESM = """
 export function render(view) {
-  let counter = Object.assign(document.createElement("button"), {
-    className: "counter-btn",
-    innerHTML: `count is ${view.model.get("count")}`,
-    onclick: () => {
-      view.model.set("count", view.model.get("count") + 1);
-      view.model.save_changes();
-    },
+  let count = () => view.model.get("value");
+  let btn = document.createElement("button");
+  btn.innerHTML = `count is ${count()}`;
+  btn.addEventListener("click", () => {
+    view.model.set("value", count() + 1);
+    view.model.save_changes();
   });
   view.model.on("change:count", () => {
-    counter.innerHTML = `count is ${view.model.get("count")}`;
+    btn.innerHTML = `count is ${count()}`;
   });
-  view.el.appendChild(counter);
+  view.el.appendChild(btn);
 }
 """
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM # required, must export `render`
-    _css = CSS # optional
-    count = traitlets.Int(0).tag(sync=True)
+    _esm = ESM
+    value = traitlets.Int(0).tag(sync=True)
 
 CounterWidget()
 ```
 
-## Why
+<CounterButton size={"lg"} />
 
-**anywidget** simplifies the creation of custom Jupyter widgets – no complicated
-build steps or bundling required.
+## Why
 
 Official
 [cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
