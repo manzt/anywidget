@@ -8,9 +8,12 @@ from ._widget import AnyWidget
 
 def _create_synced_unicode_trait(src: Union[str, pathlib.Path]):
     # read the file contents src is a path
-    path = pathlib.Path(src)
-    if path.exists():
-        src = path.read_text()
+    try:
+        path = pathlib.Path(src)
+        if path.exists():
+            src = path.read_text()
+    except OSError:
+        ...
     return Unicode(src).tag(sync=True)  # type: ignore
 
 

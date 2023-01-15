@@ -12,7 +12,7 @@ simple, custom jupyter widgets that "just work"
 - run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
-## Installation
+## Install
 
 ```
 pip install anywidget
@@ -24,7 +24,9 @@ pip install anywidget
 from anywidget import anywidget
 import traitlets
 
-ESM = """
+
+@anywidget(
+    esm="""
 export function render(view) {
   let count = () => view.model.get("value");
   let btn = document.createElement("button");
@@ -38,18 +40,21 @@ export function render(view) {
   });
   view.el.appendChild(btn);
 }
-"""
-
-@anywidget(esm=ESM)
+""",
+)
 class CounterWidget(anywidget.AnyWidget):
     count = traitlets.Int(0).tag(sync=True)
-
-CounterWidget()
 ```
 
-<img alt="button indicating the number of times it has been clicked" src="https://user-images.githubusercontent.com/24403730/211375729-4e382bb0-8459-42ab-82f7-06d91d8b14d2.png">
+Read [the docs](https://anywidget.dev) for more information.
 
-## Development
+## For Developers
+
+<details>
+
+<summary>Click to expand</summary>
+
+### Development Install
 
 ```bash
 pip install -e .
@@ -63,8 +68,6 @@ jupyter nbextension install --py --symlink --sys-prefix anywidget
 jupyter nbextension enable --py --sys-prefix anywidget
 ```
 
-Note for developers:
-
 - the `-e` pip option allows one to modify the Python code in-place. Restart the
   kernel in order to see the changes.
 - the `--symlink` argument on Linux or OS X allows one to modify the JavaScript
@@ -76,10 +79,14 @@ For developing with JupyterLab:
 jupyter labextension develop --overwrite anywidget
 ```
 
-## Release
+### Release
+
+Releases are created automatically via CI for tagged commits.
 
 ```
 npm version [major|minor|patch]
 git tag -a vX.X.X -m "vX.X.X"
 git push --follow-tags
 ```
+
+</details>
