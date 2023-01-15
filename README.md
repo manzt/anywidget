@@ -42,7 +42,7 @@ export function render(view) {
 }
 """,
 )
-class CounterWidget(anywidget.AnyWidget):
+class CounterWidget:
     count = traitlets.Int(0).tag(sync=True)
 ```
 
