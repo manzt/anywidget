@@ -5,7 +5,9 @@ let widgetCode = `
 from anywidget import anywidget
 import traitlets
 
-ESM = """
+
+@anywidget(
+    esm="""
 export function render(view) {
   let count = () => view.model.get("value");
   let btn = document.createElement("button");
@@ -19,9 +21,8 @@ export function render(view) {
   });
   view.el.appendChild(btn);
 }
-"""
-
-@anywidget(esm=ESM)
+""",
+)
 class CounterWidget:
     value = traitlets.Int(0).tag(sync=True)
 `;
