@@ -2,7 +2,8 @@
 import HeadSEO from "../components/HeadSEO.astro";
 import HeadCommon from "../components/HeadCommon.astro";
 import Header from "../components/Header/Header.astro";
-import * as CONFIG from "../config";
+import type * as CONFIG from "../config";
+import { getTitle } from "../util";
 
 type Props = {
 	frontmatter?: CONFIG.Frontmatter;
@@ -21,13 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
-		<title>
-			{
-				frontmatter?.title
-					? `${frontmatter.title} 🔄 ${CONFIG.SITE.title}`
-					: CONFIG.SITE.title
-			}
-		</title>
+		<title>{getTitle(frontmatter)}</title>
 		<style>
 			.layout {
 				height: calc(100vh - var(--theme-navbar-height));
