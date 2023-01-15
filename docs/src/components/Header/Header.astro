@@ -7,11 +7,9 @@ import SidebarToggle from "./SidebarToggle";
 import LanguageSelect from "./LanguageSelect";
 import ThemeToggleButton from "./ThemeToggleButton";
 import Search from "./Search";
-
 type Props = {
 	currentPage: string;
 };
-
 const { currentPage } = Astro.props as Props;
 const lang = getLanguageFromURL(currentPage);
 ---
@@ -21,11 +19,11 @@ const lang = getLanguageFromURL(currentPage);
 	<nav class="nav-wrapper" title="Top Navigation">
 		<div class="logo">
 			<a href="/">
-				<AnyWidgetLogo size={30} />
+				<AnyWidgetLogo size={38} />
 				<h1>{CONFIG.SITE.title}</h1>
 			</a>
 		</div>
-		<div style="flex-grow: 0.5;"></div>
+		<div style="flex-grow: 0.8;"></div>
 		<ThemeToggleButton client:visible />
 		{
 			KNOWN_LANGUAGE_CODES.length > 1 && (
@@ -50,19 +48,17 @@ const lang = getLanguageFromURL(currentPage);
 		position: sticky;
 		top: 0;
 	}
-
 	.logo {
 		flex: 1;
 		display: flex;
 		overflow: hidden;
 		width: 30px;
-		font-size: 1.5rem;
+		font-size: 2rem;
 		flex-shrink: 0;
 		font-weight: 600;
 		line-height: 1;
-		gap: 0.25em;
+		/* z-index: -1; prevents from clicking */
 	}
-
 	.logo a {
 		display: flex;
 		padding: 0.5em 0.25em;
@@ -70,14 +66,14 @@ const lang = getLanguageFromURL(currentPage);
 		text-decoration: none;
 		font-weight: bold;
 	}
-
 	.logo h1 {
+		display: none;
 		font: inherit;
 		color: var(--theme-text);
 		margin: 0;
-		margin-left: 0.6rem;
+		padding-left: 0.5rem;
+		padding-top: 0.1rem;
 	}
-
 	.nav-wrapper {
 		display: flex;
 		align-items: center;
@@ -87,29 +83,25 @@ const lang = getLanguageFromURL(currentPage);
 		max-width: 82em;
 		padding: 0 1rem;
 	}
-
 	@media (min-width: 50em) {
 		header {
 			position: static;
 			padding: 2rem 0rem;
 		}
-
 		.logo {
 			width: auto;
 			margin: 0;
+			z-index: 0;
 		}
-
 		.logo h1 {
 			display: initial;
 		}
 	}
-
 	/** Style Algolia */
 	:root {
 		--docsearch-primary-color: var(--theme-accent);
 		--docsearch-logo-color: var(--theme-text);
 	}
-
 	.search-item {
 		display: none;
 		position: relative;
@@ -119,7 +111,6 @@ const lang = getLanguageFromURL(currentPage);
 		display: flex;
 		max-width: 200px;
 	}
-
 	@media (min-width: 50em) {
 		.search-item {
 			max-width: 400px;
@@ -131,20 +122,16 @@ const lang = getLanguageFromURL(currentPage);
 	.search-item > * {
 		flex-grow: 1;
 	}
-
 	.logo svg {
 		transition: transform 0.2s ease-in;
 	}
-
 	.logo h1 {
 		transition: transform 0.2s ease-in;
 	}
-
 	.logo a:hover svg,
 	.logo a:focus svg {
 		transform: rotate(135deg);
 	}
-
 	.logo a:hover h1,
 	.logo a:focus h1 {
 		margin-top: -0.04rem;
