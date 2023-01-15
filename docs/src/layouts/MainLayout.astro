@@ -12,12 +12,13 @@ import Footer from "../components/Footer/Footer.astro";
 type Props = {
 	frontmatter: CONFIG.Frontmatter;
 	headings: MarkdownHeading[];
+	file: string;
 };
 
 const { frontmatter, headings } = Astro.props as Props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const currentPage = Astro.url.pathname;
-const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
+const currentPage = Astro.url.pathname.replace(/\/$/, "");
+const currentFile = Astro.props.file.split(/\/(?=src\/pages\/)/)[1];
 const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 ---
 

@@ -7,7 +7,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: colors.teal,
-				secondary: colors.pink,
+				secondary: colors.orange,
 				accent: colors.sky,
 			},
 			screens: { xs: "420px" },

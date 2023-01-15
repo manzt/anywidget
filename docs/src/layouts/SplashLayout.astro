@@ -1,7 +1,6 @@
 ---
 import HeadCommon from "../components/HeadCommon.astro";
 import Header from "../components/Header/Header.astro";
-import Footer from "../components/Footer/Footer.astro";
 import * as CONFIG from "../config";
 
 type Props = {
@@ -10,7 +9,6 @@ type Props = {
 
 const { frontmatter } = Astro.props as Props;
 const currentPage = Astro.url.pathname;
-const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 ---
 
 <html
@@ -44,6 +42,5 @@ const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
 				<slot />
 			</article>
 		</main>
-		<Footer path={currentFile} />
 	</body>
 </html>
