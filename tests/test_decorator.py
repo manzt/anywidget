@@ -2,6 +2,7 @@ import pathlib
 
 from anywidget import anywidget, AnyWidget
 
+
 def test_basic():
 
     ESM = """
@@ -70,4 +71,3 @@ def test_reads_from_file(tmp_path: pathlib.Path):
     assert w.has_trait("_css")
     assert w._css == CSS
     assert isinstance(w, AnyWidget)
-
