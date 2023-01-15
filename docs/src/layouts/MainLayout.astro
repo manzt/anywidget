@@ -1,4 +1,7 @@
 ---
+import * as fs from "node:fs";
+import * as path from "node:path";
+
 import HeadCommon from "../components/HeadCommon.astro";
 import HeadSEO from "../components/HeadSEO.astro";
 import Header from "../components/Header/Header.astro";
@@ -8,16 +11,26 @@ import RightSidebar from "../components/RightSidebar/RightSidebar.astro";
 import * as CONFIG from "../config";
 import type { MarkdownHeading } from "astro";
 import Footer from "../components/Footer/Footer.astro";
+import { fileURLToPath } from "node:url";
 
 type Props = {
 	frontmatter: CONFIG.Frontmatter;
 	headings: MarkdownHeading[];
 };
 
+function matchExtension(page: string) {
+	let root = fileURLToPath(new URL("../pages/", import.meta.url));
+	for (let ext of [".md", ".mdx", ".ipynb"]) {
+		if (fs.existsSync(path.join(root, "." + page + ext))) {
+			return ext;
+		}
+	}
+}
+
 const { frontmatter, headings } = Astro.props as Props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const currentPage = Astro.url.pathname;
-const currentFile = `src/pages${currentPage.replace(/\/$/, "")}.md`;
+const currentPage = Astro.url.pathname.replace(/\/$/, "");
+const currentFile = `src/pages${currentPage}${matchExtension(currentPage)}`;
 const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 ---
 
