@@ -25,8 +25,7 @@ from anywidget import anywidget
 import traitlets
 
 
-@anywidget(
-    esm="""
+@anywidget("""
 export function render(view) {
   let count = () => view.model.get("value");
   let btn = document.createElement("button");
@@ -40,8 +39,7 @@ export function render(view) {
   });
   view.el.appendChild(btn);
 }
-""",
-)
+""")
 class CounterWidget:
     count = traitlets.Int(0).tag(sync=True)
 ```

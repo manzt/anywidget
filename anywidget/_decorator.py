@@ -17,9 +17,7 @@ def _create_synced_unicode_trait(src: Union[str, pathlib.Path]):
     return Unicode(src).tag(sync=True)  # type: ignore
 
 
-def anywidget(
-    *, esm: Union[str, pathlib.Path], css: Union[str, pathlib.Path, None] = None
-):
+def anywidget(esm: Union[str, pathlib.Path], css: Union[str, pathlib.Path, None] = None):
     traits: Dict[str, TraitType] = {"_esm": _create_synced_unicode_trait(esm)}
 
     if css:
