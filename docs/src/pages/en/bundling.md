@@ -195,8 +195,6 @@ Finally, link your Python widget to the dev server during development.
 
 ```python
 # hello_widget/__init__.py
-import pathlib
-
 from anywidget import anywidget
 import traitlets
 
@@ -208,6 +206,8 @@ if _DEV:
   CSS = None
 else:
   # from `npx vite build`
+  import pathlib
+
   bundler_outdir = pathlib.Path(__file__).parent / "static"
   ESM = bundler_outdir / "index.mjs"
   CSS = bundler_outdir / "styles.css"
