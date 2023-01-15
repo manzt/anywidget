@@ -27,7 +27,7 @@ const currentPage = Astro.url.pathname;
 		</title>
 		<style>
 			.layout {
-				height: 100vh;
+				height: calc(100vh - var(--theme-navbar-height));
 			}
 			:global(#menu-toggle) {
 				display: none;

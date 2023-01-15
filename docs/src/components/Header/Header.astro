@@ -21,11 +21,11 @@ const lang = getLanguageFromURL(currentPage);
 	<nav class="nav-wrapper" title="Top Navigation">
 		<div class="logo">
 			<a href="/">
-				<AnyWidgetLogo size={38} />
+				<AnyWidgetLogo size={30} />
 				<h1>{CONFIG.SITE.title}</h1>
 			</a>
 		</div>
-		<div style="flex-grow: 1;"></div>
+		<div style="flex-grow: 0.5;"></div>
 		<ThemeToggleButton client:visible />
 		{
 			KNOWN_LANGUAGE_CODES.length > 1 && (
@@ -56,12 +56,11 @@ const lang = getLanguageFromURL(currentPage);
 		display: flex;
 		overflow: hidden;
 		width: 30px;
-		font-size: 2rem;
+		font-size: 1.5rem;
 		flex-shrink: 0;
 		font-weight: 600;
 		line-height: 1;
 		gap: 0.25em;
-		z-index: -1;
 	}
 
 	.logo a {
@@ -73,7 +72,6 @@ const lang = getLanguageFromURL(currentPage);
 	}
 
 	.logo h1 {
-		display: none;
 		font: inherit;
 		color: var(--theme-text);
 		margin: 0;
@@ -100,10 +98,6 @@ const lang = getLanguageFromURL(currentPage);
 			width: auto;
 			margin: 0;
 			z-index: 0;
-		}
-
-		.logo h1 {
-			display: initial;
 		}
 	}
 
