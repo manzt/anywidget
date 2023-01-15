@@ -1,4 +1,5 @@
 ---
+import HeadSEO from "../components/HeadSEO.astro";
 import HeadCommon from "../components/HeadCommon.astro";
 import Header from "../components/Header/Header.astro";
 import * as CONFIG from "../config";
@@ -9,6 +10,7 @@ type Props = {
 
 const { frontmatter } = Astro.props as Props;
 const currentPage = Astro.url.pathname;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html
@@ -18,6 +20,7 @@ const currentPage = Astro.url.pathname;
 >
 	<head>
 		<HeadCommon />
+		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
 		<title>
 			{
 				frontmatter?.title
