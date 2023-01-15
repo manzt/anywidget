@@ -8,6 +8,7 @@ import RightSidebar from "../components/RightSidebar/RightSidebar.astro";
 import * as CONFIG from "../config";
 import type { MarkdownHeading } from "astro";
 import Footer from "../components/Footer/Footer.astro";
+import { getTitle } from "../util";
 
 type Props = {
 	frontmatter: CONFIG.Frontmatter;
@@ -30,13 +31,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 	<head>
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
-		<title>
-			{
-				frontmatter.title
-					? `${frontmatter.title} 🔄 ${CONFIG.SITE.title}`
-					: CONFIG.SITE.title
-			}
-		</title>
+		<title>{getTitle(frontmatter)}</title>
 		<style>
 			body {
 				width: 100%;
