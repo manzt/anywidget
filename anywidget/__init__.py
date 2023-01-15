@@ -1,7 +1,7 @@
 import sys
 
 from ._version import __version__
-from .widget import AnyWidget
+from ._widget import AnyWidget
 from ._decorator import anywidget
 
 try:
