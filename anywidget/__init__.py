@@ -1,8 +1,8 @@
 import sys
 
+from ._decorator import anywidget
 from ._version import __version__
 from ._widget import AnyWidget
-from ._decorator import anywidget
 
 try:
     if "google.colab" in sys.modules:

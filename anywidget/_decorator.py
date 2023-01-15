@@ -1,7 +1,7 @@
 import pathlib
-from typing import Union, Dict
+from typing import Dict, Union
 
-from traitlets.traitlets import Unicode, TraitType
+from traitlets.traitlets import TraitType, Unicode
 
 from ._widget import AnyWidget
 

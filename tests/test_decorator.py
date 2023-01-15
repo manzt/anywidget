@@ -1,6 +1,6 @@
 import pathlib
 
-from anywidget import anywidget, AnyWidget
+from anywidget import AnyWidget, anywidget
 
 
 def test_basic():

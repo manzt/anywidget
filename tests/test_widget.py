@@ -1,5 +1,6 @@
-from anywidget import AnyWidget
 import traitlets.traitlets as t
+
+from anywidget import AnyWidget
 
 
 def test_basic():
