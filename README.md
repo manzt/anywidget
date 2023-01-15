@@ -21,7 +21,7 @@ pip install anywidget
 ## Usage
 
 ```python
-import anywidget
+from anywidget import anywidget
 import traitlets
 
 ESM = """
@@ -40,8 +40,8 @@ export function render(view) {
 }
 """
 
+@anywidget(esm=ESM)
 class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM
     count = traitlets.Int(0).tag(sync=True)
 
 CounterWidget()

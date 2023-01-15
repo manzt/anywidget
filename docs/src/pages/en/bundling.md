@@ -56,15 +56,15 @@ Make sure the final bundled assets are loaded by the Python module:
 ```python
 # hello_widget/__init__.py
 import pathlib
-import anywidget
+
+from anywidget import anywidget
 import traitlets
 
 # bundler yields hello_widget/static/{index.js,styles.css}
-bundler_output_dir = pathlib.Path(__file__).parent / "static"
+bundler_outdir = pathlib.Path(__file__).parent / "static"
 
-class HelloWidget(anywidget.AnyWidget):
-  _esm = (bundler_output_dir / "index.js").read()
-  _css = (bundler_output_dir / "styles.css").read()
+@anywidget(esm=bundler_outdir / "index.js", css=bundler_outdir / "index.css")
+class HelloWidget:
   name = traitlets.Unicode().tag(sync=True)
 ```
 
@@ -197,7 +197,8 @@ Finally, link your Python widget to the dev server during development.
 ```python
 # hello_widget/__init__.py
 import pathlib
-import anywidget
+
+from anywidget import anywidget
 import traitlets
 
 _DEV = True # switch to False for production
@@ -205,16 +206,15 @@ _DEV = True # switch to False for production
 if _DEV:
   # from `npx vite`
   ESM = "http://localhost:5173/src/index.js?anywidget"
-  CSS = ""
+  CSS = None
 else:
   # from `npx vite build`
-  bundled_assets_dir = pathlib.Path(__file__).parent / "static"
-  ESM = (bundled_assets_dir / "index.mjs").read()
-  CSS = (bundled_assets_dir / "styles.css").read()
+  bundler_outdir = pathlib.Path(__file__).parent / "static"
+  ESM = bundler_outdir / "index.mjs"
+  CSS = bundler_outdir / "styles.css"
 
-class HelloWidget(anywidget.AnyWidget):
-  _esm = ESM
-  _css = CSS
+@anywidget(esm=ESM, css=CSS)
+class HelloWidget:
   name = traitlets.Unicode().tag(sync=True)
 ```
 
