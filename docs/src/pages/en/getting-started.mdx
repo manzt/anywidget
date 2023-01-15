@@ -32,7 +32,7 @@ pip install anywidget
 ```
 
 ```python
-import anywidget
+from anywidget import anywidget
 import traitlets
 
 ESM = """
@@ -57,9 +57,8 @@ CSS = """
 .counter-button:hover { background-color: #9a3412; }
 """
 
-class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM # required
-    _css = CSS # optional
+@anywidget(esm=ESM, css=CSS)
+class CounterWidget:
     value = traitlets.Int(0).tag(sync=True) # widget-specific
 
 counter = CounterWidget()
@@ -75,10 +74,10 @@ What's going on here:
   Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
   keyword argument.
 
-- `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
+- `css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
   in the global scope if using this feature, so take care in avoid global overrides.
 
-- `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
+- `esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
   It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
 
 ```javascript

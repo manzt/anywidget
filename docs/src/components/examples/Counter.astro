@@ -22,7 +22,7 @@ export function render(view) {
 """
 
 @anywidget(esm=ESM)
-class CounterWidget(anywidget.AnyWidget):
+class CounterWidget:
     value = traitlets.Int(0).tag(sync=True)
 `;
 

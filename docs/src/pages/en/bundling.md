@@ -60,7 +60,7 @@ import pathlib
 from anywidget import anywidget
 import traitlets
 
-# bundler yields hello_widget/static/{index.js,styles.css}
+# bundler yields hello_widget/static/index.{js,css}
 bundler_outdir = pathlib.Path(__file__).parent / "static"
 
 @anywidget(esm=bundler_outdir / "index.js", css=bundler_outdir / "index.css")
@@ -68,10 +68,9 @@ class HelloWidget:
   name = traitlets.Unicode().tag(sync=True)
 ```
 
-> **Note** `esbuild` is the most simple option for bundling, but it must be
+> **Note** `esbuild` is the most simple option for bundling, but the build command must be
 > executed manually each time changes are made to the JS or CSS source files in
-> order to see changes in Python. See the Vite example for a better developer
-> experience.
+> order to see changes in Python.
 
 ## Example (Vite, recommended)
 
