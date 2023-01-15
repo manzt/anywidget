@@ -3,7 +3,7 @@ from typing import Union, Dict
 
 from traitlets.traitlets import Unicode, TraitType
 
-from .widget import AnyWidget
+from ._widget import AnyWidget
 
 
 def _create_synced_unicode_trait(src: Union[str, pathlib.Path]):
