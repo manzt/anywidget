@@ -1,6 +1,6 @@
 export const SITE = {
 	title: "anywidget",
-	description: "custom jupyter widgets, made simple",
+	description: "custom jupyter widgets made easy",
 	defaultLanguage: "en_US",
 };
 

@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
 
-simple, custom jupyter widgets that "just work"
+custom jupyter widgets made easy
 
 - create widgets **without complicated cookiecutter templates**
 - **publish to PyPI** like any other Python package
