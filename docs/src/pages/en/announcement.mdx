@@ -78,30 +78,42 @@ and quirks.
 To a seasoned frontend engineer, this problem likely appears well suited for a
 JavaScript
 [_bundler_](https://dev.to/underscorecode/javascript-bundlers-an-in-depth-comparative-is-webpack-still-the-best-bundler-in-2021-59jk),
-and it largely is. The issue is that **every widget is tasked with solving the
+and it largely is. The issue is that **every widget author is tasked with solving the
 same multi-platform problem**, and the "solution" (i.e., bundler configs and
 JavaScript tooling) requires long term adjustments just to keep up to date with
 the latest – and mostly undocumented – requirements imposed by each application.
+
 
 The Jupyter team provides an official recommendation in the form of
 [cookiecutters](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=),
 or recipes for creating new Jupyter Widget projects. While the cookiecutters
 initially ensure compatability with Jupyter and "Jupyter-like" platforms, there
 can be a steep learning curve for developers unfamilar with the perscribed
-JavaScript tooling (e.g., `yarn`, Webpack, Babel, ESLint, Jest) and substantial
-developer effort is _still_ required to keep the vendored build system up to
-date with the latest platform requirements. Additionally, the build systems
-recommneded by the cookiecutter templates differ significantly and come with
+frontend tooling (e.g., `yarn`, Webpack, Babel, ESLint, Jest) and substantial
+effort is _still_ required to keep the vendored build system up to
+date with the latest platform requirements. Additionally, the recommended build systems
+differ significantly between the official templates and come with
 features which may or may not be required for your project. For example, the
 JavaScript-based cookiecutter uses (deprecated)
 [`jupyter-packaging`](https://github.com/jupyter/jupyter-packaging) as a build
-system, whereas the TypeScript-based cookiecutter the more modern
-[`hatch-jupyter-builder`](https://github.com/jupyterlab/hatch-jupyter-builder)
-plugin for [Hatch](https://github.com/pypa/hatch).For Python developers
-unfamilar with the frontend tooling (e.g., Webpack, Bable, ESLint, Jest), this
-approach can be quite daunting
+system (configured with `setup.py` + `setup.cfg` + `pyproject.toml`), whereas the TypeScript-based
+cookiecutter the more modern [`hatch-jupyter-builder`](https://github.com/jupyterlab/hatch-jupyter-builder)
+plugin for [Hatch](https://github.com/pypa/hatch) (configured with `pyproject.toml`)
 
-While writing this post, I created a new .
+<blockquote>
+
+For the curious reader, I created separate projects for a `mywidget` package using the
+two official cookiecutters and included the generated directories. Note the differences
+in layout and number of files. 
+
+<br/>
+
+This section not intended to comment on the design choices by the Jupyter team, but to illustrate
+the surface area a widget author is responsible for understanding and maintaining after project initialization.
+For anyone who has used `create-react-app`, this is reminicant of running `react-script eject` and
+vendoring all build scripts.
+
+<br/>
 
 <details>
 
@@ -153,6 +165,8 @@ While writing this post, I created a new .
     ```
 
 </details>
+
+<br/>
 
 <details>
 
@@ -241,6 +255,34 @@ While writing this post, I created a new .
     ```
 
 </details>
+
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Due to the complicated nature of the recommended build systems and 
+
+As a developer I have always found
+
+As a developer, I should not need to create a new repository and local install 
+to start prototyping my code. For python code, I can edit directly in my terminal.
+
+JavaScript tooling has advanced in that development not longer requires a full  page refresh...
 
 however, the task is complicated the specific target formats are poorly
 documented and everchanging.
