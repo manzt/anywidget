@@ -33,7 +33,7 @@ export function render(view) {
     view.model.set("value", count() + 1);
     view.model.save_changes();
   });
-  view.model.on("change:count", () => {
+  view.model.on("change:value", () => {
     btn.innerHTML = `count is ${count()}`;
   });
   view.el.appendChild(btn);
