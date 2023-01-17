@@ -11,12 +11,18 @@ type Props = {
 };
 
 const { frontmatter, headings, githubEditUrl } = Astro.props as Props;
-const title = frontmatter.title;
+
+const formatter = new Intl.ListFormat("en", {
+	style: "long",
+	type: "conjunction",
+});
+const authors = frontmatter.authors && formatter.format(frontmatter.authors);
 ---
 
 <article id="article" class="content">
 	<section class="main-section">
-		<h1 class="content-title" id="overview">{title}</h1>
+		<h1 class="content-title" id="overview">{frontmatter.title}</h1>
+		{authors && <p>By {authors}</p>}
 		<nav class="block sm:hidden">
 			<TableOfContents client:media="(max-width: 50em)" headings={headings} />
 		</nav>

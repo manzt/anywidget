@@ -22,6 +22,7 @@ export type Frontmatter = {
 	dir?: "ltr" | "rtl";
 	ogLocale?: string;
 	lang?: string;
+	authors?: string[];
 };
 
 export const KNOWN_LANGUAGES = {
@@ -53,5 +54,6 @@ export const SIDEBAR: Sidebar = {
 		Tutorials: [
 			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
 		],
+		Blog: [{ text: "Hello, anywidget", link: "en/announcement" }],
 	},
 };

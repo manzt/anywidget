@@ -1,0 +1,352 @@
+---
+title: "Hello, anywidget"
+layout: ../../layouts/MainLayout.astro
+draft: true
+authors: ["Trevor Manz"]
+---
+
+_This post describes a new Python library called
+[**anywidget**](https://github.com/manzt/anywidget), which simplifies authoring
+and publishing custom Jupyter widgets. **anywidget** allows you to write code
+like this,_
+
+```python
+import anywidget
+import traitlets
+
+
+class HelloWidget(anywidget.AnyWidget):
+    _esm = """
+    export function render(view) {
+        function update() {
+            view.el.textContent = `Hello, ${view.model.get("name") ?? "world"}`;
+        };
+        update();
+        view.model.on("change:name", update);
+    }
+    """
+    name = traitlets.Unicode().tag(sync=True)
+
+widget = HelloWidget()
+widget.name = "anywidget";
+widget
+```
+
+_... to create custom widgets that work in Jupyter notebooks, JupyterLab, Google
+Colab, VS&nbsp;Code, and more. No messy build configuration or complicated
+cookiecutter templates._
+
+## Motivation
+
+Computational notebooks are ubiquitous in data analysis and programming
+education. [Jupyter](https://jupyter.org/) is the _de facto_ standard in the
+Python world, providing a web-based interface to execute code and embed
+computational outputs with prose or multimedia in a single document. Its modular
+design enables users to modify behavior and extend functionality to fit custom
+workflows.
+
+[Jupyter Widgets](https://ipywidgets.readthedocs.io/en/stable/) is the official
+_framework_ to extend notebook output cells in the browser with interactive
+views or controls for Python objects in the Jupyter kernel. Custom widgets are a
+special component of the Jupyter ecosystem because they enable interactive data
+exploration and visualization **during analysis**. Widgets connect Python code
+to responsive and sophisticated user interfaces built with modern web
+technologies, bridging the gap between the web platform and Python ecosystem.
+
+A custom widget is composed of two separate programs:
+
+- Python code that runs in the notebook kernel
+- JavaScript code that renders the widget in the browser and communicates with
+  Python
+
+![two components of a Jupyter widget, the JS fronend and Python backend](/widget-overview.png)
+
+With the rise in popularity of Jupyter notebooks, other computational
+environments and IDEs (e.g., JupyterLab, Google Colab, VS Code) have implemented
+support for `.ipynb`. However, these tools vary in compatability for extensions,
+specifically Jupyter Widgets. The primary challenge is that each application
+must **discover** the frontend widget code and **load** and **execute** the
+JavaScript–a process which is not standardized like loading the associated
+Python program in the application kernel.
+
+Widget authors are thus not only tasked with packaging their JavaScript
+correctly for Jupyter but for multiple tools, each with their own requirements
+and quirks.
+
+![Widget frontend source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code](/client-js-diagram.png)
+
+To a seasoned frontend engineer, this problem likely appears well suited for a
+JavaScript
+[_bundler_](https://dev.to/underscorecode/javascript-bundlers-an-in-depth-comparative-is-webpack-still-the-best-bundler-in-2021-59jk),
+and it largely is. The issue is that **every widget is tasked with solving the
+same multi-platform problem**, and the "solution" (i.e., bundler configs and
+JavaScript tooling) requires long term adjustments just to keep up to date with
+the latest – and mostly undocumented – requirements imposed by each application.
+
+The Jupyter team provides an official recommendation in the form of
+[cookiecutters](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=),
+or recipes for creating new Jupyter Widget projects. While the cookiecutters
+initially ensure compatability with Jupyter and "Jupyter-like" platforms, there
+can be a steep learning curve for developers unfamilar with the perscribed
+JavaScript tooling (e.g., `yarn`, Webpack, Babel, ESLint, Jest) and substantial
+developer effort is _still_ required to keep the vendored build system up to
+date with the latest platform requirements. Additionally, the build systems
+recommneded by the cookiecutter templates differ significantly and come with
+features which may or may not be required for your project. For example, the
+JavaScript-based cookiecutter uses (deprecated)
+[`jupyter-packaging`](https://github.com/jupyter/jupyter-packaging) as a build
+system, whereas the TypeScript-based cookiecutter the more modern
+[`hatch-jupyter-builder`](https://github.com/jupyterlab/hatch-jupyter-builder)
+plugin for [Hatch](https://github.com/pypa/hatch).For Python developers
+unfamilar with the frontend tooling (e.g., Webpack, Bable, ESLint, Jest), this
+approach can be quite daunting
+
+While writing this post, I created a new .
+
+<details>
+
+    <summary>See all 19 files for [`jupyter-widgets/widget-cookiecutter`](https://github.com/jupyter-widgets/widget-cookiecutter)</summary>
+
+    <br/>
+
+    **Summary**
+
+    - Uses (deprecated) [`jupyter-packaging`](https://github.com/jupyter/jupyter-packaging) build system (configured with `setup.py`, `setup.cfg`, & `pyproject.toml`)
+    - Uses Webpack to bundle multiple JavaScript targets
+
+    <br/>
+
+    **Command**
+
+    ```
+    cookiecutter https://github.com/jupyter/widget-cookiecutter.git@134946a
+    ```
+
+    <br/>
+
+    **Output**
+
+    ```
+    mywidget
+    ├── install.json
+    ├── js
+    │  ├── amd-public-path.js
+    │  ├── lib
+    │  │  ├── example.js
+    │  │  ├── extension.js
+    │  │  ├── index.js
+    │  │  └── labplugin.js
+    │  ├── package.json
+    │  ├── README.md
+    │  └── webpack.config.js
+    ├── MANIFEST.in
+    ├── mywidget
+    │  ├── __init__.py
+    │  ├── _version.py
+    │  └── example.py
+    ├── mywidget.json
+    ├── pyproject.toml
+    ├── README.md
+    ├── RELEASE.md
+    ├── setup.cfg
+    └── setup.py
+    ```
+
+</details>
+
+<details>
+
+    <summary>See all 53 files for [`jupyter-widgets/widget-ts-cookiecutter`](https://github.com/jupyter-widgets/widget-ts-cookiecutter)</summary>
+
+    <br/>
+
+    **Summary**
+
+    - 53 files
+    - Uses modern [`hatch-jupyter-builder`](https://github.com/jupyterlab/hatch-jupyter-builder) build system (configured with `pyproject.toml` only)
+    - Uses Webpack to bundle multiple JavaScript targets
+    - Includes TypeScript, ESLint, Jest, Babel, codecov
+    - Includes documentation
+
+    <br/>
+
+    **Command**
+
+    ```
+    cookiecutter https://github.com/jupyter-widgets/widget-ts-cookiecutter.git@94f9d38
+    ```
+
+    <br/>
+
+    **Output**
+
+    ```
+    mywidget
+    ├── babel.config.js
+    ├── codecov.yml
+    ├── css
+    │  └── widget.css
+    ├── docs
+    │  ├── environment.yml
+    │  ├── make.bat
+    │  ├── Makefile
+    │  └── source
+    │     ├── _static
+    │     │  └── helper.js
+    │     ├── conf.py
+    │     ├── develop-install.rst
+    │     ├── examples
+    │     │  ├── index.rst
+    │     │  └── introduction.nblink
+    │     ├── index.rst
+    │     ├── installing.rst
+    │     └── introduction.rst
+    ├── examples
+    │  └── introduction.ipynb
+    ├── install.json
+    ├── jest.config.js
+    ├── LICENSE.txt
+    ├── MANIFEST.in
+    ├── mywidget
+    │  ├── __init__.py
+    │  ├── _frontend.py
+    │  ├── _version.py
+    │  ├── example.py
+    │  ├── nbextension
+    │  │  └── extension.js
+    │  └── tests
+    │     ├── __init__.py
+    │     ├── conftest.py
+    │     ├── test_example.py
+    │     └── test_nbextension_path.py
+    ├── mywidget.json
+    ├── package.json
+    ├── pyproject.toml
+    ├── pytest.ini
+    ├── README.md
+    ├── readthedocs.yml
+    ├── setup.py
+    ├── src
+    │  ├── __tests__
+    │  │  ├── index.spec.ts
+    │  │  └── utils.ts
+    │  ├── extension.ts
+    │  ├── index.ts
+    │  ├── plugin.ts
+    │  ├── version.ts
+    │  └── widget.ts
+    ├── tsconfig.eslint.json
+    ├── tsconfig.json
+    └── webpack.config.js
+    ```
+
+</details>
+
+however, the task is complicated the specific target formats are poorly
+documented and everchanging.
+
+Therefore widget authors are required to both be familar with frontend
+development tools _and_
+
+However this begs the question. Why use a bundler at all? Widgets are builtin
+with a protocal for sending/receiving data f
+
+However, this formulation requires every widget use a bundler (even without any
+dependencies), every repo contains a packaging scripts that use a combination of
+JavaScript and Python packaging scripts.
+
+However, the derived projects are bootstrapped with complicated packaging and
+distribution scripts which must ultimately be maintained by the widget author.
+
+It is worth noting that the exact required outputs for each of these tools are
+not well document and serve as moving targets. As a widget developer, many of
+the issues that are opened in my repositories are concerned with regressions in
+the module loading that break compatability. Thus, I am tasked with 1.)
+debugging why the module no longer works in _X_ (e.g., VS Code), and 2.)
+updating _all_ my other widget repositories with the fix.
+
+the required source transformations for multiple targets may be all too
+familiar. What may not be familar, however, is that the exact format
+requirements for each target are everchanging and poorly documented.
+
+As a maintainer of serveral widgets, a significant porition of issues arise not
+from bugs in the widget code,
+
+This also begs the question: why should widget developers be **required** to
+know about JavaScript frontend tooling (e.g., Babel, Webpack, Jest) _and_ the
+details of each of these platforms in order to be a productive developer?
+
+may be comfortable with bundling and transforming their JavaScript for multiple
+targets in this manner,
+
+. Why should a widget developer need to know about bundlers at all?
+
+For one, each of For a widget author, this is developer experience. For one,
+each of these systems are moving targets.
+
+Rather than focusing on new features
+
+Rather than focusing on features Many of the issues on GitHub
+
+many of the issues opened on GitHub are not related to bugs or issues with the
+widget code, but rather a packaging issue which hnow breaks compatability.
+
+this leads to a good amount of development spent on packaging and not working on
+features for the widget itself. Additionally,
+
+but required to apply additionaly transformations
+
+are required to target additional platforms. As a developer of several widgets,
+
+**This is developement hell**.
+
+The Official
+
+My research entails developing visualization tools to connect biomedical
+researchers with their data.
+
+However, making these tools correctly is ever challenging.
+
+The development cycle typically looks like:
+
+- Develop JS/HTML/CSS library
+
+- Create cookiecutter template.
+
+The last step is porting to Python, and every time we try to expose the Python
+interface it changes.
+
+> This should be easier.
+
+As a researcher, I want a tool in which I can
+
+- quickly prototype ideas
+
+- publish to run in all environments with minimal effort
+
+with many other software tools
+
+Thesis:
+
+JavaScript tooling has undergone a rennasance in the last
+
+Jupyter is the de facto standard for computational notebooks, and as such many
+tools include support for Jupyter notebooks. These notebooks are web-based, and
+Jupyter exposes a mechanism that ties together Python code running in the
+"kernel" with the JavaScript/HTML/CSS runnin in the browser.
+
+Widgets enable users to extend notebooks with custom visualizations/views using
+web-technologies, and enable users to explore their code and data interactively.
+
+Anywidget asserts two things:
+
+- Loading data from a CDN is no big deal
+- Making widgets should be fun and easy
+- Many Python widgets just need a little bit of boilerplate to connect the
+  JavaScript library with the IPython comm system.
+
+## The Solution: ECMAScript Modules
+
+## A Simple Example
+
+#
