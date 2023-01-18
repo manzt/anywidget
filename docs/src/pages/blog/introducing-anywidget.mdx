@@ -1,11 +1,11 @@
 ---
 title: "Introducing anywidget: Custom Jupyter Widgets Made Easy"
-layout: ../../../layouts/MainLayout.astro
+layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 ---
 
-import CounterButton from "../../../components/CounterButton.astro";
-import ConfettiButton from "../../../components/ConfettiButton.astro";
+import CounterButton from "../../components/CounterButton.astro";
+import ConfettiButton from "../../components/ConfettiButton.astro";
 
 _TL;DR: [**anywidget**](https://github.com/manzt/anywidget) is a new Python library which <u>greatly</u>
 simplifies creating and publishing custom Jupyter Widgets. Unlike the traditional
@@ -371,7 +371,7 @@ In this sense, **anywidget** is really a "meta" framework for creating new widge
 define ESM and an associated Python class (i.e., the components of a Jupyter Widget), and **anywidget** takes care of the rest.
 
 A consequence of this design is that it drastically lowers the barrier to entry for many potential
-widget developers The data scientist with minimal JavaScript experience can begin prototyping with her idea
+widget developers The data scientist with minimal JavaScript experience can begin prototyping her idea
 for a domain-specific Jupyter integration directly within her notebook (and also learn frontend!). No need to first
 install Node.js and understand frontend tooling. Conversely, a frontend engineer can learn Python
 by turning one of their JavaScript libraries into a widget within Google Colab. No need to learn about
@@ -388,8 +388,8 @@ of native ESM, users have the option to opt-in to an improved developer experien
 modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development)
 for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
-Changes made to the JavaScript source during development are **instantly** reflected in all active
-output notebook cells without refreshing the page or re-executing the a given cell.
+Changes made to the JavaScript source during development are **instantly** reflected 
+in the frontend without refreshing or re-executing notebook cells.
 
 ### Get Started
 
