@@ -8,8 +8,11 @@ import CounterButton from "../../components/CounterButton.astro";
 import ConfettiButton from "../../components/ConfettiButton.astro";
 
 _This post describes a new Python library called
-[**anywidget**](https://github.com/manzt/anywidget), which simplifies authoring
-and publishing custom Jupyter widgets. **anywidget** allows you to write code
+[**anywidget**](https://github.com/manzt/anywidget), which <u>**greatly**</u>
+simplifies creating and publishing custom Jupyter Widgets. Unlike the traditional
+(cookiecutter) approach, with **anywidget** you don't have to fiddle with any
+build steps or bundlers, you can prototype widgets from within a notebook,
+and you get a modern frontend developer experience. **anywidget** allows you to write code
 like this,_
 
 ```python
@@ -18,6 +21,7 @@ import traitlets
 
 
 class CounterWidget(anywidget.AnyWidget):
+    # Widget frontend JavaScript code
     _esm = """
     export function render(view) {
       let getCount = () => view.model.get("count");
@@ -33,12 +37,14 @@ class CounterWidget(anywidget.AnyWidget):
       view.el.appendChild(button);
     }
     """
+    # Stateful property that can be accessed by JavaScript & Python
     count = traitlets.Int(0).tag(sync=True)
 ```
 
 _... to create custom widgets that work in Jupyter notebooks, JupyterLab, Google
-Colab, VS&nbsp;Code, and more. No messy build configuration, bundlers, or complicated
-cookiecutter templates. It Just Works<sup>TM</sup>!_
+Colab, VS&nbsp;Code, and more. No messy build configuration or bundlers. It Just Works<sup>TM</sup>!_
+
+<a href="#introducing-anywidget">Skip ahead.</a>
 
 ## Background
 
@@ -304,10 +310,6 @@ and JavaScript programmers. Whereas regular Python modules can be prototyped
 in standalone `.py` files or even notebook cells and gradually transitioned to
 pip-installable packages, widgets _must_ be `pip` installed from the beginning.
 
-> \*To my knowledge, it is not possible to develop custom widgets in
-> Google Colab or VS Code since the JavaScript code must be published to
-> `npm` (and available via a CDN like https://unpkg.com).
-
 Finally, the frontend development ecosystem has matured rapidly over the last decade
 to enable instant, precise updates to client code without reloading the page or
 blowing away application state. Unfortunately, widget authors do not currently
@@ -326,6 +328,10 @@ if widget authors,
 2. Solve the same mutli-packaging problem for Jupyter-like targets
 3. Create new packages to start prototyping
 4. Use outdated web technologies for live development
+
+> \*To my knowledge, it is not possible to develop custom widgets in
+> Google Colab or VS Code since the JavaScript code must be published to
+> `npm` (and available via a CDN like https://unpkg.com).
 
 ### ECMAScript Modules to the Rescue
 
@@ -356,59 +362,44 @@ currentDate(); // Today is January 18, 2023
 
 ## Introducing anywidget
 
-**anywidget** is a Python library that makes custom Jupyter Widgets easy. It is
+**anywidget** is a Python library that makes custom Jupyter Widgets easy. It is <u>**not**</u>
+a new widgets framework, but rather an abstraction around Jupyter Widgets that leverages ESM. **anywidget**
+is a traditional custom widget whose sole purpose is to:
 
-<u>**not**</u> a new widgets framework, but rather an abstraction around Jupyter
-Widgets that leverages ESM.
-
-**anywidget** is a traditional custom widget whose sole purpose is to
-
-- solve the multi-platform problem, and
+- solve the multi-platform problem
 - load and execute ESM sent from the Python kernel
-
-In this sense, **anywidget** is really a "meta" framework for authoring new widgets.
-Users define ESM and an associated Python class (i.e., the components of a
-Jupyter Widget), and **anywidget** takes care of connecting the two.
 
 ![overview of anywidget implementation. anywidget loads and executes widget JavaScript code sent from the Python kernel](/anywidget-overview.png)
 
-A consequence of this design is that users do not require intimate knowledge of frontend tooling
-to start making custom Jupyter Widgets. Instead, they can begin prototyping directly in standalone `.py`
-files or notebook cells–just like regular Python modules! Prototyping can even begin in Google Colab or VS Code.
+In this sense, **anywidget** is really a "meta" framework for creating new widgets. You – the widget developer –
+define ESM and an associated Python class (i.e., the components of a Jupyter Widget), and **anywidget** takes care of the rest.
 
-In practice, the ESM required to connect a JavaScript library with Python is often minimal
-and can easily be inlined within the Python module as a string. As **anywidget** projects
-mature, however, it is recommended to organize the JavaScript source into separate files
-which can eventually be merged into a single optimized ESM file with a bundler. See the
-[bundling documentation](/en/bundling) for more information.
+A consequence of this design is that it drastically lowers the barrier to entry for many potential
+widget developers The data scientist with minimal JavaScript experience can begin prototyping with her idea
+for a domain-specific Jupyter integration directly within her notebook (and also learn frontend!). No need to first
+install Node.js and understand frontend tooling. Conversely, a frontend engineer can learn Python
+by turning one of their JavaScript libraries into a widget within Google Colab. No need to learn about
+virtual environments or how Python modules work.
+
+**anywidget** also adapts to a wide spectrum of use cases, enabling prototypes to incrementally
+mature into robust Python packages. A student or hacker can save and share widgets via notebooks,
+while an engineer can package and version the widgets he's created for his clients and co-workers.
+As **anywidget** projects mature, JavaScript source can be moved from inline strings to separate files to
+[advanced bundling](/en/bundling) when the complexity of the application demands it.
 
 Lastly, since **anywidget** bypasses the various platform-specific module systems in favor
 of native ESM, users have the option to opt-in to an improved developer experience with
 modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development)
-for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise 
+for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
 Changes made to the JavaScript source during development are **instantly** reflected in all active
 output notebook cells without refreshing the page or re-executing the a given cell.
 
-<blockquote>
-    Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and 
-    [PyPI](https://pypi.org/project/anywidget/). To install, just run
-
-    <br/>
-
-    ```bash
-    pip install anywidget
-    ```
-
-    <br/>
-
-    I hope using **anywidget** is simple and enjoyable. I have personally found
-    it valuable in my work as a visualization researcher to quickly iterate on new
-    ideas to interactively explore biomedical datasets.
-
-</blockquote>
-
 ### Getting Started
+
+```bash
+pip install anywidget
+```
 
 Custom widgets are defined by subclassing `anywidget.AnyWidget`.
 
@@ -482,7 +473,7 @@ the button is clicked. A second event handler is registered to update the text
 output each time `count` changes on the model.
 
 By treating the model as the source of truth, regardless of whether `count` is updated on the
-Python side or the JavaScript side, the count displayed remains correct. You can learn more 
+Python side or the JavaScript side, the count displayed remains correct. You can learn more
 about the model view controller (MCV) framework the IPython widget framework
 frontend relies on in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
 
@@ -573,5 +564,18 @@ export function render(view) {
 	/* ... */
 }
 ```
+
+## Release
+
+Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and
+[PyPI](https://pypi.org/project/anywidget/). To install, just run
+
+```bash
+pip install anywidget
+```
+
+I hope using **anywidget** is simple and enjoyable. I have personally found
+it valuable in my work as a visualization researcher to quickly iterate on new
+ideas to interactively explore biomedical datasets.
 
 If this is interesting or exciting to you, please reach out and get involved on GitHub! Happy coding.
