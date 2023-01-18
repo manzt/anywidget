@@ -385,7 +385,8 @@ which can eventually be merged into a single optimized ESM file with a bundler. 
 Lastly, since **anywidget** bypasses the various platform-specific module systems in favor
 of native ESM, users have the option to opt-in to an improved developer experience with
 modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development)
-for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise HMR support for Jupyter Widgets.
+for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise 
+[Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
 Changes made to the JavaScript source during development are **instantly** reflected in all active
 output notebook cells without refreshing the page or re-executing the a given cell.
 
