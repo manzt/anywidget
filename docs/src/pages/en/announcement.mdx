@@ -539,8 +539,7 @@ ConfettiWidget()
 
 **anywidget** does not currently allow extension of the `DOMWidgetModel`, so custom serialization
 and deserialization of traitlets is not currently supported. Additionally, lifecycle hooks
-(e.g., `DOMWidgetView.remove()`) are not recognized, which can be useful for freeing browser
-resources when a widget view is removed. I am actively working to support both of these use cases
+(e.g., `DOMWidgetView.remove()` which can be useful for freeing browser resources) are currently not recognized. I am actively working to support both of these use cases
 (and more) via additional ESM exports,
 
 ```javascript
