@@ -407,8 +407,8 @@ output notebook cells without refreshing the page or re-executing the a given ce
 I have included several examples below demonstrating the **anywidget** API and its key features.
 All custom widgets are subclasses of `anywidget.AnyWidget`. Each subclass specifies,
 
-- `_esm` the **required** ECMAScript module for the widget. It must must export `render`
-  to define custom rendering logic and initialize dynamic updates for the widget. This is an
+- `_esm` the **required** ECMAScript module for the widget. It must must export a `render`
+  function to define custom rendering logic and initialize dynamic updates for the widget. This is an
   alias for the [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
   except the `view` is passed as an argument in the function definition.
 
