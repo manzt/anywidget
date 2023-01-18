@@ -20,20 +20,20 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
     export function render(view) {
-      let count = () => view.model.get("value");
-      let btn = document.createElement("button");
-      btn.innerHTML = `count is ${count()}`;
-      btn.addEventListener("click", () => {
-        view.model.set("value", count() + 1);
+      let getCount = () => view.model.get("count");
+      let button = document.createElement("button");
+      button.innerHTML = `count is ${getCount()}`;
+      button.addEventListener("click", () => {
+        view.model.set("count", getCount() + 1);
         view.model.save_changes();
       });
-      view.model.on("change:value", () => {
-        btn.innerHTML = `count is ${count()}`;
+      view.model.on("change:count", () => {
+        button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(btn);
+      view.el.appendChild(button);
     }
     """
-    value = traitlets.Int(0).tag(sync=True)
+    count = traitlets.Int(0).tag(sync=True)
 ```
 
 _... to create custom widgets that work in Jupyter notebooks, JupyterLab, Google
@@ -62,15 +62,15 @@ A custom widget is composed of two separate programs:
 
 1. Python code that runs in the notebook kernel
 2. JavaScript code that renders the widget in the browser and communicates with
-  Python
+   Python
 
 ![two components of a Jupyter widget, the JS frontend and Python backend](/widget-overview.png)
 
 ### The Multi-Platform Problem
 
 With the rise in popularity of Jupyter notebooks, there are a growing number of ways
-to view and execute `.ipynb`, including JupyterLab, Google Colab, and VS Code. 
-However, these notebook environments vary with regard to support for extensions, 
+to view and execute `.ipynb`, including JupyterLab, Google Colab, and VS Code.
+However, these notebook environments vary with regard to support for extensions,
 specifically Jupyter Widgets. The primary challenge is that each application
 must **discover** the frontend widget code then **load** and **execute** the
 JavaScript – a process which is not standardized, in contrast to the associated
@@ -92,7 +92,7 @@ but the bundler configuration must be adapted to the latest – and mostly undoc
 
 ### A Solution with Crumbs
 
-To address this issue, the Jupyter team recommends an approach using 
+To address this issue, the Jupyter team recommends an approach using
 [cookiecutters](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=),
 or recipes for creating new custom Jupyter Widgets. While the cookiecutters
 initially ensure compatibility with Jupyter and multiple notebook environments, there
@@ -348,7 +348,7 @@ import * as d3 from "https://esm.sh/d3@7";
 
 export function currentDate() {
 	let formatTime = d3.timeFormat("%B %d, %Y");
-	console.log(`Today is ${formatTime(new Date)}`);
+	console.log(`Today is ${formatTime(new Date())}`);
 }
 
 currentDate(); // Today is January 18, 2023
@@ -357,6 +357,7 @@ currentDate(); // Today is January 18, 2023
 ## Introducing anywidget
 
 **anywidget** is a Python library that makes custom Jupyter Widgets easy. It is
+
 <u>**not**</u> a new widgets framework, but rather an abstraction around Jupyter
 Widgets that leverages ESM.
 
@@ -406,47 +407,34 @@ output notebook cells without refreshing the page or re-executing the a given ce
 
 </blockquote>
 
-## Examples
+### Getting Started
 
-I have included several examples below demonstrating the **anywidget** API and its key features.
-All custom widgets are subclasses of `anywidget.AnyWidget`. Each subclass specifies,
-
-- `_esm` the **required** ECMAScript module for the widget. It must must export a `render`
-  function to define custom rendering logic and initialize dynamic updates for the widget. This is an
-  alias for the [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
-  except the `view` is passed as an argument in the function definition.
-
-- `_css` an **optional** CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded in the global scope if using this feature, so take care in avoid global overrides.
-
-All stateful properties to synchronize with JavaScript and Python are defined via [`traitlets`](https://traitlets.readthedocs.io/en/stable/) with `sync=True` metadata, just like regular Jupyter Widgets!
-
-### A Simple Widget
-
-This example is a reproduction of the starter widget from the [`juypyter-widgets/widget-ts-cookiecutter`](https://github.com/jupyter-widgets/widget-ts-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/src/widget.ts)
-cookiecutter template. It demonstrates one-way data binding from the Python kernel to frontend view.
-The `render` function registers and event handler to update the text output when the `value` traitlet changes.
+Custom widgets are defined by subclassing `anywidget.AnyWidget`.
 
 ```python
 import anywidget
 import traitlets
 
 class ExampleWidget(anywidget.AnyWidget):
+    # anywidget, required #
     _esm = """
     export function render(view) {
-        view.el.classList.add('custom-widget');
+        view.el.classList.add("custom-widget");
         function value_changed() {
-            view.el.textContent = view.model.get('value');
+            view.el.textContent = view.model.get("value");
         }
         value_changed();
-        view.model.on('change:value', value_changed);
+        view.model.on("change:value", value_changed);
     }
     """
+    # anywidget, optional #
     _css = """
     .custom-widget {
         background-color: lightseagreen;
         padding: 0px 2px;
     }
     """
+    # custom state for the widget #
     value = traitlets.Unicode("Hello World").tag(sync=True)
 
 ExampleWidget()
@@ -456,16 +444,46 @@ ExampleWidget()
 	Hello, World
 </div>
 
-### Two-Way Data Binding
+Each subclass specifies,
 
-This example is slightly more sophisticated and demonstrates how to synchronize model state
-between the widget frontend and Python kernel. The `render` function creates a
-`<button>` element and registers an event handler to increment the model `value` when
+- `_esm` the <u>**required**</u> ECMAScript module for the widget. It must must
+  export a `render` function to define custom rendering logic and initialize dynamic
+  updates for the widget.
+
+```javascript
+/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+	// Render model contents and setup dynamic updates
+}
+```
+
+- `_css` an <u>**optional**</u> CSS stylesheet to load for the widget.
+
+- Custom stateful properties to synchronize with JavaScript and Python via [`traitlets`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#sync=True-traitlets)
+  with `sync=True` metadata – just like regular Jupyter Widgets!
+
+> Note: the `ExampleWidget` is a reproduction of the starter
+> widget from the Jupyter [cookiecutter](https://github.com/jupyter-widgets/widget-ts-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/src/widget.ts),
+> produced in a single file in ~20 lines of code. You can copy any paste
+> this snippet into any notebook environment and run (or modify) the widget
+> without additionally installation or setup.
+
+### Examples
+
+#### Two-Way Data Binding
+
+The `ExampleWidget` demonstrates simple one-way data binding from the Python kernel
+to frontend view. This example is slightly more sophisticated in that the
+`render` function synchronizes the model state between the widget frontend and
+Python kernel (i.e., two-way data binding). The `render` function creates a
+`<button>` element and registers an event handler to increment the model `count` when
 the button is clicked. A second event handler is registered to update the text
-output each time `value` changes on the model.
+output each time `count` changes on the model.
 
-By treating the model as the source of truth, regardless of whether `value` is updated on the Python side or the JavaScript side, the count displayed remains correct. See the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method)
-to learn more about the model view controller (MCV) framework the IPython widget framework frontend relies on.
+By treating the model as the source of truth, regardless of whether `count` is updated on the
+Python side or the JavaScript side, the count displayed remains correct. See the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method)
+to learn more about the model view controller (MCV) framework the IPython widget framework
+frontend relies on.
 
 ```python
 import anywidget
@@ -475,34 +493,34 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
     export function render(view) {
-      let count = () => view.model.get("value");
-      let btn = document.createElement("button");
-      btn.classList.add("counter-button");
-      btn.innerHTML = `count is ${count()}`;
-      btn.addEventListener("click", () => {
-        view.model.set("value", count() + 1);
+      let getCount = () => view.model.get("count");
+      let button = document.createElement("button");
+      button.classList.add("counter-button");
+      button.innerHTML = `count is ${getCount()}`;
+      button.addEventListener("click", () => {
+        view.model.set("count", getCount() + 1);
         view.model.save_changes();
       });
-      view.model.on("change:value", () => {
-        btn.innerHTML = `count is ${count()}`;
+      view.model.on("change:count", () => {
+        button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(btn);
+      view.el.appendChild(button);
     }
     """
     _css="""
     .counter-button { background-color: #ea580c; }
     .counter-button:hover { background-color: #9a3412; }
     """
-    value = traitlets.Int(0).tag(sync=True)
+    count = traitlets.Int(0).tag(sync=True)
 
 counter = CounterWidget()
-counter.value = 10
+counter.count = 10
 counter
 ```
 
 <CounterButton size={"lg"} initialValue={10} />
 
-### Third-party dependencies
+#### Third-party dependencies
 
 Any valid ESM is supported by **anywidget**, so dependencies can be imported
 directly from a CDN via URL so as long as they are also ESM. Browser
@@ -536,7 +554,7 @@ ConfettiWidget()
 
 <ConfettiButton size={"lg"} />
 
-## Limitations
+### Current Limitations
 
 **anywidget** does not currently allow extension of the `DOMWidgetModel`, so custom serialization
 and deserialization of traitlets is not currently supported. Additionally, lifecycle hooks
