@@ -59,11 +59,11 @@ class CounterWidget(anywidget.AnyWidget):
     count = traitlets.Int(0).tag(sync=True)
 
 counter = CounterWidget()
-counter.count = 10
+counter.count = 42
 counter
 ```
 
-<CounterButton size={"lg"} initialValue={10} />
+<CounterButton size={"lg"} initialValue={42} />
 
 What's going on here:
 
