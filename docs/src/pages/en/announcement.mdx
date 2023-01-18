@@ -66,9 +66,10 @@ A custom widget is composed of two separate programs:
 
 ## The Multi-Platform Problem
 
-With the rise in popularity of Jupyter notebooks, other computational
-environments and IDEs (e.g., JupyterLab, Google Colab, VS Code) have implemented
-support for `.ipynb`. However, these tools have varying degrees of support for extensions and Jupyter Widgets. The primary challenge is that each application
+With the rise in popularity of Jupyter notebooks, there are a growing number of ways
+to view and execute `.ipynb`, including JupyterLab, Google Colab, and VS Code. 
+However, these notebook environments vary with regard to support for extensions, 
+specifically Jupyter Widgets. The primary challenge is that each application
 must **discover** the frontend widget code and **load** and **execute** the
 JavaScript–a process which is not standardized like loading the associated
 Python program in the application kernel.
@@ -328,8 +329,8 @@ if widget authors,
 
 The complexity involved with packaging custom Jupyter Widgets primarily arises
 from the need to transform widget JavaScript to target the various module systems
-employed by different notebook environments. But what if this step wasn't
-required for _all_ widgets?
+employed by different notebook environments. But what if this step could
+be abstracted away?
 
 First described in 2015, ECMAScript modules (ESM) are now the official
 standard format to package JavaScript code for reuse. All major browsers
@@ -343,11 +344,12 @@ With ESM, the follow code runs natively in all major browsers without modificati
 ```javascript
 import * as d3 from "https://esm.sh/d3@7";
 
-export function sayHello(name) {
-	console.log(`Hello, ${name}!`);
+export function currentDate() {
+	let formatTime = d3.timeFormat("%B %d, %Y");
+	console.log(`Today is ${formatTime(new Date)}`);
 }
 
-sayHello("world"); // Hello, world!
+currentDate(); // Today is January 18, 2023
 ```
 
 ## Introducing anywidget
