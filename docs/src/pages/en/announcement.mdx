@@ -546,25 +546,6 @@ ConfettiWidget()
 
 <ConfettiButton size={"lg"} />
 
-### Current Limitations
-
-**anywidget** does not currently allow extension of the `DOMWidgetModel`, so custom serialization
-and deserialization of traitlets is not currently supported. Additionally, lifecycle hooks
-(e.g., `DOMWidgetView.remove()` which can be useful for freeing browser resources) are currently not recognized. I am actively working to support both of these use cases
-(and more) via additional ESM exports,
-
-```javascript
-export let serializers = {
-	/* ... */
-};
-export function remove() {
-	/* ... */
-}
-export function render(view) {
-	/* ... */
-}
-```
-
 ## Release
 
 Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and
@@ -574,8 +555,12 @@ Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.
 pip install anywidget
 ```
 
+The project is still in its very early days and under active development. **It should _not_
+yet be used in production since the API can change and some critial features are missing** 
+(e.g., APIs to extend the `DOMWidgetModel` with custom serializers and `DOMWidgetView` with lifecycle hooks). Having 
+said that, it's already [in use](https://github.com/vitessce/vitessce-python) and is ready for testing.
+
 I hope using **anywidget** is simple and enjoyable. I have personally found
 it valuable in my work as a visualization researcher to quickly iterate on new
-ideas to interactively explore biomedical datasets.
-
-If this is interesting or exciting to you, please reach out and get involved on GitHub! Happy coding.
+ideas to interactively explore biomedical datasets. If this is interesting or exciting to you, 
+please reach out and get involved on GitHub! Happy coding.
