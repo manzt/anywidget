@@ -5,24 +5,23 @@ let widgetCode = `
 import anywidget
 import traitlets
 
-ESM = """
-export function render(view) {
-  let count = () => view.model.get("value");
-  let btn = document.createElement("button");
-  btn.innerHTML = \`count is \${count()}\`;
-  btn.addEventListener("click", () => {
-    view.model.set("value", count() + 1);
-    view.model.save_changes();
-  });
-  view.model.on("change:value", () => {
-    btn.innerHTML = \`count is \${count()}\`;
-  });
-  view.el.appendChild(btn);
-}
-"""
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM
+    _esm = """
+    export function render(view) {
+      let count = () => view.model.get("value");
+      let btn = document.createElement("button");
+      btn.innerHTML = \`count is \${count()}\`;
+      btn.addEventListener("click", () => {
+        view.model.set("value", count() + 1);
+        view.model.save_changes();
+      });
+      view.model.on("change:value", () => {
+        btn.innerHTML = \`count is \${count()}\`;
+      });
+      view.el.appendChild(btn);
+    }
+    """
     value = traitlets.Int(0).tag(sync=True)
 `;
 

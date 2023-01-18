@@ -35,31 +35,29 @@ pip install anywidget
 import anywidget
 import traitlets
 
-ESM = """
-export function render(view) {
-  let count = () => view.model.get("value");
-  let btn = document.createElement("button");
-  btn.classList.add("counter-button");
-  btn.innerHTML = `count is ${count()}`;
-  btn.addEventListener("click", () => {
-    view.model.set("value", count() + 1);
-    view.model.save_changes();
-  });
-  view.model.on("change:value", () => {
-    btn.innerHTML = `count is ${count()}`;
-  });
-  view.el.appendChild(btn);
-}
-"""
 
-CSS = """
-.counter-button { background-color: #ea580c; }
-.counter-button:hover { background-color: #9a3412; }
-"""
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = ESM # required
-    _css = CSS # optional
+    _esm = """
+    export function render(view) {
+      let count = () => view.model.get("value");
+      let btn = document.createElement("button");
+      btn.classList.add("counter-button");
+      btn.innerHTML = `count is ${count()}`;
+      btn.addEventListener("click", () => {
+        view.model.set("value", count() + 1);
+        view.model.save_changes();
+      });
+      view.model.on("change:value", () => {
+        btn.innerHTML = `count is ${count()}`;
+      });
+      view.el.appendChild(btn);
+    }
+    """
+    _css = """
+    .counter-button { background-color: #ea580c; }
+    .counter-button:hover { background-color: #9a3412; }
+    """
     value = traitlets.Int(0).tag(sync=True) # widget-specific
 
 counter = CounterWidget()
