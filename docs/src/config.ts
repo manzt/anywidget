@@ -54,6 +54,8 @@ export const SIDEBAR: Sidebar = {
 		Tutorials: [
 			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
 		],
-		Blog: [{ text: "anywidget v0.1", link: "en/announcement" }],
+		Blog: [
+			{ text: "Introducing anywidget", link: "en/blog/introducing-anywidget" },
+		],
 	},
 };

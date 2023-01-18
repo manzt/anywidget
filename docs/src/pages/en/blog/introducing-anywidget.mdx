@@ -1,11 +1,11 @@
 ---
-title: "anywidget: Custom Jupyter Widgets Made Easy"
-layout: ../../layouts/MainLayout.astro
+title: "Introducing anywidget: Custom Jupyter Widgets Made Easy"
+layout: ../../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 ---
 
-import CounterButton from "../../components/CounterButton.astro";
-import ConfettiButton from "../../components/ConfettiButton.astro";
+import CounterButton from "../../../components/CounterButton.astro";
+import ConfettiButton from "../../../components/ConfettiButton.astro";
 
 _TL;DR: [**anywidget**](https://github.com/manzt/anywidget) is a new Python library which <u>greatly</u>
 simplifies creating and publishing custom Jupyter Widgets. Unlike the traditional
@@ -40,7 +40,7 @@ class CounterWidget(anywidget.AnyWidget):
 ```
 
 _... to create custom widgets that work in Jupyter notebooks, JupyterLab, Google
-Colab, VS&nbsp;Code, and more. No messy build configuration or bundlers. It Just Works<sup>TM</sup>!_ <a href="#introducing-anywidget">Skip ahead.</a>
+Colab, VS&nbsp;Code, and more. No messy build configuration or bundlers. It Just Works<sup>TM</sup>!_ <a href="#hello-anywidget">Skip ahead.</a>
 
 ## Background
 
@@ -356,7 +356,7 @@ export function currentDate() {
 currentDate(); // Today is January 18, 2023
 ```
 
-## Introducing anywidget
+## Hello, anywidget
 
 **anywidget** is a Python library that makes custom Jupyter Widgets easy. It is <u>**not**</u>
 a new widgets framework, but rather an abstraction around Jupyter Widgets that leverages ESM. **anywidget**
@@ -391,7 +391,7 @@ for **anywidget** extends [Vite's](https://vitejs.dev/) development server with 
 Changes made to the JavaScript source during development are **instantly** reflected in all active
 output notebook cells without refreshing the page or re-executing the a given cell.
 
-### Getting Started
+### Get Started
 
 ```bash
 pip install anywidget
@@ -542,7 +542,7 @@ ConfettiWidget()
 
 <ConfettiButton size={"lg"} />
 
-## Try It Out!
+### Try It Out!
 
 Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and
 [PyPI](https://pypi.org/project/anywidget/). To install, just run
@@ -552,13 +552,13 @@ pip install anywidget
 ```
 
 The project is still in its very early days and under active development. **It should _not_
-yet be used in production since the API can change and some critial features are missing** 
-(e.g., APIs to extend the `DOMWidgetModel` with custom serializers and `DOMWidgetView` with lifecycle hooks). Having 
+yet be used in production since the API can change and some critial features are missing**
+(e.g., APIs to extend the `DOMWidgetModel` with custom serializers and `DOMWidgetView` with lifecycle hooks). Having
 said that, it's already [in use](https://github.com/vitessce/vitessce-python) and is ready for testing.
 
 I hope using **anywidget** is simple and enjoyable. I have personally found
 it valuable in my work as a visualization researcher to quickly iterate on new
-ideas to interactively explore biomedical datasets. 
+ideas to interactively explore biomedical datasets.
 
-If this is project is interesting or exciting to you, please reach out and get involved 
+If this is project is interesting or exciting to you, please reach out and get involved
 on [GitHub](https://github.com/manzt/anywidget)! Happy coding.
