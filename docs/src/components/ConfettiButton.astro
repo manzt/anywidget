@@ -3,7 +3,7 @@ type Props = {
 	size?: "xs" | "sm" | "lg" | "sm";
 };
 
-let { size = "xs", } = Astro.props as Props;
+let { size = "xs" } = Astro.props as Props;
 ---
 
 <button
@@ -13,13 +13,13 @@ let { size = "xs", } = Astro.props as Props;
 	]}
 	id="btn-confetti"
 >
-  click me!
+	click me!
 </button>
 
 <script type="module" is:inline>
-  import confetti from 'https://cdn.skypack.dev/canvas-confetti';
-  let btn = document.querySelector("#btn-confetti");
-  btn.addEventListener("click", () => {
-    confetti();
-  })
+	import confetti from "https://cdn.skypack.dev/canvas-confetti";
+	let btn = document.querySelector("#btn-confetti");
+	btn.addEventListener("click", () => {
+		confetti();
+	});
 </script>

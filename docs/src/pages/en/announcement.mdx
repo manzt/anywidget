@@ -3,6 +3,7 @@ title: "anywidget: Custom Jupyter Widgets Made Easy"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 ---
+
 import CounterButton from "../../components/CounterButton.astro";
 import ConfettiButton from "../../components/ConfettiButton.astro";
 
@@ -90,14 +91,14 @@ the latest – and mostly undocumented – requirements imposed by each applicat
 
 ## A Solution with Crumbs
 
-The Jupyter team provides a recommend approach to resolve this issue in the form of 
+The Jupyter team provides a recommend approach to resolve this issue in the form of
 [cookiecutters](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=),
 or recipes for creating new Jupyter Widget projects. While the cookiecutters
 initially ensure compatibility with Jupyter and "Jupyter-like" platforms, there
 can be a steep learning curve for developers unfamiliar with the prescribed
 frontend tooling (i.e., `yarn`, Webpack, Babel, ESLint, and Jest are prerequisites) and substantial
 effort is **still required to keep the inherited build system up to
-date with the latest platform requirements**. 
+date with the latest platform requirements**.
 
 Additionally, the recommended Python build systems
 differ significantly between the official templates and are bootstrapped with
@@ -116,14 +117,14 @@ In the end, the easiest path forward is to just pick a template and treat it lik
 For the curious reader, I created two separate projects for a `mywidget` package using the
 official cookiecutters and included the generated directories below.
 
-<br/>
+<br />
 
-This section not intended to critique the design choices by the Jupyter team and community members – **these recipes 
+This section not intended to critique the design choices by the Jupyter team and community members – **these recipes
 work are used widely** - but to illustrate the surface area a widget author is responsible for understanding and maintaining after project initialization.
 For anyone who has used `create-react-app`, it is reminiscent of running `react-script eject` and
-vendoring all the build scripts. 
+vendoring all the build scripts.
 
-<br/>
+<br />
 
 <details>
 
@@ -176,7 +177,7 @@ vendoring all the build scripts.
 
 </details>
 
-<br/>
+<br />
 
 <details>
 
@@ -264,23 +265,21 @@ vendoring all the build scripts.
     └── webpack.config.js
     ```
 
-
 </details>
 
-<br/>
+<br />
 
 It is worth noting that this maintenance surface area is incurred for
 each project derived from the cookiecutters.
 
 </blockquote>
 
-
 Besides the frontend packaging problem, a key limitation in the current
 state of Jupyter Widgets is that **prototyping requires the creation and installation of a
 new Python package** due to the mechanism by which Jupyter **discovers** widget frontend
-code. Prototyping _must_ be done in either a classic Jupyter notebook 
-or JupyterLab\* where the custom widget extensions have been registered manually 
-to each of these environments. 
+code. Prototyping _must_ be done in either a classic Jupyter notebook
+or JupyterLab\* where the custom widget extensions have been registered manually
+to each of these environments.
 
 ```bash
 # mywidget/
@@ -310,16 +309,16 @@ pip-installable packages, widgets _must_ be `pip` installed from the beginning.
 
 Finally, the frontend development ecosystem has matured rapidly over the last decade
 to enable instant, precise updates to client code without reloading the page or
-blowing away application state. Unfortunately, widget authors do not currently 
-benefit from these advancements due to the legacy mechanism used by Jupyter frontends 
-to **load** widget JavaScript. Instead, **full page reloads are required to view 
+blowing away application state. Unfortunately, widget authors do not currently
+benefit from these advancements due to the legacy mechanism used by Jupyter frontends
+to **load** widget JavaScript. Instead, **full page reloads are required to view
 changes applied to the frontend widget code** and development feels sluggish compared
 to modern frontend applications.
 
-In summary, Jupyter notebooks are ubiquitous and Jupyter Widgets is the standard framework 
+In summary, Jupyter notebooks are ubiquitous and Jupyter Widgets is the standard framework
 to extend notebook output cells in the browser with rich, interactive views or controls
 for Python objects in the Jupyter kernel. However, the proliferation of Jupyter-like
-tools has resulted in a fragmented ecosystem that assumes reusable widgets are only possible 
+tools has resulted in a fragmented ecosystem that assumes reusable widgets are only possible
 if widget authors,
 
 - Familiarize themselves with frontend build tooling and packaging
@@ -327,12 +326,11 @@ if widget authors,
 - Create new packages to start prototyping
 - Use outdated web technologies for live development
 
-
 ## ECMAScript Modules to the Rescue
 
 The complexity involved with packaging custom Jupyter Widgets primarily arises
 from the need to transform widget JavaScript to target the various module systems
-employed by "Jupyter-like" applications. But what if this step wasn't 
+employed by "Jupyter-like" applications. But what if this step wasn't
 required for _all_ widgets?
 
 First described in 2015, ECMAScript modules (ESM) are now the official
@@ -348,7 +346,7 @@ With ESM, the follow code runs natively in all major browsers without modificati
 import * as d3 from "https://esm.sh/d3@7";
 
 export function sayHello(name) {
-  console.log(`Hello, ${name}!`);
+	console.log(`Hello, ${name}!`);
 }
 
 sayHello("world"); // Hello, world!
@@ -357,6 +355,7 @@ sayHello("world"); // Hello, world!
 ## Introducing anywidget
 
 **anywidget** is a Python library that makes custom Jupyter Widgets easy. It is
+
 <u>**not**</u> a new widgets framework, but rather an abstraction around Jupyter
 Widgets using ESM.
 
@@ -372,23 +371,22 @@ Jupyter Widget), and **anywidget** takes care of connecting the two.
 ![overview of anywidget implementation. anywidget loads and executes widget JavaScript code sent from the Python kernel](/anywidget-overview.png)
 
 A consequence of this design is that users do not require intimate knowledge of frontend tooling
-to start making custom Jupyter Widgets. Instead, they can begin prototyping directly in standalone `.py` 
+to start making custom Jupyter Widgets. Instead, they can begin prototyping directly in standalone `.py`
 file or notebook cells–just like regular Python modules! You can even start prototyping in Google Colab
 and VS Code.
 
 In practice, the ESM required to connect a JavaScript library with Python is often minimal
 and can easily be inlined within the Python module as a string. As **anywidget** projects
 mature, however, it is recommended to organize the JavaScript source into separate files
-which can eventually be merged into a single optimized ESM file with a bundler. See the 
+which can eventually be merged into a single optimized ESM file with a bundler. See the
 [bundling documentation](/en/bundling) for more information.
 
-Lastly, since **anywidget** bypasses the various platform-specific module systems in favor 
+Lastly, since **anywidget** bypasses the various platform-specific module systems in favor
 of native ESM, users have the option to opt-in to an improved developer experience with
-modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development) 
-for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise HMR support for Jupyter Widgets. 
-Changes made to the JavaScript source during development are **instantly** reflected in all active 
+modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development)
+for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise HMR support for Jupyter Widgets.
+Changes made to the JavaScript source during development are **instantly** reflected in all active
 output notebook cells without refreshing the page or re-executing the a given cell.
-
 
 <blockquote>
     Today I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and 
@@ -402,21 +400,21 @@ output notebook cells without refreshing the page or re-executing the a given ce
 
     <br/>
 
-    I hope using **anywidget** is simple and enjoyable. I have personally found 
-    it valuable in my work as a visualization researcher to quickly iterate on new 
+    I hope using **anywidget** is simple and enjoyable. I have personally found
+    it valuable in my work as a visualization researcher to quickly iterate on new
     ideas to interactively explore biomedical datasets.
 
 </blockquote>
 
 ## Examples
 
-I have included several examples below demonstrating the **anywidget** API and its key features. 
+I have included several examples below demonstrating the **anywidget** API and its key features.
 All custom widgets are subclasses of `anywidget.AnyWidget`. Each subclass specifies,
 
 - `_esm` the **required** ECMAScript module for the widget. It must must export `render`
-to define custom rendering logic and initialize dynamic updates for the widget. This is an
-alias for the [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
-except the `view` is passed as an argument in the function definition.
+  to define custom rendering logic and initialize dynamic updates for the widget. This is an
+  alias for the [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
+  except the `view` is passed as an argument in the function definition.
 
 - `_css` an **optional** CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded in the global scope if using this feature, so take care in avoid global overrides.
 
@@ -455,18 +453,20 @@ class ExampleWidget(anywidget.AnyWidget):
 ExampleWidget()
 ```
 
-<div style="background-color: lightseagreen; padding: 0px 2px;" >Hello, World</div>
+<div style="background-color: lightseagreen; padding: 0px 2px;">
+	Hello, World
+</div>
 
 ### Two-Way Data Binding
 
 This example is slightly more sophisticated and demonstrates how to synchronize model state
-between the widget frontend and Python kernel. The `render` function creates a 
+between the widget frontend and Python kernel. The `render` function creates a
 `<button>` element and registers an event handler to increment the model `value` when
-the button is clicked. A second event handler is registered to update the the text 
-output each time `value` changes on the model. 
+the button is clicked. A second event handler is registered to update the the text
+output each time `value` changes on the model.
 
-By treating the model as the source of truth, whether Python kernel or JavaScript 
-update `value`, the count displayed is correct. See the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) 
+By treating the model as the source of truth, whether Python kernel or JavaScript
+update `value`, the count displayed is correct. See the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method)
 to learn more about the model view controller (MCV) framework the IPython widget framework frontend relies on.
 
 ```python
@@ -540,16 +540,22 @@ ConfettiWidget()
 
 ## Limitations
 
-**anywidget** does not currently allow the extension the `DOMWidgetModel`, so custom serialization 
-and deserialization of traitlets is not currently supported. Additionally lifecycle hooks 
-(e.g., `DOMWidgetView.remove()`) are not recognized, which can be useful for freeing browser 
+**anywidget** does not currently allow the extension the `DOMWidgetModel`, so custom serialization
+and deserialization of traitlets is not currently supported. Additionally lifecycle hooks
+(e.g., `DOMWidgetView.remove()`) are not recognized, which can be useful for freeing browser
 resources when a widget view is removed. I am actively working to support both of these use cases
 (and more) via additional ESM exports,
 
 ```javascript
-export let serializers = { /* ... */ }
-export function remove() { /* ... */ }
-export function render(view) { /* ... */ }
+export let serializers = {
+	/* ... */
+};
+export function remove() {
+	/* ... */
+}
+export function render(view) {
+	/* ... */
+}
 ```
 
 If this is interesting or exciting to you, please reach out and get involved on GitHub! Happy coding.
