@@ -42,7 +42,7 @@ export function render(view) {
 
 class CounterWidget(anywidget.AnyWidget):
     _esm = ESM
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 
 CounterWidget()
 ```
