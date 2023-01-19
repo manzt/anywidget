@@ -67,6 +67,10 @@ ul {
 	list-style-type: disc;
 }
 
+ol {
+	list-style-type: decimal;
+}
+
 nav ul {
 	list-style: none;
 	padding: 0;
