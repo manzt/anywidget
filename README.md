@@ -1,10 +1,10 @@
-# anywidget
+# anywidget <a href="https://github.com/manzt/anywidget"><img align="right" src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" height="38"></img></a>
 
 [![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
 [![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
 
-simple, custom jupyter widgets that "just work"
+custom jupyter widgets made easy
 
 - create widgets **without complicated cookiecutter templates**
 - **publish to PyPI** like any other Python package
@@ -42,7 +42,7 @@ export function render(view) {
 
 class CounterWidget(anywidget.AnyWidget):
     _esm = ESM
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 
 CounterWidget()
 ```

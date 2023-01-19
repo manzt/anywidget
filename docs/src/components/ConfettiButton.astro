@@ -1,0 +1,25 @@
+---
+type Props = {
+	size?: "xs" | "sm" | "lg" | "sm";
+};
+
+let { size = "xs" } = Astro.props as Props;
+---
+
+<button
+	class:list={[
+		`text-${size}`,
+		"text-white py-2 px-4 hover:bg-secondary-800 bg-secondary-600 rounded shadow",
+	]}
+	id="btn-confetti"
+>
+	click me!
+</button>
+
+<script type="module" is:inline>
+	import confetti from "https://cdn.skypack.dev/canvas-confetti";
+	let btn = document.querySelector("#btn-confetti");
+	btn.addEventListener("click", () => {
+		confetti();
+	});
+</script>

@@ -1,6 +1,6 @@
 export const SITE = {
 	title: "anywidget",
-	description: "custom jupyter widgets, made simple",
+	description: "custom jupyter widgets made easy",
 	defaultLanguage: "en_US",
 };
 
@@ -22,6 +22,7 @@ export type Frontmatter = {
 	dir?: "ltr" | "rtl";
 	ogLocale?: string;
 	lang?: string;
+	authors?: string[];
 };
 
 export const KNOWN_LANGUAGES = {
@@ -53,5 +54,8 @@ export const SIDEBAR: Sidebar = {
 		Tutorials: [
 			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
 		],
+		// Blog: [
+		// 	{ text: "Introducing anywidget", link: "blog/introducing-anywidget" },
+		// ],
 	},
 };

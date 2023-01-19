@@ -35,37 +35,35 @@ pip install anywidget
 import anywidget
 import traitlets
 
-
-
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
     export function render(view) {
-      let count = () => view.model.get("value");
-      let btn = document.createElement("button");
-      btn.classList.add("counter-button");
-      btn.innerHTML = `count is ${count()}`;
-      btn.addEventListener("click", () => {
-        view.model.set("value", count() + 1);
+      let getCount = () => view.model.get("count");
+      let button = document.createElement("button");
+      button.classList.add("counter-button");
+      button.innerHTML = `count is ${getCount()}`;
+      button.addEventListener("click", () => {
+        view.model.set("count", getCount() + 1);
         view.model.save_changes();
       });
-      view.model.on("change:value", () => {
-        btn.innerHTML = `count is ${count()}`;
+      view.model.on("change:count", () => {
+        button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(btn);
+      view.el.appendChild(button);
     }
     """
-    _css = """
+    _css="""
     .counter-button { background-color: #ea580c; }
     .counter-button:hover { background-color: #9a3412; }
     """
-    value = traitlets.Int(0).tag(sync=True) # widget-specific
+    count = traitlets.Int(0).tag(sync=True)
 
 counter = CounterWidget()
-counter.value = 10
+counter.count = 42
 counter
 ```
 
-<CounterButton size={"lg"} initialValue={10} />
+<CounterButton size={"lg"} initialValue={42} />
 
 What's going on here:
 
@@ -103,7 +101,7 @@ export function render(view) {
 
 You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
 
-## Why
+## Motivation
 
 Official
 [cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
