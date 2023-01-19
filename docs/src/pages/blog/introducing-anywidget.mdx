@@ -2,6 +2,7 @@
 title: "Introducing anywidget: Custom Jupyter Widgets Made Easy"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
+draft: true
 ---
 
 import CounterButton from "../../components/CounterButton.astro";
@@ -77,7 +78,7 @@ specifically Jupyter Widgets. The primary challenge is that each application
 Python program in the application kernel.
 
 Widget authors are thus tasked with not only packaging their JavaScript
-correctly for classic Jupyter notebooks but also for ensuring it can be used in multiple notebook 
+correctly for classic Jupyter notebooks but also for ensuring it can be used in multiple notebook
 environments, each with their own requirements and quirks.
 
 ![Widget front-end source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code](/client-js-diagram.png)
@@ -386,7 +387,7 @@ of native ESM, users have the option to opt-in to an improved developer experien
 modern front-end development also targeting ESM. The [Vite plugin](/en/bundling#development)
 for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
-Changes made to the JavaScript source during development are **instantly** reflected 
+Changes made to the JavaScript source during development are **instantly** reflected
 in the front end without refreshing or re-executing notebook cells.
 
 ### Get Started
