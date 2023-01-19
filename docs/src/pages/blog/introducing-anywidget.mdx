@@ -7,11 +7,11 @@ authors: ["Trevor Manz"]
 import CounterButton from "../../components/CounterButton.astro";
 import ConfettiButton from "../../components/ConfettiButton.astro";
 
-_TL;DR: [**anywidget**](https://github.com/manzt/anywidget) is a new Python library which <u>greatly</u>
+_TL;DR: [**anywidget**](https://github.com/manzt/anywidget) is a new Python library that <u>greatly</u>
 simplifies creating and publishing custom Jupyter Widgets. Unlike the traditional
 (cookiecutter) approach, with **anywidget** you 1.) avoid fiddling with build steps
 and bundlers, 2.) can <u>prototype widgets from within a notebook</u>, and 3.)
-get a modern frontend developer experience. **anywidget** allows you to write code like this,_
+get a modern front-end developer experience. **anywidget** allows you to write code like this:_
 
 ```python
 import anywidget
@@ -19,7 +19,7 @@ import traitlets
 
 
 class CounterWidget(anywidget.AnyWidget):
-    # Widget frontend JavaScript code
+    # Widget front-end JavaScript code
     _esm = """
     export function render(view) {
       let getCount = () => view.model.get("count");
@@ -66,7 +66,7 @@ A custom widget is composed of two separate programs:
 2. JavaScript code that renders the widget in the browser and communicates with
    Python
 
-![two components of a Jupyter widget, the JS frontend and Python backend](/widget-overview.png)
+![two components of a Jupyter widget, the JS front end and Python backend](/widget-overview.png)
 
 ### The Multi-Platform Problem
 
@@ -74,17 +74,15 @@ With the rise in popularity of Jupyter notebooks, there are a growing number of 
 to view and execute `.ipynb`, including JupyterLab, Google Colab, and VS Code.
 However, these notebook environments vary with regard to support for extensions,
 specifically Jupyter Widgets. The primary challenge is that each application
-must **discover** the frontend widget code then **load** and **execute** the
-JavaScript – a process which is not standardized, in contrast to the associated
 Python program in the application kernel.
 
-Widget authors are thus not only tasked with packaging their JavaScript
-correctly for Python but also for ensuring it can be used in multiple notebook environments, each with their own requirements
-and quirks.
+Widget authors are thus tasked with not only packaging their JavaScript
+correctly for classic Jupyter notebooks but also for ensuring it can be used in multiple notebook 
+environments, each with their own requirements and quirks.
 
-![Widget frontend source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code](/client-js-diagram.png)
+![Widget front-end source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code](/client-js-diagram.png)
 
-To a seasoned frontend engineer, this problem likely appears well suited for a
+To a seasoned front-end engineer, this problem likely appears well suited for a
 JavaScript
 [_bundler_](https://dev.to/underscorecode/javascript-bundlers-an-in-depth-comparative-is-webpack-still-the-best-bundler-in-2021-59jk),
 and it largely is. The issue is that **every widget author has to solve the
@@ -99,7 +97,7 @@ To address this issue, the Jupyter team recommends an approach using
 or recipes for creating new custom Jupyter Widgets. While the cookiecutters
 initially ensure compatibility with Jupyter and multiple notebook environments, there
 can be a steep learning curve for developers unfamiliar with the prescribed
-frontend tooling (i.e., `yarn`, Webpack, Babel, ESLint, and Jest are prerequisites) and substantial
+front-end tooling (i.e., `yarn`, Webpack, Babel, ESLint, and Jest are prerequisites) and substantial
 effort is **still required to keep the inherited build system up to
 date with the latest platform requirements**.
 
@@ -277,9 +275,9 @@ each project derived from the cookiecutters.
 
 </blockquote>
 
-Besides the frontend packaging problem, a key limitation in the current
+Besides the front-end packaging problem, a key limitation in the current
 state of Jupyter Widgets is that **prototyping requires the creation and installation of a
-new Python package** due to the mechanism by which Jupyter **discovers** widget frontend
+new Python package** due to the mechanism by which Jupyter **discovers** widget front-end
 code. Prototyping _must_ be done in either a classic Jupyter notebook
 or JupyterLab\* where the custom widget extensions have been registered manually
 to each of these environments.
@@ -306,13 +304,13 @@ and JavaScript programmers. Whereas regular Python modules can be prototyped
 in standalone `.py` files or even notebook cells and gradually transitioned to
 pip-installable packages, widgets _must_ be `pip` installed from the beginning.
 
-Finally, the frontend development ecosystem has matured rapidly over the last decade
+Finally, the front-end development ecosystem has matured rapidly over the last decade
 to enable instant, precise updates to client code without reloading the page or
 blowing away application state. Unfortunately, widget authors do not currently
-benefit from these advancements due to the legacy mechanism used by Jupyter frontends
+benefit from these advancements due to the legacy mechanism used by Jupyter front ends
 to **load** widget JavaScript. Instead, **full page reloads are required to view
-changes applied to the frontend widget code** and development feels sluggish compared
-to modern frontend applications.
+changes applied to the front-end widget code** and development feels sluggish compared
+to modern front-end applications.
 
 In summary, Jupyter notebooks are ubiquitous and Jupyter Widgets is the standard framework
 to extend notebook output cells in the browser with rich, interactive views or controls
@@ -320,7 +318,7 @@ for Python objects in the Jupyter kernel. However, the growing number of noteboo
 tools has resulted in a fragmented ecosystem that assumes reusable widgets are only possible
 if widget authors,
 
-1. Familiarize themselves with frontend build tooling and packaging
+1. Familiarize themselves with front-end build tooling and packaging
 2. Solve the same mutli-packaging problem for Jupyter-like targets
 3. Create new packages to start prototyping
 4. Use outdated web technologies for live development
@@ -372,8 +370,8 @@ define ESM and an associated Python class (i.e., the components of a Jupyter Wid
 
 A consequence of this design is that it drastically lowers the barrier to entry for many potential
 widget developers The data scientist with minimal JavaScript experience can begin prototyping her idea
-for a domain-specific Jupyter integration directly within her notebook (and also learn frontend!). No need to first
-install Node.js and understand frontend tooling. Conversely, a frontend engineer can learn Python
+for a domain-specific Jupyter integration directly within a notebook (and also learn front end!). No need to first
+install Node.js and understand JavaScript tooling. Conversely, a front-end engineer can learn Python
 by turning one of their JavaScript libraries into a widget within Google Colab. No need to learn about
 virtual environments or how Python modules work.
 
@@ -385,11 +383,11 @@ As **anywidget** projects mature, JavaScript code can be moved from inline strin
 
 Lastly, since **anywidget** bypasses the various platform-specific module systems in favor
 of native ESM, users have the option to opt-in to an improved developer experience with
-modern frontend development also targeting ESM. The [Vite plugin](/en/bundling#development)
+modern front-end development also targeting ESM. The [Vite plugin](/en/bundling#development)
 for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
 Changes made to the JavaScript source during development are **instantly** reflected 
-in the frontend without refreshing or re-executing notebook cells.
+in the front end without refreshing or re-executing notebook cells.
 
 ### Get Started
 
@@ -461,8 +459,8 @@ export function render(view) {
 #### Two-Way Data Binding
 
 The `ExampleWidget` demonstrates simple one-way data binding from the Python kernel
-to frontend view. This example is slightly more sophisticated in that the
-`render` function synchronizes the model state between the widget frontend and
+to front-end view. This example is slightly more sophisticated in that the
+`render` function synchronizes the model state between the widget front end and
 Python kernel (i.e., two-way data binding). The `render` function creates a
 `<button>` element and registers an event handler to increment the model `count` when
 the button is clicked. A second event handler is registered to update the text
@@ -471,7 +469,7 @@ output each time `count` changes on the model.
 By treating the model as the source of truth, regardless of whether `count` is updated on the
 Python side or the JavaScript side, the count displayed remains correct. You can learn more
 about the model view controller (MCV) framework the IPython widget framework
-frontend relies on in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
+front end relies on in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
 
 ```python
 import anywidget
