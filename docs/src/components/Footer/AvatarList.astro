@@ -4,67 +4,127 @@ type Props = {
 	path: string;
 };
 const { path } = Astro.props as Props;
+
 const resolvedPath = `docs/${path}`;
-const url = `https://api.github.com/repos/manzt/anywidget/commits?path=${resolvedPath}`;
 const commitsURL = `https://github.com/manzt/anywidget/commits/main/${resolvedPath}`;
 
-type Commit = {
-	author: {
-		id: string;
-		login: string;
-	};
+async function ghFetch(endpoint: string) {
+	let url = new URL(endpoint, "https://api.github.com");
+
+	const token = import.meta.env.SNOWPACK_PUBLIC_GITHUB_TOKEN ?? "hello";
+
+	if (!token) {
+		throw new Error(
+			'Cannot find "SNOWPACK_PUBLIC_GITHUB_TOKEN" used for escaping rate-limiting.'
+		);
+	}
+
+	const auth = `Basic ${Buffer.from(token, "binary").toString("base64")}`;
+
+	const res = await fetch(url, {
+		method: "GET",
+		headers: {
+			Authorization: auth,
+			"User-Agent": "astro-docs/1.0",
+		},
+	});
+
+	const data = await res.json();
+
+	if (!res.ok) {
+		throw new Error(
+			`GitHub request for ${url.pathname} failed. Reason: ${res.statusText} Message: ${data.message}`
+		);
+	}
+
+	return data;
+}
+
+type User = {
+	id: string;
+	login: string;
 };
 
-async function getCommits(url: string) {
-	try {
-		const token = import.meta.env.SNOWPACK_PUBLIC_GITHUB_TOKEN ?? "hello";
-		if (!token) {
-			throw new Error(
-				'Cannot find "SNOWPACK_PUBLIC_GITHUB_TOKEN" used for escaping rate-limiting.'
-			);
-		}
+type Commit = {
+	commit: {
+		author: {
+			name: string;
+			email: string;
+		};
+		message: string;
+	};
+	author: User;
+};
 
-		const auth = `Basic ${Buffer.from(token, "binary").toString("base64")}`;
-
-		const res = await fetch(url, {
-			method: "GET",
-			headers: {
-				Authorization: auth,
-				"User-Agent": "astro-docs/1.0",
-			},
+async function searchUsers(email: string): Promise<User[]> {
+	return ghFetch(`/search/users?q=${email}`)
+		.then((data) => data.items as User[])
+		.catch((e) => {
+			console.warn(`[error]  /src/components/AvatarList.astro 
+		${(e as any)?.message ?? e}`);
+			return [];
 		});
-
-		const data = await res.json();
-
-		if (!res.ok) {
-			throw new Error(
-				`Request to fetch commits failed. Reason: ${res.statusText}
-       Message: ${data.message}`
-			);
-		}
-
-		return data as Commit[];
-	} catch (e) {
-		console.warn(`[error]  /src/components/AvatarList.astro 
-    ${(e as any)?.message ?? e}`);
-		return [] as Commit[];
-	}
 }
 
-function removeDups(arr: Commit[]) {
-	const map = new Map<string, Commit["author"]>();
+async function getCommits({
+	user,
+	repo,
+	path,
+}: {
+	user: string;
+	repo: string;
+	path: string;
+}): Promise<Commit[]> {
+	return ghFetch(`/repos/${user}/${repo}/commits?path=${path}`)
+		.then((data) => data as Commit[])
+		.catch((e) => {
+			console.warn(`[error]  /src/components/AvatarList.astro 
+    ${(e as any)?.message ?? e}`);
+			return [] as Commit[];
+		});
+}
+
+async function removeDupsAndFindCoAuthors(arr: Commit[]) {
+	let map = new Map<string, User>();
+
+	// Collect co-author emails while iterating through commits.
+	// If they haven't authored a commit on this file,
+	// then we will need to look them up by email.
+	let coAuthorEmails = new Set<string>();
 
 	for (let item of arr) {
-		const author = item.author;
-		// Deduplicate based on author.id
-		map.set(author.id, { login: author.login, id: author.id });
+		let author = { ...item.author, email: item.commit.author.email };
+
+		// identify our authors by email
+		map.set(author.email, { login: author.login, id: author.id });
+
+		// parse commit message for co-authors
+		for (let line of item.commit.message.split("\n")) {
+			let maybeEmail = line.match(/^Co-authored-by:.*\u003c(.*)\u003e/)?.[1];
+			if (maybeEmail) coAuthorEmails.add(maybeEmail);
+		}
 	}
 
-	return [...map.values()];
+	for (let email of coAuthorEmails) {
+		let users = await searchUsers(email);
+		users.forEach((user) => map.set(email, user));
+	}
+
+	// finally dedupe by user id (incase separate emails for same user)
+	let deduped = new Map<string, User>();
+	for (let [_, user] of map) {
+		deduped.set(user.id, user);
+	}
+
+	return [...deduped.values()];
 }
 
-const data = await getCommits(url);
-const unique = removeDups(data);
+const data = await getCommits({
+	repo: "anywidget",
+	user: "manzt",
+	path: resolvedPath,
+});
+const unique = await removeDupsAndFindCoAuthors(data);
 const recentContributors = unique.slice(0, 3); // only show avatars for the 3 most recent contributors
 const additionalContributors = unique.length - recentContributors.length; // list the rest of them as # of extra contributors
 ---
