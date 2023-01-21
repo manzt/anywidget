@@ -12,6 +12,8 @@ custom jupyter widgets made easy
 - run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
+Learn more in [the announcement](https://anywidget.dev/blog/introducing-anywidget).
+
 ## Installation
 
 > **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
@@ -46,6 +48,8 @@ class CounterWidget(anywidget.AnyWidget):
     # Stateful property that can be accessed by JavaScript & Python
     count = traitlets.Int(0).tag(sync=True)
 ```
+
+Read [the documentation](https://anywidget.dev/en/getting-started) to learn more.
 
 ## Development
 
