@@ -14,6 +14,8 @@ custom jupyter widgets made easy
 
 ## Installation
 
+> **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
+
 ```
 pip install anywidget
 ```
