@@ -392,7 +392,7 @@ modern front-end development tools. The [Vite plugin](/en/bundling#development)
 for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
 Changes made to the JavaScript source during development are **instantly** reflected
-in the front-end without refreshing or re-executing notebook cells.
+in the front end without refreshing or re-executing notebook cells.
 
 ### Get Started
 
@@ -466,7 +466,7 @@ with the `sync=True` metadata – just like regular Jupyter Widgets!
 
 The `ExampleWidget` demonstrates simple one-way data binding from the Python kernel
 to front-end view. This example is slightly more sophisicated and synchronizes the
-model state between the widget front-end and the Python kernel (i.e., two-way data binding).
+model state between the widget front end and the Python kernel (i.e., two-way data binding).
 
 The `render` function creates a `button` element and registers an event handler
 to increment `count` when the button is clicked. A second event handler
@@ -475,7 +475,7 @@ updates the text output any time `count` changes.
 By treating the model as the source of truth, regardless of whether `count` is updated on the
 Python side or the JavaScript side, the count displayed remains correct. You can learn more
 about model view controller (MVC), the IPython widget framework
-the front-end relies on, in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
+the front end relies on, in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
 
 ```python
 import anywidget
