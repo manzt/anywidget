@@ -125,8 +125,8 @@ official cookiecutters and included the generated directories below.
 
 <br />
 
-This section not intended to critique the design choices by the Jupyter team and community members – **these recipes
-work are used widely** - but to illustrate the large surface area a widget author is responsible for both understanding and maintaining after project initialization.
+This section is not intended to critique the design choices by the Jupyter team and community members – **these recipes
+are used widely** - but to illustrate the large surface area a widget author is responsible for both understanding and maintaining after project initialization.
 For anyone who has used `create-react-app`, it is reminiscent of running `react-script eject` and
 vendoring all the build scripts.
 
@@ -322,7 +322,7 @@ In summary, Jupyter notebooks are ubiquitous and Jupyter Widgets is the standard
 to extend notebook output cells in the browser with rich, interactive views or controls
 for Python objects in the Jupyter kernel. However, the growing number of notebook environments
 has resulted in a fragmented ecosystem that assumes reusable widgets are only possible
-if widget authors,
+if widget authors:
 
 1. Learn and understand front-end build tooling
 2. Solve the same multi-packaging problem
@@ -346,7 +346,7 @@ exposing a **common mechanism to load and execute JavaScript**. ESM wasn't
 around when Jupyter and its derivatives were first created, but support
 now exists in _all_ of these tools because they run in web browsers!
 
-With ESM, the follow code runs in all major browsers without modifications:
+With ESM, the following code runs in all major browsers without modifications:
 
 ```javascript
 import * as d3 from "https://esm.sh/d3@7";
@@ -375,7 +375,7 @@ define ESM and an associated Python class (i.e., a Jupyter Widget), and **anywid
 
 A consequence of this design is that it drastically lowers the barrier to entry for many potential
 widget developers. The data scientist with minimal JavaScript experience can begin prototyping her idea
-for a domain-specific Jupyter integration directly within a notebook (and also learn front end). No need to first
+for a domain-specific Jupyter integration directly within a notebook (and also learn front-end). No need to first
 install Node.js and understand JavaScript tooling. Conversely, a front-end engineer can learn Python
 by turning one of their JavaScript libraries into a widget within Google Colab. No need to deal with
 virtual environments or learn how Python modules work.
@@ -392,7 +392,7 @@ modern front-end development tools. The [Vite plugin](/en/bundling#development)
 for **anywidget** extends [Vite's](https://vitejs.dev/) development server with precise
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement) support for Jupyter Widgets.
 Changes made to the JavaScript source during development are **instantly** reflected
-in the front end without refreshing or re-executing notebook cells.
+in the front-end without refreshing or re-executing notebook cells.
 
 ### Get Started
 
@@ -436,9 +436,9 @@ ExampleWidget()
 	Hello, World
 </div>
 
-... and each subclass specifies,
+... and each subclass specifies:
 
-- `_esm` the <u>**required**</u> ECMAScript module for the widget. It must must
+- `_esm` the <u>**required**</u> ECMAScript module for the widget. It must
   export a `render` function to define custom rendering logic and initialize dynamic
   updates for the widget.
 
@@ -458,7 +458,7 @@ with the `sync=True` metadata – just like regular Jupyter Widgets!
 > widget from the Jupyter [cookiecutter](https://github.com/jupyter-widgets/widget-ts-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/src/widget.ts),
 > produced in a single file in ~20 lines of code. You can copy any paste
 > this snippet into any notebook environment and run (or modify) the widget
-> without additionally installation or setup.
+> without additional installation or setup.
 
 ### Examples
 
@@ -466,7 +466,7 @@ with the `sync=True` metadata – just like regular Jupyter Widgets!
 
 The `ExampleWidget` demonstrates simple one-way data binding from the Python kernel
 to front-end view. This example is slightly more sophisicated and synchronizes the
-model state between the widget fronend and the Python kernel (i.e., two-way data binding).
+model state between the widget front-end and the Python kernel (i.e., two-way data binding).
 
 The `render` function creates a `button` element and registers an event handler
 to increment `count` when the button is clicked. A second event handler
@@ -475,7 +475,7 @@ updates the text output any time `count` changes.
 By treating the model as the source of truth, regardless of whether `count` is updated on the
 Python side or the JavaScript side, the count displayed remains correct. You can learn more
 about model view controller (MVC), the IPython widget framework
-the front end relies, in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
+the front-end relies on, in the Jupyter Widgets [documentation](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Models-and-views).
 
 ```python
 import anywidget
@@ -515,7 +515,7 @@ counter
 #### Third-party dependencies
 
 Any valid ESM is supported by **anywidget**, so dependencies can be imported
-directly from a CDN via URL so as long as they are also ESM. Browser
+directly from a CDN via URL as long as they are also ESM. Browser
 support for modules means these imports are optimized and cached in subsequent
 requests.
 
@@ -549,7 +549,7 @@ ConfettiWidget()
 ### Try It Out!
 
 Today, I released **anywidget** v0.1. You can find it on [GitHub](https://github.com/manzt/anywidget) and
-[PyPI](https://pypi.org/project/anywidget/). To install, just run
+[PyPI](https://pypi.org/project/anywidget/). To install, just run:
 
 ```bash
 pip install anywidget
