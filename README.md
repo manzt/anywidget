@@ -18,8 +18,16 @@ Learn more in [the announcement](https://anywidget.dev/blog/introducing-anywidge
 
 > **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
 
-```
+anywidget is available on [PyPI](https://pypi.org/project/anywidget/). To install anywidget, run the following command:
+
+```bash
 pip install anywidget
+```
+
+anywidget is also available on [conda-forge](https://anaconda.org/conda-forge/anywidget). If you have [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install anywidget using the following command:
+
+```bash
+conda install -c conda-forge anywidget
 ```
 
 ## Usage
@@ -74,13 +82,13 @@ Note for developers:
 
 For developing with JupyterLab:
 
-```
+```bash
 jupyter labextension develop --overwrite anywidget
 ```
 
 ## Release
 
-```
+```bash
 npm version [major|minor|patch]
 git tag -a vX.X.X -m "vX.X.X"
 git push --follow-tags
