@@ -18,13 +18,15 @@ Learn more in [the announcement](https://anywidget.dev/blog/introducing-anywidge
 
 > **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
 
-anywidget is available on [PyPI](https://pypi.org/project/anywidget/). To install anywidget, run the following command:
+**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and may be installed with `pip`:
 
 ```bash
 pip install anywidget
 ```
 
-anywidget is also available on [conda-forge](https://anaconda.org/conda-forge/anywidget). If you have [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install anywidget using the following command:
+It is also available on [conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
+[Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+installed on your computer, you can install **anywidget** with the following command:
 
 ```bash
 conda install -c conda-forge anywidget

@@ -29,11 +29,11 @@ Concretely, custom widgets are traditionally defined like:
 import { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 
 // All boilerplate, anywidget takes care of this ...
-class CustomWidgetModel extends DOMWidgetModel {
+class CustomModel extends DOMWidgetModel {
 	/* ... */
 }
 
-class CustomWidgetView extends DOMWidgetView {
+class CustomView extends DOMWidgetView {
 	render() {
 		let view = this;
 		let el = this.el;
@@ -42,7 +42,7 @@ class CustomWidgetView extends DOMWidgetView {
 	}
 }
 
-export { CustomWidgetModel, CustomWidgetView };
+export { CustomModel, CustomView };
 ```
 
 ... which must be transformed, bundled, and installed in multiple notebook environments.
