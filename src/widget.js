@@ -121,7 +121,6 @@ let anywidgetMarker = Symbol("anywidget");
  * @param {{ [K in OverrideKeys]: T[K] }} overrides
  */
 function readonly_proxy(obj, overrides) {
-	/** @type {ISerializers} */
 	return new Proxy(obj, {
 		get(target, prop, receiver) {
 			// tag our proxy
@@ -157,8 +156,7 @@ async function setup_model(view, { Model, widget }) {
 		 */
 
 		// TODO: allow users to override `DOMWidgetModel.serializers`?
-		// Seems like more trouble than it's worth, just pick a new name
-		// and keep things simple.
+		// Seems like more trouble than it's worth, just pick a new name and keep things simple.
 		for (let key in widget.serializers) {
 			if (key in Model.serializers) {
 				throw TypeError(
