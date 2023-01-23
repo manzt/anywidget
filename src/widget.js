@@ -1,9 +1,13 @@
 // @ts-check
 import { name, version } from "../package.json";
 
+/** @typedef {import("@jupyter-widgets/base").DOMWidgetView} DOMWidgetView */
+/** @typedef {import("@jupyter-widgets/base").ISerializers} ISerializers */
+
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: import("@jupyter-widgets/base").DOMWidgetView) => Promise<void>}
+ *  @prop render {(view: DOMWidgetView) => Promise<void>}
+ *  @prop [serializers] {ISerializers}
  */
 
 /**
@@ -92,6 +96,33 @@ async function load_esm(esm) {
 	return widget;
 }
 
+let anywidgetSymbol = Symbol("anywidget");
+
+/**
+ * Jupyter Widgets define custom `serializers` on the Model class statically.
+ * All **anywidget** users derive from the same `AnyModel`, so we can't allow
+ * users to mutate `AnyModel` (otherwise there could be conflicting state names)
+ *
+ * Creating a proxy for the `model.constructor` allows us to inject serializers
+ * on top of those statically defined for the Model.
+ *
+ * @param {typeof import("@jupyter-widgets/base").DOMWidgetModel} Model
+ * @param {ISerializers=} serializers
+ */
+function createModelProxy(Model, serializers) {
+	/** @type {ISerializers} */
+	return new Proxy(Model, {
+		get(target, prop, receiver) {
+			// tag our proxy
+			if (prop === anywidgetSymbol) return true;
+			// intercept serializers
+			if (prop === "serializers") return serializers;
+			// allow original object to handle the rest
+			return Reflect.get(target, prop, receiver);
+		},
+	});
+}
+
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function (base) {
 	class AnyModel extends base.DOMWidgetModel {
@@ -102,6 +133,11 @@ export default function (base) {
 		static view_name = "AnyView";
 		static view_module = name;
 		static view_module_version = version;
+
+		constructor(attributes, modelOptions) {
+			super(attributes, modelOptions);
+			this._initial_state = attributes;
+		}
 	}
 
 	class AnyView extends base.DOMWidgetView {
@@ -110,6 +146,20 @@ export default function (base) {
 			let widget = await load_esm(
 				this.model.get("_esm") ?? this.model.get("_module"),
 			);
+			this.model.constructor = createModelProxy(AnyModel, widget.serializers);
+			let state = this.model._initial_state;
+			if (state) {
+				state = await this.model.constructor._deserialize_state(
+					state,
+					this.model.widget_manager,
+				);
+				this.model.set_state(state);
+				this.model._initial_state;
+			}
+			this.model.constructor = createModelProxy(AnyModel, {
+				...AnyModel.serializers,
+				...widget.serializers,
+			});
 			await widget.render(this);
 		}
 	}
