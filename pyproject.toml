@@ -4,15 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "anywidget"
+description = "custom jupyter widgets made easy"
 authors = [
-    { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" },
+    { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }
 ]
-description = "simple, custom Jupyter widgets"
+license = "MIT"
+dynamic = ["version"]
 readme = "README.md"
 dependencies = [
     "ipywidgets"
 ]
-dynamic = ["version"]
 
 [project.optional-dependencies]
 test = [
