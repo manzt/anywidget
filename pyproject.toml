@@ -8,7 +8,7 @@ description = "custom jupyter widgets made easy"
 authors = [
     { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }
 ]
-license = { file = "LICENSE" }
+license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
 dependencies = [
