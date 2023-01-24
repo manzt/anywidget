@@ -1,0 +1,5 @@
+vite-plugin.js linguist-vendored
+anywidget/nbextension/extension.js linguist-vendored
+src/index.js linguist-vendored
+src/plugin.js linguist-vendored
+
