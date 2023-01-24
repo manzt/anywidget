@@ -3,23 +3,24 @@ title: "Jupyter Widgets: The Good Parts"
 layout: ../../layouts/MainLayout.astro
 ---
 
-_This section is largely adapted from
+_This post is largely adapted from
 ["Building a Custom Widget"](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html)
 in the Jupyter Widgets documentation. I'd hoped to avoid separately documenting
 the Jupyter Widgets API, but their tutorial mixes boilerplate/packaging details
-with essential Jupyter Widget - and therefore **anywidget** - "concepts"_
+with core "concepts" to Jupyter Widgets. Below is an attempt to distill these
+concepts for **anywidget** authors._
 
 ## The Widget Front End
 
-This section is intended to contextualize the Jupyter Widget documentation
-for the **anywidget** developer. Remember that **anywidget** is just abstraction
-over traditional Jupyter Widgets that removes boilerplate and packaging details.
+This section frames the Juptyer Widgets documentation in the context of **anywidget**.
+Remember that **anywidget** is just abstraction over traditional Jupyter Widgets 
+that removes boilerplate and packaging details.
 
 ### Comparison with traditional Jupyter Widgets
 
-**anywidget** primarily simplies creating your widget's front-end code. The only requirement
-is that the JavaScript you write is valid ESM and exports a function called `render`.
-**anywidget's** `render` function just an alias for the traditional
+**anywidget** simplies creating your widget's front-end code. Its only requirement
+is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and exports a function 
+called `render`. This `render` function just an alias for the traditional
 [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
 except that your Widget's view is passed as the first argument.
 
@@ -47,7 +48,7 @@ export { CustomModel, CustomView };
 
 ... which must be transformed, bundled, and installed in multiple notebook environments.
 
-In **anywidget**, the code above simplies to:
+In **anywidget**, the above code simplies to just:
 
 ```javascript
 /** @param {DOMWidgetView} view */
@@ -58,7 +59,10 @@ export function render(view) {
 }
 ```
 
-... which can easily be inlined as a Python string in many cases:
+... which explicity defines the widget view (i.e., `CustomView`) via the `render` 
+function, and (implicitly) **anywidget** defines the associated widget 
+model (i.e., `CustomModel`). **anywidget** front-end code is often so 
+minimal that it can easily be inlined as a Python string:
 
 ```python
 class CustomWidget(anywidget.AnyWidget):
@@ -79,7 +83,8 @@ is executed exactly **one per output cell** that displays the widget instance.
 Therefore, `render` primarily serves two purposes:
 
 1. Initializing content to display (i.e., create and append element(s) to `view.el`)
-2. Registering event handlers to change model state and/or update the display when model state changes
+2. Registering event handlers to update or display model state any time it changes
+(i.e., passing callbacks to `view.model.on`)
 
 ## Connecting JavaScript with Python
 
@@ -124,23 +129,22 @@ export function render(view) {
 }
 ```
 
-- **listen for changes to** `my_value`, and register event handlers (i.e.,
-  execute a function any time the `my_value` changes)
+- **listen for changes to** `my_value` (and register event handlers)
 
 ```javascript
 // index.js
 export function render(view) {
-	function on_changed() {
+	function on_change() {
 		let new_my_value = view.model.get("my_value");
 		console.log(`The 'my_value' changed to: ${new_my_value}`);
 	}
-	view.model.on("change:my_value", on_changed);
+	view.model.on("change:my_value", on_change);
 }
 ```
 
-> **Note**: In the snippet above, `on_changed` is called any
-> time `my_value` is updated from either Python or the
-> front-end code (via `view.model.set`).
+> **Note**: In the snippet above, `on_change` is called an _**event handler**_
+> because it executes any time `my_value` is updated from either Python or the
+> front-end code (i.e., a _change_ event).
 
 An important aspect traitlets, and their first-class support in Juptyer Widgets,
 is that it is easy to compose Jupyter Widgets together in Python. For example,
@@ -222,25 +226,44 @@ widget
 **anywidget** is a minimal layer on top of Jupyter Widgets and
 explicitly avoids inventing new concepts or widget APIs. Its design
 allows widget authors to have nearly same low-level control over their
-Jupyter integrations, but this low-level flexibility can be intimidating
+Jupyter integrations, but this flexibility can be intimidating
 and confusing new widget authors.
 
 Here are some general recommendations for being productive with **anywidget**:
 
-- Open your browser console. Widget front-end code executes directly on the
-  same webpage as your notebook. You can view errors in your front-end code or
-  intermediate values with `console.log`. Getting comfortable with the console will
-  help demystify the front end and enable you to quickly debug your widgets.
 
-![Jupyter notebook with the browser console open, logging "Hello from anywidget" from the custom widget](https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png)
+- **Start small**. Jupyter Widgets combine many concepts and tools from JavaScript
+  and Python. Unlike traditional widgets, **anywidget** allows you to learn both ecosystems
+  incrementally. Start with a [minimal example](/blog/introducing-anywidget#get-started),
+  and slowly add new functionality. Change traitlets. Update model state from JavaScript,
+  then update model state from Python. Add an event handler. It's a great way to learn.
 
-- If you are using third-party dependencies (e.g., `import * as d3 from "https://esm.sh/d3"`),
-  it is worth [reading more about ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/).
-  This is the core technology used by **anywidget**, and a deeper understanding will help you
-  discern what is and is not standard JavaScript.
+- **Learn to identify ECMAScript modules (ESM)**. ESM is the core
+  technology used by **anywidget**, and a deeper understanding will help you
+  discern what is and (perhaps more importantly) is **_not_** standard JavaScript.
+  I recommend reading Lin Clark's ["_ES modules: A cartoon deep-dive_"](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/)
+  to learn more.
 
-- Prefer Traitlets over custom messages for JS <> Python communication. Widget state can be
+- **Prefer Traitlets over custom messages for state synchronization**. Widget state can be
   fully recreated from traits without Python running, whereas custom messages require both
   an active Python kernel and special ordering of function calls. Write logic that treats
-  your `view.model` as the source of truth (see the **anywidget**
-  [Two-Way Data-Binding Example](https://anywidget.dev/blog/introducing-anywidget/#examples).
+  your `view.model` as the source of truth (see 
+  [Two-Way Data-Binding Example](https://anywidget.dev/blog/introducing-anywidget/#examples)).
+
+- **Use the browser console**. View errors or intermediate values in your front-end
+  code with the browser's [developer tools](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_are_browser_developer_tools). 
+  Getting comfortable with the console will help demystify the front end and enable you 
+  to quickly debug your widgets.
+
+  <center>
+  <img
+    class="my-2 max-width-lg w-3/4 p-2 pb-0 rounded border border-primary-400/50 shadow-md shadow-primary-500/50"
+    alt="Jupyter notebook with the browser console open, logging 'Hello from anywidget' from the custom widget"
+    src="https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png"
+  />
+  </center>
+
+- **Have fun**. A primary goal of **anywidget** is to make it simple and enjoyable to
+  create custom widgets. While it can serve as the foundation for a useful domain-specific
+  integration, **anywidget** can also be used as a learning tool to poke around with 
+  the front end - or yet another way to [_Rick Roll_ your friends](https://twitter.com/rrherr/status/1616508764907241472).
