@@ -14,13 +14,13 @@ concepts for **anywidget** authors._
 ## The Widget Front End
 
 This section frames the Juptyer Widgets documentation in the context of **anywidget**.
-Remember that **anywidget** is just abstraction over traditional Jupyter Widgets 
+Remember that **anywidget** is just abstraction over traditional Jupyter Widgets
 that removes boilerplate and packaging details.
 
 ### Comparison with traditional Jupyter Widgets
 
 **anywidget** simplies creating your widget's front-end code. Its only requirement
-is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and exports a function 
+is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and exports a function
 called `render`. This `render` function just an alias for the traditional
 [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
 except that your Widget's view is passed as the first argument.
@@ -60,9 +60,9 @@ export function render(view) {
 }
 ```
 
-... which explicity defines the widget view (i.e., `CustomView`) via the `render` 
-function, and (implicitly) **anywidget** defines the associated widget 
-model (i.e., `CustomModel`). **anywidget** front-end code is often so 
+... which explicity defines the widget view (i.e., `CustomView`) via the `render`
+function, and (implicitly) **anywidget** defines the associated widget
+model (i.e., `CustomModel`). **anywidget** front-end code is often so
 minimal that it can easily be inlined as a Python string:
 
 ```python
@@ -85,7 +85,7 @@ Therefore, `render` primarily serves two purposes:
 
 1. Initializing content to display (i.e., create and append element(s) to `view.el`)
 2. Registering event handlers to update or display model state any time it changes
-(i.e., passing callbacks to `view.model.on`)
+   (i.e., passing callbacks to `view.model.on`)
 
 ## Connecting JavaScript with Python
 
@@ -232,7 +232,6 @@ and confusing new widget authors.
 
 Here are some general recommendations for being productive with **anywidget**:
 
-
 - **Start small**. Jupyter Widgets combine many concepts and tools from JavaScript
   and Python. Unlike traditional widgets, **anywidget** allows you to learn both ecosystems
   incrementally. Start with a [minimal example](/blog/introducing-anywidget#get-started),
@@ -248,23 +247,53 @@ Here are some general recommendations for being productive with **anywidget**:
 - **Prefer Traitlets over custom messages for state synchronization**. Widget state can be
   fully recreated from traits without Python running, whereas custom messages require both
   an active Python kernel and special ordering of function calls. Write logic that treats
-  your `view.model` as the source of truth (see 
+  your `view.model` as the source of truth (see
   [Two-Way Data-Binding Example](https://anywidget.dev/blog/introducing-anywidget/#examples)).
 
 - **Use the browser console**. View errors or intermediate values in your front-end
-  code with the browser's [developer tools](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_are_browser_developer_tools). 
-  Getting comfortable with the console will help demystify the front end and enable you 
+  code with the browser's [developer tools](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_are_browser_developer_tools).
+  Getting comfortable with the console will help demystify the front end and enable you
   to quickly debug your widgets.
 
   <center>
+  <div
+    class="my-3 px-1 w-11/12 max-w-lg pb-1 bg-primary-400/50 rounded border border-primary-400/50 shadow-md shadow-primary-500/50"
+  >
+  <div
+    class="flex border-b border-primary-400 items-center"
+    aria-hidden="true"
+  >
+    <div class="flex space-x-1 px-2">
+      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+    </div>
+    <div
+      class="flex grow items-center space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="1em"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        viewBox="0 0 32 32"
+        ><path
+          fill="currentColor"
+          d="M24 14h-2V8a6 6 0 0 0-12 0v6H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM12 8a4 4 0 0 1 8 0v6h-8Zm12 20H8V16h16Z"
+        ></path></svg
+      >
+      <span>localhost:8080/notebooks/Example.ipynb</span>
+    </div>
+  </div>
   <img
-    class="my-2 max-width-lg w-3/4 p-2 pb-0 rounded border border-primary-400/50 shadow-md shadow-primary-500/50"
+    class="rounded"
     alt="Jupyter notebook with the browser console open, logging 'Hello from anywidget' from the custom widget"
     src="https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png"
   />
+  </div>
   </center>
 
 - **Have fun**. A primary goal of **anywidget** is to make it simple and enjoyable to
   create custom widgets. While it can serve as the foundation for a useful domain-specific
-  integration, **anywidget** can also be used as a learning tool to poke around with 
+  integration, **anywidget** can also be used as a learning tool to poke around with
   the front end - or yet another way to [_Rick Roll_ your friends](https://twitter.com/rrherr/status/1616508764907241472).
