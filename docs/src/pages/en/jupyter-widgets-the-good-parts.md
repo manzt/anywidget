@@ -1,9 +1,10 @@
 ---
 title: "Jupyter Widgets: The Good Parts"
+description: "Distilling core Jupyter Widgets concepts for anywidget authors"
 layout: ../../layouts/MainLayout.astro
 ---
 
-_This post is largely adapted from
+_This page is largely adapted from
 ["Building a Custom Widget"](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html)
 in the Jupyter Widgets documentation. I'd hoped to avoid separately documenting
 the Jupyter Widgets API, but their tutorial mixes boilerplate/packaging details
