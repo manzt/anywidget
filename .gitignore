@@ -13,3 +13,5 @@ anywidget/labextension/static/*
 
 dist/
 dist-python/
+
+e2e/fixtures/
