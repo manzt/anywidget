@@ -73,7 +73,7 @@ jobs:
 
     - name: Run test suite
       run: |
-        npx playwright run
+        npx playwright test 
 
   # this will run when you have tagged a commit, starting with "v*"
   # and requires that you have put your twine API key in your 
