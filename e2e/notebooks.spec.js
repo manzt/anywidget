@@ -4,35 +4,7 @@ import * as child_process from "node:child_process";
 
 import { expect, test } from "@playwright/test";
 
-let source = path.resolve(__dirname, "Test.ipynb");
-
-// https://github.com/jupyter/nbconvert/issues/1900
-let sourceNoArrowFuncs = path.resolve(__dirname, "TestHTML.ipynb");
-
-let fixtures = path.resolve(__dirname, "fixtures");
-
 import { version } from "../package.json";
-
-test.beforeAll(async () => {
-	if (fs.existsSync(fixtures)) {
-		await fs.promises.rm(fixtures, { recursive: true });
-	}
-	await fs.promises.mkdir(fixtures);
-	await fs.promises.copyFile(
-		source,
-		path.resolve(__dirname, "fixtures/notebook.ipynb"),
-	);
-	await fs.promises.copyFile(
-		source,
-		path.resolve(__dirname, "fixtures/lab.ipynb"),
-	);
-});
-
-test.afterAll(async () => {
-	if (fs.existsSync(fixtures)) {
-		await fs.promises.rm(fixtures, { recursive: true });
-	}
-});
 
 test("Jupyter notebook", async ({ page }) => {
 	await page.goto("http://localhost:8889/notebooks/fixtures/notebook.ipynb");
@@ -46,13 +18,17 @@ test("JupyterLab", async ({ page }) => {
 
 test("nbconvert HTML", async ({ page }) => {
 	let location = "http://localhost:1234";
+	let source = path.resolve(__dirname, "fixtures", "html.ipynb");
 
 	// Convert the notebook to HTML and inject on page
 	/** @type {string} */
-	let html = await new Promise((resolve) =>
+	let html = await new Promise((resolve, reject) =>
 		child_process.exec(
-			`jupyter nbconvert --execute --to html --stdout ${sourceNoArrowFuncs}`,
-			(_, stdout) => resolve(stdout),
+			`jupyter nbconvert --execute --to html --stdout ${source}`,
+			(err, stdout) => {
+				if (err) reject(err);
+				resolve(stdout);
+			}
 		)
 	);
 
