@@ -48,11 +48,6 @@ test("JupyterLab", async ({ page }) => {
 test("nbconvert HTML", async ({ page }) => {
 	let location = "http://localhost:1234";
 
-	page.on(
-		"request",
-		(request) => console.log(">>", request.method(), request.url()),
-	);
-
 	// Convert the notebook to HTML and inject on page
 	let html = await new Promise<string>((resolve) =>
 		child_process.exec(
@@ -99,12 +94,17 @@ async function test_executed(_: Page, outputs: Locator) {
 
 /** Runs a "live" test suite in Jupyter/JupyterLab notebook. */
 async function test_interactive(page: Page, outputs: Locator) {
+	await page.waitForLoadState("networkidle");
+
+	// idk, this helps to make tests not randomly fail
+	await new Promise((resolve) => setTimeout(resolve, 3000));
+
 	// Widget button
 	let btn = outputs.nth(0).locator(".counter-button");
 	// Python cell
 	let py_output = outputs.nth(1).locator("pre");
 
-	// Execute first cell (twice)
+	// Execute first cell (twice, just to make sure it has executed)
 	await page.getByRole("textbox").nth(0).press("Shift+Enter");
 
 	// Button is shown with correct initialized count
