@@ -3,7 +3,6 @@ import * as path from "node:path";
 import * as child_process from "node:child_process";
 
 import { expect, test } from "@playwright/test";
-import type { Locator, Page } from "@playwright/test";
 
 let source = path.resolve(__dirname, "Test.ipynb");
 
@@ -49,7 +48,8 @@ test("nbconvert HTML", async ({ page }) => {
 	let location = "http://localhost:1234";
 
 	// Convert the notebook to HTML and inject on page
-	let html = await new Promise<string>((resolve) =>
+	/** @type {string} */
+	let html = await new Promise((resolve) =>
 		child_process.exec(
 			`jupyter nbconvert --execute --to html --stdout ${sourceNoArrowFuncs}`,
 			(_, stdout) => resolve(stdout),
@@ -78,7 +78,11 @@ test("nbconvert HTML", async ({ page }) => {
 	await test_executed(page, page.locator(".jp-OutputArea"));
 });
 
-async function test_executed(_: Page, outputs: Locator) {
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {import('@playwright/test').Locator} outputs Jupyter output cells
+ */
+async function test_executed(page, outputs) {
 	let btn = outputs.nth(0).locator(".counter-button");
 	let py_output = outputs.nth(1).locator("pre");
 
@@ -92,8 +96,13 @@ async function test_executed(_: Page, outputs: Locator) {
 	await expect(btn).toHaveText("count is 102");
 }
 
-/** Runs a "live" test suite in Jupyter/JupyterLab notebook. */
-async function test_interactive(page: Page, outputs: Locator) {
+/**
+ * Runs a "live" test suite in Jupyter/JupyterLab notebook
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {import('@playwright/test').Locator} outputs Jupyter output cells
+ */
+async function test_interactive(page, outputs) {
 	await page.waitForLoadState("networkidle");
 
 	// idk, this helps to make tests not randomly fail
