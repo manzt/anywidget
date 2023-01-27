@@ -35,7 +35,6 @@ jobs:
           pytest ./tests
 
   E2E:
-    name: Run end-to-end tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -58,23 +57,23 @@ jobs:
         retention-days: 30
 
     - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.x"
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
 
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install build nbconvert jupyterlab
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build nbconvert jupyterlab
 
-      - name: Build anywidget and install wheel
-        run: |
-          python -m build
-          pip install dist/anywidget*.whl
+    - name: Build anywidget and install wheel
+      run: |
+        python -m build
+        pip install dist/anywidget*.whl
 
-      - name: Run test suite
-        run: |
-          npx playwright run
+    - name: Run test suite
+      run: |
+        npx playwright run
 
   # this will run when you have tagged a commit, starting with "v*"
   # and requires that you have put your twine API key in your 
