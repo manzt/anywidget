@@ -1,3 +1,4 @@
+// @ts-check
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as child_process from "node:child_process";
@@ -8,6 +9,10 @@ import { version } from "../package.json";
 
 test("Jupyter notebook", async ({ page }) => {
 	await page.goto("http://localhost:8889/notebooks/fixtures/notebook.ipynb");
+	await Promise.all([
+		page.waitForSelector("#notification_kernel", { state: "hidden" }),
+		page.waitForSelector("#notification_noteobok", { state: "hidden" }),
+	]);
 	await test_interactive(page, page.locator(".output"));
 });
 
