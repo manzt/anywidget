@@ -1,4 +1,4 @@
-import * as CONFIG from "./config";
+import * as CONFIG from "./consts";
 
 export function getTitle(frontmatter: { title?: string; url?: string } = {}) {
 	let title = CONFIG.SITE.title;

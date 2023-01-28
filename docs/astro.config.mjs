@@ -26,5 +26,5 @@ export default defineConfig({
 		// Suports components in markdown
 		mdx(),
 	],
-	site: `https://anywidget.dev`,
+	site: `https://anywidget.dev/`,
 });

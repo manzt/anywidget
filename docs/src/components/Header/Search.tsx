@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useCallback, useRef, useState } from "react";
-import { ALGOLIA } from "../../config";
+import { ALGOLIA } from "../../consts";
 import "@docsearch/css";
 import "./HeaderButton.css";
 import "./Search.css";
