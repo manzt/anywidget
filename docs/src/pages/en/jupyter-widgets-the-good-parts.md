@@ -54,8 +54,8 @@ In **anywidget**, the above code simplies to just:
 ```javascript
 /** @param {DOMWidgetView} view */
 export function render(view) {
-	let el = this.el;
-	let model = this.model;
+	let el = view.el;
+	let model = view.model;
 	/* ... */
 }
 ```
@@ -70,8 +70,8 @@ class CustomWidget(anywidget.AnyWidget):
     _esm = """
     /** @param {DOMWidgetView} view */
     export function render(view) {
-      let el = this.el;
-      let model = this.model;
+      let el = view.el;
+      let model = view.model;
       /* ... */
     }
     """
