@@ -260,7 +260,7 @@ Here are some general recommendations for being productive with **anywidget**:
     class="my-3 px-1 w-11/12 max-w-lg pb-1 bg-primary-400/50 rounded border border-primary-400/50 shadow-md shadow-primary-500/50"
   >
   <div
-    class="flex border-b border-primary-400 items-center"
+    class="flex items-center"
     aria-hidden="true"
   >
     <div class="flex space-x-1 px-2">
@@ -269,7 +269,7 @@ Here are some general recommendations for being productive with **anywidget**:
       <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
     </div>
     <div
-      class="flex grow items-center space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none"
+      class="overflow-x-hidden flex grow items-center mr-4 space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

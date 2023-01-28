@@ -1,6 +1,6 @@
 ---
 import { getLanguageFromURL, KNOWN_LANGUAGE_CODES } from "../../languages";
-import * as CONFIG from "../../config";
+import * as CONSTS from "../../consts";
 import AnyWidgetLogo from "./AnyWidgetLogo.astro";
 import SkipToContent from "./SkipToContent.astro";
 import SidebarToggle from "./SidebarToggle";
@@ -20,7 +20,7 @@ const lang = getLanguageFromURL(currentPage);
 		<div class="logo">
 			<a href="/">
 				<AnyWidgetLogo size={38} />
-				<h1>{CONFIG.SITE.title}</h1>
+				<h1>{CONSTS.SITE.title}</h1>
 			</a>
 		</div>
 		<div style="flex-grow: 0.8;"></div>

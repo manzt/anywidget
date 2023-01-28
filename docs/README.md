@@ -23,7 +23,7 @@ All commands are run from the root of the project, from a terminal:
 
 ### Site metadata
 
-`src/config.ts` contains several data objects that describe metadata about your
+`src/consts.ts` contains several data objects that describe metadata about your
 site like title, description, default language, and Open Graph details. You can
 customize these to match your project.
 
@@ -70,7 +70,7 @@ For more SEO related properties, look at `src/components/HeadSEO.astro`
 ### Sidebar navigation
 
 The sidebar navigation is controlled by the `SIDEBAR` variable in your
-`src/config.ts` file. You can customize the sidebar by modifying this object. A
+`src/consts.ts` file. You can customize the sidebar by modifying this object. A
 default, starter navigation has already been created for you.
 
 ```ts
@@ -113,11 +113,11 @@ To add a new language to your project, you'll want to extend the current
 ```
 
 You'll also need to add the new language name to the `KNOWN_LANGUAGES` map in
-your `src/config.ts` file. This will enable your new language switcher in the
+your `src/consts.ts` file. This will enable your new language switcher in the
 site header.
 
 ```diff
-// src/config.ts
+// src/consts.ts
 export const KNOWN_LANGUAGES = {
   English: 'en',
 +  Spanish: 'es',
@@ -132,7 +132,7 @@ content for every language.
 > Make sure the sidebar `link` value points to the correct language!
 
 ```diff
-// src/config.ts
+// src/consts.ts
 export const SIDEBAR = {
   en: [
     { text: 'Section Header', header: true, },
@@ -175,7 +175,7 @@ layouts and configurations with the preferred language.
 [Algolia](https://www.algolia.com/) offers a free service to qualified open
 source projects called [DocSearch](https://docsearch.algolia.com/). If you are
 accepted to the DocSearch program, provide your API Key & index name in
-`src/config.ts` and a search box will automatically appear in your site header.
+`src/consts.ts` and a search box will automatically appear in your site header.
 
 Note that Aglolia and Astro are not affiliated. We have no say over acceptance
 to the DocSearch program.

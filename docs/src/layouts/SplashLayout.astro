@@ -2,11 +2,11 @@
 import HeadSEO from "../components/HeadSEO.astro";
 import HeadCommon from "../components/HeadCommon.astro";
 import Header from "../components/Header/Header.astro";
-import type * as CONFIG from "../config";
+import type * as CONSTS from "../consts";
 import { getTitle } from "../util";
 
 type Props = {
-	frontmatter?: CONFIG.Frontmatter;
+	frontmatter?: CONSTS.Frontmatter;
 };
 
 const { frontmatter } = Astro.props as Props;

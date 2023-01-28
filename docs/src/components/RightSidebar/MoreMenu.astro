@@ -1,5 +1,5 @@
 ---
-import * as CONFIG from "../../config";
+import * as CONSTS from "../../consts";
 
 type Props = {
 	editHref: string;
@@ -38,9 +38,9 @@ const showMoreSection = true;
 		)
 	}
 	{
-		CONFIG.COMMUNITY_INVITE_URL && (
+		CONSTS.COMMUNITY_INVITE_URL && (
 			<li class={`header-link depth-2`}>
-				<a href={CONFIG?.COMMUNITY_INVITE_URL} target="_blank">
+				<a href={CONSTS?.COMMUNITY_INVITE_URL} target="_blank">
 					<svg
 						aria-hidden="true"
 						focusable="false"
@@ -64,7 +64,7 @@ const showMoreSection = true;
 		)
 	}
 	<li class={`header-link depth-2`}>
-		<a href={CONFIG.GITHUB_URL} target="_blank">
+		<a href={CONSTS.GITHUB_URL} target="_blank">
 			<svg
 				aria-hidden="true"
 				focusable="false"
