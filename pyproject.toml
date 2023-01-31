@@ -57,7 +57,6 @@ dependencies = [
 ]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-path = "."
 build_cmd = "build"
 
 [tool.hatch.version]
