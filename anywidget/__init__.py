@@ -1,7 +1,7 @@
 import sys
 
-from ._version import __version__ # noqa
-from .widget import AnyWidget # noqa
+from ._version import __version__  # noqa
+from .widget import AnyWidget  # noqa
 
 try:
     if "google.colab" in sys.modules:
