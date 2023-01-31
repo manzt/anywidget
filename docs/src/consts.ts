@@ -36,9 +36,9 @@ export const COMMUNITY_INVITE_URL = "";
 
 // See "Algolia" section of the README for more information.
 export const ALGOLIA = {
-	indexName: "XXXXXXXXXX",
-	appId: "XXXXXXXXXX",
-	apiKey: "XXXXXXXXXX",
+	indexName: "anywidget",
+	appId: "5UZQUZZNXI",
+	apiKey: "f8be8ea567a2b746ccc3986f9db3a129",
 };
 
 export type Sidebar = Record<
