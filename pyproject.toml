@@ -17,8 +17,9 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "black",
-    "pytest"
+    "black[jupyter]",
+    "pytest",
+    "ruff==0.0.238"
 ]
 
 [project.urls]

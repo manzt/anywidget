@@ -24,23 +24,15 @@ cmdclass = wrap_installers(
     skip_if_exists=targets,
 )
 
-data_files = get_data_files([
-    (
-        "share/jupyter/nbextensions/anywidget/",
-        "anywidget/nbextension/",
-        "*"
-    ),
-    (
-        "share/jupyter/labextensions/anywidget/",
-        "anywidget/labextension/",
-        "**"
-    ),
-    (
-        "etc/jupyter/nbconfig/notebook.d/",
-        ".",
-        "anywidget.json",
-    ),
-])
+data_files = get_data_files(
+    [
+        # fmt: off
+        ("share/jupyter/nbextensions/anywidget/", "anywidget/nbextension/", "*"),
+        ("share/jupyter/labextensions/anywidget/", "anywidget/labextension/", "**"),
+        ("etc/jupyter/nbconfig/notebook.d/", ".", "anywidget.json"),
+        # fmt: on
+    ]
+)
 
 if __name__ == "__main__":
     setup(
