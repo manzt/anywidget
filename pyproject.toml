@@ -11,8 +11,10 @@ authors = [
 license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
+requires-python = ">=3.7"
 dependencies = [
-    "ipywidgets"
+    "ipywidgets",
+    "importlib_metadata ; python_version < '3.8'",
 ]
 
 [project.optional-dependencies]
@@ -62,3 +64,15 @@ build_cmd = "build"
 [tool.hatch.version]
 path = "package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
+
+[tool.hatch.envs.default]
+dependencies = [
+    "black[jupyter]",
+    "pytest",
+    "ruff==0.0.238"
+]
+
+[tool.hatch.envs.default.scripts]
+fmt = "black ."
+lint = "ruff ."
+test = "pytest ."
