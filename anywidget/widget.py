@@ -17,7 +17,7 @@ class AnyWidget(ipywidgets.DOMWidget):
 
     def __init__(self, *args, **kwargs) -> None:
         if not any(hasattr(self, attr) for attr in _ESM_CLASS_ATTRS):
-            raise ValueError(
+            raise TypeError(
                 "Cannot instantiate AnyWidget without defining one of the following "
                 f"class attributes: {_ESM_CLASS_ATTRS}"
             )
