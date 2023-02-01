@@ -3,6 +3,8 @@ import traitlets.traitlets as t
 
 from ._version import __version__
 
+_ESM_CLASS_ATTRS = ("_esm", "_module")
+
 
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
@@ -14,12 +16,17 @@ class AnyWidget(ipywidgets.DOMWidget):
     _view_module_version = t.Unicode(__version__).tag(sync=True)
 
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+        if not any(hasattr(self, attr) for attr in _ESM_CLASS_ATTRS):
+            raise ValueError(
+                "Cannot instantiate AnyWidget without defining one of the following "
+                f"class attributes: {_ESM_CLASS_ATTRS}"
+            )
 
+        super().__init__(*args, **kwargs)
         # Add anywidget JS/CSS source as traits if not registered
         anywidget_traits = {
             k: t.Unicode(getattr(self, k)).tag(sync=True)
-            for k in ("_esm", "_module", "_css")
+            for k in _ESM_CLASS_ATTRS + ("_css",)
             if hasattr(self, k) and not self.has_trait(k)
         }
 
