@@ -3,8 +3,21 @@ import traitlets.traitlets as t
 
 from ._version import __version__
 
-_ESM_CLASS_ATTRS = ("_esm", "_module")
-
+DEFAULT_ESM = """
+    export function render(view) {
+        console.log("Dev note: No _esm defined for this widget:", view);
+        let root = document.createElement("div");
+        let url = "https://anywidget.dev/en/getting-started/";
+        let p = Object.assign(document.createElement("p"), {
+            innerHTML: '<strong>Dev note</strong>: ' +
+            `<a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>` +
+            `on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>` +
+            ' to customize this widget.'
+        });
+        root.appendChild(p);
+        view.el.appendChild(root);
+    }
+"""
 
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
@@ -16,19 +29,17 @@ class AnyWidget(ipywidgets.DOMWidget):
     _view_module_version = t.Unicode(__version__).tag(sync=True)
 
     def __init__(self, *args, **kwargs) -> None:
-        if not any(hasattr(self, attr) for attr in _ESM_CLASS_ATTRS):
-            raise TypeError(
-                "Cannot instantiate AnyWidget without defining one of the following "
-                f"class attributes: {_ESM_CLASS_ATTRS}"
-            )
-
         super().__init__(*args, **kwargs)
+
         # Add anywidget JS/CSS source as traits if not registered
         anywidget_traits = {
             k: t.Unicode(getattr(self, k)).tag(sync=True)
-            for k in _ESM_CLASS_ATTRS + ("_css",)
+            for k in ("_esm", "_module", "_css")
             if hasattr(self, k) and not self.has_trait(k)
         }
+        # show default _esm if not defined
+        if all(i not in anywidget_traits for i in ("_esm", "_module")):
+            anywidget_traits["_esm"] = t.Unicode(DEFAULT_ESM).tag(sync=True)
 
         # TODO: a better way to uniquely identify this subclasses?
         # We use the fully-qualified name to get an id which we
