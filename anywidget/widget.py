@@ -11,7 +11,7 @@ DEFAULT_ESM = """
         let p = Object.assign(document.createElement("p"), {
             innerHTML: '<strong>Dev note</strong>: ' +
             `<a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>` +
-            `on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>` +
+            ` on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>` +
             ' to customize this widget.'
         });
         root.appendChild(p);
