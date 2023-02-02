@@ -32,9 +32,40 @@ class Displayable(EventedModel):
                 }
             },
         )
+        self._comm.on_msg(self._handle_msg)
         self.send_state()
         # send state on ANY change
         self.events.connect(self._on_event)
+
+    def _handle_msg(self, msg: dict):
+        """Called when a msg is received from the front-end"""
+        data = msg['content']['data']
+        method = data['method']
+
+        if method == 'update':
+            if 'state' in data:
+                state = data['state']
+                if 'buffer_paths' in data:
+                    ...
+                    # TODO: _put_buffers(state, data['buffer_paths'], msg['buffers'])
+                self.set_state(state)
+
+        # Handle a state request.
+        elif method == 'request_state':
+            self.send_state()
+
+        # Handle a custom msg from the front-end.
+        elif method == 'custom':
+            if 'content' in data:
+                # TODO
+                self._handle_custom_msg(data['content'], msg['buffers'])
+
+    def set_state(self, state):
+        for key, val in state.items():
+           setattr(self, key, val)
+
+    def _handle_custom_msg(self, content: dict, buffers: list | None):
+        print(content, buffers)
 
     def _on_event(self, event: EmissionInfo):
         """Called whenever the python model changes"""
