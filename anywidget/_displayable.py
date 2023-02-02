@@ -1,6 +1,6 @@
-from typing import Any, TypeVar, cast
+from typing import Any, Container, TypeVar, cast
 from ipykernel.comm import Comm
-from psygnal import EventedModel
+from psygnal import EventedModel, EmissionInfo
 from pydantic import PrivateAttr
 
 
@@ -11,14 +11,48 @@ class Displayable(EventedModel):
     _PROTOCOL_VERSION_MINOR = 1
     _comm: Comm = PrivateAttr(default=None)
 
+    esm: str
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        version = f"{self._PROTOCOL_VERSION_MAJOR}.{self._PROTOCOL_VERSION_MINOR}"
+        version = f"{self._PROTOCOL_VERSION_MAJOR}.{self._PROTOCOL_VERSION_MINOR}.0"
         self._comm = Comm(
             target_name="jupyter.widget",
             metadata={"version": version},
-            data={'state': self.get_state()},
+            buffers=[],
+            data={
+                "state": {
+                    "_model_module": "anywidget",
+                    "_model_name": "AnyModel",
+                    "_model_module_version": "0.1.0",
+                    "_view_count": None,
+                    "_view_module": "anywidget",
+                    "_view_name": "AnyView",
+                    "_view_module_version": "0.1.0",
+                }
+            },
         )
+        self.send_state()
+        # send state on ANY change
+        self.events.connect(self._on_event)
+
+    def _on_event(self, event: EmissionInfo):
+        """Called whenever the python model changes"""
+        self.send_state({event.signal.name})
+
+    def send_state(self, include: Container[str] | None = None):
+        """Send state or a part of it"""
+        state = self.dict(include=include)  # type: ignore
+        if not state:
+            return
+
+        if "esm" in state:
+            state["_esm"] = state.pop("esm")  # can fix... cause pydantic doesn't want _
+        # if self._property_lock: ... # TODO
+        state, buffer_paths, buffers = _remove_buffers(state)
+        if self._comm.kernel is not None:
+            msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
+            self._comm.send(data=msg, buffers=buffers)
 
     def _repr_mimebundle_(self, **kwargs) -> dict:
         plaintext = repr(self)
@@ -32,37 +66,6 @@ class Displayable(EventedModel):
                 "model_id": self._comm.comm_id,
             },
         }
-
-    def get_state(self):
-        return {
-            **self.dict(),
-            '_model_name': 'AnyModel',
-            '_model_module': 'anywidget',
-            '_view_name': 'AnyView',
-            '_view_module': 'anywidget',
-        }
-
-
-
-        
-    # def get_state(self, key: str = None):
-    #     return { key: 10 }
-        
-    # def send_state(self, key=None):
-    #     self._property_lock = None
-    #     state = self.get_state(key=key)
-    #     if len(state) > 0:
-    #         if self._property_lock:  # we need to keep this dict up to date with the front-end values
-    #             for name, value in state.items():
-    #                 if name in self._property_lock:
-    #                     self._property_lock[name] = value
-    #         state, buffer_paths, buffers = _remove_buffers(state)
-    #         msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
-    #         self._send(msg, buffers=buffers)
-
-        
-    # def _send(self, msg, buffers=None):
-    #     self.comm.send(data=msg, buffers=buffers)
 
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
