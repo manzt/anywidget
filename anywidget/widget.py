@@ -15,7 +15,6 @@ export function render(view) {
   </p>`;
 }
 """
-"""
 
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
