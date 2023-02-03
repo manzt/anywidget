@@ -1,7 +1,7 @@
 import pathlib
 import json
 
-from anywidget import AnyWidget
+import anywidget
 from anywidget.widget import DEFAULT_ESM
 import traitlets.traitlets as t
 
@@ -46,7 +46,7 @@ def test_legacy():
 
 
 def test_default_esm():
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         ...
 
     w = Widget()
