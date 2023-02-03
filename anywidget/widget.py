@@ -16,6 +16,7 @@ export function render(view) {
 }
 """
 
+
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
     _model_module = t.Unicode("anywidget").tag(sync=True)
@@ -34,8 +35,9 @@ class AnyWidget(ipywidgets.DOMWidget):
             for k in ("_esm", "_module", "_css")
             if hasattr(self, k) and not self.has_trait(k)
         }
+
         # show default _esm if not defined
-        if all(i not in anywidget_traits for i in ("_esm", "_module")):
+        if all(not hasattr(self, i) for i in ("_esm", "_module")):
             anywidget_traits["_esm"] = t.Unicode(DEFAULT_ESM).tag(sync=True)
 
         # TODO: a better way to uniquely identify this subclasses?
