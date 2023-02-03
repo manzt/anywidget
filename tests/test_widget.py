@@ -1,48 +1,68 @@
-from anywidget import AnyWidget
+import pathlib
+import json
+
+import anywidget
+from anywidget.widget import DEFAULT_ESM
 import traitlets.traitlets as t
 
 
-def test_basic():
+def test_version():
+    with open(pathlib.Path(__file__).parent / "../package.json") as f:
+        pkg = json.load(f)
 
+    assert anywidget.__version__ == pkg["version"]
+
+
+def test_basic():
     ESM = """
     export function render(view) {
         view.el.innerText = "Hello, world";
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
 
     assert w.has_trait("_esm")
+    assert w._esm == ESM
 
 
 def test_legacy():
-
     ESM = """
     export function render(view) {
         view.el.innerText = "Hello, world";
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _module = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
 
     assert w.has_trait("_module")
+    assert w._module == ESM
+
+
+def test_default_esm():
+    class Widget(anywidget.AnyWidget):
+        ...
+
+    w = Widget()
+
+    assert w.has_trait("_esm")
+    assert w._esm == DEFAULT_ESM
 
 
 def test_creates_fully_qualified_identifier():
-
     ESM = """
     export function render(view) {
         view.el.innerText = "Hello, world";
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _module = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
@@ -62,7 +82,7 @@ def test_infer_traitlets():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = ESM
         _css = CSS
 
@@ -86,14 +106,16 @@ def test_infer_traitlets_partial():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = t.Unicode(ESM).tag(foo="bar")
         _css = CSS
 
     w = Widget()
 
     assert w.has_trait("_esm")
+    assert w._esm == ESM
     assert w.trait_metadata("_esm", "foo") == "bar"
 
     assert w.has_trait("_css")
+    assert w._css == CSS
     assert w.trait_metadata("_css", "sync")
