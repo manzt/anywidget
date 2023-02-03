@@ -3,6 +3,19 @@ import traitlets.traitlets as t
 
 from ._version import __version__
 
+DEFAULT_ESM = """
+export function render(view) {
+  console.log("Dev note: No _esm defined for this widget:", view);
+  let url = "https://anywidget.dev/en/getting-started/";
+  view.el.innerHTML = `<p>
+    <strong>Dev note</strong>:
+    <a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>
+    on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>
+    to customize this widget.
+  </p>`;
+}
+"""
+
 
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
@@ -22,6 +35,10 @@ class AnyWidget(ipywidgets.DOMWidget):
             for k in ("_esm", "_module", "_css")
             if hasattr(self, k) and not self.has_trait(k)
         }
+
+        # show default _esm if not defined
+        if all(not hasattr(self, i) for i in ("_esm", "_module")):
+            anywidget_traits["_esm"] = t.Unicode(DEFAULT_ESM).tag(sync=True)
 
         # TODO: a better way to uniquely identify this subclasses?
         # We use the fully-qualified name to get an id which we

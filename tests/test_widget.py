@@ -1,7 +1,8 @@
 import pathlib
 import json
 
-import anywidget
+from anywidget import AnyWidget
+from anywidget.widget import DEFAULT_ESM
 import traitlets.traitlets as t
 
 
@@ -25,6 +26,7 @@ def test_basic():
     w = Widget()
 
     assert w.has_trait("_esm")
+    assert w._esm == ESM
 
 
 def test_legacy():
@@ -40,6 +42,17 @@ def test_legacy():
     w = Widget()
 
     assert w.has_trait("_module")
+    assert w._module == ESM
+
+
+def test_default_esm():
+    class Widget(AnyWidget):
+        ...
+
+    w = Widget()
+
+    assert w.has_trait("_esm")
+    assert w._esm == DEFAULT_ESM
 
 
 def test_creates_fully_qualified_identifier():
@@ -100,7 +113,9 @@ def test_infer_traitlets_partial():
     w = Widget()
 
     assert w.has_trait("_esm")
+    assert w._esm == ESM
     assert w.trait_metadata("_esm", "foo") == "bar"
 
     assert w.has_trait("_css")
+    assert w._css == CSS
     assert w.trait_metadata("_css", "sync")
