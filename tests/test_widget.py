@@ -1,6 +1,16 @@
+import pathlib
+import json
+
 from anywidget import AnyWidget
 from anywidget.widget import DEFAULT_ESM
 import traitlets.traitlets as t
+
+
+def test_version():
+    with open(pathlib.Path(__file__).parent / "../package.json") as f:
+        pkg = json.load(f)
+
+    assert anywidget.__version__ == pkg["version"]
 
 
 def test_basic():
@@ -10,7 +20,7 @@ def test_basic():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
@@ -26,7 +36,7 @@ def test_legacy():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _module = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
@@ -52,7 +62,7 @@ def test_creates_fully_qualified_identifier():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _module = t.Unicode(ESM).tag(sync=True)
 
     w = Widget()
@@ -72,7 +82,7 @@ def test_infer_traitlets():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = ESM
         _css = CSS
 
@@ -96,7 +106,7 @@ def test_infer_traitlets_partial():
     }
     """
 
-    class Widget(AnyWidget):
+    class Widget(anywidget.AnyWidget):
         _esm = t.Unicode(ESM).tag(foo="bar")
         _css = CSS
 
