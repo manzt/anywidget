@@ -1,7 +1,40 @@
-from typing import Any, Container, TypeVar, cast
+from typing import Any, Container, Generic, TypeVar, cast, TypedDict, Literal
 from ipykernel.comm import Comm
 from psygnal import EventedModel, EmissionInfo
 from pydantic import PrivateAttr
+
+
+class UpdateData(TypedDict):
+    method: Literal["update"]
+    state: dict
+    buffer_paths: list[list[int | str]]
+
+
+class RequestStateData(TypedDict):
+    method: Literal["request_state"]
+
+
+ContentT = TypeVar("ContentT")
+
+
+class CustomData(TypedDict, Generic[ContentT]):
+    method: Literal["custom"]
+    content: ContentT
+
+
+class JupyterWidgetContent(TypedDict):
+    comm_id: str
+    data: UpdateData | RequestStateData | CustomData
+
+
+class CommMessage(TypedDict):
+    header: dict
+    msg_id: str
+    msg_type: str
+    parent_header: dict
+    metadata: dict
+    content: JupyterWidgetContent
+    buffers: list[memoryview]
 
 
 class Displayable(EventedModel):
@@ -37,35 +70,38 @@ class Displayable(EventedModel):
         # send state on ANY change
         self.events.connect(self._on_event)
 
-    def _handle_msg(self, msg: dict):
+    def _handle_msg(self, msg: CommMessage):
         """Called when a msg is received from the front-end"""
-        data = msg['content']['data']
-        method = data['method']
+        data = msg["content"]["data"]
 
-        if method == 'update':
-            if 'state' in data:
-                state = data['state']
-                if 'buffer_paths' in data:
-                    ...
-                    # TODO: _put_buffers(state, data['buffer_paths'], msg['buffers'])
+        if data["method"] == "update":
+            if "state" in data:
+                state = data["state"]
+                if "buffer_paths" in data:
+                    _put_buffers(state, data["buffer_paths"], msg["buffers"])
                 self.set_state(state)
 
         # Handle a state request.
-        elif method == 'request_state':
+        elif data["method"] == "request_state":
             self.send_state()
 
         # Handle a custom msg from the front-end.
-        elif method == 'custom':
-            if 'content' in data:
-                # TODO
-                self._handle_custom_msg(data['content'], msg['buffers'])
+        elif data["method"] == "custom":
+            if "content" in data:
+                self._handle_custom_msg(data["content"], msg["buffers"])
+
+        else:
+            # TODO: log unknown message or raise an Exception?
+            ...
 
     def set_state(self, state):
         for key, val in state.items():
-           setattr(self, key, val)
+            setattr(self, key, val)
 
-    def _handle_custom_msg(self, content: dict, buffers: list | None):
-        print(content, buffers)
+    def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
+        # TODO: handle custom callbacks
+        # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
+        ...
 
     def _on_event(self, event: EmissionInfo):
         """Called whenever the python model changes"""
@@ -171,3 +207,20 @@ def _remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
     buffers: list[memoryview] = []
     state = _separate_buffers(state, [], buffer_paths, buffers)
     return state, buffer_paths, buffers
+
+
+def _put_buffers(
+    state: dict,
+    buffer_paths: list[list[str | int]],
+    buffers: list[memoryview],
+):
+    """The inverse of _remove_buffers, except here we modify the existing dict/lists.
+    Modifying should be fine, since this is used when state comes from the wire.
+    """
+    for buffer_path, buffer in zip(buffer_paths, buffers):
+        # we'd like to set say sync_data['x'][0]['y'] = buffer
+        # where buffer_path in this example would be ['x', 0, 'y']
+        obj = state
+        for key in buffer_path[:-1]:
+            obj = obj[key]
+        obj[buffer_path[-1]] = buffer
