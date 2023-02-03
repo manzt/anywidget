@@ -82,7 +82,7 @@ class _Displayable:
         if is_dataclass(self):
             state = asdict(self)
         else:
-            state = getattr(self, '__dict__', None)
+            state = getattr(self, "__dict__", None)
             if state is None:
                 raise TypeError(f"Cannot serialize {self!r} to a state dict")
         if include is not None:

@@ -1,7 +1,8 @@
 from typing import Any, Callable, Iterable, TypeVar
-from psygnal import evented
+from psygnal import evented, EmissionInfo
 from dataclasses import dataclass, is_dataclass
 from ._displayable import _Displayable, open_comm
+from .widget import DEFAULT_ESM
 
 T = TypeVar("T")
 
@@ -12,7 +13,7 @@ def _is_evented(cls: Any) -> bool:
 
 
 def anywidget(
-    _cls: T | None = None, *, esm: str = "", css: str | None = None
+    _cls: T | None = None, *, esm: str = DEFAULT_ESM, css: str | None = None
 ) -> Callable[[T], T]:
     def _get_state(obj: object, include: Iterable[str] | None = None) -> dict:
         state = _Displayable._get_state(obj, include)
@@ -43,6 +44,11 @@ def anywidget(
             self._comm = open_comm()
             self._comm.on_msg(self._handle_msg)
             self._send_state()
+
+            @self.events.connect
+            def _on_event(event: EmissionInfo):
+                """Called whenever the python model changes"""
+                self._send_state({event.signal.name})
 
         cls.__init__ = __comm_init__
         return cls
