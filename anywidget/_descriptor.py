@@ -27,12 +27,14 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    ClassVar,
     Protocol,
     Sequence,
     TypeGuard,
     TypeVar,
     overload,
 )
+import warnings
 import weakref
 
 from psygnal import evented, EmissionInfo, SignalGroup
@@ -154,12 +156,10 @@ def comm_for(obj: object) -> Comm:
     """Get or create a communcation channel for a given object."""
     # NOTE: this is not a totally safe way to create an id for an object
     # but we can't assume that the object has a __hash__ method
-    # we should also use weakref.finalize to remove the comm from _COMMS
-    # when the object is garbage collected
     obj_id = id(obj)
-
     if obj_id not in _COMMS:
         _COMMS[obj_id] = open_comm()
+        weakref.finalize(obj, _COMMS.pop, obj_id)
     return _COMMS[obj_id]
 
 
@@ -181,7 +181,7 @@ class ReprBuilder:
     foo  # when done in a jupyter notebook, this line will access the descriptor
     """
 
-    def __init__(self, esm: str, follow_changes: bool = True):
+    def __init__(self, esm: str = DEFAULT_ESM, follow_changes: bool = True):
         self._esm = esm
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
@@ -234,7 +234,7 @@ class MimeReprCaller:
 
     def __init__(self, obj: object, esm: str):
         self._esm = esm
-        self._obj = weakref.ref(obj)
+        self._obj = weakref.ref(obj, self._on_obj_deleted)
         self._comm = comm_for(obj)
 
         # figure out what type of object we're working with, and how it "gets state".
@@ -258,6 +258,25 @@ class MimeReprCaller:
             # fallback ... probably not a good idea as it will be rarely serializable
             self._get_state = lambda: obj.__dict__
 
+    # TODO: this idea could be useful for validating the esm string
+    # as well as for reloading the view if a watched file changes (in DEV mode)
+    # @property
+    # def _esm_string(self) -> str:
+    #     """Return the esm string, with a trailing newline."""
+    #     from pathlib import Path
+
+    #     esm = Path(self._esm).read_text() if Path(self._esm).exists() else self._esm
+    #     if "function render" not in esm:
+    #         # TODO: ask trevor about validating the string
+    #         # then return JS code that explains the error in a repr
+    #         raise ValueError('The esm string must export a function named "render"')
+    #     return esm
+
+    def _on_obj_deleted(self, ref: weakref.ReferenceType):
+        """Called when the python object is deleted."""
+        self._comm.close()
+        # could swap out esm here for a "deleted" message
+        
     def send_state(self, include: set[str] | None = None) -> None:
         """Send state or a part of it to the js view."""
         state = self._get_state()
@@ -352,3 +371,34 @@ class MimeReprCaller:
         if isinstance(events, SignalGroup):
             with contextlib.suppress(ValueError):
                 events.disconnect(self._on_event)
+
+
+# Class-based form ... which provides subclassing and inheritance (unlike @guiclass)
+
+
+@__dataclass_transform__(field_specifiers=(Field, field))
+class AnyWidgetMeta(type):
+    def __new__(cls: type, name: str, bases: tuple, attrs: dict, **kwargs) -> type:
+        attrs[_ANYWIDGET_FLAG] = True
+        obj: type = type.__new__(cls, name, bases, attrs)
+        obj = evented(dataclass(obj))
+        setattr(obj, "_repr_mimebundle_", ReprBuilder(**kwargs))
+        return obj
+
+
+# evented will warn "No mutable fields found in class <class '__main__.GuiClass'>"
+# no events will be emitted... but it will work fine for subclasses.
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", category=UserWarning)
+
+    class AnyWidget(metaclass=AnyWidgetMeta):
+        _repr_mimebundle_: ClassVar[ReprBuilder]
+
+        if TYPE_CHECKING:
+            events: ClassVar[SignalGroup]
+
+            # the mypy dataclass magic doesn't work without the literal decorator
+            # it WILL work with pyright due to the __dataclass_transform__ above
+            # here we just avoid a false error in mypy
+            def __init__(self, *args: Any, **kwargs: Any) -> None:
+                ...
