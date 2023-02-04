@@ -104,7 +104,7 @@ def anywidget(
     **dataclass_kwargs: Any,
 ) -> T | Callable[[T], T]:
     """Turn class into a dataclass with an Anywidget _repr_mimebundle_ method.
-    
+
     Parameters
     ----------
     cls : type, optional
@@ -165,7 +165,7 @@ def comm_for(obj: object) -> Comm:
 
 class ReprBuilder:
     """Descriptor that builds a widget for a dataclass or instance.
-    
+
     The __get__ method is called when the descriptor's name is accessed on a class or
     instance.
 
@@ -176,7 +176,7 @@ class ReprBuilder:
         # technically, you could name this anything you want
         # but it only makes sense to call it _repr_mimebundle_
         _repr_mimebundle_ = ReprBuilder()
-    
+
     foo = Foo()
     foo  # when done in a jupyter notebook, this line will access the descriptor
     """
@@ -230,6 +230,7 @@ class MimeReprCaller:
     esm : str
         The content of an ES module exporting a function named `render`.
     """
+
     _get_state: Callable[[], dict]
 
     def __init__(self, obj: object, esm: str):
@@ -276,7 +277,7 @@ class MimeReprCaller:
         """Called when the python object is deleted."""
         self._comm.close()
         # could swap out esm here for a "deleted" message
-        
+
     def send_state(self, include: set[str] | None = None) -> None:
         """Send state or a part of it to the js view."""
         state = self._get_state()

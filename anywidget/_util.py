@@ -99,6 +99,7 @@ def _put_buffers(
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
 
+
 def open_comm() -> Comm:
     from ipykernel.comm import Comm
 

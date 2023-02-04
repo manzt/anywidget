@@ -1,5 +1,6 @@
 from typing_extensions import TypedDict, Literal
 
+
 class UpdateData(TypedDict):
     method: Literal["update"]
     state: dict

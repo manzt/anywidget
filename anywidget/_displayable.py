@@ -5,7 +5,13 @@ from ipykernel.comm import Comm
 from psygnal import EventedModel, EmissionInfo
 from pydantic import PrivateAttr
 from dataclasses import is_dataclass, asdict
-from ._util import _remove_buffers, _put_buffers, open_comm, _PROTOCOL_VERSION_MAJOR, _PROTOCOL_VERSION_MINOR
+from ._util import (
+    _remove_buffers,
+    _put_buffers,
+    open_comm,
+    _PROTOCOL_VERSION_MAJOR,
+    _PROTOCOL_VERSION_MINOR,
+)
 
 if TYPE_CHECKING:
     from ._protocols import CommMessage
