@@ -239,25 +239,8 @@ class MimeReprCaller:
         self._comm = comm_for(obj)
 
         # figure out what type of object we're working with, and how it "gets state".
-        # TODO: these lambdas should probably be defined at the module level
-        if is_dataclass(obj):
-            self._get_state = lambda: asdict(obj)
-        # elif (
-        #     hasattr(obj, "dict")
-        #     and "pydantic" in sys.modules
-        #     and isinstance(obj, sys.modules["pydantic"].BaseModel)
-        # ):
-        #     self._get_state = obj.dict
-        elif hasattr(obj, "__getstate__"):
-            # pickle protocol
-            self._get_state = obj.__getstate__
-        elif hasattr(obj, "_get_state"):
-            # here as an escape hatch if not a dataclass and not pickleable
-            # but obj.__dict__ is not serializable
-            self._get_state = obj._get_state
-        else:
-            # fallback ... probably not a good idea as it will be rarely serializable
-            self._get_state = lambda: obj.__dict__
+        self._get_state = determine_state_getter(obj)
+
 
     # TODO: this idea could be useful for validating the esm string
     # as well as for reloading the view if a watched file changes (in DEV mode)
@@ -403,3 +386,36 @@ with warnings.catch_warnings():
             # here we just avoid a false error in mypy
             def __init__(self, *args: Any, **kwargs: Any) -> None:
                 ...
+
+
+def determine_state_getter(obj: object) -> Callable[[], dict]:
+    """"For `obj`... figure out how it can be serialized to a dict."""
+    import sys
+
+    # TODO: these lambdas should probably be defined at the module level
+    # so that they can be pickled
+    # also... each of these conditionals is very much open to change/debate
+    if is_dataclass(obj):
+        # caveat: if the dict is not JSON serializeable... you still need to
+        # provide an API for the user to customize serialization
+        return lambda: asdict(obj)
+    elif (
+        hasattr(obj, "json")
+        and "pydantic" in sys.modules
+        and isinstance(obj, sys.modules["pydantic"].BaseModel)
+    ):
+        # to take advantage of custom pydantic encoders (with json_encoders)
+        # you'd need to call obj.json() here, and then cast back to a dict
+        import json
+
+        return json.load(obj.json())
+    elif hasattr(obj, "__getstate__"):
+        # pickle protocol
+        return obj.__getstate__
+    elif hasattr(obj, "_get_state"):  # or whatever name you want it to be
+        # here as an escape hatch if not a dataclass and not pickleable
+        # but obj.__dict__ is not serializable
+        return obj._get_state
+    else:
+        # fallback ... probably not a good idea as it will be rarely serializable
+        return lambda: obj.__dict__
