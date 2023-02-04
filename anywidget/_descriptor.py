@@ -47,7 +47,7 @@ from ._util import (
     _put_buffers,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ipykernel.comm import Comm
     from ._protocols import CommMessage
 
@@ -336,7 +336,7 @@ class MimeReprCaller:
         # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
         ...
 
-    def __call__(self, include: Sequence[str], exclude: Sequence[str]) -> dict:
+    def __call__(self, **kwargs) -> dict:
         """Called when _repr_mimebundle_ is called on the python model."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
