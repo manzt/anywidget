@@ -1,6 +1,4 @@
 import sys
-import functools
-
 import ipywidgets
 import traitlets.traitlets as t
 
@@ -20,16 +18,6 @@ export function render(view) {
 """
 
 
-@functools.cache
-def _init_colab():
-    import contextlib
-
-    with contextlib.suppress(ImportError):
-        from google.colab import output  # type: ignore
-
-        output.enable_custom_widget_manager()
-
-
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
     _model_module = t.Unicode("anywidget").tag(sync=True)
@@ -38,6 +26,8 @@ class AnyWidget(ipywidgets.DOMWidget):
     _view_name = t.Unicode("AnyView").tag(sync=True)
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(__version__).tag(sync=True)
+
+    _enabled_colab_widget_manager = False
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -63,7 +53,14 @@ class AnyWidget(ipywidgets.DOMWidget):
         self.add_traits(**anywidget_traits)
 
         if "google.colab" in sys.modules:
-            _init_colab()
+            if not type(self)._enabled_colab_widget_manager:
+                import contextlib
+
+                with contextlib.suppress(ImportError):
+                    from google.colab import output  # type: ignore
+
+                    output.enable_custom_widget_manager()
+                type(self)._enabled_colab_widget_manager = True
 
             # monkey-patch _ipython_display_ for Google Colab
             # see https://github.com/manzt/anywidget/issues/48
