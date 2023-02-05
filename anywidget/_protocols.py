@@ -40,12 +40,13 @@ class MimeReprCallable(Protocol):
     """This is the protocol for _repr_mimebundle.
 
     https://ipython.readthedocs.io/en/stable/config/integrating.html#more-powerful-methods
-    
+
     > Should return a dictionary of multiple formats, keyed by mimetype, or a tuple of
     > two dictionaries: `data`, `metadata` (see Distribution metadata). If this returns
     > something, other `_repr_*_` methods are ignored. The method should take keyword
     > arguments `include` and `exclude`, though it is not required to respect them."
     """
+
     def __call__(
         self, include: Sequence[str], exclude: Sequence[str]
     ) -> dict | tuple[dict, dict]:
@@ -54,4 +55,5 @@ class MimeReprCallable(Protocol):
 
 class AnywidgetProtocol(Protocol):
     """Anywidget classes have a MimeBundleDescriptor at `_repr_mimebundle_`."""
+
     _repr_mimebundle_: MimeBundleDescriptor

@@ -12,6 +12,7 @@ _T = TypeVar("_T")
 T = TypeVar("T", bound="type[Any]")
 _ANYWIDGET_FLAG = "__anywidget_repr__"
 
+
 # this preserves the signature and typing of the decorated class
 # https://github.com/microsoft/pyright/blob/main/specs/dataclass_transforms.md
 def __dataclass_transform__(
@@ -41,10 +42,10 @@ def anywidget(
     ...
 
 
-
 def is_anywidget(obj: object) -> TypeGuard[AnywidgetProtocol]:
     """Return `True` if obj is an anywidget class or an instance of an anywidget."""
     return hasattr(obj, _ANYWIDGET_FLAG)
+
 
 def anywidget(
     cls: T | None = None,
