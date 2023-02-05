@@ -1,23 +1,18 @@
-"""anywidget dataclass decorator that lazily creates a jupyter widget view.
+"""Descriptor for _repr_mimebundle_ attribute that manages the comm channel.
 
-This pattern works as follows:
+`MimeBundleDescriptor()` takes the place of a `_repr_mimebundle_` method on a class.
 
-1. user decorates a class with `@anywidget`
-    - if the class is not already a dataclass, it is turned into one
-    - the class is also made "evented" using psygnal
-      see psygnal: https://psygnal.readthedocs.io/en/latest/dataclasses/
-    - the class is given a `_repr_mimebundle_` attribute that is an instance of
-      `ReprBuilder` (see #2)
-2. `ReprBuilder` is a descriptor: https://docs.python.org/3/howto/descriptor.html
-    when the `_repr_mimebundle_` attribute is accessed on an instance of the decorated
-    class, a `MimeReprCaller` instance is created and returned.
-3. A `MimeReprCaller` is first and foremost a callable object that implements the 
-   `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages an
-   ipykernel Comm instance that is used to send the state of the python model to the
-    javascript view.  This is done lazily, so that the Comm is only created when the
-    `_repr_mimebundle_` is first accessed.
-4. `MimeReprCaller` has the logic to get/set the state of the python model, and will
-    keep the two in sync ("bind"/"unbind_instance" methods can be used to control this).
+- `MimeBundleDescriptor` is a
+  [descriptor](https://docs.python.org/3/howto/descriptor.html). When the
+  `_repr_mimebundle_` attribute is accessed on an instance of the decorated class, a
+  `ReprMimeBundle` instance is created and returned.
+- A `ReprMimeBundle` is first and foremost a callable object that implements the
+  `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages an
+  ipykernel Comm instance that is used to send the state of the python model to the
+  javascript view.  This is done lazily, so that the Comm is only created when the
+  `_repr_mimebundle_` is first accessed.
+- `ReprMimeBundle` has the logic to get/set the state of the python model, and will keep
+  the two in sync ("bind"/"unbind_instance" methods can be used to control this).
 """
 
 from __future__ import annotations
@@ -28,7 +23,7 @@ import sys
 import warnings
 import weakref
 from dataclasses import asdict, is_dataclass
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 
 from ._util import _put_buffers, _remove_buffers
@@ -41,19 +36,16 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import TypeGuard
     from psygnal import EmissionInfo, SignalGroup
 
-    from ._protocols import CommMessage, MimeReprCallable
+    from ._protocols import CommMessage
 
+__all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
 _JUPYTER_MIME = "application/vnd.jupyter.widget-view+json"
 _REPR_ATTR = "_repr_mimebundle_"
-_STATE_GETTER_NAME = "_get_state"
-_STATE_SETTER_NAME = "_set_state"
-
-
-# cache of comms: mapp of id(obj) -> Comm.
-# we use id(obj) rather than WeakKeyDictionary because we can't assume that the
-# object has a __hash__ method
-_COMMS: dict[int, Comm] = {}
+_STATE_GETTER_NAME = "_get_anywidget_state"
+_STATE_SETTER_NAME = "_set_anywidget_state"
+_ANYWIDGET_ID_KEY = "_anywidget_id"
+_ESM_KEY = "_esm"
 
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
@@ -71,6 +63,11 @@ _ANYWIDGET_STATE = {
     "_view_module_version": __version__,
     "_view_count": None,
 }
+
+# cache of comms: mapp of id(obj) -> Comm.
+# we use id(obj) rather than WeakKeyDictionary because we can't assume that the
+# object has a __hash__ method
+_COMMS: dict[int, Comm] = {}
 
 
 def open_comm(target_name: str = _TARGET, version: str = _VERSION, **kwargs) -> Comm:
@@ -111,35 +108,72 @@ class MimeBundleDescriptor:
 
     For more on descriptors, see: <https://docs.python.org/3/howto/descriptor.html>
 
+    Parameters
+    ----------
+    follow_changes : bool, optional
+        If `True` (default), the state of the python model will be updated whenever the
+        state of the javascript view changes (and vice versa).
+    autodetect_observer : bool, optional
+        If `True` (default), an attempt will be made to find a known observer-pattern
+        API on the object (such as a psygnal.SignalGroup or traitlets.HasTraits) and
+        use it to automatically send state changes to the javascript view.  If `False`,
+        the javascript view will only be updated when the `send_state()` method is
+        explicitly called.
+    **extra_state : Any, optional
+        Any extra state that should be sent to the javascript view (for example,
+        for the `_esm` anywidget field.)  By default, `{'_esm': DEFAULT_ESM}` is added
+        to the state.
+
     Examples
     --------
-    >>> class Foo:
-    ...     # technically, you could name this anything you want
-    ...     # but it only makes sense to call it _repr_mimebundle_
-    ...     _repr_mimebundle_ = MimeBundleDescriptor()
+    Note that *technically* you could name the attribute anything you want
+    but it probably only makes sense to call it '_repr_mimebundle_'.
 
+    >>> class Foo:
+    ...     _repr_mimebundle_ = MimeBundleDescriptor()
     >>> foo = Foo()
-    >>> foo  # in a jupyter notebook, this line will access _repr_mimebundle_
+
+    in a jupyter notebook, this line will now access `_repr_mimebundle_`, and turn the
+    descriptor into an instance of `ReprMimeBundle`, which spins up a comm channel, sets
+    up state synchronization, and, when called, returns a mimebundle dict that includes
+    the comm id.
+
+    >>> foo
     """
 
-    def __init__(self, follow_changes: bool = True, **extra_state: Any) -> None:
-        extra_state.setdefault("_esm", DEFAULT_ESM)
+    def __init__(
+        self,
+        *,
+        follow_changes: bool = True,
+        autodetect_observer: bool = True,
+        **extra_state: Any,
+    ) -> None:
+        extra_state.setdefault(_ESM_KEY, DEFAULT_ESM)
         self._extra_state = extra_state
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
+        self._autodetect_observer = autodetect_observer
 
     def __set_name__(self, owner: type, name: str) -> None:
         """Called when this descriptor is assigned to an attribute on a class.
 
         In most cases, we won't *want* `name` to be anything other than
-        `'_repr_mimebundle_'`.  This could conceivably emit a warning if that's the
-        case.
+        `'_repr_mimebundle_'`.
         """
+        # TODO:  conceivably emit a warning if name != '_repr_mimebundle_'
         self._name = name
+
+    @overload
+    def __get__(self, instance: None, owner: type) -> MimeBundleDescriptor:
+        ...
+
+    @overload
+    def __get__(self, instance: object, owner: type) -> ReprMimeBundle:
+        ...
 
     def __get__(
         self, instance: object | None, owner: type
-    ) -> MimeReprCallable | MimeBundleDescriptor:
+    ) -> ReprMimeBundle | MimeBundleDescriptor:
         """Called when this descriptor's name is accessed on a class or instance.
 
         Examples
@@ -157,10 +191,21 @@ class MimeBundleDescriptor:
 
         # we're being accessed on an instance ...
         # create the ReprMimeBundle serves as a _repr_mimebundle_ method on the instance
-        repr_obj = ReprMimeBundle(instance, extra_state=self._extra_state)
-        if self._follow_changes:
-            # set up two way data binding
-            repr_obj.sync_object_with_view()
+        try:
+            repr_obj = ReprMimeBundle(
+                instance,
+                autodetect_observer=self._autodetect_observer,
+                extra_state=self._extra_state,
+            )
+            if self._follow_changes:
+                # set up two way data binding
+                repr_obj.sync_object_with_view()
+        except Exception as e:
+            # when IPython accesses _repr_mimebundle_ on an object, it catches
+            # exceptions and swallows them.  We want to make sure that the user
+            # knows that something went wrong, so we'll print the exception here.
+            warnings.warn(f"Error in Anywidget repr:\n{e}")
+            raise
 
         with contextlib.suppress(AttributeError):
             # this line overrides the attribute on the instance with the ReprMimeBundle
@@ -178,10 +223,10 @@ class MimeBundleDescriptor:
 class ReprMimeBundle:
     """Callable object that behaves like a `_repr_mimebundle_` method...
 
-    which is to say, it returns a mimebundle when called.
+    which is to say, it returns a mimebundle (mapping of mimetypes to data) when called.
 
-    However, this object *also* manages the communcation channel between the js view
-    and some python model object (`obj`).
+    This object *also* controls an ipykernel.Comm channel between the front-end js view
+    and some python model object (`obj`),
 
     Parameters
     ----------
@@ -190,14 +235,34 @@ class ReprMimeBundle:
         this will be a dataclass instance that has been made "evented" by the anywidget
         decorator... but we type it as `object` to allow for other use cases, to make it
         clearer what protocols we expect from the object.
-    esm : str
-        The content of an ES module exporting a function named `render`.
+    autodetect_observer : bool, optional
+        If `True` (default), an attempt will be made to find a known observer-pattern
+        API on the object (such as a psygnal.SignalGroup or traitlets.HasTraits) and
+        use it to automatically send state changes to the javascript view.  If `False`,
+        the javascript view will only be updated when the `send_state()` method is
+        explicitly called.
+    extra_state : dict, optional
+        Any extra state that should be sent to the javascript view (for example,
+        for the `_esm` anywidget field.)  By default, `{'_esm': DEFAULT_ESM}` is added
+        to the state.
     """
 
-    def __init__(self, obj: object, extra_state: dict[str, Any] | None = None):
+    def __init__(
+        self,
+        obj: object,
+        autodetect_observer: bool = True,
+        extra_state: dict[str, Any] | None = None,
+    ):
+        self._autodetect_observer = autodetect_observer
         self._extra_state = extra_state or {}
+        self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
+
         self._obj = weakref.ref(obj, self._on_obj_deleted)
         self._comm = _comm_for(obj)
+
+        # a set of callables that disconnect the connection between the python object
+        # and the javascript view.
+        self._disconnectors: set[Callable] = set()
 
         # figure out what type of object we're working with, and how it "get state".
         self._get_state = determine_state_getter(obj)
@@ -208,7 +273,7 @@ class ReprMimeBundle:
         self._comm.close()
         # could swap out esm here for a "deleted" message, or any number of things.
 
-    def send_state(self, include: set[str] | None = None) -> None:
+    def send_state(self, include: str | Iterable[str] | None = None) -> None:
         """Send state update to the front-end view.
 
         Parameters
@@ -223,6 +288,7 @@ class ReprMimeBundle:
 
         state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
+            include = {include} if isinstance(include, str) else set(include)
             state = {k: v for k, v in state.items() if k in include}
 
         if not state:
@@ -235,15 +301,21 @@ class ReprMimeBundle:
             self._comm.send(data=msg, buffers=buffers)
 
     def _handle_msg(self, msg: CommMessage):
-        """Called when a msg is received from the front-end"""
-        data = msg["content"]["data"]
+        """Called when a msg is received from the front-end.
 
+        (assuming `sync_object_with_view` has been called.)
+        """
+        obj = self._obj()
+        if obj is None:
+            return  # the python object has been deleted
+
+        data = msg["content"]["data"]
         if data["method"] == "update":
             if "state" in data:
                 state = data["state"]
                 if "buffer_paths" in data:
                     _put_buffers(state, data["buffer_paths"], msg["buffers"])
-                self._set_state(state)
+                self._set_state(obj, state)
 
         # Handle a state request.
         elif data["method"] == "request_state":
@@ -264,7 +336,7 @@ class ReprMimeBundle:
         ...
 
     def __call__(self, **kwargs) -> dict:
-        """Called when _repr_mimebundle_ is called on the python model."""
+        """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
         return {
@@ -276,38 +348,136 @@ class ReprMimeBundle:
             },
         }
 
-    def _on_psygnal_event(self, event: EmissionInfo):
-        """Called whenever the python model changes"""
-        self.send_state({event.signal.name})
-
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
     ) -> None:
-        """Bind the view to changes in a model instance."""
+        """Connect the front-end to changes in the model, and vice versa.
+
+        Parameters
+        ----------
+        py_to_js : bool, optional
+            If True (the default), changes in the python model will be reflected in the
+            front-end.
+        js_to_py : bool, optional
+            If True (the default), changes in the front-end will be reflected in the
+            python model.
+        """
         if js_to_py:
             # connect changes in the view to the instance
             self._comm.on_msg(self._handle_msg)
             self.send_state()
 
-        if py_to_js:
+        if py_to_js and self._autodetect_observer:
             # connect changes in the instance to the view
-            events = _get_psygnal_signal_group(self._obj())
-            if events is not None:
-                events.connect(self._on_psygnal_event)
-            else:
+            obj = self._obj()
+            if obj is None:
+                raise RuntimeError("Cannot sync a deleted object")
+
+            if self._disconnectors:
+                warnings.warn("Refusing to re-sync a synced object.")
+                return
+
+            # each of these _connect_* functions receives the python object, and the
+            # send_state method.  They are responsible connect an event that calls
+            # send_state({'attr_name'}) whenever attr_name changes. If successful, they
+            # return a callable that undoes the connection when called, otherwise None.
+
+            # check psygnal
+            disconnect = _connect_psygnal(obj, self.send_state)
+            if disconnect:
+                self._disconnectors.add(disconnect)
+
+            # check more here? ...
+            if not self._disconnectors:
                 warnings.warn(
-                    "The object being synced does not have an 'events' SignalGroup. "
-                    "Unclear how to follow changes."
+                    f"Could not find a notifier on {obj} (e.g. psygnal, traitlets). "
+                    "Changes to the python object will not be reflected in the JS view."
                 )
 
     def unsync_object_with_view(self) -> None:
-        """Unbind the view from changes in a model instance."""
+        """Disconnect the view from changes in a model instance, and vice versa."""
         self._comm.on_msg(None)
 
-        events = _get_psygnal_signal_group(self._obj())
-        if events is not None:
-            with contextlib.suppress(ValueError):
-                events.disconnect(self._on_psygnal_event)
+        if self._obj() is None:
+            # the python object has been deleted
+            return
+
+        while self._disconnectors:
+            self._disconnectors.pop()()
+
+
+# ------------- Helper function --------------
+
+
+def _anywidget_id(obj: object) -> str:
+    """Return a unique id for an object, to send to the JS side."""
+    return f"{type(obj).__module__}.{type(obj).__name__}"
+
+
+def determine_state_getter(obj: object) -> Callable[[object], dict]:
+    """Autodetect how `obj` can be serialized to a dict.
+
+    This looks for various special methods and patterns on the object (e.g. dataclass,
+    pydantic, etc...), and returns a callable that can be used to get the state of the
+    object as a dict.
+
+    As an escape hatch it first looks for a special method on the object called
+    `_get_anywidget_state`.
+
+    Returns
+    -------
+    state_getter : Callable[[object], dict]
+        A callable that takes an object and returns a dict of its state.
+    """
+    # check on the class for our special state getter method
+    if hasattr(type(obj), _STATE_GETTER_NAME):
+        # note that we return the *unbound* method on the class here, so that it can be
+        # called with the object as the first argument
+        return getattr(type(obj), _STATE_GETTER_NAME)
+
+    if is_dataclass(obj):
+        # caveat: if the dict is not JSON serializeable... you still need to
+        # provide an API for the user to customize serialization
+        return asdict
+
+    if _is_pydantic_model(obj):
+        return _get_pydantic_state
+
+    # pickle protocol ... probably not type-safe enough for our purposes
+    # https://docs.python.org/3/library/pickle.html#object.__getstate__
+    # if hasattr(type(obj), "__getstate__"):
+    #     return type(obj).__getstate__
+
+    raise TypeError(
+        f"Cannot determine a state-getting method for {obj!r}. "
+        "Please implement a `_get_anywidget_state()` method that returns a dict."
+    )
+
+
+def _default_set_state(obj: object, state: dict) -> None:
+    """A default state setter that just sets attributes on the object."""
+    for key, val in state.items():
+        setattr(obj, key, val)
+
+
+def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
+    """Autodetect how `obj` can update its state from a dict.
+
+    The default implementation just sets attributes on the object.
+
+    Returns
+    -------
+    state_setter : Callable[[object, dict], None]
+        A callable that takes an object and a dict of its state, and updates the object
+        accordingly.
+    """
+    if hasattr(obj, _STATE_SETTER_NAME):
+        return getattr(obj, _STATE_SETTER_NAME)
+
+    return _default_set_state
+
+
+# ------------- Psygnal support --------------
 
 
 def _get_psygnal_signal_group(obj: object) -> SignalGroup | None:
@@ -316,23 +486,49 @@ def _get_psygnal_signal_group(obj: object) -> SignalGroup | None:
     if psygnal is None:
         return None
 
-    # most likely case
+    # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
     if isinstance(events, psygnal.SignalGroup):
         return events
 
-    # exhaustive search
-    for name in dir(obj):
-        attr = getattr(obj, name)
-        if isinstance(attr, psygnal.SignalGroup):
-            return attr
+    # try exhaustive search
+    with contextlib.suppress((AttributeError, RecursionError, TypeError)):
+        for attr in vars(obj).values():
+            if isinstance(attr, psygnal.SignalGroup):
+                return attr
+
+
+def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
+    """Check if an object has a psygnal.SignalGroup, and connect it to send_state.
+
+    Returns
+    -------
+    disconnect : Callable | None
+        A callable that disconnects the psygnal.SignalGroup from send_state, or None
+        if no psygnal.SignalGroup was found.
+    """
+    events = _get_psygnal_signal_group(obj)
+
+    if events is not None:
+
+        @events.connect
+        def _on_psygnal_event(event: EmissionInfo):
+            send_state({event.signal.name})
+
+        def _disconnect():
+            events.disconnect(_on_psygnal_event)
+
+        return _disconnect
+    return None
+
+
+# ------------- Pydantic support --------------
 
 
 def _is_pydantic_model(obj: Any) -> TypeGuard[BaseModel]:
-    """Check if an object is a pydantic BaseModel."""
-    return "pydantic" in sys.modules and isinstance(
-        obj, sys.modules["pydantic"].BaseModel
-    )
+    """Return `True` if an object is an instance of pydantic.BaseModel."""
+    pydantic = sys.modules.get("pydantic")
+    return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
 def _get_pydantic_state(obj: BaseModel) -> dict:
@@ -343,41 +539,3 @@ def _get_pydantic_state(obj: BaseModel) -> dict:
     expects.)
     """
     return json.load(obj.json())
-
-
-def determine_state_getter(obj: object) -> Callable[[object], dict]:
-    """ "For `obj`... figure out how it can be serialized to a dict."""
-
-    if is_dataclass(obj):
-        # caveat: if the dict is not JSON serializeable... you still need to
-        # provide an API for the user to customize serialization
-        return asdict
-
-    if _is_pydantic_model(obj):
-        return _get_pydantic_state
-
-    # check on the class for our special state getter method
-    if hasattr(type(obj), _STATE_GETTER_NAME):
-        return getattr(type(obj), _STATE_GETTER_NAME)
-
-    # pickle protocol ... probably not type-safe enough for our purposes
-    # https://docs.python.org/3/library/pickle.html#object.__getstate__
-    # if hasattr(type(obj), "__getstate__"):
-    #     return type(obj).__getstate__
-
-    raise TypeError(
-        f"Cannot determine state getter for {obj!r}. "
-        "Please implement a `_get_state()` method that returns a dict."
-    )
-
-
-def _default_set_state(obj: object, state: dict) -> None:
-    for key, val in state.items():
-        setattr(obj, key, val)
-
-
-def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
-    if hasattr(obj, _STATE_SETTER_NAME):
-        return getattr(obj, _STATE_SETTER_NAME)
-
-    return _default_set_state

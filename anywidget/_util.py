@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar, cast
+from typing import TypeVar, cast
 
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
@@ -42,7 +42,7 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                 if v is not _v:  # only assign when value changed
                     _sub[k] = _v
     else:
-        raise ValueError("expected state to be a list or dict, not %r" % substate)
+        raise ValueError(f"expected state to be a list or dict, not {substate!r}")
     return _t(_sub)
 
 
