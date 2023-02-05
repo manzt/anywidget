@@ -212,7 +212,7 @@ class MimeBundleDescriptor:
             # when IPython accesses _repr_mimebundle_ on an object, it catches
             # exceptions and swallows them.  We want to make sure that the user
             # knows that something went wrong, so we'll print the exception here.
-            # warnings.warn(f"Error in Anywidget repr:\n{e}")
+            warnings.warn(f"Error in Anywidget repr:\n{e}")
             raise
 
         with contextlib.suppress((AttributeError, ValueError)):
@@ -582,7 +582,6 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
         name = change["name"]
         if obj_ref().trait_metadata(name, _TRAITLETS_SYNC_FLAG):
             send_state({name})
-
 
     def _disconnect():
         obj = obj_ref()
