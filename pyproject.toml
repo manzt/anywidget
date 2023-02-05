@@ -21,6 +21,7 @@ dependencies = [
 test = [
     "black[jupyter]",
     "pytest",
+    "pytest-cov",
     "ruff==0.0.238"
 ]
 
@@ -76,3 +77,13 @@ dependencies = [
 fmt = "black ."
 lint = "ruff ."
 test = "pytest ."
+
+# https://docs.pytest.org/en/latest/customize.html
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+filterwarnings = [
+    "error:::anywidget",  # make warnings coming from anywidget errors in tests
+    "ignore:Jupyter is migrating its paths:DeprecationWarning",
+    "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
+]
