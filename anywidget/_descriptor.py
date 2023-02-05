@@ -553,14 +553,18 @@ def _is_traitlets_object(obj: Any) -> TypeGuard[traitlets.HasTraits]:
     return isinstance(obj, traitlets.HasTraits) if traitlets is not None else False
 
 
-def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
-    """Get the state of a traitlets.HasTraits instance."""
-    return obj.trait_values(sync=True)
-
-
 # a tag that can be added to a traitlet to indicate that it should be synced
 # this apparently comes from ipywidgets, not traitlets
 _TRAITLETS_SYNC_FLAG = "sync"
+
+
+# TODO: decide about usage of "sync" being opt-in or opt-out
+# users of traitlets who *don't* use ipywidgets might be surprised when their 
+# state isn't being synced without opting in.
+
+def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
+    """Get the state of a traitlets.HasTraits instance."""
+    return obj.trait_values(**{_TRAITLETS_SYNC_FLAG: True})
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
