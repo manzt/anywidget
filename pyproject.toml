@@ -21,7 +21,8 @@ dependencies = [
 test = [
     "black[jupyter]",
     "pytest",
-    "ruff==0.0.238"
+    "ruff==0.0.238",
+    "psygnal",
 ]
 
 [project.urls]
@@ -76,3 +77,19 @@ dependencies = [
 fmt = "black ."
 lint = "ruff ."
 test = "pytest ."
+
+
+# https://docs.pytest.org/en/6.2.x/customize.html
+[tool.pytest.ini_options]
+filterwarnings = ["error:::anywidget"]
+
+# https://coverage.readthedocs.io/en/6.4/config.html
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "except ImportError",
+    "\\.\\.\\.",
+    "raise NotImplementedError()"
+]

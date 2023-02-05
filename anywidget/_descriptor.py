@@ -97,7 +97,10 @@ def _comm_for(obj: object) -> Comm:
     if obj_id not in _COMMS:
         _COMMS[obj_id] = open_comm()
         # when the object is garbage collected, remove the comm from the cache
-        weakref.finalize(obj, _COMMS.pop, obj_id)
+        with contextlib.suppress(TypeError):
+            # if the object is not weakrefable, we can't do anything
+            # they'll receive a warning from the init of ReprMimeBundle
+            weakref.finalize(obj, _COMMS.pop, obj_id)
     return _COMMS[obj_id]
 
 
@@ -190,7 +193,7 @@ class MimeBundleDescriptor:
         """
         if instance is None:
             # we're being accessed on the class, just return the descriptor itself.
-            return self
+            return self  # pragma: no cover
 
         # we're being accessed on an instance ...
         # create the ReprMimeBundle serves as a _repr_mimebundle_ method on the instance
@@ -203,7 +206,7 @@ class MimeBundleDescriptor:
             if self._follow_changes:
                 # set up two way data binding
                 repr_obj.sync_object_with_view()
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             # when IPython accesses _repr_mimebundle_ on an object, it catches
             # exceptions and swallows them.  We want to make sure that the user
             # knows that something went wrong, so we'll print the exception here.
@@ -260,7 +263,17 @@ class ReprMimeBundle:
         self._extra_state = extra_state or {}
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
-        self._obj = weakref.ref(obj, self._on_obj_deleted)
+        try:
+            self._obj = weakref.ref(obj, self._on_obj_deleted)
+        except TypeError:
+            # obj is not weakrefable, so we'll just hold a strong reference to it.
+            self._obj = lambda: obj
+            warnings.warn(
+                f"Anywidget: {obj} is not weakrefable, so it will not be garbage "
+                "collected until the view is closed. Please consider adding "
+                "`__slots__ = ('__weakref__',)` to your class definition."
+            )
+
         self._comm = _comm_for(obj)
 
         # a set of callables that disconnect the connection between the python object
@@ -271,8 +284,9 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
-    def _on_obj_deleted(self, ref: weakref.ReferenceType):
+    def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
+        self.unsync_object_with_view()
         self._comm.close()
         # could swap out esm here for a "deleted" message, or any number of things.
 
@@ -287,7 +301,7 @@ class ReprMimeBundle:
         """
         obj = self._obj()
         if obj is None:
-            return  # the python object has been deleted
+            return  # pragma: no cover  ... the python object has been deleted
 
         state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
@@ -295,7 +309,7 @@ class ReprMimeBundle:
             state = {k: v for k, v in state.items() if k in include}
 
         if not state:
-            return
+            return  # pragma: no cover
 
         # if self._property_lock: ... # TODO
         state, buffer_paths, buffers = _remove_buffers(state)
@@ -310,28 +324,29 @@ class ReprMimeBundle:
         """
         obj = self._obj()
         if obj is None:
-            return  # the python object has been deleted
+            return  # pragma: no cover  ... the python object has been deleted
 
         data = msg["content"]["data"]
-        if data["method"] == "update":
+        method = data["method"]
+        if method == "update":
             if "state" in data:
                 state = data["state"]
                 if "buffer_paths" in data:
                     _put_buffers(state, data["buffer_paths"], msg["buffers"])
                 self._set_state(obj, state)
 
-        # Handle a state request.
-        elif data["method"] == "request_state":
+        elif method == "request_state":
             self.send_state()
 
-        # Handle a custom msg from the front-end.
-        elif data["method"] == "custom":
+        elif method == "custom":
+            # Handle a custom msg from the front-end.
             if "content" in data:
                 self._handle_custom_msg(data["content"], msg["buffers"])
-
-        else:
-            # TODO: log unknown message or raise an Exception?
-            ...
+        else:  # pragma: no cover
+            raise ValueError(
+                f"Unrecognized method: {data['method']}.  Please report this at "
+                "https://github.com/manzt/anywidget/issues"
+            )
 
     def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
         # TODO: handle custom callbacks
@@ -401,12 +416,9 @@ class ReprMimeBundle:
         """Disconnect the view from changes in a model instance, and vice versa."""
         self._comm.on_msg(None)
 
-        if self._obj() is None:
-            # the python object has been deleted
-            return
-
         while self._disconnectors:
-            self._disconnectors.pop()()
+            with contextlib.suppress(Exception):
+                self._disconnectors.pop()()
 
 
 # ------------- Helper function --------------
