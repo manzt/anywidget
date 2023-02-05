@@ -52,14 +52,10 @@ class AnyWidget(ipywidgets.DOMWidget):
 
         self.add_traits(**anywidget_traits)
 
-        if "google.colab" in sys.modules:
+        if "google.colab.output" in sys.modules:
             if not type(self)._enabled_colab_widget_manager:
-                import contextlib
-
-                with contextlib.suppress(ImportError):
-                    from google.colab import output  # type: ignore
-
-                    output.enable_custom_widget_manager()
+                output = sys.modules.get("google.colab.output")
+                output.enable_custom_widget_manager()  # type: ignore
                 type(self)._enabled_colab_widget_manager = True
 
             # monkey-patch _ipython_display_ for Google Colab
