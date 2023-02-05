@@ -16,3 +16,4 @@ dist-python/
 
 
 .astro
+.coverage

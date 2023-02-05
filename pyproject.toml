@@ -21,6 +21,7 @@ dependencies = [
 test = [
     "black[jupyter]",
     "pytest",
+    "pytest-cov",
     "ruff==0.0.238"
 ]
 
@@ -66,13 +67,30 @@ path = "package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
-dependencies = [
-    "black[jupyter]",
-    "pytest",
-    "ruff==0.0.238"
-]
+features = ["test"]
 
 [tool.hatch.envs.default.scripts]
 fmt = "black ."
 lint = "ruff ."
-test = "pytest ."
+test = "pytest . --cov anywidget --cov-report term-missing"
+
+# https://docs.pytest.org/en/latest/customize.html
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+filterwarnings = [
+    "error:::anywidget",  # make warnings coming from anywidget errors in tests
+    "ignore:Jupyter is migrating its paths:DeprecationWarning",
+    "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
+]
+
+# https://coverage.readthedocs.io/en/6.4/config.html
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "except ImportError",
+    "\\.\\.\\.",
+    "raise NotImplementedError()"
+]
