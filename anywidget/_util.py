@@ -7,6 +7,12 @@ _BINARY_TYPES = (memoryview, bytearray, bytes)
 T = TypeVar("T", list, dict, tuple)
 
 
+# next 3 functions vendored with modifications from ipywidgets
+# BSD-3-Clause
+# Copyright (c) 2015 Project Jupyter Contributors
+# https://github.com/jupyter-widgets/ipywidgets/blob/7325e5952efb71bd69692b2d7ed815646c0ac521/python/ipywidgets/ipywidgets/widgets/widget.py
+
+
 def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list) -> T:
     """For internal, see _remove_buffers.
 
@@ -18,35 +24,41 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
     buffers on the js side much easier
     """
     _t = type(substate)
-    _sub: list | dict
+    _sub: list | dict | None = None
     if isinstance(substate, (list, tuple)):
-        _sub = list(substate)
         for i, v in enumerate(substate):
             if isinstance(v, _BINARY_TYPES):
+                if _sub is None:
+                    _sub = list(substate)  # shallow clone list/tuple
                 _sub[i] = None
                 buffers.append(v)
                 buffer_paths.append(path + [i])
             elif isinstance(v, (dict, list, tuple)):
                 _v = _separate_buffers(cast("T", v), path + [i], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
+                    if _sub is None:
+                        _sub = list(substate)  # shallow clone list/tuple
                     _sub[i] = _v
     elif isinstance(substate, dict):
-        _sub = dict(substate)
         for k, v in substate.items():
             if isinstance(v, _BINARY_TYPES):
+                if _sub is None:
+                    _sub = dict(substate)  # shallow clone dict
                 del _sub[k]
                 buffers.append(v)
                 buffer_paths.append(path + [k])
             elif isinstance(v, (dict, list, tuple)):
                 _v = _separate_buffers(cast("T", v), path + [k], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
+                    if _sub is None:
+                        _sub = dict(substate)  # shallow clone dict
                     _sub[k] = _v
     else:
         raise ValueError(f"expected state to be a list or dict, not {substate!r}")
-    return _t(_sub)
+    return _sub if _sub is not None else substate
 
 
-def _remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
+def remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
     """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
 
     A binary message part is a memoryview, bytearray, or python 3 bytes object.
@@ -77,7 +89,7 @@ def _remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
     return state, buffer_paths, buffers
 
 
-def _put_buffers(
+def put_buffers(
     state: dict,
     buffer_paths: list[list[str | int]],
     buffers: list[memoryview],

@@ -26,7 +26,7 @@ from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 
-from ._util import _put_buffers, _remove_buffers
+from ._util import put_buffers, remove_buffers
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
@@ -213,7 +213,7 @@ class MimeBundleDescriptor:
             warnings.warn(f"Error in Anywidget repr:\n{e}")
             raise
 
-        with contextlib.suppress(AttributeError):
+        with contextlib.suppress((AttributeError, ValueError)):
             # this line overrides the attribute on the instance with the ReprMimeBundle
             # we just created. This is so that the next time the attribute is accessed,
             # we don't have to create a new ReprMimeBundle.
@@ -312,7 +312,7 @@ class ReprMimeBundle:
             return  # pragma: no cover
 
         # if self._property_lock: ... # TODO
-        state, buffer_paths, buffers = _remove_buffers(state)
+        state, buffer_paths, buffers = remove_buffers(state)
         if self._comm.kernel is not None:  # type: ignore
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
             self._comm.send(data=msg, buffers=buffers)
@@ -332,26 +332,26 @@ class ReprMimeBundle:
             if "state" in data:
                 state = data["state"]
                 if "buffer_paths" in data:
-                    _put_buffers(state, data["buffer_paths"], msg["buffers"])
+                    put_buffers(state, data["buffer_paths"], msg["buffers"])
                 self._set_state(obj, state)
 
         elif method == "request_state":
             self.send_state()
 
-        elif method == "custom":
+        # elif method == "custom":
             # Handle a custom msg from the front-end.
-            if "content" in data:
-                self._handle_custom_msg(data["content"], msg["buffers"])
+            # if "content" in data:
+            #     self._handle_custom_msg(data["content"], msg["buffers"])
         else:  # pragma: no cover
             raise ValueError(
                 f"Unrecognized method: {data['method']}.  Please report this at "
                 "https://github.com/manzt/anywidget/issues"
             )
 
-    def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
-        # TODO: handle custom callbacks
-        # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
-        ...
+    # def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
+    #     # TODO: handle custom callbacks
+    #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
+    #     ...
 
     def __call__(self, **kwargs) -> dict:
         """Called when _repr_mimebundle_ is called on the python object."""
@@ -463,7 +463,7 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
     # if hasattr(type(obj), "__getstate__"):
     #     return type(obj).__getstate__
 
-    raise TypeError(
+    raise TypeError(  # pragma: no cover
         f"Cannot determine a state-getting method for {obj!r}. "
         "Please implement a `_get_anywidget_state()` method that returns a dict."
     )
@@ -507,7 +507,9 @@ def _get_psygnal_signal_group(obj: object) -> SignalGroup | None:
         return events
 
     # try exhaustive search
-    with contextlib.suppress((AttributeError, RecursionError, TypeError)):
+    with contextlib.suppress(
+        (AttributeError, RecursionError, TypeError)
+    ):  # pragma: no cover
         for attr in vars(obj).values():
             if isinstance(attr, psygnal.SignalGroup):
                 return attr
@@ -553,4 +555,4 @@ def _get_pydantic_state(obj: BaseModel) -> dict:
     we call obj.json() here, and then cast back to a dict (which is what the comm
     expects.)
     """
-    return json.load(obj.json())
+    return json.loads(obj.json())

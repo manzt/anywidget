@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import ClassVar
 import weakref
 from unittest.mock import MagicMock, patch
 
@@ -155,6 +156,38 @@ def test_descriptor_with_psygnal(mock_comm: MagicMock):
         buffers=[],
     )
 
+    with pytest.warns(UserWarning, match="Refusing to re-sync a synced object"):
+        repr_obj.sync_object_with_view()
+
     assert repr_obj._disconnectors
     del foo
     assert not repr_obj._disconnectors
+
+
+def test_descriptor_with_pydantic(mock_comm: MagicMock):
+    pydantic = pytest.importorskip("pydantic")
+
+    VAL = 1
+    class Foo(pydantic.BaseModel):
+        __slots__ = ('__weakref__',)
+        value: int = VAL
+
+        _repr_mimebundle_: ClassVar = MimeBundleDescriptor(autodetect_observer=False)
+
+    foo = Foo()
+    repr_obj = foo._repr_mimebundle_  # create the comm
+
+    # test that the comm sends update messages
+    foo._repr_mimebundle_.send_state({"value"})
+    mock_comm.send.assert_called_with(
+        data={"method": "update", "state": {"value": VAL}, "buffer_paths": []},
+        buffers=[],
+    )
+
+    # test that the object responds to incoming messages
+    NEW_VAL = 3
+    mock_comm.handle_msg(
+        {"content": {"data": {"method": "update", "state": {"value": NEW_VAL}}}}
+    )
+    assert foo.value == NEW_VAL
+
