@@ -48,12 +48,13 @@ def test_remove_and_put_buffers():
         (["top"], mv1),
         (["deep", "b", 1, "deeper"], mv2),
     ]:
-        # assert path in buffer_paths, "%r not in path" % path
+        assert path in buffer_paths, f"{path!r} not in path"
         index = buffer_paths.index(path)
         assert buffer == buffers[index]
 
     # and check that we can put it back together again
     put_buffers(state, buffer_paths, buffers)
-    # we know that tuples get converted to list, so help the comparison by changing the tuple to a list
+    # we know that tuples get converted to list, so help the comparison by changing the
+    # tuple to a list
     state_before["z"] = list(state_before["z"])
     assert state_before == state

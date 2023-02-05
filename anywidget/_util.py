@@ -53,7 +53,7 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                     if _sub is None:
                         _sub = dict(substate)  # shallow clone dict
                     _sub[k] = _v
-    else:
+    else:  # pragma: no cover
         raise ValueError(f"expected state to be a list or dict, not {substate!r}")
     return _sub if _sub is not None else substate
 

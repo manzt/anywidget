@@ -339,9 +339,9 @@ class ReprMimeBundle:
             self.send_state()
 
         # elif method == "custom":
-            # Handle a custom msg from the front-end.
-            # if "content" in data:
-            #     self._handle_custom_msg(data["content"], msg["buffers"])
+        # Handle a custom msg from the front-end.
+        # if "content" in data:
+        #     self._handle_custom_msg(data["content"], msg["buffers"])
         else:  # pragma: no cover
             raise ValueError(
                 f"Unrecognized method: {data['method']}.  Please report this at "
@@ -486,8 +486,8 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
         A callable that takes an object and a dict of its state, and updates the object
         accordingly.
     """
-    if hasattr(obj, _STATE_SETTER_NAME):
-        return getattr(obj, _STATE_SETTER_NAME)
+    if hasattr(type(obj), _STATE_SETTER_NAME):
+        return getattr(type(obj), _STATE_SETTER_NAME)
 
     return _default_set_state
 

@@ -77,6 +77,26 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_called()
 
 
+def test_state_setter(mock_comm: MagicMock):
+    """Test that `_set_anywidget_state` is used when present."""
+    mock = MagicMock()
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self):
+            return {}
+
+        def _set_anywidget_state(self, state):
+            mock(state)
+
+    foo = Foo()
+    foo._repr_mimebundle_
+    state = {"value": 7}
+    mock_comm.handle_msg({"content": {"data": {"method": "update", "state": state}}})
+    mock.assert_called_once_with(state)
+
+
 def test_comm_cleanup():
     """Test that the comm is cleaned up when the object is deleted."""
     assert not _COMMS
@@ -168,14 +188,15 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock):
     pydantic = pytest.importorskip("pydantic")
 
     VAL = 1
+
     class Foo(pydantic.BaseModel):
-        __slots__ = ('__weakref__',)
+        __slots__ = ("__weakref__",)
         value: int = VAL
 
         _repr_mimebundle_: ClassVar = MimeBundleDescriptor(autodetect_observer=False)
 
     foo = Foo()
-    repr_obj = foo._repr_mimebundle_  # create the comm
+    foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
     foo._repr_mimebundle_.send_state({"value"})
@@ -190,4 +211,3 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock):
         {"content": {"data": {"method": "update", "state": {"value": NEW_VAL}}}}
     )
     assert foo.value == NEW_VAL
-
