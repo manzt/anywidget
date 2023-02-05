@@ -31,10 +31,12 @@ from ._version import __version__
 from .widget import DEFAULT_ESM
 
 if TYPE_CHECKING:  # pragma: no cover
+    import traitlets
+    import pydantic
+    import psygnal
+
     from ipykernel.comm import Comm
-    from pydantic import BaseModel
     from typing_extensions import TypeGuard
-    from psygnal import EmissionInfo, SignalGroup
 
     from ._protocols import CommMessage
 
@@ -210,7 +212,7 @@ class MimeBundleDescriptor:
             # when IPython accesses _repr_mimebundle_ on an object, it catches
             # exceptions and swallows them.  We want to make sure that the user
             # knows that something went wrong, so we'll print the exception here.
-            warnings.warn(f"Error in Anywidget repr:\n{e}")
+            # warnings.warn(f"Error in Anywidget repr:\n{e}")
             raise
 
         with contextlib.suppress((AttributeError, ValueError)):
@@ -400,13 +402,13 @@ class ReprMimeBundle:
             # send_state({'attr_name'}) whenever attr_name changes. If successful, they
             # return a callable that undoes the connection when called, otherwise None.
 
-            # check psygnal
-            disconnect = _connect_psygnal(obj, self.send_state)
-            if disconnect:
-                self._disconnectors.add(disconnect)
-
-            # check more here? ...
-            if not self._disconnectors:
+            # check for psygnal
+            for connector in (_connect_psygnal, _connect_traitlets):
+                disconnect = connector(obj, self.send_state)
+                if disconnect:
+                    self._disconnectors.add(disconnect)
+                    break
+            else:
                 warnings.warn(
                     f"Could not find a notifier on {obj} (e.g. psygnal, traitlets). "
                     "Changes to the python object will not be reflected in the JS view."
@@ -455,6 +457,9 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
         # provide an API for the user to customize serialization
         return asdict
 
+    if _is_traitlets_object(obj):
+        return _get_traitlets_state
+
     if _is_pydantic_model(obj):
         return _get_pydantic_state
 
@@ -495,7 +500,7 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
 # ------------- Psygnal support --------------
 
 
-def _get_psygnal_signal_group(obj: object) -> SignalGroup | None:
+def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     """Look for a psygnal.SignalGroup on the obj."""
     psygnal = sys.modules.get("psygnal")
     if psygnal is None:
@@ -529,7 +534,7 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
     if events is not None:
 
         @events.connect
-        def _on_psygnal_event(event: EmissionInfo):
+        def _on_psygnal_event(event: psygnal.EmissionInfo):
             send_state({event.signal.name})
 
         def _disconnect():
@@ -539,16 +544,64 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
     return None
 
 
+# ------------- Traitlets support --------------
+
+
+def _is_traitlets_object(obj: Any) -> TypeGuard[traitlets.HasTraits]:
+    """Return `True` if an object is an instance of traitlets.HasTraits."""
+    traitlets = sys.modules.get("traitlets")
+    return isinstance(obj, traitlets.HasTraits) if traitlets is not None else False
+
+
+def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
+    """Get the state of a traitlets.HasTraits instance."""
+    return obj.trait_values(sync=True)
+
+
+# a tag that can be added to a traitlet to indicate that it should be synced
+# this apparently comes from ipywidgets, not traitlets
+_TRAITLETS_SYNC_FLAG = "sync"
+
+
+def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
+    """Check if an object has a psygnal.SignalGroup, and connect it to send_state.
+
+    Returns
+    -------
+    disconnect : Callable | None
+        A callable that disconnects the psygnal.SignalGroup from send_state, or None
+        if no psygnal.SignalGroup was found.
+    """
+    if not _is_traitlets_object(obj):
+        return None
+
+    obj_ref = weakref.ref(obj)
+
+    @obj.observe
+    def _on_trait_change(change: dict):
+        name = change["name"]
+        if obj_ref().trait_metadata(name, _TRAITLETS_SYNC_FLAG):
+            send_state({name})
+
+
+    def _disconnect():
+        obj = obj_ref()
+        if obj is not None:
+            obj.unobserve(_on_trait_change)
+
+    return _disconnect
+
+
 # ------------- Pydantic support --------------
 
 
-def _is_pydantic_model(obj: Any) -> TypeGuard[BaseModel]:
+def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
     """Return `True` if an object is an instance of pydantic.BaseModel."""
     pydantic = sys.modules.get("pydantic")
     return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
-def _get_pydantic_state(obj: BaseModel) -> dict:
+def _get_pydantic_state(obj: pydantic.BaseModel) -> dict:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)

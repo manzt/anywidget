@@ -211,3 +211,29 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock):
         {"content": {"data": {"method": "update", "state": {"value": NEW_VAL}}}}
     )
     assert foo.value == NEW_VAL
+
+
+def test_descriptor_with_traitlets(mock_comm: MagicMock):
+    import traitlets
+
+    class Foo(traitlets.HasTraits):
+        value = traitlets.Int(0).tag(sync=True)
+        _repr_mimebundle_ = MimeBundleDescriptor()
+
+    foo = Foo()
+    repr_obj = foo._repr_mimebundle_  # create the comm
+    mock_comm.send.reset_mock()
+
+    foo.value = 2
+    assert foo.value == 2
+    mock_comm.send.assert_called_once_with(
+        data={"method": "update", "state": {"value": 2}, "buffer_paths": []},
+        buffers=[],
+    )
+
+    assert repr_obj._disconnectors
+    mock_comm.send.reset_mock()
+    repr_obj.unsync_object_with_view()
+    foo.value = 5
+    mock_comm.assert_not_called()
+    assert not repr_obj._disconnectors
