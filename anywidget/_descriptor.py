@@ -559,8 +559,9 @@ _TRAITLETS_SYNC_FLAG = "sync"
 
 
 # TODO: decide about usage of "sync" being opt-in or opt-out
-# users of traitlets who *don't* use ipywidgets might be surprised when their 
+# users of traitlets who *don't* use ipywidgets might be surprised when their
 # state isn't being synced without opting in.
+
 
 def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
     """Get the state of a traitlets.HasTraits instance."""
