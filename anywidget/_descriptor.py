@@ -49,8 +49,8 @@ _ESM_KEY = "_esm"
 
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
-_VERSION = f"{_PROTOCOL_VERSION_MAJOR}.{_PROTOCOL_VERSION_MINOR}.0"
-_TARGET = "jupyter.widget"
+_PROTOCOL_VERSION = f"{_PROTOCOL_VERSION_MAJOR}.{_PROTOCOL_VERSION_MINOR}.0"
+_TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
 _ANYWIDGET_JS_MODULE = "anywidget"
@@ -64,13 +64,10 @@ _ANYWIDGET_STATE = {
     "_view_count": None,
 }
 
-# cache of comms: mapp of id(obj) -> Comm.
-# we use id(obj) rather than WeakKeyDictionary because we can't assume that the
-# object has a __hash__ method
-_COMMS: dict[int, Comm] = {}
 
-
-def open_comm(target_name: str = _TARGET, version: str = _VERSION, **kwargs) -> Comm:
+def open_comm(
+    target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION, **kwargs
+) -> Comm:
     from ipykernel.comm import Comm
 
     return Comm(
@@ -78,6 +75,12 @@ def open_comm(target_name: str = _TARGET, version: str = _VERSION, **kwargs) -> 
         metadata={"version": version},
         data={"state": _ANYWIDGET_STATE},
     )
+
+
+# cache of comms: mapp of id(obj) -> Comm.
+# we use id(obj) rather than WeakKeyDictionary because we can't assume that the
+# object has a __hash__ method
+_COMMS: dict[int, Comm] = {}
 
 
 def _comm_for(obj: object) -> Comm:
