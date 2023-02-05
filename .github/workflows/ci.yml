@@ -54,7 +54,9 @@ jobs:
           pip install -e .[test]
 
       - name: Run tests
-        run: pytest ./tests
+        run: pytest ./tests --color=yes --cov anywidget --cov-report xml
+      
+      - uses: codecov/codecov-action@v3
 
   Build:
     needs: [Lint, Test]
