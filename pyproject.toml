@@ -87,3 +87,14 @@ filterwarnings = [
     "ignore:Jupyter is migrating its paths:DeprecationWarning",
     "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
 ]
+
+# https://coverage.readthedocs.io/en/6.4/config.html
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "except ImportError",
+    "\\.\\.\\.",
+    "raise NotImplementedError()"
+]
