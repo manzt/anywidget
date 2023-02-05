@@ -1,3 +1,5 @@
+import sys
+
 import ipywidgets
 import traitlets.traitlets as t
 
@@ -48,3 +50,18 @@ class AnyWidget(ipywidgets.DOMWidget):
         ).tag(sync=True)
 
         self.add_traits(**anywidget_traits)
+
+        # monkey-patch _ipython_display_ for Google Colab
+        # see https://github.com/manzt/anywidget/issues/48
+        if "google.colab" in sys.modules and not hasattr(self, "_ipython_display_"):
+            from google.colab import output
+
+            output.enable_custom_widget_manager()
+
+            def _ipython_display_(**kwargs):
+                from IPython.display import display
+
+                data = self._repr_mimebundle_(**kwargs)
+                display(data, raw=True)
+
+            self._ipython_display_ = _ipython_display_
