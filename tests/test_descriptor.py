@@ -48,7 +48,6 @@ def test_descriptor(mock_comm: MagicMock) -> None:
 
         def _get_anywidget_state(self):
             return {"value": self.value}
-    
 
     foo = Foo()
     mock_comm.send.assert_not_called()  # we haven't yet created a comm object
@@ -159,4 +158,3 @@ def test_descriptor_with_psygnal(mock_comm: MagicMock):
     assert repr_obj._disconnectors
     del foo
     assert not repr_obj._disconnectors
-    
