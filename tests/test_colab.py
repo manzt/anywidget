@@ -39,8 +39,9 @@ def test_enables_widget_manager_in_colab():
         ),
     ):
         anywidget.AnyWidget()
+        anywidget.AnyWidget()
 
-        assert enable_custom_widget_manager.called
+        enable_custom_widget_manager.assert_called_once
 
 
 def test_adds_ipython_display_in_colab():

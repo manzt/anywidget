@@ -1,4 +1,5 @@
 import sys
+import functools
 
 import ipywidgets
 import traitlets.traitlets as t
@@ -17,6 +18,16 @@ export function render(view) {
   </p>`;
 }
 """
+
+
+@functools.cache
+def _init_colab():
+    import contextlib
+
+    with contextlib.suppress(ImportError):
+        from google.colab import output  # type: ignore
+
+        output.enable_custom_widget_manager()
 
 
 class AnyWidget(ipywidgets.DOMWidget):
@@ -51,17 +62,17 @@ class AnyWidget(ipywidgets.DOMWidget):
 
         self.add_traits(**anywidget_traits)
 
-        # monkey-patch _ipython_display_ for Google Colab
-        # see https://github.com/manzt/anywidget/issues/48
-        if "google.colab" in sys.modules and not hasattr(self, "_ipython_display_"):
-            from google.colab import output
+        if "google.colab" in sys.modules:
+            _init_colab()
 
-            output.enable_custom_widget_manager()
+            # monkey-patch _ipython_display_ for Google Colab
+            # see https://github.com/manzt/anywidget/issues/48
+            if not hasattr(self, "_ipython_display_"):
 
-            def _ipython_display_(**kwargs):
-                from IPython.display import display
+                def _ipython_display_(**kwargs):
+                    from IPython.display import display
 
-                data = self._repr_mimebundle_(**kwargs)
-                display(data, raw=True)
+                    data = self._repr_mimebundle_(**kwargs)
+                    display(data, raw=True)
 
-            self._ipython_display_ = _ipython_display_
+                self._ipython_display_ = _ipython_display_
