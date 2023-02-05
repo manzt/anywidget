@@ -52,13 +52,18 @@ class AnyWidget(ipywidgets.DOMWidget):
 
         self.add_traits(**anywidget_traits)
 
+        # Check if we are in Colab
         if "google.colab.output" in sys.modules:
+
+            # Enable custom widgets manager so that our widgets display in Colab
+            # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
             if not type(self)._enabled_colab_widget_manager:
                 output = sys.modules.get("google.colab.output")
                 output.enable_custom_widget_manager()  # type: ignore
                 type(self)._enabled_colab_widget_manager = True
 
-            # monkey-patch _ipython_display_ for Google Colab
+            # Monkey-patch _ipython_display_ for each instance if missing.
+            # Necessary for Colab to display third-party widget
             # see https://github.com/manzt/anywidget/issues/48
             if not hasattr(self, "_ipython_display_"):
 
