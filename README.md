@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
 [![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
+[![codecov](https://codecov.io/gh/manzt/anywidget/branch/main/graph/badge.svg)](https://codecov.io/gh/manzt/anywidget)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
 
 custom jupyter widgets made easy
