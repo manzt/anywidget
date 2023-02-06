@@ -54,7 +54,6 @@ class AnyWidget(ipywidgets.DOMWidget):
 
         # Check if we are in Colab
         if "google.colab.output" in sys.modules:
-
             # Enable custom widgets manager so that our widgets display in Colab
             # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
             if not type(self)._enabled_colab_widget_manager:
