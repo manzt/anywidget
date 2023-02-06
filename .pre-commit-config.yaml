@@ -1,3 +1,5 @@
+# run all checks with `pre-commit run --all-files`
+
 ci:
   autoupdate_schedule: monthly
   autofix_commit_msg: "style(pre-commit.ci): auto fixes [...]"
@@ -5,7 +7,7 @@ ci:
 
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.241
+    rev: v0.0.242
     hooks:
       - id: ruff
         args: [--fix]
