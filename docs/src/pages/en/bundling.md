@@ -63,8 +63,8 @@ import traitlets
 bundler_output_dir = pathlib.Path(__file__).parent / "static"
 
 class HelloWidget(anywidget.AnyWidget):
-  _esm = (bundler_output_dir / "index.js").read()
-  _css = (bundler_output_dir / "styles.css").read()
+  _esm = (bundler_output_dir / "index.js").read_text()
+  _css = (bundler_output_dir / "styles.css").read_text()
   name = traitlets.Unicode().tag(sync=True)
 ```
 
@@ -209,8 +209,8 @@ if _DEV:
 else:
   # from `npx vite build`
   bundled_assets_dir = pathlib.Path(__file__).parent / "static"
-  ESM = (bundled_assets_dir / "index.mjs").read()
-  CSS = (bundled_assets_dir / "styles.css").read()
+  ESM = (bundled_assets_dir / "index.mjs").read_text()
+  CSS = (bundled_assets_dir / "styles.css").read_text()
 
 class HelloWidget(anywidget.AnyWidget):
   _esm = ESM
