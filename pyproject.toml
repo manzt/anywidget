@@ -97,3 +97,11 @@ exclude_lines = [
     "\\.\\.\\.",
     "raise NotImplementedError()"
 ]
+
+# https://mypy.readthedocs.io/en/stable/config_file.html
+[tool.mypy]
+files = "anywidget/**/*.py"
+strict = true
+disallow_any_generics = false
+disallow_subclassing_any = false
+show_error_codes = true

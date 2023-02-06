@@ -582,14 +582,14 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
     if not _is_traitlets_object(obj):
         return None
 
-    def _on_trait_change(change: dict):
+    def _on_trait_change(change: dict) -> None:
         send_state({change["name"]})
 
     obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))
 
     obj_ref = weakref.ref(obj)
 
-    def _disconnect():
+    def _disconnect() -> None:
         obj = obj_ref()
         if obj is not None:
             obj.unobserve(_on_trait_change)
