@@ -21,16 +21,21 @@ def mock_colab():
 
 
 def test_enables_widget_manager_in_colab(
+    mock_colab: MagicMock,
+):
+    anywidget.AnyWidget()
+    anywidget.AnyWidget()
+    assert mock_colab.enable_custom_widget_manager.assert_called_once
+
+
+def test_ipython_display_in_colab(
     monkeypatch: pytest.MonkeyPatch,
     mock_colab: MagicMock,
 ):
     mock_display = MagicMock()
     monkeypatch.setattr(IPython.display, "display", mock_display)
 
-    anywidget.AnyWidget()
-    anywidget.AnyWidget()
     w = anywidget.AnyWidget()
-    assert mock_colab.enable_custom_widget_manager.assert_called_once
 
     assert hasattr(w, "_ipython_display_")
     w._ipython_display_()
