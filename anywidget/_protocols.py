@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Sequence
 from typing_extensions import TypedDict, Literal, Protocol
 

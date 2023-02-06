@@ -15,6 +15,7 @@ requires-python = ">=3.7"
 dependencies = [
     "ipywidgets",
     "importlib_metadata ; python_version < '3.8'",
+    "typing_extensions",
 ]
 
 [project.optional-dependencies]
