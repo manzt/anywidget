@@ -24,7 +24,7 @@ repos:
     rev: v0.991
     hooks:
       - id: mypy
-        exclude: tests
+        exclude: tests|docs
         additional_dependencies:
           - pydantic
           - psygnal

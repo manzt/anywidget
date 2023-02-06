@@ -6,4 +6,4 @@ except ImportError:
 try:
     __version__ = version("anywidget")
 except PackageNotFoundError:
-    __version__ = "uninstalled"  # type: ignore
+    __version__ = "uninstalled"
