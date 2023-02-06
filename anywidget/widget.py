@@ -1,4 +1,6 @@
 import sys
+from functools import lru_cache
+
 import ipywidgets
 import traitlets.traitlets as t
 
@@ -18,6 +20,13 @@ export function render(view) {
 """
 
 
+@lru_cache(maxsize=None)
+def _enable_custom_widget_manager():
+    # Enable custom widgets manager so that our widgets display in Colab
+    # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
+    sys.modules["google.colab.output"].enable_custom_widget_manager()  # type: ignore
+
+
 class AnyWidget(ipywidgets.DOMWidget):
     _model_name = t.Unicode("AnyModel").tag(sync=True)
     _model_module = t.Unicode("anywidget").tag(sync=True)
@@ -26,8 +35,6 @@ class AnyWidget(ipywidgets.DOMWidget):
     _view_name = t.Unicode("AnyView").tag(sync=True)
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(__version__).tag(sync=True)
-
-    _enabled_colab_widget_manager = False
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -54,12 +61,7 @@ class AnyWidget(ipywidgets.DOMWidget):
 
         # Check if we are in Colab
         if "google.colab.output" in sys.modules:
-            # Enable custom widgets manager so that our widgets display in Colab
-            # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
-            if not type(self)._enabled_colab_widget_manager:
-                output = sys.modules.get("google.colab.output")
-                output.enable_custom_widget_manager()  # type: ignore
-                type(self)._enabled_colab_widget_manager = True
+            _enable_custom_widget_manager()
 
             # Monkey-patch _ipython_display_ for each instance if missing.
             # Necessary for Colab to display third-party widget
