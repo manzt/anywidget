@@ -1,10 +1,9 @@
 import sys
 from unittest.mock import MagicMock
 
+import anywidget
 import IPython.display
 import pytest
-
-import anywidget
 
 
 def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):

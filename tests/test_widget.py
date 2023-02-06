@@ -1,9 +1,9 @@
-import pathlib
 import json
+import pathlib
 
 import anywidget
-from anywidget.widget import DEFAULT_ESM
 import traitlets.traitlets as t
+from anywidget.widget import DEFAULT_ESM
 
 
 def test_version():

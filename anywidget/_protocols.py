@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Sequence
-from typing_extensions import TypedDict, Literal, Protocol
+
+from typing_extensions import Literal, Protocol, TypedDict
 
 if TYPE_CHECKING:
     from ._descriptor import MimeBundleDescriptor
@@ -39,7 +40,7 @@ class CommMessage(TypedDict):
 
 
 class MimeReprCallable(Protocol):
-    """This is the protocol for _repr_mimebundle.
+    """Protocol for _repr_mimebundle.
 
     https://ipython.readthedocs.io/en/stable/config/integrating.html#more-powerful-methods
 

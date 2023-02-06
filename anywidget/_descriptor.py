@@ -25,18 +25,16 @@ import weakref
 from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, overload
 
-
 from ._util import put_buffers, remove_buffers
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
 if TYPE_CHECKING:  # pragma: no cover
-    import traitlets
-    import pydantic
     import psygnal
-
+    import pydantic
+    import traitlets
     from ipykernel.comm import Comm
-    from typing_extensions import TypeGuard, TypeAlias
+    from typing_extensions import TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
 
