@@ -15,14 +15,17 @@ requires-python = ">=3.7"
 dependencies = [
     "ipywidgets",
     "importlib_metadata ; python_version < '3.8'",
+    "typing_extensions",
 ]
 
 [project.optional-dependencies]
 test = [
     "black[jupyter]",
+    "psygnal",
+    "pydantic",
     "pytest",
     "pytest-cov",
-    "ruff==0.0.238"
+    "ruff==0.0.238",
 ]
 
 [project.urls]
