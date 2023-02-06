@@ -139,3 +139,12 @@ strict = true
 disallow_any_generics = false
 disallow_subclassing_any = false
 show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+# this might be missing in pre-commit, but they aren't typed anyway
+module = ["ipywidgets", "traitlets.*", "ipykernel.*", "IPython.*"]
+ignore_missing_imports = true

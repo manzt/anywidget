@@ -73,7 +73,7 @@ def open_comm(
 ) -> Comm:
     from ipykernel.comm import Comm
 
-    return Comm(
+    return Comm(  # type: ignore[no-untyped-call]
         target_name=target_name,
         metadata={"version": version},
         data={"state": _ANYWIDGET_STATE},
@@ -316,7 +316,7 @@ class ReprMimeBundle:
 
         # if self._property_lock: ... # TODO
         state, buffer_paths, buffers = remove_buffers(state)
-        if self._comm.kernel is not None:
+        if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
             self._comm.send(data=msg, buffers=buffers)
 
@@ -567,7 +567,8 @@ _TRAITLETS_SYNC_FLAG = "sync"
 
 def _get_traitlets_state(obj: traitlets.HasTraits) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
-    return obj.trait_values(**{_TRAITLETS_SYNC_FLAG: True})
+    kwargs = {_TRAITLETS_SYNC_FLAG: True}
+    return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
@@ -587,14 +588,14 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
     def _on_trait_change(change: dict) -> None:
         send_state({change["name"]})
 
-    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))
+    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))  # type: ignore
 
     obj_ref = weakref.ref(obj)
 
     def _disconnect() -> None:
         obj = obj_ref()
         if obj is not None:
-            obj.unobserve(_on_trait_change)
+            obj.unobserve(_on_trait_change)  # type: ignore
 
     return _disconnect
 
