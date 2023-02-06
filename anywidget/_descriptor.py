@@ -569,13 +569,12 @@ def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
-    """Check if an object has a psygnal.SignalGroup, and connect it to send_state.
-
+    """Check if an object is a traitlets.HasTraits, and connect traits with `sync=True` metadata to send_state.
     Returns
     -------
     disconnect : Callable | None
-        A callable that disconnects the psygnal.SignalGroup from send_state, or None
-        if no psygnal.SignalGroup was found.
+        A callable that disconnects the traitlets.HasTraits from send_state, or None
+        if no traitlets.HasTraits was found.
     """
     if not _is_traitlets_object(obj):
         return None
