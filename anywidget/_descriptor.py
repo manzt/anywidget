@@ -569,7 +569,10 @@ def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
-    """Check if an object is a traitlets.HasTraits, and connect traits with `sync=True` metadata to send_state.
+    """Check if an object is a traitlets.HasTraits, and connect it to send_state.
+
+    Only traits with tagged with `sync=True` will be synced.
+
     Returns
     -------
     disconnect : Callable | None
