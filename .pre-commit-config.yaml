@@ -28,4 +28,3 @@ repos:
         additional_dependencies:
           - pydantic
           - psygnal
-
