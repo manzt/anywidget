@@ -118,7 +118,6 @@ def test_descriptor_sends_hmr_update(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_not_called
 
 
-
 def test_state_setter(mock_comm: MagicMock):
     """Test that `_set_anywidget_state` is used when present."""
     mock = MagicMock()
