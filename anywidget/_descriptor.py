@@ -368,7 +368,6 @@ class ReprMimeBundle:
             },
         }
 
-
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
     ) -> None:
@@ -423,11 +422,14 @@ class ReprMimeBundle:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
 
-    def send_hmr_update(self, **data: dict):
-        self._comm.send({
-            "method": "custom",
-            "content": { "type": "anywidget:hmr", "data": data },
-        })
+    def send_hmr_update(self, esm: str | None = None, css: str | None = None):
+        data = {"esm": esm, "css": css}
+        self._comm.send(
+            {
+                "method": "custom",
+                "content": {"type": "anywidget:hmr", "data": data},
+            }
+        )
 
 
 # ------------- Helper function --------------
