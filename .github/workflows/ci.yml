@@ -17,8 +17,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run pre-commit
-        run: pipx run pre-commit run --all-files
+      # this could be replaced with pre-commit.ci
+      - run: pipx run pre-commit run --all-files
 
   Test:
     runs-on: ubuntu-latest
