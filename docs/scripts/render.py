@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
+import json
+import sys
+
 import nbclient
 import nbformat
-import json
-
-import sys
 
 
 def main():

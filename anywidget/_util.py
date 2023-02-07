@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TypeVar, cast
 
-
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 T = TypeVar("T", list, dict, tuple)
 
@@ -32,9 +31,9 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                     _sub = list(substate)  # shallow clone list/tuple
                 _sub[i] = None
                 buffers.append(v)
-                buffer_paths.append(path + [i])
+                buffer_paths.append([*path, i])
             elif isinstance(v, (dict, list, tuple)):
-                _v = _separate_buffers(cast("T", v), path + [i], buffer_paths, buffers)
+                _v = _separate_buffers(cast(T, v), [*path, i], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
                     if _sub is None:
                         _sub = list(substate)  # shallow clone list/tuple
@@ -46,9 +45,9 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                     _sub = dict(substate)  # shallow clone dict
                 del _sub[k]
                 buffers.append(v)
-                buffer_paths.append(path + [k])
+                buffer_paths.append([*path, k])
             elif isinstance(v, (dict, list, tuple)):
-                _v = _separate_buffers(cast("T", v), path + [k], buffer_paths, buffers)
+                _v = _separate_buffers(cast(T, v), [*path, k], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
                     if _sub is None:
                         _sub = dict(substate)  # shallow clone dict
@@ -59,7 +58,7 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
 
 
 def remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
-    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
+    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts.
 
     A binary message part is a memoryview, bytearray, or python 3 bytes object.
 
@@ -94,7 +93,9 @@ def put_buffers(
     buffer_paths: list[list[str | int]],
     buffers: list[memoryview],
 ):
-    """The inverse of _remove_buffers, except here we modify the existing dict/lists.
+    """The inverse of _remove_buffers.
+
+    ...except here we modify the existing dict/lists.
     Modifying should be fine, since this is used when state comes from the wire.
     """
     for buffer_path, buffer in zip(buffer_paths, buffers):
