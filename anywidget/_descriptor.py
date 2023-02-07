@@ -422,7 +422,7 @@ class ReprMimeBundle:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
 
-    def send_hmr_update(self, esm: str | None = None, css: str | None = None):
+    def _send_hmr_update(self, esm: str | None = None, css: str | None = None):
         """Send new ESM or CSS for front end to load and re-render the current views.
 
         Parameters
@@ -441,7 +441,7 @@ class ReprMimeBundle:
             update["_css"] = css
 
         self._extra_state.update(update)
-        self.send_state(set(update.keys()))
+        self.send_state(update.keys())
 
 
 # ------------- Helper function --------------
