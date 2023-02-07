@@ -305,7 +305,7 @@ class ReprMimeBundle:
         if obj is None:
             return  # pragma: no cover  ... the python object has been deleted
 
-        state = {**self._extra_state, **self._get_state(obj)}
+        state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
             include = {include} if isinstance(include, str) else set(include)
             state = {k: v for k, v in state.items() if k in include}
@@ -368,6 +368,7 @@ class ReprMimeBundle:
             },
         }
 
+
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
     ) -> None:
@@ -421,6 +422,12 @@ class ReprMimeBundle:
         while self._disconnectors:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
+
+    def send_hmr_update(self, **data: dict):
+        self._comm.send({
+            "method": "custom",
+            "content": { "type": "anywidget:hmr", "data": data },
+        })
 
 
 # ------------- Helper function --------------
