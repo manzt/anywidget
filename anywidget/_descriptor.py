@@ -423,11 +423,19 @@ class ReprMimeBundle:
                 self._disconnectors.pop()()
 
     def send_hmr_update(self, esm: str | None = None, css: str | None = None):
-        data = {"esm": esm, "css": css}
+        """Send new ESM or CSS for front end to load and re-render the current views.
+
+        Parameters
+        ----------
+        esm : string, optional
+            anywidget front-end JavaScript code. Can be raw text or URL.
+        css : string, optional
+            anywidget front-end CSS code. Can be raw text or URL.
+        """
         self._comm.send(
             {
                 "method": "custom",
-                "content": {"type": "anywidget:hmr", "data": data},
+                "content": {"type": "anywidget:hmr", "data": {"esm": esm, "css": css}},
             }
         )
 
