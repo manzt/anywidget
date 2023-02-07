@@ -305,7 +305,7 @@ class ReprMimeBundle:
         if obj is None:
             return  # pragma: no cover  ... the python object has been deleted
 
-        state = {**self._get_state(obj), **self._extra_state}
+        state = {**self._extra_state, **self._get_state(obj)}
         if include is not None:
             include = {include} if isinstance(include, str) else set(include)
             state = {k: v for k, v in state.items() if k in include}
