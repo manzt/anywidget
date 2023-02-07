@@ -93,10 +93,12 @@ def test_descriptor_sends_hmr_update(mock_comm: MagicMock) -> None:
     foo = Foo()
     foo._repr_mimebundle_.send_hmr_update(esm=esm, css=css)
     mock_comm.send.assert_called_with(
-        {
-            "method": "custom",
-            "content": {"type": "anywidget:hmr", "data": {"esm": esm, "css": css}},
-        }
+        data={
+            "method": "update",
+            "state": {"_esm": esm, "_css": css},
+            "buffer_paths": [],
+        },
+        buffers=[],
     )
 
 

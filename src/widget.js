@@ -92,21 +92,6 @@ async function load_esm(esm) {
 	return widget;
 }
 
-/**
- * @typedef AnyWidgetHMRUpdate
- * @prop {"anywidget:hmr"} type
- * @prop {{ esm?: string, css?: string }} data
- */
-
-/**
- * @param {unknown} msg
- * @return {msg is AnyWidgetHMRUpdate}
- */
-function is_anywidget_update(msg) {
-	if (typeof msg !== "object" || msg == null) return false;
-	return "type" in msg && msg.type === "anywidget:hmr";
-}
-
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function (base) {
 	class AnyModel extends base.DOMWidgetModel {
@@ -122,37 +107,34 @@ export default function (base) {
 		initialize(...args) {
 			super.initialize(...args);
 
-			this.on("msg:custom", async (msg) => {
-				if (!is_anywidget_update(msg)) return;
+			this.on("change:_css", () => {
+				load_css(this.get("_css"), this.get("_anywidget_id"));
+			})
 
-				let { esm, css } = msg.data;
+			this.on("change:_esm", async () => {
 
-				if (typeof esm === "string") {
-					let widget = await load_esm(esm);
-					for await (let view of Object.values(this.views ?? {})) {
-						// Unsubscribe from any handlers registered to `view.listenTo`
-						// Sadly we can't just `model.off` because it removes everything,
-						// including handlers not setup by the child view.
-						//
-						// We could override `model.on` with a particular `context` if none is
-						// provided, letting us unsubscribe from only events from views
-						// e.g., `model.off(null, null, anywidgetSymbol)`, but that might
-						// be more trouble than it's worth and this is just a feature for
-						// development.
-						view.stopListening(this);
+				let widget = await load_esm(this.get("_esm"));
 
-						// Clean up all child elements except for the root
-						while (view.el.firstChild) {
-							view.el.removeChild(view.el.firstChild);
-						}
+				for await (let view of Object.values(this.views ?? {})) {
+					// Unsubscribe from any handlers registered to `view.listenTo`
+					// Sadly we can't just `model.off` because it removes everything,
+					// including handlers not setup by the child view.
+					//
+					// We could override `model.on` with a particular `context` if none is
+					// provided, letting us unsubscribe from only events from views
+					// e.g., `model.off(null, null, anywidgetSymbol)`, but that might
+					// be more trouble than it's worth and this is just a feature for
+					// development.
+					view.stopListening(this);
 
-						widget.render(view);
+					// Clean up all child elements except for the root
+					while (view.el.firstChild) {
+						view.el.removeChild(view.el.firstChild);
 					}
+
+					widget.render(view);
 				}
 
-				if (typeof css === "string") {
-					load_css(css, this.get("_anywidget_id"));
-				}
 			});
 		}
 	}

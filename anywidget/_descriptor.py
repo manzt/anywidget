@@ -432,12 +432,16 @@ class ReprMimeBundle:
         css : string, optional
             anywidget front-end CSS code. Can be raw text or URL.
         """
-        self._comm.send(
-            {
-                "method": "custom",
-                "content": {"type": "anywidget:hmr", "data": {"esm": esm, "css": css}},
-            }
-        )
+        update = {}
+
+        if esm is not None:
+            update["_esm"] = esm
+
+        if css is not None:
+            update["_css"] = css
+
+        self._extra_state.update(update)
+        self.send_state(set(update.keys()))
 
 
 # ------------- Helper function --------------
