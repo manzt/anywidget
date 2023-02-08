@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, Callable
 
 
 if TYPE_CHECKING:
-    from ._protocols import AnywidgetProtocol
-    from .widget import AnyWidget
+    pass
 
 
 class BackgroundWatcher:
