@@ -50,6 +50,7 @@ _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
 _ANYWIDGET_ID_KEY = "_anywidget_id"
 _ESM_KEY = "_esm"
+_CSS_KEY = "_css"
 
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
@@ -107,6 +108,7 @@ def _comm_for(obj: object) -> Comm:
             weakref.finalize(obj, _COMMS.pop, obj_id)
     return _COMMS[obj_id]
 
+
 class MimeBundleDescriptor:
     """Descriptor that builds a ReprMimeBundle when accessed on an instance.
 
@@ -159,6 +161,7 @@ class MimeBundleDescriptor:
         **extra_state: Any,
     ) -> None:
         extra_state.setdefault(_ESM_KEY, DEFAULT_ESM)
+        extra_state.setdefault(_CSS_KEY, "")
         self._extra_state = extra_state
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
@@ -291,11 +294,24 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
+        # read ESM/CSS files if provided and setup watch handlers
         path = pathlib.Path(self._extra_state[_ESM_KEY])
-        if path.is_file():
-            self._extra_state[_ESM_KEY] = path.read_text()
-            if watch:
-                watcher.watch(path, self._send_hmr_update)
+        try:
+            if path.is_file():
+                self._extra_state[_ESM_KEY] = path.read_text()
+                if watch:
+                    watcher.watch(path, lambda x: self._send_hmr_update(esm=x))
+        except OSError:
+            ...
+
+        path = pathlib.Path(self._extra_state[_CSS_KEY])
+        try:
+            if path.is_file():
+                self._extra_state[_CSS_KEY] = path.read_text()
+                if watch:
+                    watcher.watch(path, lambda x: self._send_hmr_update(css=x))
+        except OSError:
+            ...
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
@@ -435,7 +451,6 @@ class ReprMimeBundle:
 
     def _send_hmr_update(self, esm: str | None = None, css: str | None = None):
         """Send new ESM or CSS for front end to load and re-render the current views.
-
         Parameters
         ----------
         esm : string, optional

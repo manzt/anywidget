@@ -13,14 +13,14 @@ if TYPE_CHECKING:
 
 class BackgroundWatcher:
     _thread: None | tuple[threading.Thread, threading.Event] = None
-    _handlers: defaultdict[pathlib.Path, set[Callable]]
+    _handlers: defaultdict[pathlib.Path, set[Callable[[str], None]]]
     _dirs: set[pathlib.Path]
 
     def __init__(self):
         self._handlers = defaultdict(set)
         self._dirs = set()
 
-    def watch(self, file: str | pathlib.Path, handler: Callable):
+    def watch(self, file: str | pathlib.Path, handler: Callable[[str], None]):
         file = pathlib.Path(file).absolute()
 
         self._handlers[file].add(handler)
@@ -46,9 +46,9 @@ class BackgroundWatcher:
                 for change, path in changes:
                     path = pathlib.Path(path)
                     if path in self._handlers and change != Change.deleted:
-                        esm = path.read_text()
+                        contents = path.read_text()
                         for handler in self._handlers[path]:
-                            handler(esm=esm)
+                            handler(contents)
 
         thread = threading.Thread(target=run, daemon=True)
         thread.start()
