@@ -300,7 +300,7 @@ class ReprMimeBundle:
             if path.is_file():
                 self._extra_state[_ESM_KEY] = path.read_text()
                 if watch:
-                    watcher.watch(path, lambda x: self._send_hmr_update(esm=x))
+                    watcher.watch(path, lambda esm: self._send_hmr_update(esm=esm))
         except OSError:
             ...
 
@@ -309,7 +309,7 @@ class ReprMimeBundle:
             if path.is_file():
                 self._extra_state[_CSS_KEY] = path.read_text()
                 if watch:
-                    watcher.watch(path, lambda x: self._send_hmr_update(css=x))
+                    watcher.watch(path, lambda css: self._send_hmr_update(css=css))
         except OSError:
             ...
 
