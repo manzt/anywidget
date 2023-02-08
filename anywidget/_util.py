@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TypeVar, cast
 
-
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 T = TypeVar("T", list, dict, tuple)
 

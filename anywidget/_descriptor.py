@@ -109,6 +109,16 @@ def _comm_for(obj: object) -> Comm:
     return _COMMS[obj_id]
 
 
+def _is_existing_file(x: Any) -> bool:
+    if not isinstance(x, (str, pathlib.Path)):
+        return False
+
+    with contextlib.suppress(OSError):
+        return pathlib.Path(x).is_file()
+
+    return False
+
+
 class MimeBundleDescriptor:
     """Descriptor that builds a ReprMimeBundle when accessed on an instance.
 
@@ -294,24 +304,20 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
-        # read ESM/CSS files if provided and setup watch handlers
-        path = pathlib.Path(self._extra_state[_ESM_KEY])
-        try:
-            if path.is_file():
-                self._extra_state[_ESM_KEY] = path.read_text()
-                if watch:
-                    watcher.watch(path, lambda esm: self._send_hmr_update(esm=esm))
-        except OSError:
-            ...
+        # Read any `extra_state` that are exisiting files, and setup file watchers
+        # to publish state updates any time the corresponding file changes
+        for key, value in self._extra_state.items():
+            if not _is_existing_file(value):
+                continue
+            path = pathlib.Path(value)
+            self._extra_state[key] = path.read_text()
+            if watch:
 
-        path = pathlib.Path(self._extra_state[_CSS_KEY])
-        try:
-            if path.is_file():
-                self._extra_state[_CSS_KEY] = path.read_text()
-                if watch:
-                    watcher.watch(path, lambda css: self._send_hmr_update(css=css))
-        except OSError:
-            ...
+                def handler(contents: str, key: str = key):
+                    self._extra_state[key] = contents
+                    self.send_state(key)
+
+                watcher.watch(path, handler)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
