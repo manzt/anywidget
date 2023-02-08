@@ -2,12 +2,19 @@ from __future__ import annotations
 
 import pathlib
 import threading
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
+import weakref
+
+from anywidget._descriptor import ReprMimeBundle
 
 FileChangeHandler = Callable[[str], None]
 
+if TYPE_CHECKING:
+    from anywidget.widget import AnyWidget
+    from anywidget._protocols import AnywidgetProtocol
 
-class LiveWatcher:
+
+class BackgroundFileWatcher:
     _background_thread: threading.Thread | None = None
     _stop_event: None | threading.Event = None
 
@@ -99,4 +106,28 @@ class LiveWatcher:
         return self
 
 
-watcher = LiveWatcher()
+file_watcher = BackgroundFileWatcher()
+
+
+def watch_files(obj: AnyWidget | AnywidgetProtocol):
+    repr_obj = obj._repr_mimebundle_
+
+    if isinstance(repr_obj, ReprMimeBundle):
+        for key, path in repr_obj._watchable.items():
+
+            def handler(contents: str, key: str = key):
+                repr_obj._extra_state[key] = contents
+                repr_obj.send_state(key)
+
+            file_watcher.watch(path, handler)
+            weakref.finalize(obj, file_watcher.unwatch, path, handler)
+    else:
+        widget: AnyWidget = obj  # type: ignore
+
+        for key, path in widget._watchable.items():
+
+            def handler(contents: str, key: str = key):
+                setattr(widget, key, contents)
+
+            file_watcher.watch(path, handler)
+            weakref.finalize(obj, file_watcher.unwatch, path, handler)

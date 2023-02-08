@@ -27,9 +27,8 @@ from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 
-from ._util import put_buffers, remove_buffers
+from ._util import put_buffers, remove_buffers, is_existing_file
 from ._version import __version__
-from ._watcher import watcher
 from .widget import DEFAULT_ESM
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -50,7 +49,6 @@ _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
 _ANYWIDGET_ID_KEY = "_anywidget_id"
 _ESM_KEY = "_esm"
-_CSS_KEY = "_css"
 
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
@@ -109,16 +107,6 @@ def _comm_for(obj: object) -> Comm:
     return _COMMS[obj_id]
 
 
-def _is_existing_file(x: Any) -> bool:
-    if not isinstance(x, (str, pathlib.Path)):
-        return False
-
-    with contextlib.suppress(OSError):
-        return pathlib.Path(x).is_file()
-
-    return False
-
-
 class MimeBundleDescriptor:
     """Descriptor that builds a ReprMimeBundle when accessed on an instance.
 
@@ -167,16 +155,13 @@ class MimeBundleDescriptor:
         *,
         follow_changes: bool = True,
         autodetect_observer: bool = True,
-        watch: bool = False,
         **extra_state: Any,
     ) -> None:
         extra_state.setdefault(_ESM_KEY, DEFAULT_ESM)
-        extra_state.setdefault(_CSS_KEY, "")
         self._extra_state = extra_state
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
         self._autodetect_observer = autodetect_observer
-        self._watch = watch
 
     def __set_name__(self, owner: type, name: str) -> None:
         """Called when this descriptor is assigned to an attribute on a class.
@@ -220,7 +205,6 @@ class MimeBundleDescriptor:
                 instance,
                 autodetect_observer=self._autodetect_observer,
                 extra_state=self._extra_state,
-                watch=self._watch,
             )
             if self._follow_changes:
                 # set up two way data binding
@@ -277,7 +261,6 @@ class ReprMimeBundle:
         obj: object,
         autodetect_observer: bool = True,
         extra_state: dict[str, Any] | None = None,
-        watch: bool = False,
     ):
         self._autodetect_observer = autodetect_observer
         # Need a shallow copy because we mutate self._extra_state on the instance
@@ -305,24 +288,17 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
-        # Read any `extra_state` that are exisiting files, and setup file watchers
-        # to publish state updates any time the corresponding file changes
+        # extra_state which maps back to an existing file and can be watched
+        self._watchable: dict[str, pathlib.Path] = {}
+
+        # Read any `extra_state` that are existing files, and mark them
+        # tag state which can be watched
         for key, value in self._extra_state.items():
-            if not _is_existing_file(value):
+            if not is_existing_file(value):
                 continue
-            path = pathlib.Path(value)
+            path = pathlib.Path(value).absolute()
             self._extra_state[key] = path.read_text()
-            if watch:
-
-                def handler(contents: str, key: str = key):
-                    self._extra_state[key] = contents
-                    self.send_state(key)
-
-                watcher.watch(path, handler)
-                with contextlib.suppress(TypeError):
-                    # if the object is not weakrefable, we can't do anything
-                    # they'll receive a warning from the init of ReprMimeBundle
-                    weakref.finalize(obj, watcher.unwatch, path, handler)
+            self._watchable[key] = path
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""

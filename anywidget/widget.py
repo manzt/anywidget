@@ -1,10 +1,12 @@
 import sys
 from functools import lru_cache
+import pathlib
 
 import ipywidgets
 import traitlets.traitlets as t
 
 from ._version import __version__
+from ._util import is_existing_file
 
 DEFAULT_ESM = """
 export function render(view) {
@@ -40,11 +42,23 @@ class AnyWidget(ipywidgets.DOMWidget):
         super().__init__(*args, **kwargs)
 
         # Add anywidget JS/CSS source as traits if not registered
-        anywidget_traits = {
-            k: t.Unicode(getattr(self, k)).tag(sync=True)
-            for k in ("_esm", "_module", "_css")
-            if hasattr(self, k) and not self.has_trait(k)
-        }
+        anywidget_traits = {}
+        # extra_state which maps back to an existing file and can be watched
+        self._watchable: dict[str, pathlib.Path] = {}
+
+        for key in ("_esm", "_module", "_css"):
+            # ingore explicit traits
+            if not hasattr(self, key) or self.has_trait(key):
+                continue
+
+            value = getattr(self, key)
+
+            if is_existing_file(value):
+                path = pathlib.Path(value).absolute()
+                value = path.read_text()
+                self._watchable[key] = path
+
+            anywidget_traits[key] = t.Unicode(value).tag(sync=True)
 
         # show default _esm if not defined
         if all(not hasattr(self, i) for i in ("_esm", "_module")):
