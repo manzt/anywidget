@@ -3,7 +3,7 @@ import { name, version } from "../package.json";
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: import("@jupyter-widgets/base").DOMWidgetView) => Promise<void>}
+ *  @prop render {(view: import("@jupyter-widgets/base").WidgetView) => Promise<void>}
  */
 
 /**
@@ -102,6 +102,41 @@ export default function (base) {
 		static view_name = "AnyView";
 		static view_module = name;
 		static view_module_version = version;
+
+		/** @param {Parameters<InstanceType<base["DOMWidgetModel"]>["initialize"]>} args */
+		initialize(...args) {
+			super.initialize(...args);
+
+			this.on("change:_css", () => {
+				load_css(this.get("_css"), this.get("_anywidget_id"));
+			})
+
+			this.on("change:_esm", async () => {
+
+				let widget = await load_esm(this.get("_esm"));
+
+				for await (let view of Object.values(this.views ?? {})) {
+					// Unsubscribe from any handlers registered to `view.listenTo`
+					// Sadly we can't just `model.off` because it removes everything,
+					// including handlers not setup by the child view.
+					//
+					// We could override `model.on` with a particular `context` if none is
+					// provided, letting us unsubscribe from only events from views
+					// e.g., `model.off(null, null, anywidgetSymbol)`, but that might
+					// be more trouble than it's worth and this is just a feature for
+					// development.
+					view.stopListening(this);
+
+					// Clean up all child elements except for the root
+					while (view.el.firstChild) {
+						view.el.removeChild(view.el.firstChild);
+					}
+
+					widget.render(view);
+				}
+
+			});
+		}
 	}
 
 	class AnyView extends base.DOMWidgetView {
