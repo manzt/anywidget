@@ -318,6 +318,10 @@ class ReprMimeBundle:
                     self.send_state(key)
 
                 watcher.watch(path, handler)
+                with contextlib.suppress(TypeError):
+                    # if the object is not weakrefable, we can't do anything
+                    # they'll receive a warning from the init of ReprMimeBundle
+                    weakref.finalize(obj, watcher.unwatch, path, handler)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""

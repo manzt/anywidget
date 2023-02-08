@@ -3,10 +3,10 @@ from collections import defaultdict
 
 import pathlib
 import threading
-from typing import Callable, Mapping
+from typing import Callable
 
 FileChangeHandler = Callable[[str], None]
-Handlers = Mapping[pathlib.Path, set[FileChangeHandler]]
+Handlers = defaultdict[pathlib.Path, set[FileChangeHandler]]
 
 
 class LiveWatcher:
@@ -23,6 +23,26 @@ class LiveWatcher:
 
         self._handlers[file].add(handler)
 
+        # Update what we should be watching and (re)start the thread.
+        self.start()  # tearsdown existing thread if needed
+        return self
+
+    def unwatch(self, file: str | pathlib.Path, handler: FileChangeHandler):
+        file = pathlib.Path(file).absolute()
+        if file not in self._handlers:
+            return self
+
+        # remove the handler
+        self._handlers[file].remove(handler)
+
+        # remove
+        if len(self._handlers[file]) == 0:
+            self._handlers.pop(file)
+
+        self.start()
+        return self
+
+    def start(self):
         # Our background thread watches directories for changes, so we
         # consolidate all file parents (directories) that we need to watch.
         should_be_watching = set(p.parent for p in self._handlers.keys())
@@ -32,11 +52,6 @@ class LiveWatcher:
         if self._watching == should_be_watching:
             return self
 
-        # Update what we should be watching and (re)start the thread.
-        self.start()  # tearsdown existing thread if needed
-        return self
-
-    def start(self):
         # kill an existing thread
         if self._background_thread:
             self.stop()
