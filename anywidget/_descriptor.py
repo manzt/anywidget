@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import pathlib
 import sys
 import warnings
 import weakref
@@ -28,6 +29,7 @@ from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 from ._util import put_buffers, remove_buffers
 from ._version import __version__
+from ._watcher import watcher
 from .widget import DEFAULT_ESM
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -105,7 +107,6 @@ def _comm_for(obj: object) -> Comm:
             weakref.finalize(obj, _COMMS.pop, obj_id)
     return _COMMS[obj_id]
 
-
 class MimeBundleDescriptor:
     """Descriptor that builds a ReprMimeBundle when accessed on an instance.
 
@@ -154,6 +155,7 @@ class MimeBundleDescriptor:
         *,
         follow_changes: bool = True,
         autodetect_observer: bool = True,
+        watch: bool = False,
         **extra_state: Any,
     ) -> None:
         extra_state.setdefault(_ESM_KEY, DEFAULT_ESM)
@@ -161,6 +163,7 @@ class MimeBundleDescriptor:
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
         self._autodetect_observer = autodetect_observer
+        self._watch = watch
 
     def __set_name__(self, owner: type, name: str) -> None:
         """Called when this descriptor is assigned to an attribute on a class.
@@ -204,6 +207,7 @@ class MimeBundleDescriptor:
                 instance,
                 autodetect_observer=self._autodetect_observer,
                 extra_state=self._extra_state,
+                watch=self._watch,
             )
             if self._follow_changes:
                 # set up two way data binding
@@ -260,6 +264,7 @@ class ReprMimeBundle:
         obj: object,
         autodetect_observer: bool = True,
         extra_state: dict[str, Any] | None = None,
+        watch: bool = False,
     ):
         self._autodetect_observer = autodetect_observer
         self._extra_state = extra_state or {}
@@ -285,6 +290,12 @@ class ReprMimeBundle:
         # figure out what type of object we're working with, and how it "get state".
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
+
+        path = pathlib.Path(self._extra_state[_ESM_KEY])
+        if path.is_file():
+            self._extra_state[_ESM_KEY] = path.read_text()
+            if watch:
+                watcher.watch(path, self._send_hmr_update)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
