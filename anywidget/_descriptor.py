@@ -280,7 +280,8 @@ class ReprMimeBundle:
         watch: bool = False,
     ):
         self._autodetect_observer = autodetect_observer
-        self._extra_state = extra_state or {}
+        # Need a shallow copy because we mutate self._extra_state on the instance
+        self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
         try:
