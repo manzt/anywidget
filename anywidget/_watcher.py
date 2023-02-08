@@ -1,12 +1,10 @@
 from __future__ import annotations
-from collections import defaultdict
 
 import pathlib
 import threading
 from typing import Callable
 
 FileChangeHandler = Callable[[str], None]
-Handlers = defaultdict[pathlib.Path, set[FileChangeHandler]]
 
 
 class LiveWatcher:
@@ -14,12 +12,16 @@ class LiveWatcher:
     _stop_event: None | threading.Event = None
 
     def __init__(self):
-        self._handlers: Handlers = defaultdict(set)
+        self._handlers: dict[pathlib.Path, set[FileChangeHandler]] = {}
         self._watching: set[pathlib.Path] = set()
 
     def watch(self, file: str | pathlib.Path, handler: FileChangeHandler):
         file = pathlib.Path(file).absolute()
         assert file.is_file(), "Can only add individual files to watch"
+
+        if file not in self._handlers:
+            self._handlers[file] = set()
+
         self._handlers[file].add(handler)
 
         # Our background thread watches directories for changes, so we
