@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import contextlib
 import json
-import pathlib
 import sys
 import warnings
 import weakref
@@ -27,7 +26,8 @@ from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 
-from ._util import put_buffers, remove_buffers, is_existing_file
+from ._util import put_buffers, remove_buffers
+from ._file_contents import FileContents
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
@@ -263,7 +263,6 @@ class ReprMimeBundle:
         extra_state: dict[str, Any] | None = None,
     ):
         self._autodetect_observer = autodetect_observer
-        # Need a shallow copy because we mutate self._extra_state on the instance
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
@@ -288,17 +287,12 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
-        # extra_state which maps back to an existing file and can be watched
-        self._watchable: dict[str, pathlib.Path] = {}
-
-        # Read any `extra_state` that are existing files, and mark them
-        # tag state which can be watched
         for key, value in self._extra_state.items():
-            if not is_existing_file(value):
-                continue
-            path = pathlib.Path(value).absolute()
-            self._extra_state[key] = path.read_text()
-            self._watchable[key] = path
+            if isinstance(value, FileContents):
+                @value.changed.connect
+                def _on_change(new_contents, key: str = key):
+                    self._extra_state[key] = new_contents
+                    self.send_state(key)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
@@ -322,7 +316,7 @@ class ReprMimeBundle:
         state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
             include = {include} if isinstance(include, str) else set(include)
-            state = {k: v for k, v in state.items() if k in include}
+            state = { k: v for k, v in state.items() if k in include }
 
         if not state:
             return  # pragma: no cover
@@ -438,6 +432,7 @@ class ReprMimeBundle:
 
     def _send_hmr_update(self, esm: str | None = None, css: str | None = None):
         """Send new ESM or CSS for front end to load and re-render the current views.
+
         Parameters
         ----------
         esm : string, optional
