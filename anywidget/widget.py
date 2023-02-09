@@ -6,7 +6,6 @@ import traitlets.traitlets as t
 
 from ._version import __version__
 from ._file_contents import FileContents
-from ._util import is_existing_file
 
 DEFAULT_ESM = """
 export function render(view) {
@@ -52,7 +51,7 @@ class AnyWidget(ipywidgets.DOMWidget):
             value = getattr(self, key)
 
             if isinstance(value, FileContents):
-                value.changed.connect(lambda _: self.send_state(key))
+                value.changed.connect(lambda _, key=key: self.send_state(key))
 
             anywidget_traits[key] = t.Any(value).tag(
                 sync=True,

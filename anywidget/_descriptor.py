@@ -287,8 +287,10 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
+        # Wire-up any FileContents objects to emit state to the front end
         for key, value in self._extra_state.items():
             if isinstance(value, FileContents):
+
                 @value.changed.connect
                 def _on_change(new_contents, key: str = key):
                     self._extra_state[key] = new_contents
@@ -316,7 +318,7 @@ class ReprMimeBundle:
         state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
             include = {include} if isinstance(include, str) else set(include)
-            state = { k: v for k, v in state.items() if k in include }
+            state = {k: v for k, v in state.items() if k in include}
 
         if not state:
             return  # pragma: no cover

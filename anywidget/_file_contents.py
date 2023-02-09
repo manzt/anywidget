@@ -1,8 +1,9 @@
+import pathlib
+import threading
 from typing import Iterator
 
 from psygnal import Signal
-import threading
-import pathlib
+from watchfiles import Change, watch
 
 
 class FileContents:
@@ -27,7 +28,10 @@ class FileContents:
         if self._background_thread is not None:
             return
         self._stop_event.clear()
-        self._background_thread = threading.Thread(target=self.watch, daemon=True)
+        self._background_thread = threading.Thread(
+            target=lambda: (_ for _ in self.watch()),
+            daemon=True,
+        )
         self._background_thread.start()
 
     def stop_thread(self) -> None:
@@ -38,8 +42,6 @@ class FileContents:
         self._background_thread = None
 
     def watch(self) -> Iterator[tuple[int, str]]:
-        from watchfiles import watch, Change
-
         for changes in watch(self._path, stop_event=self._stop_event):
             for change, path in changes:
                 if change == Change.deleted:
