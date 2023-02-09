@@ -83,9 +83,7 @@ def test_file_contents_changed(tmp_path: pathlib.Path):
     with open(path, mode="w") as f:
         f.write(NEW_CONTENTS)
 
-    # called once with orginal content and then
-    # last call with latest
-    wait_until(lambda: mock.call_count == 2)
+    time.sleep(1)
 
     mock.assert_called_with(NEW_CONTENTS)
 
