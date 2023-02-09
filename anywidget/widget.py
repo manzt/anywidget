@@ -51,6 +51,7 @@ class AnyWidget(ipywidgets.DOMWidget):
             value = getattr(self, key)
 
             if isinstance(value, FileContents):
+
                 @value.changed.connect
                 def _on_change(new_contents: str, key: str = key):
                     setattr(self, key, new_contents)

@@ -3,7 +3,6 @@ import threading
 from typing import Iterator
 
 from psygnal import Signal
-from watchfiles import Change, watch
 
 
 class FileContents:
@@ -42,6 +41,8 @@ class FileContents:
         self._background_thread = None
 
     def watch(self) -> Iterator[tuple[int, str]]:
+        from watchfiles import Change, watch
+
         for changes in watch(self._path, stop_event=self._stop_event):
             for change, path in changes:
                 if change == Change.deleted:
