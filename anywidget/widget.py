@@ -5,7 +5,6 @@ import ipywidgets
 import traitlets.traitlets as t
 
 from ._version import __version__
-from ._file_contents import FileContents
 
 DEFAULT_ESM = """
 export function render(view) {
@@ -41,22 +40,11 @@ class AnyWidget(ipywidgets.DOMWidget):
         super().__init__(*args, **kwargs)
 
         # Add anywidget JS/CSS source as traits if not registered
-        anywidget_traits = {}
-
-        for key in ("_esm", "_module", "_css"):
-            # ignore explicit traits
-            if not hasattr(self, key) or self.has_trait(key):
-                continue
-
-            value = getattr(self, key)
-
-            if isinstance(value, FileContents):
-
-                @value.changed.connect
-                def _on_change(new_contents: str, key: str = key):
-                    setattr(self, key, new_contents)
-
-            anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
+        anywidget_traits = {
+            k: t.Unicode(getattr(self, k)).tag(sync=True)
+            for k in ("_esm", "_module", "_css")
+            if hasattr(self, k) and not self.has_trait(k)
+        }
 
         # show default _esm if not defined
         if all(not hasattr(self, i) for i in ("_esm", "_module")):

@@ -1,13 +1,10 @@
-from collections import deque
-import pathlib
-import weakref
 from dataclasses import dataclass
 from typing import ClassVar
+import weakref
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from anywidget._file_contents import FileContents
 import anywidget._descriptor
 from anywidget._descriptor import (
     _COMMS,
@@ -281,46 +278,3 @@ def test_descriptor_with_traitlets(mock_comm: MagicMock):
     foo.value = 5
     mock_comm.assert_not_called()
     assert not repr_obj._disconnectors
-
-
-def test_file_contents(
-    mock_comm: MockComm, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
-):
-    """Test FileContents are detected and changes are emitted to the front end"""
-    import watchfiles
-    from watchfiles import Change
-
-    path = tmp_path / "foo.txt"
-    path.touch()
-
-    CONTENTS = "bar"
-
-    def mock_file_events():
-        path.write_text(CONTENTS)
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
-
-    mock_watch = MagicMock(return_value=mock_file_events())
-    monkeypatch.setattr(watchfiles, "watch", mock_watch)
-
-    contents = FileContents(path, start_thread=False)
-
-    class Foo:
-        _repr_mimebundle_ = MimeBundleDescriptor(
-            value=contents, autodetect_observer=False
-        )
-
-        def _get_anywidget_state(self):
-            return {}
-
-    foo = Foo()
-
-    foo._repr_mimebundle_  # initialize
-
-    deque(contents.watch(), maxlen=0)
-
-    mock_comm.send.assert_called_with(
-        data={"method": "update", "state": {"value": CONTENTS}, "buffer_paths": []},
-        buffers=[],
-    )

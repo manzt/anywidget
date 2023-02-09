@@ -27,7 +27,6 @@ from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
 
 
 from ._util import put_buffers, remove_buffers
-from ._file_contents import FileContents
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
@@ -263,7 +262,7 @@ class ReprMimeBundle:
         extra_state: dict[str, Any] | None = None,
     ):
         self._autodetect_observer = autodetect_observer
-        self._extra_state = (extra_state or {}).copy()
+        self._extra_state = extra_state or {}
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
         try:
@@ -286,15 +285,6 @@ class ReprMimeBundle:
         # figure out what type of object we're working with, and how it "get state".
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
-
-        # Wire-up any FileContents objects to emit state to the front end
-        for key, value in self._extra_state.items():
-            if isinstance(value, FileContents):
-
-                @value.changed.connect
-                def _on_change(new_contents, key: str = key):
-                    self._extra_state[key] = new_contents
-                    self.send_state(key)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""

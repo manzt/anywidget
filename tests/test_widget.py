@@ -1,7 +1,6 @@
 import json
 import pathlib
 import sys
-from collections import deque
 from unittest.mock import MagicMock
 
 import IPython.display
@@ -10,7 +9,6 @@ import traitlets.traitlets as t
 
 import anywidget
 from anywidget.widget import DEFAULT_ESM
-from anywidget._file_contents import FileContents
 
 
 def test_version():
@@ -152,33 +150,3 @@ def test_ipython_display_in_colab(monkeypatch: pytest.MonkeyPatch):
 def test_default_no_ipython_display():
     w = anywidget.AnyWidget()
     assert not hasattr(w, "_ipython_display_")
-
-
-def test_file_contents(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
-    import watchfiles
-    from watchfiles import Change
-
-    path = tmp_path / "foo.txt"
-    path.touch()
-
-    CONTENTS = "bar"
-
-    def mock_file_events():
-        path.write_text(CONTENTS)
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
-
-    mock_watch = MagicMock(return_value=mock_file_events())
-    monkeypatch.setattr(watchfiles, "watch", mock_watch)
-
-    contents = FileContents(path, start_thread=False)
-
-    class Widget(anywidget.AnyWidget):
-        _esm = contents
-
-    w = Widget()
-
-    deque(contents.watch(), maxlen=0)
-
-    assert w._esm == CONTENTS
