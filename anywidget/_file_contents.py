@@ -1,3 +1,5 @@
+from collections import deque
+
 import pathlib
 import threading
 from typing import Iterator
@@ -17,6 +19,8 @@ class FileContents:
 
     def __init__(self, path: str | pathlib.Path, start_thread: bool = True):
         self._path = pathlib.Path(path).expanduser().absolute()
+        if not self._path.is_file():
+            raise ValueError("File does not exist: {self._path}")
         self._contents: str | None = None  # cached contents, cleared on change
         self._stop_event = threading.Event()
         self._background_thread: threading.Thread | None = None
@@ -28,7 +32,7 @@ class FileContents:
             return
         self._stop_event.clear()
         self._background_thread = threading.Thread(
-            target=lambda: (_ for _ in self.watch()),
+            target=lambda: deque(self.watch(), maxlen=0),
             daemon=True,
         )
         self._background_thread.start()
@@ -48,6 +52,7 @@ class FileContents:
                 if change == Change.deleted:
                     self.deleted.emit()
                     return
+                # Only getting Change.added events on macOS so we listen for either
                 if change == Change.modified or change == Change.added:
                     self._contents = None
                     self.changed.emit(str(self))
