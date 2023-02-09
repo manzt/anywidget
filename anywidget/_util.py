@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import contextlib
-import pathlib
-from typing import TypeVar, cast, Any
+from typing import TypeVar, cast
+
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 T = TypeVar("T", list, dict, tuple)
@@ -105,13 +104,3 @@ def put_buffers(
         for key in buffer_path[:-1]:
             obj = obj[key]
         obj[buffer_path[-1]] = buffer
-
-
-def is_existing_file(x: Any) -> bool:
-    if not isinstance(x, (str, pathlib.Path)):
-        return False
-
-    with contextlib.suppress(OSError):
-        return pathlib.Path(x).is_file()
-
-    return False
