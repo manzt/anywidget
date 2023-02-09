@@ -286,6 +286,7 @@ def test_descriptor_with_traitlets(mock_comm: MagicMock):
 def test_file_contents(
     mock_comm: MockComm, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
 ):
+    """Test FileContents are detected and changes are emitted to the front end"""
     import watchfiles
     from watchfiles import Change
 

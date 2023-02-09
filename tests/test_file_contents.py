@@ -13,6 +13,7 @@ from anywidget._file_contents import FileContents
 def test_file_contents_no_watch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
 ):
+    """Test __str__ reads file contents and does not start a thread"""
     mock = MagicMock()
     monkeypatch.setattr(watchfiles, "watch", mock)
 
@@ -28,6 +29,7 @@ def test_file_contents_no_watch(
 
 
 def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
+    """Test deleting a file emits a deleted signal and stops the watcher"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
@@ -54,6 +56,7 @@ def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
 
 
 def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
+    """Test file changes emit changed signals and update the string contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
@@ -80,6 +83,7 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
 
 
 def test_file_contents_thread(tmp_path: pathlib.Path):
+    """Test runs watcher in background thread by default"""
     path = tmp_path / "foo.txt"
     path.touch()
 
@@ -108,6 +112,7 @@ def test_background_file_contents(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: pathlib.Path,
 ):
+    """Test background thread watcher sends signals and updates contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
@@ -146,10 +151,10 @@ def test_background_file_contents(
 
     mock_changed.assert_called_once_with(NEW_CONTENTS)
     assert str(contents) == NEW_CONTENTS
-    NEW_CONTENTS = "blah"
 
 
 def test_missing_file_fails():
+    """Test missing file fails to construct"""
     with pytest.raises(ValueError):
         FileContents("not_a_file.txt")
 

@@ -9,10 +9,17 @@ from psygnal import Signal
 
 
 class FileContents:
-    """Object that watches a file for changes and emits a signal when it changes.
+    """Object that watches for file changes and emits a signal when it changes.
 
     Calling `str(obj)` on this object will always return the current contents of the
     file (as long as the thread is running).
+
+    Parameters
+    ----------
+    path : str | pathlib.Path
+        The file to read and watch for content changes
+    start_thread : bool, optional
+        Whether to start watching for changes in a separate thread (default: `True`)
     """
 
     changed = Signal(str)
@@ -29,6 +36,7 @@ class FileContents:
             self.watch_in_thread()
 
     def watch_in_thread(self) -> None:
+        """Watch for file changes (and emitting signals) from a separate thread."""
         if self._background_thread is not None:
             return
         self._stop_event.clear()
@@ -39,6 +47,7 @@ class FileContents:
         self._background_thread.start()
 
     def stop_thread(self) -> None:
+        """Stops an actively running thread if it exists."""
         if self._background_thread is None:
             return
         self._stop_event.set()
@@ -46,6 +55,15 @@ class FileContents:
         self._background_thread = None
 
     def watch(self) -> Iterator[tuple[int, str]]:
+        """Watch for file changes and emit changed/deleted signal events.
+
+        Blocks indefinitely.
+
+        Returns
+        -------
+        changes : Iterator[tuple[int, str]]
+            An iterator that yields any time the file changes until the file is deleted.
+        """
         from watchfiles import Change, watch
 
         for changes in watch(self._path, stop_event=self._stop_event):
