@@ -51,12 +51,11 @@ class AnyWidget(ipywidgets.DOMWidget):
             value = getattr(self, key)
 
             if isinstance(value, FileContents):
-                value.changed.connect(lambda _, key=key: self.send_state(key))
+                @value.changed.connect
+                def _on_change(new_contents: str, key: str = key):
+                    setattr(self, key, new_contents)
 
-            anywidget_traits[key] = t.Any(value).tag(
-                sync=True,
-                to_json=lambda x, _: str(x),
-            )
+            anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
 
         # show default _esm if not defined
         if all(not hasattr(self, i) for i in ("_esm", "_module")):
