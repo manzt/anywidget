@@ -33,7 +33,7 @@ def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
     with open(path, mode="w") as f:
         f.write(CONTENTS)
 
-    def mock_delete_exits():
+    def mock_file_events():
         changes = set()
         changes.add((Change.deleted, str(path)))
         yield changes
@@ -42,7 +42,7 @@ def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         yield changes
 
     mock_watch = MagicMock()
-    mock_watch.return_value = mock_delete_exits()
+    mock_watch.return_value = mock_file_events()
     monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     contents = FileContents(path, start_thread=False)
@@ -65,7 +65,7 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
 
     CHANGED_CONTENTS = "CHANGED"
 
-    def mock_changed():
+    def mock_file_events():
         with open(path, mode="w") as f:
             f.write(CHANGED_CONTENTS)
         changes = set()
@@ -73,7 +73,7 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         yield changes
 
     mock_watch = MagicMock()
-    mock_watch.return_value = mock_changed()
+    mock_watch.return_value = mock_file_events()
     monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     mock = MagicMock()
@@ -83,6 +83,23 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
 
     mock.assert_called_with(CHANGED_CONTENTS)
     assert str(contents) == CHANGED_CONTENTS
+
+
+def test_file_contents_thread(tmp_path: pathlib.Path):
+    path = tmp_path / "foo.txt"
+    path.touch()
+
+    contents = FileContents(path)
+    mock = Mock()
+    contents.deleted.connect(mock)
+
+    assert contents._background_thread
+    assert not contents._stop_event.is_set()
+    assert contents._background_thread.is_alive()
+
+    contents.stop_thread()
+    assert contents._stop_event.is_set()
+    assert contents._background_thread is None
 
 
 def test_missing_file_fails():
