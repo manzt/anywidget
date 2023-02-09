@@ -1,20 +1,20 @@
+from collections import deque
 import pathlib
-import time
-from typing import Callable
 from unittest.mock import MagicMock, Mock
 
 import pytest
+import watchfiles
+from watchfiles import Change
 
 from anywidget._file_contents import FileContents
 
 
-def wait_until(condition: Callable, interval: float = 0.1, timeout: float = 4, *args):
-    start = time.time()
-    while not condition(*args) and time.time() - start < timeout:
-        time.sleep(interval)
+def test_file_contents_no_watch(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
+):
+    mock = MagicMock()
+    monkeypatch.setattr(watchfiles, "watch", mock)
 
-
-def test_file_contents_no_watch(tmp_path: pathlib.Path):
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     with open(path, mode="w") as f:
@@ -24,68 +24,65 @@ def test_file_contents_no_watch(tmp_path: pathlib.Path):
 
     assert str(contents) == CONTENTS
     assert contents._background_thread is None
-
-    with open(path, mode="a") as f:
-        f.write("appended")
-
-    time.sleep(0.5)
-    assert str(contents) == CONTENTS
+    mock.assert_not_called
 
 
-def test_file_contents_deleted(tmp_path: pathlib.Path):
+def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     with open(path, mode="w") as f:
         f.write(CONTENTS)
 
-    contents = FileContents(path, start_thread=True)
+    def mock_delete_exits():
+        changes = set()
+        changes.add((Change.deleted, str(path)))
+        yield changes
+        changes = set()
+        changes.add((Change.modified, str(path)))
+        yield changes
 
+    mock_watch = MagicMock()
+    mock_watch.return_value = mock_delete_exits()
+    monkeypatch.setattr(watchfiles, "watch", mock_watch)
+
+    contents = FileContents(path, start_thread=False)
     mock = Mock()
     contents.deleted.connect(mock)
 
-    assert contents._background_thread
-    assert contents._background_thread.is_alive()
-
-    # Make sure we've waited long enough that our thread
-    # will listen to the event below
-    time.sleep(1)
-
-    path.unlink()
-
-    # should kill our thread
-    wait_until(
-        lambda: contents._background_thread
-        and not contents._background_thread.is_alive()
-    )
-
+    total = sum(1 for _ in contents.watch())
+    assert total == 0
+    mock_watch.assert_called_with(path, stop_event=contents._stop_event)
     assert mock.called
 
 
-def test_file_contents_changed(tmp_path: pathlib.Path):
+def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     with open(path, mode="w") as f:
         f.write(CONTENTS)
 
-    contents = FileContents(path, start_thread=True)
+    contents = FileContents(path, start_thread=False)
+
+    CHANGED_CONTENTS = "CHANGED"
+
+    def mock_changed():
+        with open(path, mode="w") as f:
+            f.write(CHANGED_CONTENTS)
+        changes = set()
+        changes.add((Change.modified, str(path)))
+        yield changes
+
+    mock_watch = MagicMock()
+    mock_watch.return_value = mock_changed()
+    monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     mock = MagicMock()
     contents.changed.connect(mock)
 
-    assert contents._background_thread
-    assert contents._background_thread.is_alive()
+    deque(contents.watch(), maxlen=0)
 
-    # Make sure we've waited long enough that our thread
-    # will listen to the event below
-    time.sleep(1)
-
-    NEW_CONTENTS = "HELLO, WOLRD"
-    with open(path, mode="w") as f:
-        f.write(NEW_CONTENTS)
-
-    time.sleep(1)
-
-    mock.assert_called_with(NEW_CONTENTS)
+    mock.assert_called_with(CHANGED_CONTENTS)
+    assert str(contents) == CHANGED_CONTENTS
 
 
 def test_missing_file_fails():
