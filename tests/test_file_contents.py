@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-import anywidget._file_contents
 from anywidget._file_contents import FileContents
 
 
