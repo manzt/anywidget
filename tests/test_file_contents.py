@@ -42,8 +42,7 @@ def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         changes.add((Change.modified, str(path)))
         yield changes
 
-    mock_watch = MagicMock()
-    mock_watch.return_value = mock_file_events()
+    mock_watch = MagicMock(return_value=mock_file_events())
     monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     contents = FileContents(path, start_thread=False)
@@ -73,8 +72,7 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         changes.add((Change.modified, str(path)))
         yield changes
 
-    mock_watch = MagicMock()
-    mock_watch.return_value = mock_file_events()
+    mock_watch = MagicMock(return_value=mock_file_events())
     monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     mock = MagicMock()
@@ -92,16 +90,23 @@ def test_file_contents_thread(tmp_path: pathlib.Path):
 
     contents = FileContents(path)
 
-    mock = Mock()
-    contents.deleted.connect(mock)
-
+    # thread on by default
     assert contents._background_thread
     assert not contents._stop_event.is_set()
     assert contents._background_thread.is_alive()
 
+    # reuse the same thread
+    thread = contents._background_thread
+    contents.watch_in_thread()
+    assert contents._background_thread == thread
+
+    # stops the thread
     contents.stop_thread()
     assert contents._stop_event.is_set()
     assert contents._background_thread is None
+
+    # no-op
+    contents.stop_thread()
 
 
 def test_background_file_contents(
@@ -139,8 +144,7 @@ def test_background_file_contents(
         changes = set()
         changes.add((Change.modified, str(path)))
 
-    mock_watch = MagicMock()
-    mock_watch.return_value = mock_file_events()
+    mock_watch = MagicMock(return_value=mock_file_events())
     monkeypatch.setattr(watchfiles, "watch", mock_watch)
 
     contents.watch_in_thread()
