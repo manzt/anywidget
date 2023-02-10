@@ -21,11 +21,14 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "black[jupyter]",
-    "psygnal",
     "pydantic",
     "pytest",
     "pytest-cov",
     "ruff==0.0.238",
+]
+dev = [
+    "psygnal",
+    "watchfiles",
 ]
 
 [project.urls]
@@ -70,7 +73,7 @@ path = "package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
-features = ["test"]
+features = ["test", "dev"]
 
 [tool.hatch.envs.default.scripts]
 fmt = "black ."
