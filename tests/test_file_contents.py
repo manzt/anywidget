@@ -29,25 +29,15 @@ def test_file_contents_deleted(tmp_path: pathlib.Path):
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
 
-    contents = FileContents(path, start_thread=False)
+    contents = FileContents(path)
+
     mock = Mock()
     contents.deleted.connect(mock)
-
-    def mock_file_events():
-        changes = set()
-        changes.add((Change.deleted, str(path)))
-        yield changes
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
-
-    with patch.object(watchfiles, "watch") as mock_watch:
-        mock_watch.return_value = mock_file_events()
-        total = sum(1 for _ in contents.watch())
-
-    assert total == 0
-    mock_watch.assert_called_with(path, stop_event=contents._stop_event)
-    assert mock.called
+    path.unlink()
+    assert contents._background_thread
+    contents._background_thread.join()
+    assert not contents._background_thread.is_alive()
+    mock.assert_called()
 
 
 def test_file_contents_changed(tmp_path: pathlib.Path):
