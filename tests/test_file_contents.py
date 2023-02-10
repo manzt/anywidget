@@ -1,7 +1,7 @@
 import pathlib
 import time
 from collections import deque
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 import watchfiles
@@ -23,11 +23,15 @@ def test_file_contents_no_watch(tmp_path: pathlib.Path):
     mock.assert_not_called()
 
 
-def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
+def test_file_contents_deleted(tmp_path: pathlib.Path):
     """Test deleting a file emits a deleted signal and stops the watcher"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
+
+    contents = FileContents(path, start_thread=False)
+    mock = Mock()
+    contents.deleted.connect(mock)
 
     def mock_file_events():
         changes = set()
@@ -37,25 +41,24 @@ def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         changes.add((Change.modified, str(path)))
         yield changes
 
-    mock_watch = MagicMock(return_value=mock_file_events())
-    monkeypatch.setattr(watchfiles, "watch", mock_watch)
+    with patch.object(watchfiles, "watch") as mock_watch:
+        mock_watch.return_value = mock_file_events()
+        total = sum(1 for _ in contents.watch())
 
-    contents = FileContents(path, start_thread=False)
-    mock = Mock()
-    contents.deleted.connect(mock)
-
-    total = sum(1 for _ in contents.watch())
     assert total == 0
     mock_watch.assert_called_with(path, stop_event=contents._stop_event)
     assert mock.called
 
 
-def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
+def test_file_contents_changed(tmp_path: pathlib.Path):
     """Test file changes emit changed signals and update the string contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
     contents = FileContents(path, start_thread=False)
+
+    mock = MagicMock()
+    contents.changed.connect(mock)
 
     NEW_CONTENTS = "blah"
 
@@ -65,13 +68,9 @@ def test_file_contents_changed(monkeypatch: pytest.MonkeyPatch, tmp_path: pathli
         changes.add((Change.modified, str(path)))
         yield changes
 
-    mock_watch = MagicMock(return_value=mock_file_events())
-    monkeypatch.setattr(watchfiles, "watch", mock_watch)
-
-    mock = MagicMock()
-    contents.changed.connect(mock)
-
-    deque(contents.watch(), maxlen=0)
+    with patch.object(watchfiles, "watch") as mock_watch:
+        mock_watch.return_value = mock_file_events()
+        deque(contents.watch(), maxlen=0)
 
     mock.assert_called_with(NEW_CONTENTS)
     assert str(contents) == NEW_CONTENTS
@@ -103,10 +102,7 @@ def test_file_contents_thread(tmp_path: pathlib.Path):
     contents.stop_thread()
 
 
-def test_background_file_contents(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: pathlib.Path,
-):
+def test_background_file_contents(tmp_path: pathlib.Path):
     """Test background thread watcher sends signals and updates contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
@@ -136,10 +132,9 @@ def test_background_file_contents(
         changes = set()
         changes.add((Change.modified, str(path)))
 
-    mock_watch = MagicMock(return_value=mock_file_events())
-    monkeypatch.setattr(watchfiles, "watch", mock_watch)
-
-    contents.watch_in_thread()
+    with patch.object(watchfiles, "watch") as mock_watch:
+        mock_watch.return_value = mock_file_events()
+        contents.watch_in_thread()
 
     while contents._background_thread and contents._background_thread.is_alive():
         time.sleep(0.01)
