@@ -49,6 +49,7 @@ def test_file_contents_deleted(tmp_path: pathlib.Path):
     mock_watch.assert_called_with(path, stop_event=contents._stop_event)
     assert mock.called
 
+
 def test_file_contents_changed(tmp_path: pathlib.Path):
     """Test file changes emit changed signals and update the string contents"""
     CONTENTS = "hello, world"

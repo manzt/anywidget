@@ -41,6 +41,9 @@ class FileContents:
             return
         self._stop_event.clear()
         self._background_thread = threading.Thread(
+            # self.watch() returns a generator, so the thread would exit
+            # immediately if we passed `target=self.watch`. The `deque`
+            # forces the thread to run until it exhausts our generator.
             target=lambda: deque(self.watch(), maxlen=0),
             daemon=True,
         )
