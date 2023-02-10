@@ -31,6 +31,9 @@ def test_file_contents_deleted(tmp_path: pathlib.Path):
 
     contents = FileContents(path)
 
+    while contents._background_thread and not contents._background_thread.is_alive():
+        time.sleep(0.1)
+
     mock = Mock()
     contents.deleted.connect(mock)
     path.unlink()
