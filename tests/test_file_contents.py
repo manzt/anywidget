@@ -10,22 +10,17 @@ from watchfiles import Change
 from anywidget._file_contents import FileContents
 
 
-def test_file_contents_no_watch(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
-):
+def test_file_contents_no_watch(tmp_path: pathlib.Path):
     """Test __str__ reads file contents and does not start a thread"""
-    mock = MagicMock()
-    monkeypatch.setattr(watchfiles, "watch", mock)
-
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
     path.write_text(CONTENTS)
 
-    contents = FileContents(path, start_thread=False)
-
-    assert str(contents) == CONTENTS
-    assert contents._background_thread is None
-    mock.assert_not_called
+    with patch.object(watchfiles, "watch") as mock:
+        contents = FileContents(path, start_thread=False)
+        assert str(contents) == CONTENTS
+        assert contents._background_thread is None
+    mock.assert_not_called()
 
 
 def test_file_contents_deleted(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path):
