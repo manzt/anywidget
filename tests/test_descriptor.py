@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 import weakref
 from unittest.mock import MagicMock, patch
 
@@ -10,8 +10,12 @@ from anywidget._descriptor import (
     _COMMS,
     _JUPYTER_MIME,
     MimeBundleDescriptor,
-    ReprMimeBundle,
+    ReprMimeBundle
 )
+
+if TYPE_CHECKING:
+    from anywidget._protocols import AnywidgetProtocol
+    from ipykernel.comm import Comm
 
 
 class MockComm(MagicMock):
@@ -38,6 +42,22 @@ def mock_comm():
     assert not _COMMS
 
 
+def _send_value(comm: 'Comm', value: int) -> int:
+    # test that the object responds to incoming messages
+    comm.handle_msg(
+        {"content": {"data": {"method": "update", "state": {"value": value}}}}
+    )
+    return value
+
+def _assert_sends_update(wdg: 'AnywidgetProtocol', comm: MagicMock, expect: int):
+    # test that the comm sends update messages
+    wdg._repr_mimebundle_.send_state({"value"})
+    comm.send.assert_called_with(
+        data={"method": "update", "state": {"value": expect}, "buffer_paths": []},
+        buffers=[],
+    )
+
+
 def test_descriptor(mock_comm: MagicMock) -> None:
     """Test that the descriptor decorator makes a comm, and gets/sets state."""
 
@@ -59,18 +79,10 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     assert _JUPYTER_MIME in repr_method()  # we can call it as usual
 
     # test that the comm sends update messages
-    foo._repr_mimebundle_.send_state({"value"})
-    mock_comm.send.assert_called_with(
-        data={"method": "update", "state": {"value": VAL}, "buffer_paths": []},
-        buffers=[],
-    )
+    _assert_sends_update(foo, mock_comm, VAL)
 
     # test that the object responds to incoming messages
-    NEW_VAL = 3
-    mock_comm.handle_msg(
-        {"content": {"data": {"method": "update", "state": {"value": NEW_VAL}}}}
-    )
-    assert foo.value == NEW_VAL
+    assert _send_value(mock_comm, 3) == foo.value
 
     mock_comm.send.reset_mock()
     mock_comm.handle_msg({"content": {"data": {"method": "request_state"}}})
@@ -226,7 +238,10 @@ def test_descriptor_with_psygnal(mock_comm: MagicMock):
 
 
 def test_descriptor_with_pydantic(mock_comm: MagicMock):
-    pydantic = pytest.importorskip("pydantic")
+    if TYPE_CHECKING:
+        import pydantic
+    else:
+        pydantic = pytest.importorskip("pydantic")
 
     VAL = 1
 
@@ -240,18 +255,35 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock):
     foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
-    foo._repr_mimebundle_.send_state({"value"})
-    mock_comm.send.assert_called_with(
-        data={"method": "update", "state": {"value": VAL}, "buffer_paths": []},
-        buffers=[],
-    )
+    _assert_sends_update(foo, mock_comm, VAL)
 
     # test that the object responds to incoming messages
-    NEW_VAL = 3
-    mock_comm.handle_msg(
-        {"content": {"data": {"method": "update", "state": {"value": NEW_VAL}}}}
-    )
-    assert foo.value == NEW_VAL
+    assert _send_value(mock_comm, 3) == foo.value
+
+
+def test_descriptor_with_msgspec(mock_comm: MagicMock):
+    if TYPE_CHECKING:
+        import msgspec
+        import psygnal
+    else:
+        psygnal = pytest.importorskip("psygnal")
+        msgspec = pytest.importorskip("msgspec")
+
+    VAL = 1
+
+    @psygnal.evented
+    class Foo(msgspec.Struct, weakref=True):
+        value: int = VAL
+        _repr_mimebundle_: ClassVar = MimeBundleDescriptor(autodetect_observer=False)
+
+    foo = Foo()
+    foo._repr_mimebundle_  # create the comm
+
+    # test that the comm sends update messages
+    _assert_sends_update(foo, mock_comm, VAL)
+
+    # test that the object responds to incoming messages
+    assert _send_value(mock_comm, 3) == foo.value
 
 
 def test_descriptor_with_traitlets(mock_comm: MagicMock):

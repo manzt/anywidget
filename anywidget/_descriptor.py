@@ -524,12 +524,16 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
 
 # ------------- Psygnal support --------------
 
-
 def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     """Look for a psygnal.SignalGroup on the obj."""
     psygnal = sys.modules.get("psygnal")
-    if psygnal is None:
+    if psygnal is None:  # pragma: no cover
         return None
+
+    if hasattr(psygnal, 'get_evented_namespace'):
+        # psygnal >= 0.7.1
+        events_name = psygnal.get_evented_namespace(obj)
+        return getattr(obj, events_name, None) if events_name else None
 
     # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
