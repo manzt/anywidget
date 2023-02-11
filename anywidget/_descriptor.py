@@ -30,12 +30,13 @@ from ._util import put_buffers, remove_buffers
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
+
 if TYPE_CHECKING:  # pragma: no cover
     import traitlets
     import pydantic
     import psygnal
-
-    from ipykernel.comm import Comm
+    import msgspec
+    from ._comm import Comm
     from typing_extensions import TypeGuard
 
     from ._protocols import CommMessage
@@ -70,7 +71,7 @@ _ANYWIDGET_STATE = {
 def open_comm(
     target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION, **kwargs
 ) -> Comm:
-    from ipykernel.comm import Comm
+    from ._comm import Comm
 
     return Comm(
         target_name=target_name,
@@ -483,6 +484,10 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
 
     if _is_pydantic_model(obj):
         return _get_pydantic_state
+    
+    if _is_msgspec_struct(obj):
+        return _get_msgspec_state
+
 
     # pickle protocol ... probably not type-safe enough for our purposes
     # https://docs.python.org/3/library/pickle.html#object.__getstate__
@@ -635,3 +640,17 @@ def _get_pydantic_state(obj: pydantic.BaseModel) -> dict:
     expects.)
     """
     return json.loads(obj.json())
+
+# ------------- msgspec support --------------
+
+def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
+    """Return `True` if an object is an instance of msgspec.Struct."""
+    msgspec = sys.modules.get("msgspec")
+    return isinstance(obj, msgspec.Struct) if msgspec is not None else False
+
+
+def _get_msgspec_state(obj: msgspec.Struct) -> dict:
+    """Get the state of a msgspec.Struct instance."""
+    import msgspec
+
+    return msgspec.json.decode(msgspec.json.encode(obj))
