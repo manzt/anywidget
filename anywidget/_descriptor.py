@@ -488,7 +488,6 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
     if _is_msgspec_struct(obj):
         return _get_msgspec_state
 
-
     # pickle protocol ... probably not type-safe enough for our purposes
     # https://docs.python.org/3/library/pickle.html#object.__getstate__
     # if hasattr(type(obj), "__getstate__"):
