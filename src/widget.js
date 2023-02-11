@@ -155,9 +155,7 @@ export default function (base) {
 	class AnyView extends base.DOMWidgetView {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
-			let widget = await load_esm(
-				this.model.get("_esm") ?? this.model.get("_module"),
-			);
+			let widget = await load_esm(this.model.get("_esm"));
 			await widget.render(this);
 		}
 	}
