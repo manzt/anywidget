@@ -535,19 +535,10 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
         # psygnal >= 0.7.1
         events_name = psygnal.get_evented_namespace(obj)
         return getattr(obj, events_name, None) if events_name else None
-
-    # most likely case: signal group is called "events"
-    events = getattr(obj, "events", None)
-    if isinstance(events, psygnal.SignalGroup):
-        return events
-
-    # try exhaustive search
-    with contextlib.suppress(
-        (AttributeError, RecursionError, TypeError)
-    ):  # pragma: no cover
-        for attr in vars(obj).values():
-            if isinstance(attr, psygnal.SignalGroup):
-                return attr
+    else:  # pragma: no cover
+        # most likely case: signal group is called "events"
+        events = getattr(obj, "events", None)
+        return events if isinstance(events, psygnal.SignalGroup) else None
 
 
 def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
