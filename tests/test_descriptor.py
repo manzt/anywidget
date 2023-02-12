@@ -10,7 +10,7 @@ from anywidget._descriptor import (
     _COMMS,
     _JUPYTER_MIME,
     MimeBundleDescriptor,
-    ReprMimeBundle
+    ReprMimeBundle,
 )
 
 if TYPE_CHECKING:
@@ -42,14 +42,15 @@ def mock_comm():
     assert not _COMMS
 
 
-def _send_value(comm: 'Comm', value: int) -> int:
+def _send_value(comm: "Comm", value: int) -> int:
     # test that the object responds to incoming messages
     comm.handle_msg(
         {"content": {"data": {"method": "update", "state": {"value": value}}}}
     )
     return value
 
-def _assert_sends_update(wdg: 'AnywidgetProtocol', comm: MagicMock, expect: int):
+
+def _assert_sends_update(wdg: "AnywidgetProtocol", comm: MagicMock, expect: int):
     # test that the comm sends update messages
     wdg._repr_mimebundle_.send_state({"value"})
     comm.send.assert_called_with(

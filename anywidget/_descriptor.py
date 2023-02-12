@@ -484,7 +484,7 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
 
     if _is_pydantic_model(obj):
         return _get_pydantic_state
-    
+
     if _is_msgspec_struct(obj):
         return _get_msgspec_state
 
@@ -524,13 +524,14 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
 
 # ------------- Psygnal support --------------
 
+
 def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     """Look for a psygnal.SignalGroup on the obj."""
     psygnal = sys.modules.get("psygnal")
     if psygnal is None:  # pragma: no cover
         return None
 
-    if hasattr(psygnal, 'get_evented_namespace'):
+    if hasattr(psygnal, "get_evented_namespace"):
         # psygnal >= 0.7.1
         events_name = psygnal.get_evented_namespace(obj)
         return getattr(obj, events_name, None) if events_name else None
@@ -644,7 +645,9 @@ def _get_pydantic_state(obj: pydantic.BaseModel) -> dict:
     """
     return json.loads(obj.json())
 
+
 # ------------- msgspec support --------------
+
 
 def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
     """Return `True` if an object is an instance of msgspec.Struct."""
