@@ -71,8 +71,6 @@ jobs:
           node-version: "18.x"
           registry-url: https://registry.npmjs.org
 
-      - name: Install Node dependencies
-        run: npm install
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -81,29 +79,32 @@ jobs:
           cache: "pip"
           cache-dependency-path: "**/pyproject.toml"
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install node dependencies
+        run: |
+          npm install
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build twine
+
+      - name: Build JavaScript package
+        run: |
+          npm run build
 
       - name: Build Python package
         run: |
           python -m build --outdir dist-python .
 
-      - name: Publish to PyPI and NPM
-        if: steps.changesets.outputs.hasChangesets == 'false'
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: |
+            npx changeset publish
+            twine upload dist-python/*
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          twine upload dist-python/*
-          npm publish
-
-
