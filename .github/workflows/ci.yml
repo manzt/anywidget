@@ -58,7 +58,7 @@ jobs:
       - uses: codecov/codecov-action@v3
 
   Release:
-    if: ${{ github.ref == 'refs/heads/main' }} # just for pushes to main
+    if: github.ref == 'refs/heads/main' # just for pushes to main
     needs: [Lint, Test]
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +94,7 @@ jobs:
           python -m build --outdir dist-python .
 
       - name: Publish to PyPI and NPM
-        if: ${{ steps.changesets.outputs.hasChangesets == "false" }}
+        if: steps.changesets.outputs.hasChangesets == 'false'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
