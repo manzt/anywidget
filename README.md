@@ -101,10 +101,10 @@ jupyter labextension develop --overwrite anywidget
 
 There are a few guidelines we follow:
 
-- For the front-end code (under `src/`), internal variables are written with
+- For JavaScript, internal variables are written with
   `snake_case` while external APIs are written with `camelCase` (if applicable).
-- Ensure `black --check .` and `ruff .` pass. You can run
-  `hatch run fmt && hatch run lint` to format code.
+- For Python, ensure `black --check .` and `ruff .` pass. You can run
+  `black .` and `ruff --fix .` to format and fix linting errors.
 
 ### Generating changelogs
 
