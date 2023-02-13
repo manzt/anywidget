@@ -90,7 +90,7 @@ jobs:
 
       - name: Build JavaScript package
         run: |
-          npm run build
+          npm run prepack
 
       - name: Build Python package
         run: |
