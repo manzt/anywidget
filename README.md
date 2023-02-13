@@ -13,21 +13,26 @@ custom jupyter widgets made easy
 - run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
-Learn more in [the announcement](https://anywidget.dev/blog/introducing-anywidget).
+Learn more in
+[the announcement](https://anywidget.dev/blog/introducing-anywidget).
 
 ## Installation
 
-> **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
+> **Warning**: **anywidget** is new and under active development. It is not yet
+> ready for production as APIs are subject to change.
 
-**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and may be installed with `pip`:
+**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and
+may be installed with `pip`:
 
 ```bash
 pip install anywidget
 ```
 
-It is also available on [conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
-[Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-installed on your computer, you can install **anywidget** with the following command:
+It is also available on
+[conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
+[Anaconda](https://www.anaconda.com/distribution/#download-section) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your
+computer, you can install **anywidget** with the following command:
 
 ```bash
 conda install -c conda-forge anywidget
@@ -60,7 +65,8 @@ class CounterWidget(anywidget.AnyWidget):
     count = traitlets.Int(0).tag(sync=True)
 ```
 
-Read [the documentation](https://anywidget.dev/en/getting-started) to learn more.
+Read [the documentation](https://anywidget.dev/en/getting-started) to learn
+more.
 
 ## Development
 
@@ -89,10 +95,24 @@ For developing with JupyterLab:
 jupyter labextension develop --overwrite anywidget
 ```
 
-## Release
+## Sending PRs
 
-```bash
-npm version [major|minor|patch]
-git tag -a vX.X.X -m "vX.X.X"
-git push --follow-tags
-```
+### Code styling
+
+There are a few guidelines we follow:
+
+- For the front-end code (under `src/`), internal variables are written with
+  `snake_case` while external APIs are written with `camelCase` (if applicable).
+- Ensure `black --check .` and `ruff .` pass. You can run
+  `hatch run fmt && hatch run lint` to format code.
+
+### Generating changelogs
+
+For changes to be reflected in package changelogs, run `npx changeset` and
+follow the prompts.
+
+## Releases
+
+The [Changesets GitHub action](https://github.com/changesets/action) will create
+and update a PR that applies changesets and publishes new versions of
+**anywidget** to NPM and PyPI.
