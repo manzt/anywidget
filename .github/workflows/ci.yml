@@ -72,7 +72,7 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install Node dependencies
-        run: npm ci
+        run: npm install
 
       - name: Setup Python
         uses: actions/setup-python@v4
