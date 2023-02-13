@@ -94,7 +94,7 @@ jobs:
           python -m build --outdir dist-python .
 
       - name: Publish to PyPI and NPM
-        if: steps.changesets.outputs.hasChangesets == "false"
+        if: ${{ steps.changesets.outputs.hasChangesets == "false" }}
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
