@@ -7,7 +7,6 @@ feat: add `MimeBundleDescriptor` pattern, for more library agnostic Python <> JS
 ```python
 from anywidget._descriptor import MimeBundleDescriptor
 
-# with traitlets
 import traitlets
 
 class Counter(traitlets.HasTraits):
@@ -15,7 +14,6 @@ class Counter(traitlets.HasTraits):
     value = traitlets.Int(0).tag(sync=True)
 
 
-# with dataclasses and psygnal
 from dataclasses import dataclass
 from psygnal import evented
 
