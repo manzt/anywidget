@@ -19,11 +19,13 @@
 	},
 	"scripts": {
 		"build": "npm run build:nb && npm run build:lab",
+		"build:python": "python -m build --outdir dist-python .",
 		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
 		"build:lab": "jupyter labextension build .",
 		"build:vite-plugin": "esbuild --format=cjs --outfile=dist/vite.cjs vite-plugin.js && cp vite-plugin.js dist/vite.mjs",
 		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && npm run build:vite-plugin",
-		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension/"
+		"clean": "rm -rf dist-python dist anywidget/nbextension/index.js anywidget/labextension/",
+		"release": "npm run prepack && npm run build:python && twine upload dist-python/* && changeset publish"
 	},
 	"dependencies": {
 		"@jupyter-widgets/base": "^6.0.1"

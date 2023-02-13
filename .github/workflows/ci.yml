@@ -88,21 +88,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install build twine
 
-      - name: Build JavaScript package
-        run: |
-          npm run prepack
-
-      - name: Build Python package
-        run: |
-          python -m build --outdir dist-python .
-
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: |
-            npx changeset publish
-            twine upload dist-python/*
+          # This expects you to have a script called release which does a build for the packages and calls `changeset publish`
+          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWINE_USERNAME: __token__
