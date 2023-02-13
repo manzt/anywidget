@@ -13,21 +13,26 @@ custom jupyter widgets made easy
 - run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
 
-Learn more in [the announcement](https://anywidget.dev/blog/introducing-anywidget).
+Learn more in
+[the announcement](https://anywidget.dev/blog/introducing-anywidget).
 
 ## Installation
 
-> **Warning**: **anywidget** is new and under active development. It is not yet ready for production as APIs are subject to change.
+> **Warning**: **anywidget** is new and under active development. It is not yet
+> ready for production as APIs are subject to change.
 
-**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and may be installed with `pip`:
+**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and
+may be installed with `pip`:
 
 ```bash
 pip install anywidget
 ```
 
-It is also available on [conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
-[Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-installed on your computer, you can install **anywidget** with the following command:
+It is also available on
+[conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
+[Anaconda](https://www.anaconda.com/distribution/#download-section) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your
+computer, you can install **anywidget** with the following command:
 
 ```bash
 conda install -c conda-forge anywidget
@@ -60,7 +65,8 @@ class CounterWidget(anywidget.AnyWidget):
     count = traitlets.Int(0).tag(sync=True)
 ```
 
-Read [the documentation](https://anywidget.dev/en/getting-started) to learn more.
+Read [the documentation](https://anywidget.dev/en/getting-started) to learn
+more.
 
 ## Development
 
@@ -89,10 +95,28 @@ For developing with JupyterLab:
 jupyter labextension develop --overwrite anywidget
 ```
 
+## Sending PRs
+
+### Code styling
+
+There are a few guidelines we follow:
+
+- For JavaScript, internal variables are written with
+  `snake_case` while external APIs are written with `camelCase` (if applicable).
+- For Python, ensure `black --check .` and `ruff .` pass. You can run
+  `black .` and `ruff --fix .` to format and fix linting errors.
+
+### Generating changelogs
+
+For changes to be reflected in package changelogs, run `npx changeset` and
+follow the prompts. 
+
+> **Note** not every PR requires a changeset. Since changesets are focused on 
+> releases and changelogs, changes to the repository that don't effect these
+> won't need a changeset (e.g., documentation, tests).
+
 ## Release
 
-```bash
-npm version [major|minor|patch]
-git tag -a vX.X.X -m "vX.X.X"
-git push --follow-tags
-```
+The [Changesets GitHub action](https://github.com/changesets/action) will create
+and update a PR that applies changesets and publishes new versions of
+**anywidget** to NPM and PyPI.
