@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
   pull_request:
-    branches: main
+    branches:
+      - main
 
 jobs:
 
@@ -58,7 +57,8 @@ jobs:
 
       - uses: codecov/codecov-action@v3
 
-  Build:
+  Release:
+    if: ${{ github.ref == 'refs/heads/main' }} # just for pushes to main
     needs: [Lint, Test]
     runs-on: ubuntu-latest
     steps:
@@ -78,6 +78,12 @@ jobs:
           cache: "pip"
           cache-dependency-path: "**/pyproject.toml"
 
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -88,7 +94,7 @@ jobs:
           python -m build --outdir dist-python .
 
       - name: Publish to PyPI and NPM
-        if: startsWith(github.ref, 'refs/tags/')
+        if: steps.changesets.outputs.hasChangesets == "false"
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
