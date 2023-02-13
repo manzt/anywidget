@@ -109,9 +109,13 @@ There are a few guidelines we follow:
 ### Generating changelogs
 
 For changes to be reflected in package changelogs, run `npx changeset` and
-follow the prompts.
+follow the prompts. 
 
-## Releases
+> **Note** not every PR requires a changeset. Since changesets are focused on 
+> releases and changelogs, changes to the repository that don't effect these
+> won't need a changeset (e.g., documentation, tests).
+
+## Release
 
 The [Changesets GitHub action](https://github.com/changesets/action) will create
 and update a PR that applies changesets and publishes new versions of
