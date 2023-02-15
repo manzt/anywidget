@@ -1,8 +1,8 @@
 from __future__ import annotations
-from collections import deque
 
 import pathlib
 import threading
+from collections import deque
 from typing import Iterator
 
 from psygnal import Signal
