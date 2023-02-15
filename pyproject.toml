@@ -88,13 +88,11 @@ extend-select = [
     "D",    # pydocstyle
     "I",    # isort
     "UP",   # pyupgrade
-    "S",    # bandit
-    "C4",   # flake8-comprehensions
-    "B",    # flake8-bugbear
-    "A001", # flake8-builtins
-    "TID",  # flake8-tidy-imports
     "RUF",  # ruff-specific rules
 ]
+# using this instead of tool.ruff.pydocstyle.convention until overrides
+# are supported: https://github.com/charliermarsh/ruff/issues/2606
+# specifically, we'd like to INCLUDE D417, which is not in the numpy convention
 extend-ignore = [
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public package
@@ -116,7 +114,9 @@ extend-ignore = [
 minversion = "6.0"
 testpaths = ["tests"]
 filterwarnings = [
-    "error:::anywidget",  # make warnings coming from anywidget errors in tests
+    # this line turns warnings coming from anywidget into test errors
+    # best practice is to use pytest.warns to actually assert warnings happen 
+    "error:::anywidget",
     "ignore:Jupyter is migrating its paths:DeprecationWarning",
     "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
 ]
