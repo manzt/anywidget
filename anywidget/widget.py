@@ -31,6 +31,8 @@ def _enable_custom_widget_manager():
 
 
 class AnyWidget(ipywidgets.DOMWidget):
+    """Main AnyWidget base class."""
+
     _model_name = t.Unicode("AnyModel").tag(sync=True)
     _model_module = t.Unicode("anywidget").tag(sync=True)
     _model_module_version = t.Unicode(__version__).tag(sync=True)

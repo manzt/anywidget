@@ -1,4 +1,4 @@
-from anywidget._util import remove_buffers, put_buffers
+from anywidget._util import put_buffers, remove_buffers
 
 
 def test_remove_and_put_buffers():

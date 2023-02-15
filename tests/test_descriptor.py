@@ -1,11 +1,10 @@
+import weakref
 from dataclasses import dataclass
 from typing import ClassVar
-import weakref
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 import anywidget._descriptor
+import pytest
 from anywidget._descriptor import (
     _COMMS,
     _JUPYTER_MIME,

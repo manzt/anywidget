@@ -3,11 +3,10 @@ import pathlib
 import sys
 from unittest.mock import MagicMock
 
+import anywidget
 import IPython.display
 import pytest
 import traitlets.traitlets as t
-
-import anywidget
 from anywidget.widget import DEFAULT_ESM
 
 
