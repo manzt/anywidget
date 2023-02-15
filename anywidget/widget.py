@@ -6,6 +6,9 @@ import traitlets.traitlets as t
 
 from ._version import __version__
 
+_ANYWIDGET_ID_KEY = "_anywidget_id"
+_ESM_KEY = "_esm"
+_CSS_KEY = "_css"
 DEFAULT_ESM = """
 export function render(view) {
   console.log("Dev note: No _esm defined for this widget:", view);
@@ -44,18 +47,18 @@ class AnyWidget(ipywidgets.DOMWidget):
         # Add anywidget JS/CSS source as traits if not registered
         anywidget_traits = {
             k: t.Unicode(getattr(self, k)).tag(sync=True)
-            for k in ("_esm", "_module", "_css")
+            for k in (_ESM_KEY, _CSS_KEY)
             if hasattr(self, k) and not self.has_trait(k)
         }
 
         # show default _esm if not defined
-        if all(not hasattr(self, i) for i in ("_esm", "_module")):
-            anywidget_traits["_esm"] = t.Unicode(DEFAULT_ESM).tag(sync=True)
+        if not hasattr(self, _ESM_KEY):
+            anywidget_traits[_ESM_KEY] = t.Unicode(DEFAULT_ESM).tag(sync=True)
 
         # TODO: a better way to uniquely identify this subclasses?
         # We use the fully-qualified name to get an id which we
         # can use to update CSS if necessary.
-        anywidget_traits["_anywidget_id"] = t.Unicode(
+        anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(
             f"{self.__class__.__module__}.{self.__class__.__name__}"
         ).tag(sync=True)
 

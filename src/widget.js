@@ -3,7 +3,7 @@ import { name, version } from "../package.json";
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: import("@jupyter-widgets/base").DOMWidgetView) => Promise<void>}
+ *  @prop render {(view: import("@jupyter-widgets/base").WidgetView) => Promise<undefined | (() => Promise<void>)>}
  */
 
 /**
@@ -102,14 +102,60 @@ export default function (base) {
 		static view_name = "AnyView";
 		static view_module = name;
 		static view_module_version = version;
+
+		/** @param {Parameters<InstanceType<base["DOMWidgetModel"]>["initialize"]>} args */
+		initialize(...args) {
+			super.initialize(...args);
+
+			// Handles CSS updates from anywidget during development.
+			this.on("change:_css", () => {
+				let id = this.get("_anywidget_id");
+				// _esm/_css/_anywidget_id traits are set dynamically within `anywidget.AnyWidget.__init__`,
+				// and due to the implementation of ipywidgets fire separate change messages to the front end.
+				// This can cause an issue where we have CSS but we don't have an ID. This early return
+				// make sure we only apply styles that we can replace.
+				if (!id) return;
+				console.debug(`[anywidget] css hot updated: ${id}`);
+				load_css(this.get("_css"), id);
+			});
+
+			// Handles ESM updates from anywidget during development.
+			this.on("change:_esm", async () => {
+				let id = this.get("_anywidget_id");
+				if (!id) return;
+				console.debug(`[anywidget] esm hot updated: ${id}`);
+
+				for await (let view of Object.values(this.views ?? {})) {
+					// load updated esm
+					let widget = await load_esm(this.get("_esm"));
+
+					// `view.$el` is a cached jQuery object for the view's element.
+					// This removes all child nodes but avoids deleting the root so
+					// we can rerender.
+					view.$el.empty();
+
+					// Unsubscribe from any handlers registered to `view.listenTo`
+					// Sadly we can't just `model.off` because it removes everything,
+					// including handlers not setup by the child view.
+					//
+					// We could override `model.on` with a particular `context` if none is
+					// provided, letting us unsubscribe from only events from views
+					// e.g., `model.off(null, null, anywidgetSymbol)`, but that might
+					// be more trouble than it's worth and this is just a feature for
+					// development.
+					view.stopListening(this);
+
+					// render the view with the updated render
+					await widget.render(view);
+				}
+			});
+		}
 	}
 
 	class AnyView extends base.DOMWidgetView {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
-			let widget = await load_esm(
-				this.model.get("_esm") ?? this.model.get("_module"),
-			);
+			let widget = await load_esm(this.model.get("_esm"));
 			await widget.render(this);
 		}
 	}

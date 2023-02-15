@@ -76,6 +76,47 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_called()
 
 
+def test_descriptor_sends_hmr_update(mock_comm: MagicMock) -> None:
+    """Test that descriptor sends custom anywidget HMR update to front end."""
+
+    esm = "export function render(view) {}"
+    css = "h1 { }"
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+        value: int = 0
+
+        def _get_anywidget_state(self):
+            return {"value": self.value}
+
+    foo = Foo()
+
+    foo._repr_mimebundle_._send_hmr_update(esm=esm, css=css)
+    mock_comm.send.assert_called_with(
+        data={
+            "method": "update",
+            "state": {"_esm": esm, "_css": css},
+            "buffer_paths": [],
+        },
+        buffers=[],
+    )
+
+    foo._repr_mimebundle_._send_hmr_update(esm=esm)
+    mock_comm.send.assert_called_with(
+        data={"method": "update", "state": {"_esm": esm}, "buffer_paths": []},
+        buffers=[],
+    )
+
+    foo._repr_mimebundle_._send_hmr_update(css=css)
+    mock_comm.send.assert_called_with(
+        data={"method": "update", "state": {"_css": css}, "buffer_paths": []},
+        buffers=[],
+    )
+
+    foo._repr_mimebundle_._send_hmr_update()
+    mock_comm.send.assert_not_called
+
+
 def test_state_setter(mock_comm: MagicMock):
     """Test that `_set_anywidget_state` is used when present."""
     mock = MagicMock()

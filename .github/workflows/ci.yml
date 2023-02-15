@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
   pull_request:
-    branches: main
+    branches:
+      - main
 
 jobs:
 
@@ -51,14 +50,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .[test]
+          pip install -e .[dev,test]
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
-      
+
       - uses: codecov/codecov-action@v3
 
-  Build:
+  Release:
+    if: github.ref == 'refs/heads/main' # just for pushes to main
     needs: [Lint, Test]
     runs-on: ubuntu-latest
     steps:
@@ -71,6 +71,7 @@ jobs:
           node-version: "18.x"
           registry-url: https://registry.npmjs.org
 
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -78,23 +79,23 @@ jobs:
           cache: "pip"
           cache-dependency-path: "**/pyproject.toml"
 
-      - name: Install dependencies
+      - name: Install node dependencies
+        run: |
+          npm install
+
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build twine
 
-      - name: Build Python package
-        run: |
-          python -m build --outdir dist-python .
-
-      - name: Publish to PyPI and NPM
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # This expects you to have a script called release which does a build for the packages and calls `changeset publish`
+          publish: npm run release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          twine upload dist-python/*
-          npm publish
-
-
