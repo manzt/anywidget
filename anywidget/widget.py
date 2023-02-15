@@ -31,7 +31,7 @@ def _enable_custom_widget_manager() -> None:
     sys.modules["google.colab.output"].enable_custom_widget_manager()
 
 
-class AnyWidget(ipywidgets.DOMWidget):
+class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     """Main AnyWidget base class."""
 
     _model_name = t.Unicode("AnyModel").tag(sync=True)

@@ -139,9 +139,8 @@ exclude_lines = [
 [tool.mypy]
 files = "anywidget/**/*.py"
 strict = true
+# this one is cumbersome, and not always that useful
 disallow_any_generics = false
-disallow_subclassing_any = false
-show_error_codes = true
 
 [[tool.mypy.overrides]]
 module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
