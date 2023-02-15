@@ -422,6 +422,27 @@ class ReprMimeBundle:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
 
+    def _send_hmr_update(self, esm: str | None = None, css: str | None = None) -> None:
+        """Send new ESM or CSS for front end to load and re-render the current views.
+
+        Parameters
+        ----------
+        esm : string, optional
+            anywidget front-end JavaScript code. Can be raw text or URL.
+        css : string, optional
+            anywidget front-end CSS code. Can be raw text or URL.
+        """
+        update = {}
+
+        if esm is not None:
+            update["_esm"] = esm
+
+        if css is not None:
+            update["_css"] = css
+
+        self._extra_state.update(update)
+        self.send_state(update.keys())
+
 
 # ------------- Helper function --------------
 

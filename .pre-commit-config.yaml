@@ -7,7 +7,7 @@ ci:
 
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.242
+    rev: v0.0.246
     hooks:
       - id: ruff
         args: [--fix]
@@ -32,6 +32,8 @@ repos:
         args: [--no-warn-unused-ignores]
         exclude: tests|docs
         # packages in the pre-commit env will determine what can be type checked
+        # it does NOT automatically include all packages required by the project
         additional_dependencies:
           - pydantic
           - psygnal
+          - watchfiles

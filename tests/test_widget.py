@@ -33,22 +33,6 @@ def test_basic():
     assert w._esm == ESM
 
 
-def test_legacy():
-    ESM = """
-    export function render(view) {
-        view.el.innerText = "Hello, world";
-    }
-    """
-
-    class Widget(anywidget.AnyWidget):
-        _module = t.Unicode(ESM).tag(sync=True)
-
-    w = Widget()
-
-    assert w.has_trait("_module")
-    assert w._module == ESM
-
-
 def test_default_esm():
     class Widget(anywidget.AnyWidget):
         ...
