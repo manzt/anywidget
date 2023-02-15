@@ -16,19 +16,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-          cache: "pip"
-          cache-dependency-path: "**/pyproject.toml"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install black[jupyter] ruff==0.0.238
-
-      - name: Check formatting and linting
-        run: black --check . && ruff .
+      # this could be replaced with pre-commit.ci
+      - run: pipx run pre-commit run --all-files
 
   Test:
     runs-on: ubuntu-latest
