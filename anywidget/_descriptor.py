@@ -23,7 +23,7 @@ import sys
 import warnings
 import weakref
 from dataclasses import asdict, is_dataclass
-from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, overload
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, cast, overload
 
 from ._util import put_buffers, remove_buffers
 from ._version import __version__
@@ -523,14 +523,17 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
 
 def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     """Look for a psygnal.SignalGroup on the obj."""
-    psygnal = sys.modules.get("psygnal")
+    if TYPE_CHECKING:
+        import psygnal
+    else:
+        psygnal = sys.modules.get("psygnal")
     if psygnal is None:
         return None
 
     # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
     if isinstance(events, psygnal.SignalGroup):
-        return events  # type: ignore [no-any-return]
+        return events
 
     # try exhaustive search
     with contextlib.suppress(
@@ -538,7 +541,7 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     ):  # pragma: no cover
         for attr in vars(obj).values():
             if isinstance(attr, psygnal.SignalGroup):
-                return attr  # type: ignore [no-any-return]
+                return attr
 
     return None
 
@@ -561,7 +564,7 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
             send_state({event.signal.name})
 
         def _disconnect() -> None:
-            events.disconnect(_on_psygnal_event)  # type: ignore [union-attr]
+            cast("psygnal.SignalGroup", events).disconnect(_on_psygnal_event)
 
         return _disconnect
     return None
