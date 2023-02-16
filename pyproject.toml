@@ -134,3 +134,19 @@ exclude_lines = [
     "\\.\\.\\.",
     "raise NotImplementedError()"
 ]
+
+# https://mypy.readthedocs.io/en/stable/config_file.html
+[tool.mypy]
+files = "anywidget/**/*.py"
+strict = true
+# this one is cumbersome, and not always that useful
+disallow_any_generics = false
+
+[[tool.mypy.overrides]]
+module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+# this might be missing in pre-commit, but they aren't typed anyway
+module = ["ipywidgets", "traitlets.*", "ipykernel.*", "IPython.*"]
+ignore_missing_imports = true

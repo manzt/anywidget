@@ -23,7 +23,7 @@ import sys
 import warnings
 import weakref
 from dataclasses import asdict, is_dataclass
-from typing import TYPE_CHECKING, Any, Callable, Iterable, overload
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, cast, overload
 
 from ._util import put_buffers, remove_buffers
 from ._version import __version__
@@ -34,9 +34,12 @@ if TYPE_CHECKING:  # pragma: no cover
     import pydantic
     import traitlets
     from ipykernel.comm import Comm
-    from typing_extensions import TypeGuard
+    from typing_extensions import TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
+
+    # catch all for types that can be serialized ... too hard to actually type
+    Serializable: TypeAlias = Any
 
 __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
@@ -66,11 +69,11 @@ _ANYWIDGET_STATE = {
 
 
 def open_comm(
-    target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION, **kwargs
+    target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
 ) -> Comm:
     from ipykernel.comm import Comm
 
-    return Comm(
+    return Comm(  # type: ignore[no-untyped-call]
         target_name=target_name,
         metadata={"version": version},
         data={"state": _ANYWIDGET_STATE},
@@ -213,7 +216,7 @@ class MimeBundleDescriptor:
             warnings.warn(f"Error in Anywidget repr:\n{e}")
             raise
 
-        with contextlib.suppress((AttributeError, ValueError)):
+        with contextlib.suppress(AttributeError, ValueError):
             # this line overrides the attribute on the instance with the ReprMimeBundle
             # we just created. This is so that the next time the attribute is accessed,
             # we don't have to create a new ReprMimeBundle.
@@ -264,7 +267,7 @@ class ReprMimeBundle:
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
         try:
-            self._obj = weakref.ref(obj, self._on_obj_deleted)
+            self._obj: Callable[[], Any] = weakref.ref(obj, self._on_obj_deleted)
         except TypeError:
             # obj is not weakrefable, so we'll just hold a strong reference to it.
             self._obj = lambda: obj
@@ -313,11 +316,11 @@ class ReprMimeBundle:
 
         # if self._property_lock: ... # TODO
         state, buffer_paths, buffers = remove_buffers(state)
-        if self._comm.kernel is not None:  # type: ignore
+        if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
             self._comm.send(data=msg, buffers=buffers)
 
-    def _handle_msg(self, msg: CommMessage):
+    def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
 
         (assuming `sync_object_with_view` has been called.)
@@ -327,15 +330,14 @@ class ReprMimeBundle:
             return  # pragma: no cover  ... the python object has been deleted
 
         data = msg["content"]["data"]
-        method = data["method"]
-        if method == "update":
+        if data["method"] == "update":
             if "state" in data:
                 state = data["state"]
                 if "buffer_paths" in data:
                     put_buffers(state, data["buffer_paths"], msg["buffers"])
                 self._set_state(obj, state)
 
-        elif method == "request_state":
+        elif data["method"] == "request_state":
             self.send_state()
 
         # elif method == "custom":
@@ -353,7 +355,7 @@ class ReprMimeBundle:
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
 
-    def __call__(self, **kwargs) -> dict:
+    def __call__(self, **kwargs: Sequence[str]) -> dict:
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
@@ -420,7 +422,7 @@ class ReprMimeBundle:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
 
-    def _send_hmr_update(self, esm: str | None = None, css: str | None = None):
+    def _send_hmr_update(self, esm: str | None = None, css: str | None = None) -> None:
         """Send new ESM or CSS for front end to load and re-render the current views.
 
         Parameters
@@ -450,7 +452,7 @@ def _anywidget_id(obj: object) -> str:
     return f"{type(obj).__module__}.{type(obj).__name__}"
 
 
-def determine_state_getter(obj: object) -> Callable[[object], dict]:
+def determine_state_getter(obj: object) -> Callable[[Any], Serializable]:
     """Autodetect how `obj` can be serialized to a dict.
 
     This looks for various special methods and patterns on the object (e.g. dataclass,
@@ -469,7 +471,7 @@ def determine_state_getter(obj: object) -> Callable[[object], dict]:
     if hasattr(type(obj), _STATE_GETTER_NAME):
         # note that we return the *unbound* method on the class here, so that it can be
         # called with the object as the first argument
-        return getattr(type(obj), _STATE_GETTER_NAME)
+        return getattr(type(obj), _STATE_GETTER_NAME)  # type: ignore [no-any-return]
 
     if is_dataclass(obj):
         # caveat: if the dict is not JSON serializeable... you still need to
@@ -511,7 +513,7 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
         accordingly.
     """
     if hasattr(type(obj), _STATE_SETTER_NAME):
-        return getattr(type(obj), _STATE_SETTER_NAME)
+        return getattr(type(obj), _STATE_SETTER_NAME)  # type: ignore [no-any-return]
 
     return _default_set_state
 
@@ -521,7 +523,10 @@ def determine_state_setter(obj: object) -> Callable[[object, dict], None]:
 
 def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     """Look for a psygnal.SignalGroup on the obj."""
-    psygnal = sys.modules.get("psygnal")
+    if TYPE_CHECKING:
+        import psygnal
+    else:
+        psygnal = sys.modules.get("psygnal")
     if psygnal is None:
         return None
 
@@ -532,11 +537,13 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
 
     # try exhaustive search
     with contextlib.suppress(
-        (AttributeError, RecursionError, TypeError)
+        AttributeError, RecursionError, TypeError
     ):  # pragma: no cover
         for attr in vars(obj).values():
             if isinstance(attr, psygnal.SignalGroup):
                 return attr
+
+    return None
 
 
 def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
@@ -553,11 +560,11 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
     if events is not None:
 
         @events.connect
-        def _on_psygnal_event(event: psygnal.EmissionInfo):
+        def _on_psygnal_event(event: psygnal.EmissionInfo) -> None:
             send_state({event.signal.name})
 
-        def _disconnect():
-            events.disconnect(_on_psygnal_event)
+        def _disconnect() -> None:
+            cast("psygnal.SignalGroup", events).disconnect(_on_psygnal_event)
 
         return _disconnect
     return None
@@ -582,9 +589,10 @@ _TRAITLETS_SYNC_FLAG = "sync"
 # state isn't being synced without opting in.
 
 
-def _get_traitlets_state(obj: traitlets.HasTraits) -> dict:
+def _get_traitlets_state(obj: traitlets.HasTraits) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
-    return obj.trait_values(**{_TRAITLETS_SYNC_FLAG: True})
+    kwargs = {_TRAITLETS_SYNC_FLAG: True}
+    return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
@@ -601,17 +609,17 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
     if not _is_traitlets_object(obj):
         return None
 
-    def _on_trait_change(change: dict):
+    def _on_trait_change(change: dict) -> None:
         send_state({change["name"]})
 
-    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))
+    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))  # type: ignore
 
     obj_ref = weakref.ref(obj)
 
-    def _disconnect():
+    def _disconnect() -> None:
         obj = obj_ref()
         if obj is not None:
-            obj.unobserve(_on_trait_change)
+            obj.unobserve(_on_trait_change)  # type: ignore
 
     return _disconnect
 
@@ -625,7 +633,7 @@ def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
     return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
-def _get_pydantic_state(obj: pydantic.BaseModel) -> dict:
+def _get_pydantic_state(obj: pydantic.BaseModel) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)

@@ -1,5 +1,6 @@
 import sys
 from functools import lru_cache
+from typing import Any
 
 import ipywidgets
 import traitlets.traitlets as t
@@ -24,13 +25,13 @@ export function render(view) {
 
 
 @lru_cache(maxsize=None)
-def _enable_custom_widget_manager():
+def _enable_custom_widget_manager() -> None:
     # Enable custom widgets manager so that our widgets display in Colab
     # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
-    sys.modules["google.colab.output"].enable_custom_widget_manager()  # type: ignore
+    sys.modules["google.colab.output"].enable_custom_widget_manager()
 
 
-class AnyWidget(ipywidgets.DOMWidget):
+class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     """Main AnyWidget base class."""
 
     _model_name = t.Unicode("AnyModel").tag(sync=True)
@@ -41,7 +42,7 @@ class AnyWidget(ipywidgets.DOMWidget):
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(__version__).tag(sync=True)
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
         # Add anywidget JS/CSS source as traits if not registered
@@ -73,7 +74,7 @@ class AnyWidget(ipywidgets.DOMWidget):
             # see https://github.com/manzt/anywidget/issues/48
             if not hasattr(self, "_ipython_display_"):
 
-                def _ipython_display_(**kwargs):
+                def _ipython_display_(**kwargs: Any) -> None:
                     from IPython.display import display
 
                     data = self._repr_mimebundle_(**kwargs)

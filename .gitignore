@@ -17,3 +17,4 @@ dist-python/
 
 .astro
 .coverage
+.dmypy.json

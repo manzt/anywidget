@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 from ._version import __version__  # noqa
 from .widget import AnyWidget  # noqa
 
 
-def _jupyter_labextension_paths():
+def _jupyter_labextension_paths() -> list[dict]:
     return [{"src": "labextension", "dest": "anywidget"}]
 
 
-def _jupyter_nbextension_paths():
+def _jupyter_nbextension_paths() -> list[dict]:
     return [
         {
             "section": "notebook",
