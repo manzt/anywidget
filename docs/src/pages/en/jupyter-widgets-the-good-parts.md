@@ -52,7 +52,7 @@ export { CustomModel, CustomView };
 In **anywidget**, the above code simplies to just:
 
 ```javascript
-/** @param {DOMWidgetView} view */
+/** @param view {DOMWidgetView} view */
 export function render(view) {
 	let el = view.el;
 	let model = view.model;
