@@ -78,7 +78,7 @@ What's going on here:
   It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
 
 ```javascript
-/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
 export function render(view) {
 	// Render model contents and setup dynamic updates
 	// See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
@@ -92,7 +92,7 @@ Therefore, dependencies can be imported directly via a fully qualified URL.
 ```javascript
 import * as d3 from "https://esm.sh/d3@7";
 
-/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
 export function render(view) {
 	let selection = d3.select(view.el);
 	/* ... */
