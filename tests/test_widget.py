@@ -132,8 +132,3 @@ def test_empty_meta():
     w = anywidget.AnyWidget()
     bundle = w._repr_mimebundle_()
     assert len(bundle[1]) == 0
-
-
-def test_default_no_ipython_display():
-    w = anywidget.AnyWidget()
-    assert not hasattr(w, "")
