@@ -4,9 +4,9 @@ import sys
 from unittest.mock import MagicMock
 
 import anywidget
-import IPython.display
 import pytest
 import traitlets.traitlets as t
+from anywidget._util import _WIDGET_MIME_TYPE
 from anywidget.widget import DEFAULT_ESM
 
 
@@ -113,23 +113,27 @@ def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
     mock = MagicMock()
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
 
-    anywidget.AnyWidget()
-    anywidget.AnyWidget()
+    anywidget.AnyWidget()._repr_mimebundle_()
+    anywidget.AnyWidget()._repr_mimebundle_()
     assert mock.enable_custom_widget_manager.assert_called_once
 
 
-def test_ipython_display_in_colab(monkeypatch: pytest.MonkeyPatch):
-    mock_display = MagicMock()
-    monkeypatch.setattr(IPython.display, "display", mock_display)
-    monkeypatch.setitem(sys.modules, "google.colab.output", MagicMock())
+def test_injects_colab_meta(monkeypatch: pytest.MonkeyPatch):
+    mock = MagicMock()
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
 
     w = anywidget.AnyWidget()
+    bundle = w._repr_mimebundle_()
+    assert _WIDGET_MIME_TYPE in bundle[1]
+    assert "colab" in bundle[1][_WIDGET_MIME_TYPE]
 
-    assert hasattr(w, "_ipython_display_")
-    w._ipython_display_()
-    assert mock_display.assert_called_once
+
+def test_empty_meta():
+    w = anywidget.AnyWidget()
+    bundle = w._repr_mimebundle_()
+    assert len(bundle[1]) == 0
 
 
 def test_default_no_ipython_display():
     w = anywidget.AnyWidget()
-    assert not hasattr(w, "_ipython_display_")
+    assert not hasattr(w, "")

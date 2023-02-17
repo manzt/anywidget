@@ -25,7 +25,7 @@ import weakref
 from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, cast, overload
 
-from ._util import put_buffers, remove_buffers
+from ._util import get_repr_metadata, put_buffers, remove_buffers
 from ._version import __version__
 from .widget import DEFAULT_ESM
 
@@ -355,11 +355,11 @@ class ReprMimeBundle:
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
 
-    def __call__(self, **kwargs: Sequence[str]) -> dict:
+    def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict]:
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
-        return {
+        data = {
             "text/plain": repr(self),
             _JUPYTER_MIME: {
                 "version_major": _PROTOCOL_VERSION_MAJOR,
@@ -367,6 +367,7 @@ class ReprMimeBundle:
                 "model_id": self._comm.comm_id,
             },
         }
+        return data, get_repr_metadata()
 
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
