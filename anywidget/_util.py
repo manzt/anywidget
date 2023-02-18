@@ -130,7 +130,7 @@ def get_repr_metadata() -> dict:
         return {}
 
     _enable_custom_widget_manager_once()
-    url = sys.modules["google.colab.output"]._installed_url
+    url = sys.modules["google.colab.output"]._widgets._installed_url
 
     if url is None:
         return {}

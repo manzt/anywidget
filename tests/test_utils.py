@@ -81,13 +81,13 @@ def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
     assert meta == {}
 
     mock = MagicMock()
-    mock._installed_url = None
+    mock._widgets._installed_url = None
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
     meta = get_repr_metadata()
     assert meta == {}
 
     mock = MagicMock()
-    mock._installed_url = "foo"
+    mock._widgets._installed_url = "foo"
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
     meta = get_repr_metadata()
     assert meta == {
