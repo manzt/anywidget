@@ -64,5 +64,5 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
         # ipywidgets v8
-        def _repr_mimebundle_(self, **kwargs) -> tuple[None | dict, dict]:
+        def _repr_mimebundle_(self, **kwargs: dict) -> tuple[None | dict, dict]:
             return super()._repr_mimebundle_(**kwargs), get_repr_metadata()
