@@ -64,9 +64,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         # Monkey-patch _repr_mimebundle_ to include metadata necessary for Colab
         if hasattr(super(), "_repr_mimebundle_"):
-            original = self._repr_mimebundle_
+            original = super()._repr_mimebundle_
 
             def _repr_mimebundle_(**kwargs: dict) -> tuple[dict, dict]:
                 return original(**kwargs) or {}, get_repr_metadata()
 
-            self._repr_mimebundle_ = _repr_mimebundle_  # type: ignore
+            self._repr_mimebundle_ = _repr_mimebundle_
