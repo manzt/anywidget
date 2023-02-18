@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any
 
 import ipywidgets
 import traitlets.traitlets as t
@@ -59,10 +59,14 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
 
-    def _repr_mimebundle_(self, **kwargs: Sequence[str]) -> tuple[dict, dict]:
-        if hasattr(super(), "_repr_mimebundle_"):
-            data = super()._repr_mimebundle_(**kwargs) or {}
-        else:
-            data = {}
+        # Enables custom widget manager if we are in Colab
+        get_repr_metadata()
 
-        return data, get_repr_metadata()
+        # Monkey-patch _repr_mimebundle_ to include metadata necessary for Colab
+        if hasattr(super(), "_repr_mimebundle_"):
+            original = self._repr_mimebundle_
+
+            def _repr_mimebundle_(**kwargs: dict) -> tuple[dict, dict]:
+                return original(**kwargs) or {}, get_repr_metadata()
+
+            self._repr_mimebundle_ = _repr_mimebundle_  # type: ignore
