@@ -60,7 +60,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         self.add_traits(**anywidget_traits)
 
     def _repr_mimebundle_(self, **kwargs: Sequence[str]) -> tuple[dict, dict]:
-        if hasattr(super(), "repr_mimebundle"):
+        if hasattr(super(), "_repr_mimebundle_"):
             data = super()._repr_mimebundle_(**kwargs) or {}
         else:
             data = {}
