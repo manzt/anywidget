@@ -111,7 +111,7 @@ def put_buffers(
 
 
 @lru_cache(maxsize=None)
-def _enable_custom_widget_manager() -> None:
+def _enable_custom_widget_manager_once() -> None:
     # Enable custom widgets manager so that our widgets display in Colab
     # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
     sys.modules["google.colab.output"].enable_custom_widget_manager()
@@ -129,7 +129,7 @@ def get_repr_metadata() -> dict:
     if "google.colab.output" not in sys.modules:
         return {}
 
-    _enable_custom_widget_manager()
+    _enable_custom_widget_manager_once()
     url = sys.modules["google.colab.output"]._installed_url
 
     if url is None:

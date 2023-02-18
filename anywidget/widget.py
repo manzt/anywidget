@@ -59,14 +59,10 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
 
-        # Enables custom widget manager if we are in Colab
+        # Enables the custom widget manager
         get_repr_metadata()
 
-        # Monkey-patch _repr_mimebundle_ to include metadata necessary for Colab
-        if hasattr(super(), "_repr_mimebundle_"):
-            original = super()._repr_mimebundle_
-
-            def _repr_mimebundle_(**kwargs: dict) -> tuple[dict, dict]:
-                return original(**kwargs) or {}, get_repr_metadata()
-
-            self._repr_mimebundle_ = _repr_mimebundle_
+    if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
+        # ipywidgets v8
+        def _repr_mimebundle_(self, **kwargs) -> tuple[None | dict, dict]:
+            return super()._repr_mimebundle_(**kwargs), get_repr_metadata()
