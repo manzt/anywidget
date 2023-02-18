@@ -1,8 +1,12 @@
 import json
 import pathlib
+import sys
+from unittest.mock import MagicMock
 
 import anywidget
+import pytest
 import traitlets.traitlets as t
+from anywidget._util import _WIDGET_MIME_TYPE
 from anywidget.widget import DEFAULT_ESM
 
 
@@ -103,3 +107,27 @@ def test_infer_traitlets_partial():
     assert w.has_trait("_css")
     assert w._css == CSS
     assert w.trait_metadata("_css", "sync")
+
+
+def test_patched_repr(monkeypatch: pytest.MonkeyPatch):
+    w = anywidget.AnyWidget()
+    bundle = w._repr_mimebundle_()
+    assert _WIDGET_MIME_TYPE in bundle[0]
+    assert bundle[1] == {}
+
+    w = anywidget.AnyWidget()
+    bundle = w._repr_mimebundle_()
+
+    assert _WIDGET_MIME_TYPE in bundle[0]
+    assert bundle[1] == {}
+
+    mock = MagicMock()
+    mock._installed_url = "foo"
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+
+    w = anywidget.AnyWidget()
+    assert mock.enable_custom_widget_manager.called_once
+
+    bundle = w._repr_mimebundle_()
+    assert _WIDGET_MIME_TYPE in bundle[0]
+    assert _WIDGET_MIME_TYPE in bundle[1]
