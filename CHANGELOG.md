@@ -1,5 +1,22 @@
 # anywidget
 
+## 0.1.2
+
+### Patch Changes
+
+- feat: add (optional) cleanup/unmount return to `render` ([#67](https://github.com/manzt/anywidget/pull/67))
+
+  ```javascript
+  export function render(view) {
+    /* create elements and add event listeners */
+    return function cleanup() => {
+      /* specify how to cleanup any expensive resources created above */
+    }
+  }
+  ```
+
+- feat: add colab metadata to `_repr_mimebundle_` to fix displaying ipywidgets v7 & v8 in Colab ([#75](https://github.com/manzt/anywidget/pull/75))
+
 ## 0.1.1
 
 ### Patch Changes
