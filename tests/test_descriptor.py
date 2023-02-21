@@ -55,7 +55,9 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     repr_method = foo._repr_mimebundle_  # the comm is created here
     mock_comm.send.assert_called_once()
     assert isinstance(repr_method, ReprMimeBundle)
-    assert _JUPYTER_MIME in repr_method()  # we can call it as usual
+    bundle = repr_method()
+    assert _JUPYTER_MIME in bundle[0]  # we can call it as usual
+    assert len(bundle[1]) == 0
 
     # test that the comm sends update messages
     foo._repr_mimebundle_.send_state({"value"})

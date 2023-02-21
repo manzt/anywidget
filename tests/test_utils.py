@@ -1,4 +1,12 @@
-from anywidget._util import put_buffers, remove_buffers
+import sys
+from unittest.mock import MagicMock
+
+import pytest
+from anywidget._util import (
+    get_repr_metadata,
+    put_buffers,
+    remove_buffers,
+)
 
 
 def test_remove_and_put_buffers():
@@ -58,3 +66,32 @@ def test_remove_and_put_buffers():
     # tuple to a list
     state_before["z"] = list(state_before["z"])
     assert state_before == state
+
+
+def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
+    mock = MagicMock()
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    get_repr_metadata()
+    get_repr_metadata()
+    assert mock.enable_custom_widget_manager.assert_called_once
+
+
+def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
+    meta = get_repr_metadata()
+    assert meta == {}
+
+    mock = MagicMock()
+    mock._widgets._installed_url = None
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    meta = get_repr_metadata()
+    assert meta == {}
+
+    mock = MagicMock()
+    mock._widgets._installed_url = "foo"
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    meta = get_repr_metadata()
+    assert meta == {
+        "application/vnd.jupyter.widget-view+json": {
+            "colab": {"custom_widget_manager": {"url": "foo"}}
+        }
+    }

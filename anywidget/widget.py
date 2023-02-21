@@ -1,10 +1,15 @@
-import sys
-from functools import lru_cache
+from __future__ import annotations
+
 from typing import Any
 
 import ipywidgets
 import traitlets.traitlets as t
 
+from ._util import (
+    enable_custom_widget_manager_once,
+    get_repr_metadata,
+    in_colab,
+)
 from ._version import __version__
 
 _ANYWIDGET_ID_KEY = "_anywidget_id"
@@ -22,13 +27,6 @@ export function render(view) {
   </p>`;
 }
 """
-
-
-@lru_cache(maxsize=None)
-def _enable_custom_widget_manager() -> None:
-    # Enable custom widgets manager so that our widgets display in Colab
-    # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
-    sys.modules["google.colab.output"].enable_custom_widget_manager()
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -65,19 +63,10 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
 
-        # Check if we are in Colab
-        if "google.colab.output" in sys.modules:
-            _enable_custom_widget_manager()
+        if in_colab():
+            enable_custom_widget_manager_once()
 
-            # Monkey-patch _ipython_display_ for each instance if missing.
-            # Necessary for Colab to display third-party widget
-            # see https://github.com/manzt/anywidget/issues/48
-            if not hasattr(self, "_ipython_display_"):
-
-                def _ipython_display_(**kwargs: Any) -> None:
-                    from IPython.display import display
-
-                    data = self._repr_mimebundle_(**kwargs)
-                    display(data, raw=True)
-
-                self._ipython_display_ = _ipython_display_
+    if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
+        # ipywidgets v8
+        def _repr_mimebundle_(self, **kwargs: dict) -> tuple[None | dict, dict]:
+            return super()._repr_mimebundle_(**kwargs), get_repr_metadata()

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import sys
+from functools import lru_cache
 from typing import Any
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
+_WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 
 # next 3 functions vendored with modifications from ipywidgets
 # BSD-3-Clause
@@ -105,3 +108,38 @@ def put_buffers(
         for key in buffer_path[:-1]:
             obj = obj[key]
         obj[buffer_path[-1]] = buffer
+
+
+def in_colab() -> bool:
+    """Determines whether in Google Colab."""
+    return "google.colab.output" in sys.modules
+
+
+@lru_cache(maxsize=None)
+def enable_custom_widget_manager_once() -> None:
+    """Enables Google Colab's custom widget manager so third-party widgets display.
+
+    See https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
+    """
+    sys.modules["google.colab.output"].enable_custom_widget_manager()
+
+
+def get_repr_metadata() -> dict:
+    """Creates metadata dict for _repr_mimebundle_.
+
+    If in Google Colab, enables custom widgets as a side effect
+    and injects the `custom_widget_manager` metadata for more
+    consistent rendering.
+
+    See https://github.com/manzt/anywidget/issues/63#issuecomment-1427194000.
+    """
+    if not in_colab():
+        return {}
+
+    enable_custom_widget_manager_once()
+    url = sys.modules["google.colab.output"]._widgets._installed_url
+
+    if url is None:
+        return {}
+
+    return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
