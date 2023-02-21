@@ -81,6 +81,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          # this expects you to have a npm script called version that runs some logic and then calls `changeset version`.
+          version: npm run version
           # This expects you to have a script called release which does a build for the packages and calls `changeset publish`
           publish: npm run release
         env:
