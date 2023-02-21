@@ -25,6 +25,7 @@
 		"build:vite-plugin": "esbuild --format=cjs --outfile=dist/vite.cjs vite-plugin.js && cp vite-plugin.js dist/vite.mjs",
 		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && npm run build:vite-plugin",
 		"clean": "rm -rf dist-python dist anywidget/nbextension/index.js anywidget/labextension/",
+		"version": "changeset version && npm install",
 		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
 	},
 	"dependencies": {
