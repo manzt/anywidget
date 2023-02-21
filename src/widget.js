@@ -1,9 +1,11 @@
 // @ts-check
 import { name, version } from "../package.json";
 
+/** @typedef {import("@jupyter-widgets/base").WidgetView} WidgetView */
+
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: import("@jupyter-widgets/base").WidgetView) => Promise<undefined | (() => Promise<void>)>}
+ *  @prop render {(view: WidgetView) => Promise<undefined | (() => Promise<void>)>}
  */
 
 /**
@@ -129,6 +131,9 @@ export default function (base) {
 					// load updated esm
 					let widget = await load_esm(this.get("_esm"));
 
+					// call any cleanup logic defined by the previous module.
+					await (/** @type {AnyView} */ (view))._anywidget_cached_cleanup();
+
 					// `view.$el` is a cached jQuery object for the view's element.
 					// This removes all child nodes but avoids deleting the root so
 					// we can rerender.
@@ -146,7 +151,8 @@ export default function (base) {
 					view.stopListening(this);
 
 					// render the view with the updated render
-					await widget.render(view);
+					let cleanup = await widget.render(view);
+					if (cleanup) this._anywidget_cached_cleanup = cleanup;
 				}
 			});
 		}
@@ -156,7 +162,16 @@ export default function (base) {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
-			await widget.render(this);
+			let cleanup = await widget.render(this);
+			if (cleanup) this._anywidget_cached_cleanup = cleanup;
+		}
+
+		async _anywidget_cached_cleanup() {}
+
+		async remove() {
+			// call any user-defined cleanup logic before this view is completely removed.
+			await this._anywidget_cached_cleanup();
+			return super.remove();
 		}
 	}
 
