@@ -5,7 +5,11 @@ from typing import Any
 import ipywidgets
 import traitlets.traitlets as t
 
-from ._util import get_repr_metadata
+from ._util import (
+    enable_custom_widget_manager_once,
+    get_repr_metadata,
+    in_colab,
+)
 from ._version import __version__
 
 _ANYWIDGET_ID_KEY = "_anywidget_id"
@@ -59,8 +63,8 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
 
-        # Enables the custom widget manager
-        get_repr_metadata()
+        if in_colab():
+            enable_custom_widget_manager_once()
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
         # ipywidgets v8

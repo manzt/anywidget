@@ -110,10 +110,17 @@ def put_buffers(
         obj[buffer_path[-1]] = buffer
 
 
+def in_colab() -> bool:
+    """Determines whether in Google Colab."""
+    return "google.colab.output" in sys.modules
+
+
 @lru_cache(maxsize=None)
-def _enable_custom_widget_manager_once() -> None:
-    # Enable custom widgets manager so that our widgets display in Colab
-    # https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
+def enable_custom_widget_manager_once() -> None:
+    """Enables Google Colab's custom widget manager so third-party widgets display.
+
+    See https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
+    """
     sys.modules["google.colab.output"].enable_custom_widget_manager()
 
 
@@ -126,10 +133,10 @@ def get_repr_metadata() -> dict:
 
     See https://github.com/manzt/anywidget/issues/63#issuecomment-1427194000.
     """
-    if "google.colab.output" not in sys.modules:
+    if not in_colab():
         return {}
 
-    _enable_custom_widget_manager_once()
+    enable_custom_widget_manager_once()
     url = sys.modules["google.colab.output"]._widgets._installed_url
 
     if url is None:
