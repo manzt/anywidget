@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import contextlib
+import pathlib
 import sys
 from functools import lru_cache
 from typing import Any
+
+from ._file_contents import FileContents
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 _WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
@@ -143,3 +147,23 @@ def get_repr_metadata() -> dict:
         return {}
 
     return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
+
+
+def try_file_contents(x: Any) -> FileContents | None:
+    """Try to coerce x into a FileContents object."""
+    if not isinstance(x, (str, pathlib.Path)):
+        return None
+
+    maybe_path = pathlib.Path(x)
+
+    with contextlib.suppress(OSError):
+        maybe_path = pathlib.Path(maybe_path).resolve().absolute()
+        if maybe_path.is_file():
+            # Start a watch thread if file is outside of site-packages
+            # (i.e., likely a development install)
+            return FileContents(
+                path=maybe_path,
+                start_thread="site-packages" not in maybe_path.parts,
+            )
+
+    return None

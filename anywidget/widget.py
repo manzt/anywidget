@@ -5,10 +5,12 @@ from typing import Any
 import ipywidgets
 import traitlets.traitlets as t
 
+from ._file_contents import FileContents
 from ._util import (
     enable_custom_widget_manager_once,
     get_repr_metadata,
     in_colab,
+    try_file_contents,
 )
 from ._version import __version__
 
@@ -44,11 +46,17 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         super().__init__(*args, **kwargs)
 
         # Add anywidget JS/CSS source as traits if not registered
-        anywidget_traits = {
-            k: t.Unicode(getattr(self, k)).tag(sync=True)
-            for k in (_ESM_KEY, _CSS_KEY)
-            if hasattr(self, k) and not self.has_trait(k)
-        }
+        anywidget_traits = {}
+
+        for key in (_ESM_KEY, _CSS_KEY):
+            if hasattr(self, key) and not self.has_trait(key):
+                value = getattr(self, key)
+                anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
+
+                if isinstance(value, FileContents):
+                    value.changed.connect(
+                        lambda new_contents, key=key: setattr(self, key, new_contents)
+                    )
 
         # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
@@ -65,6 +73,13 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         if in_colab():
             enable_custom_widget_manager_once()
+
+    def __init_subclass__(cls, **kwargs) -> None:
+        """Coerces _esm and _css to FileContents if they are files."""
+        super().__init_subclass__(**kwargs)
+        for key in (_ESM_KEY, _CSS_KEY) & cls.__dict__.keys():
+            if file_contents := try_file_contents(getattr(cls, key)):
+                setattr(cls, key, file_contents)
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
         # ipywidgets v8
