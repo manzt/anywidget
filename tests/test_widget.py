@@ -180,6 +180,8 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
 
     assert w._css == css.read_text()
 
+    Widget._esm.stop_thread()
+
 
 def test_missing_file_no_infer(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
