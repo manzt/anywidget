@@ -74,7 +74,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if in_colab():
             enable_custom_widget_manager_once()
 
-    def __init_subclass__(cls, **kwargs) -> None:
+    def __init_subclass__(cls, **kwargs: dict) -> None:
         """Coerces _esm and _css to FileContents if they are files."""
         super().__init_subclass__(**kwargs)
         for key in (_ESM_KEY, _CSS_KEY) & cls.__dict__.keys():
