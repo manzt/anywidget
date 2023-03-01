@@ -131,7 +131,7 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
     assert _WIDGET_MIME_TYPE in bundle[1]
 
 
-def test_infer_file_contents(tmp_path):
+def test_infer_file_contents(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
     esm.write_text(
         "export function render(view) { view.el.innerText = 'Hello, world'; }"
@@ -179,3 +179,22 @@ def test_infer_file_contents(tmp_path):
         time.sleep(0.01)
 
     assert w._css == css.read_text()
+
+
+def test_missing_file_no_infer(tmp_path: pathlib.Path):
+    esm = tmp_path / "foo.js"
+    css = str(tmp_path / "styles.css")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+        _css = css
+
+    assert isinstance(Widget._esm, pathlib.Path)
+    assert Widget._esm == esm
+    assert isinstance(Widget._css, str)
+    assert Widget._css == css
+
+    w = Widget()
+
+    assert w._esm == str(tmp_path / "foo.js")
+    assert w._css == css

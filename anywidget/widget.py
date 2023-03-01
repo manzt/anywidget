@@ -78,7 +78,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         """Coerces _esm and _css to FileContents if they are files."""
         super().__init_subclass__(**kwargs)
         for key in (_ESM_KEY, _CSS_KEY) & cls.__dict__.keys():
-            if file_contents := try_file_contents(getattr(cls, key)):
+            # TODO: Upgrate to := when we drop Python 3.7
+            file_contents = try_file_contents(getattr(cls, key))
+            if file_contents:
                 setattr(cls, key, file_contents)
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
