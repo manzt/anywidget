@@ -156,6 +156,7 @@ def try_file_contents(x: Any) -> FileContents | None:
 
     maybe_path = pathlib.Path(x)
 
+    # Could raise OSError if not a path and exceeds max path length
     with contextlib.suppress(OSError):
         maybe_path = pathlib.Path(maybe_path).resolve().absolute()
         if maybe_path.is_file():
