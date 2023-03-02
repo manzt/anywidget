@@ -14,6 +14,7 @@ class Counter(anywidget.AnyWidget):
 ```
 
 If a file path for an existing file is detected for `_esm` or `_css`,
-the contents will be read from disk automatically. If the path is outside
-of `site-packages`, the file will be watched in a background thread and
-changes will be emitted widget instance for live reloads.
+the contents will be read from disk automatically. If the resolved
+path is _not_ in `site-packages` (i.e., likely a development install), a
+background thread will start watching for file changes and push updates
+to the front end.
