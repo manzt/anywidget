@@ -180,6 +180,7 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
 
     assert w._css == css.read_text()
 
+    # need to teardown the thread for CI
     Widget._esm.stop_thread()
 
 
