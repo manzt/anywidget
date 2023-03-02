@@ -295,6 +295,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
         buffers=[],
     )
 
+
 def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
     """Test that the file contents are inferred from the file path."""
 
@@ -313,7 +314,6 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
     assert file_contents == bar
     assert file_contents._background_thread is None
-
 
     foo = Foo()
     assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()
