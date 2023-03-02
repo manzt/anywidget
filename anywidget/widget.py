@@ -7,28 +7,16 @@ import traitlets.traitlets as t
 
 from ._file_contents import FileContents
 from ._util import (
+    _ANYWIDGET_ID_KEY,
+    _CSS_KEY,
+    _DEFAULT_ESM,
+    _ESM_KEY,
     enable_custom_widget_manager_once,
     get_repr_metadata,
     in_colab,
     try_file_contents,
 )
 from ._version import __version__
-
-_ANYWIDGET_ID_KEY = "_anywidget_id"
-_ESM_KEY = "_esm"
-_CSS_KEY = "_css"
-DEFAULT_ESM = """
-export function render(view) {
-  console.log("Dev note: No _esm defined for this widget:", view);
-  let url = "https://anywidget.dev/en/getting-started/";
-  view.el.innerHTML = `<p>
-    <strong>Dev note</strong>:
-    <a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>
-    on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>
-    to customize this widget.
-  </p>`;
-}
-"""
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -60,7 +48,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
-            anywidget_traits[_ESM_KEY] = t.Unicode(DEFAULT_ESM).tag(sync=True)
+            anywidget_traits[_ESM_KEY] = t.Unicode(_DEFAULT_ESM).tag(sync=True)
 
         # TODO: a better way to uniquely identify this subclasses?
         # We use the fully-qualified name to get an id which we

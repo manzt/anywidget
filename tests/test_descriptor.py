@@ -1,3 +1,5 @@
+import pathlib
+import time
 import weakref
 from dataclasses import dataclass
 from typing import ClassVar
@@ -5,12 +7,15 @@ from unittest.mock import MagicMock, patch
 
 import anywidget._descriptor
 import pytest
+import watchfiles
 from anywidget._descriptor import (
     _COMMS,
-    _JUPYTER_MIME,
+    _WIDGET_MIME_TYPE,
     MimeBundleDescriptor,
     ReprMimeBundle,
 )
+from anywidget._file_contents import FileContents
+from watchfiles import Change
 
 
 class MockComm(MagicMock):
@@ -56,7 +61,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_called_once()
     assert isinstance(repr_method, ReprMimeBundle)
     bundle = repr_method()
-    assert _JUPYTER_MIME in bundle[0]  # we can call it as usual
+    assert _WIDGET_MIME_TYPE in bundle[0]  # we can call it as usual
     assert len(bundle[1]) == 0
 
     # test that the comm sends update messages
@@ -279,3 +284,54 @@ def test_descriptor_with_traitlets(mock_comm: MagicMock):
     foo.value = 5
     mock_comm.assert_not_called()
     assert not repr_obj._disconnectors
+
+
+def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> None:
+    """Test that the file contents are inferred from the file path."""
+
+    site_packages = tmp_path / "site-packages"
+    site_packages.mkdir()
+
+    esm = site_packages / "foo.js"
+    esm.write_text(
+        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+    )
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
+        value: int = 1
+
+        def _get_anywidget_state(self):
+            return {"value": self.value}
+
+    file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
+    assert isinstance(file_contents, FileContents)
+    assert file_contents._background_thread is None
+
+    foo = Foo()
+    assert foo._repr_mimebundle_._extra_state["_esm"] == esm.read_text()
+
+    def mock_file_events():
+        esm.write_text("blah")
+        # write to file
+        changes = set()
+        changes.add((Change.modified, str(esm)))
+        yield changes
+        # delete the file
+        changes = set()
+        changes.add((Change.deleted, str(esm)))
+        yield changes
+
+    with patch.object(watchfiles, "watch") as mock_watch:
+        mock_watch.return_value = mock_file_events()
+        file_contents.watch_in_thread()
+
+    while (
+        file_contents._background_thread and file_contents._background_thread.is_alive()
+    ):
+        time.sleep(0.01)
+
+    mock_comm.send.assert_called_with(
+        data={"method": "update", "state": {"_esm": "blah"}, "buffer_paths": []},
+        buffers=[],
+    )

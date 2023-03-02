@@ -9,8 +9,7 @@ import pytest
 import traitlets.traitlets as t
 import watchfiles
 from anywidget._file_contents import FileContents
-from anywidget._util import _WIDGET_MIME_TYPE
-from anywidget.widget import DEFAULT_ESM
+from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
 from watchfiles import Change
 
 
@@ -44,7 +43,7 @@ def test_default_esm():
     w = Widget()
 
     assert w.has_trait("_esm")
-    assert w._esm == DEFAULT_ESM
+    assert w._esm == _DEFAULT_ESM
 
 
 def test_creates_fully_qualified_identifier():
