@@ -15,6 +15,11 @@
 		"./vite": {
 			"import": "./dist/vite.mjs",
 			"require": "./dist/vite.cjs"
+		},
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"import": "./dist/types.mjs",
+			"require": "./dist/types.cjs"
 		}
 	},
 	"scripts": {
@@ -22,8 +27,7 @@
 		"build:python": "python -m build --outdir dist-python .",
 		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
 		"build:lab": "jupyter labextension build .",
-		"build:vite-plugin": "esbuild --format=cjs --outfile=dist/vite.cjs vite-plugin.js && cp vite-plugin.js dist/vite.mjs",
-		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && npm run build:vite-plugin",
+		"prepack": "rm -rf dist && node ./scripts/prepack.mjs",
 		"clean": "rm -rf dist-python dist anywidget/nbextension/index.js anywidget/labextension/",
 		"version": "changeset version && npm install",
 		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
@@ -33,10 +37,10 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
-		"@jupyter-widgets/base": "^6.0.1",
 		"@jupyterlab/builder": "^3.5.0",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
-		"esbuild": "^0.15.12"
+		"esbuild": "^0.15.12",
+		"typescript": "^4.9.5"
 	},
 	"jupyterlab": {
 		"extension": "src/plugin",
