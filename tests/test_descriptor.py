@@ -294,3 +294,26 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
         data={"method": "update", "state": {"_esm": "blah"}, "buffer_paths": []},
         buffers=[],
     )
+
+def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
+    """Test that the file contents are inferred from the file path."""
+
+    path = tmp_path / "bar.txt"
+    path.write_text("Hello, world")
+
+    bar = FileContents(path, start_thread=False)
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(bar=bar, autodetect_observer=False)
+        value: int = 1
+
+        def _get_anywidget_state(self):
+            return {"value": self.value}
+
+    file_contents = Foo._repr_mimebundle_._extra_state["bar"]
+    assert file_contents == bar
+    assert file_contents._background_thread is None
+
+
+    foo = Foo()
+    assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()

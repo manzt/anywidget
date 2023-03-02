@@ -200,3 +200,19 @@ def test_missing_file_no_infer(tmp_path: pathlib.Path):
 
     assert w._esm == str(tmp_path / "foo.js")
     assert w._css == css
+
+
+def test_explicit_file_contents(tmp_path: pathlib.Path):
+    path = tmp_path / "foo.js"
+    path.write_text(
+        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+    )
+    esm = FileContents(path, start_thread=False)
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+
+    assert Widget._esm == esm
+
+    w = Widget()
+    assert w._esm == path.read_text()
