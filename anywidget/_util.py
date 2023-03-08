@@ -1,11 +1,30 @@
 from __future__ import annotations
 
+import contextlib
+import pathlib
 import sys
 from functools import lru_cache
 from typing import Any
 
+from ._file_contents import FileContents
+
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 _WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
+_ANYWIDGET_ID_KEY = "_anywidget_id"
+_ESM_KEY = "_esm"
+_CSS_KEY = "_css"
+_DEFAULT_ESM = """
+export function render(view) {
+  console.log("Dev note: No _esm defined for this widget:", view);
+  let url = "https://anywidget.dev/en/getting-started/";
+  view.el.innerHTML = `<p>
+    <strong>Dev note</strong>:
+    <a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>
+    on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>
+    to customize this widget.
+  </p>`;
+}
+"""
 
 # next 3 functions vendored with modifications from ipywidgets
 # BSD-3-Clause
@@ -143,3 +162,24 @@ def get_repr_metadata() -> dict:
         return {}
 
     return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
+
+
+def try_file_contents(x: Any) -> FileContents | None:
+    """Try to coerce x into a FileContents object."""
+    if not isinstance(x, (str, pathlib.Path)):
+        return None
+
+    maybe_path = pathlib.Path(x)
+
+    # Could raise OSError if not a path and exceeds max path length
+    with contextlib.suppress(OSError):
+        maybe_path = pathlib.Path(maybe_path).resolve().absolute()
+        if maybe_path.is_file():
+            # Start a watch thread if file is outside of site-packages
+            # (i.e., likely a development install)
+            return FileContents(
+                path=maybe_path,
+                start_thread="site-packages" not in maybe_path.parts,
+            )
+
+    return None

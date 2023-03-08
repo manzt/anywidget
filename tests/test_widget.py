@@ -1,13 +1,16 @@
 import json
 import pathlib
 import sys
-from unittest.mock import MagicMock
+import time
+from unittest.mock import MagicMock, patch
 
 import anywidget
 import pytest
 import traitlets.traitlets as t
-from anywidget._util import _WIDGET_MIME_TYPE
-from anywidget.widget import DEFAULT_ESM
+import watchfiles
+from anywidget._file_contents import FileContents
+from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
+from watchfiles import Change
 
 
 def test_version():
@@ -40,7 +43,7 @@ def test_default_esm():
     w = Widget()
 
     assert w.has_trait("_esm")
-    assert w._esm == DEFAULT_ESM
+    assert w._esm == _DEFAULT_ESM
 
 
 def test_creates_fully_qualified_identifier():
@@ -125,3 +128,91 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
     bundle = w._repr_mimebundle_()
     assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
     assert _WIDGET_MIME_TYPE in bundle[1]
+
+
+def test_infer_file_contents(tmp_path: pathlib.Path):
+    esm = tmp_path / "foo.js"
+    esm.write_text(
+        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+    )
+
+    site_packages = tmp_path / "site-packages"
+    site_packages.mkdir()
+    css = site_packages / "styles.css"
+    css.write_text(".foo { background-color: black; }")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+        _css = str(css)
+
+    assert isinstance(Widget._esm, FileContents)
+    assert Widget._esm._background_thread is not None
+
+    assert isinstance(Widget._css, FileContents)
+    assert Widget._css._background_thread is None
+
+    w = Widget()
+
+    assert w.has_trait("_esm")
+    assert w._esm == esm.read_text()
+
+    assert w.has_trait("_css")
+    assert w._css == css.read_text()
+
+    def mock_file_events():
+        css.write_text("blah")
+        # write to file
+        changes = set()
+        changes.add((Change.modified, str(css)))
+        yield changes
+        # delete the file
+        changes = set()
+        changes.add((Change.deleted, str(css)))
+        yield changes
+
+    with patch.object(watchfiles, "watch") as mock_watch:
+        mock_watch.return_value = mock_file_events()
+        Widget._css.watch_in_thread()
+
+    while Widget._css._background_thread and Widget._css._background_thread.is_alive():
+        time.sleep(0.01)
+
+    assert w._css == css.read_text()
+
+    # need to teardown the thread for CI
+    Widget._esm.stop_thread()
+
+
+def test_missing_file_no_infer(tmp_path: pathlib.Path):
+    esm = tmp_path / "foo.js"
+    css = str(tmp_path / "styles.css")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+        _css = css
+
+    assert isinstance(Widget._esm, pathlib.Path)
+    assert Widget._esm == esm
+    assert isinstance(Widget._css, str)
+    assert Widget._css == css
+
+    w = Widget()
+
+    assert w._esm == str(tmp_path / "foo.js")
+    assert w._css == css
+
+
+def test_explicit_file_contents(tmp_path: pathlib.Path):
+    path = tmp_path / "foo.js"
+    path.write_text(
+        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+    )
+    esm = FileContents(path, start_thread=False)
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+
+    assert Widget._esm == esm
+
+    w = Widget()
+    assert w._esm == path.read_text()

@@ -25,9 +25,18 @@ import weakref
 from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, cast, overload
 
-from ._util import get_repr_metadata, put_buffers, remove_buffers
+from ._file_contents import FileContents
+from ._util import (
+    _ANYWIDGET_ID_KEY,
+    _DEFAULT_ESM,
+    _ESM_KEY,
+    _WIDGET_MIME_TYPE,
+    get_repr_metadata,
+    put_buffers,
+    remove_buffers,
+    try_file_contents,
+)
 from ._version import __version__
-from .widget import DEFAULT_ESM
 
 if TYPE_CHECKING:  # pragma: no cover
     import psygnal
@@ -43,12 +52,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
-_JUPYTER_MIME = "application/vnd.jupyter.widget-view+json"
 _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
-_ANYWIDGET_ID_KEY = "_anywidget_id"
-_ESM_KEY = "_esm"
 
 _PROTOCOL_VERSION_MAJOR = 2
 _PROTOCOL_VERSION_MINOR = 1
@@ -130,7 +136,7 @@ class MimeBundleDescriptor:
         explicitly called.
     **extra_state : Any, optional
         Any extra state that should be sent to the javascript view (for example,
-        for the `_esm` anywidget field.)  By default, `{'_esm': DEFAULT_ESM}` is added
+        for the `_esm` anywidget field.)  By default, `{'_esm': _DEFAULT_ESM}` is added
         to the state.
 
     Examples
@@ -157,11 +163,17 @@ class MimeBundleDescriptor:
         autodetect_observer: bool = True,
         **extra_state: Any,
     ) -> None:
-        extra_state.setdefault(_ESM_KEY, DEFAULT_ESM)
+        extra_state.setdefault(_ESM_KEY, _DEFAULT_ESM)
         self._extra_state = extra_state
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
         self._autodetect_observer = autodetect_observer
+
+        for k, v in self._extra_state.items():
+            # TODO: use := when we drop python 3.7
+            file_contents = try_file_contents(v)
+            if file_contents is not None:
+                self._extra_state[k] = file_contents
 
     def __set_name__(self, owner: type, name: str) -> None:
         """Called when this descriptor is assigned to an attribute on a class.
@@ -263,7 +275,7 @@ class ReprMimeBundle:
         extra_state: dict[str, Any] | None = None,
     ):
         self._autodetect_observer = autodetect_observer
-        self._extra_state = extra_state or {}
+        self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
 
         try:
@@ -286,6 +298,15 @@ class ReprMimeBundle:
         # figure out what type of object we're working with, and how it "get state".
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
+
+        for key, value in self._extra_state.items():
+            if isinstance(value, FileContents):
+                self._extra_state[key] = str(value)
+
+                @value.changed.connect
+                def _on_change(new_contents: str, key: str = key) -> None:
+                    self._extra_state[key] = new_contents
+                    self.send_state(key)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
         """Called when the python object is deleted."""
@@ -361,7 +382,7 @@ class ReprMimeBundle:
         # (i.e. the comm knows how to represent itself as a mimebundle)
         data = {
             "text/plain": repr(self),
-            _JUPYTER_MIME: {
+            _WIDGET_MIME_TYPE: {
                 "version_major": _PROTOCOL_VERSION_MAJOR,
                 "version_minor": _PROTOCOL_VERSION_MINOR,
                 "model_id": self._comm.comm_id,
@@ -422,27 +443,6 @@ class ReprMimeBundle:
         while self._disconnectors:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
-
-    def _send_hmr_update(self, esm: str | None = None, css: str | None = None) -> None:
-        """Send new ESM or CSS for front end to load and re-render the current views.
-
-        Parameters
-        ----------
-        esm : string, optional
-            anywidget front-end JavaScript code. Can be raw text or URL.
-        css : string, optional
-            anywidget front-end CSS code. Can be raw text or URL.
-        """
-        update = {}
-
-        if esm is not None:
-            update["_esm"] = esm
-
-        if css is not None:
-            update["_css"] = css
-
-        self._extra_state.update(update)
-        self.send_state(update.keys())
 
 
 # ------------- Helper function --------------
