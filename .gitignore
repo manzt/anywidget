@@ -7,13 +7,11 @@ __pycache__/
 
 node_modules/
 
-anywidget/nbextension/index.js
-anywidget/labextension/package.json
-anywidget/labextension/static/*
+src/anywidget/nbextension/index.js
+src/anywidget/labextension/package.json
+src/anywidget/labextension/static/*
 
 dist/
-dist-python/
-
 
 .astro
 .coverage

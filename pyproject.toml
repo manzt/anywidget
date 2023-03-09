@@ -36,15 +36,16 @@ dev = [
 homepage = "https://github.com/manzt/anywidget"
 
 [tool.hatch.build]
+sources = ["src"]
 artifacts = [
-    "anywidget/nbextension/index.*",
-    "anywidget/labextension/*.tgz",
-    "anywidget/labextension",
+    "src/anywidget/nbextension/index.*",
+    "src/anywidget/labextension/*.tgz",
+    "src/anywidget/labextension",
 ]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"anywidget/nbextension" = "share/jupyter/nbextensions/anywidget"
-"anywidget/labextension" = "share/jupyter/labextensions/anywidget"
+"src/anywidget/nbextension" = "share/jupyter/nbextensions/anywidget"
+"src/anywidget/labextension" = "share/jupyter/labextensions/anywidget"
 "./anywidget.json" = "etc/jupyter/nbconfig/notebook.d/anywidget.json"
 
 [tool.hatch.build.targets.sdist]
@@ -55,22 +56,23 @@ exclude = [
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
-    "anywidget/nbextension/index.js",
-    "anywidget/labextension/package.json",
+    "src/anywidget/nbextension/index.js",
+    "src/anywidget/labextension/package.json",
 ]
 skip-if-exists = [
-    "anywidget/nbextension/index.js",
-    "anywidget/labextension/package.json",
+    "src/anywidget/nbextension/index.js",
+    "src/anywidget/labextension/package.json",
 ]
 dependencies = [
     "hatch-jupyter-builder>=0.5.0",
 ]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = "pnpm"
 build_cmd = "build"
 
 [tool.hatch.version]
-path = "package.json"
+path = "packages/main/package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
@@ -138,7 +140,7 @@ exclude_lines = [
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
-files = "anywidget/**/*.py"
+files = "src/anywidget/**/*.py"
 strict = true
 # this one is cumbersome, and not always that useful
 disallow_any_generics = false

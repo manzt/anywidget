@@ -1,20 +1,16 @@
 {
 	"name": "@anywidget/monorepo",
-	"main": "packages/main/src/index.js",
 	"version": "0.1.2",
 	"author": "Trevor Manz",
 	"license": "MIT",
-	"files": [
-		"dist"
-	],
 	"scripts": {
-		"build": "pnpm -r build",
-		"build:nb": "pnpm --filter anywidget build && cp packages/main/dist/index.js anywidget/nbextension/index.js",
-		"build:lab": "jupyter labextension build .",
+		"build": "pnpm run build:nb && pnpm run build:lab",
+		"clean": "rm -rf dist src/anywidget/nbextension/index.js src/anywidget/labextension",
+		"build:nb": "pnpm --filter anywidget build && cp packages/main/dist/index.js src/anywidget/nbextension/index.js",
+		"build:lab": "jupyter labextension build ./packages/main",
 		"version": "changeset version && npm install",
 		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
 	},
-	"dependencies": {},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
 		"@jupyterlab/builder": "^3.6.2",

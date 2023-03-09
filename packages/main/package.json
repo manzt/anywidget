@@ -19,9 +19,12 @@
 	"dependencies": {
 		"@jupyter-widgets/base": "^6.0.1"
 	},
+	"devDependencies": {
+		"@jupyterlab/builder": "^3.6.1"
+	},
 	"jupyterlab": {
 		"extension": "src/plugin",
-		"outputDir": "anywidget/labextension",
+		"outputDir": "../../src/anywidget/labextension",
 		"sharedPackages": {
 			"@jupyter-widgets/base": {
 				"bundled": false,
