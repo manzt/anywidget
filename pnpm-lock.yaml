@@ -41,7 +41,7 @@ importers:
     dependencies:
       '@algolia/client-search': 4.15.0
       '@astrojs/markdown-remark': 2.1.0_astro@2.1.2
-      '@astrojs/mdx': 0.15.2_astro@2.1.2+rollup@3.18.0
+      '@astrojs/mdx': 0.15.2_astro@2.1.2
       '@astrojs/preact': 2.1.0_preact@10.13.0
       '@astrojs/react': 2.1.0_egblcddniveghoxfrykmpuhdwi
       '@astrojs/tailwind': 3.1.0_5fkwwuzubt6borit3q7k7y2k74
@@ -55,7 +55,7 @@ importers:
       preact: 10.13.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      tailwindcss: 3.2.7_postcss@8.4.21
+      tailwindcss: 3.2.7
     devDependencies:
       html-escaper: 3.0.3
       prettier: 2.8.4
@@ -63,17 +63,20 @@ importers:
       shiki: 0.14.1
       vite: 4.1.4_@types+node@18.14.6
 
-  packages/main:
+  packages/anywidget:
     specifiers:
       '@jupyter-widgets/base': ^6.0.1
       '@jupyterlab/builder': ^3.6.1
     dependencies:
-      '@jupyter-widgets/base': 6.0.2_crypto@1.0.1
+      '@jupyter-widgets/base': 6.0.2
     devDependencies:
-      '@jupyterlab/builder': 3.6.1_crypto@1.0.1
+      '@jupyterlab/builder': 3.6.1
 
   packages/types:
-    specifiers: {}
+    specifiers:
+      '@jupyter-widgets/base': ^6.0.1
+    dependencies:
+      '@jupyter-widgets/base': 6.0.2
 
   packages/vite:
     specifiers:
@@ -251,14 +254,14 @@ packages:
       - supports-color
     dev: false
 
-  /@astrojs/mdx/0.15.2_astro@2.1.2+rollup@3.18.0:
+  /@astrojs/mdx/0.15.2_astro@2.1.2:
     resolution: {integrity: sha512-vrv1fw5kLZqaV0FHr6IKR46Rq5DENHhqUVZIXpAbvpRG/qXxHpg9QVN9ji+3bgLDKvG2Yz4wi8CYvSjmUtJHBQ==}
     engines: {node: '>=16.12.0'}
     dependencies:
       '@astrojs/markdown-remark': 2.1.0_astro@2.1.2
       '@astrojs/prism': 2.1.0
       '@mdx-js/mdx': 2.3.0
-      '@mdx-js/rollup': 2.3.0_rollup@3.18.0
+      '@mdx-js/rollup': 2.3.0
       acorn: 8.8.2
       es-module-lexer: 0.10.5
       estree-util-visit: 1.2.1
@@ -331,7 +334,7 @@ packages:
       autoprefixer: 10.4.13_postcss@8.4.21
       postcss: 8.4.21
       postcss-load-config: 4.0.1_postcss@8.4.21
-      tailwindcss: 3.2.7_postcss@8.4.21
+      tailwindcss: 3.2.7
     transitivePeerDependencies:
       - ts-node
     dev: false
@@ -1254,13 +1257,13 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  /@jupyter-widgets/base/6.0.2_crypto@1.0.1:
+  /@jupyter-widgets/base/6.0.2:
     resolution: {integrity: sha512-CIVjSTrqQFzkg9VCdDjrjDqwbba3eZfNigCPFSuKmMVXc+ATAOFczOv9/9uaCPzQ+E+0g6SOLhJ25SpKB0cl9g==}
     dependencies:
-      '@jupyterlab/services': 6.6.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@jupyterlab/services': 6.6.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/messaging': 1.10.3
-      '@lumino/widgets': 1.37.1_crypto@1.0.1
+      '@lumino/widgets': 1.37.1
       '@types/backbone': 1.4.14
       '@types/lodash': 4.14.191
       backbone: 1.4.0
@@ -1273,22 +1276,22 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@jupyterlab/builder/3.6.1_crypto@1.0.1:
+  /@jupyterlab/builder/3.6.1:
     resolution: {integrity: sha512-LvHQe6InEXJisEcvAdvSFbEEl8OhTjxBSNz7MrjRB+Ur+Qs898dg8QhDH9Ad5mgK3uh4nEN1BDq9W7C/NomqoA==}
     hasBin: true
     dependencies:
       '@lumino/algorithm': 1.9.2
-      '@lumino/application': 1.31.3_crypto@1.0.1
-      '@lumino/commands': 1.21.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/application': 1.31.3
+      '@lumino/commands': 1.21.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/domutils': 1.8.2
-      '@lumino/dragdrop': 1.14.4_crypto@1.0.1
+      '@lumino/dragdrop': 1.14.4
       '@lumino/messaging': 1.10.3
       '@lumino/properties': 1.8.2
       '@lumino/signaling': 1.11.1
       '@lumino/virtualdom': 1.14.3
-      '@lumino/widgets': 1.37.1_crypto@1.0.1
+      '@lumino/widgets': 1.37.1
       ajv: 6.12.6
       commander: 6.0.0
       css-loader: 5.2.7_webpack@5.76.0
@@ -1324,10 +1327,10 @@ packages:
       - webpack-dev-server
     dev: true
 
-  /@jupyterlab/coreutils/5.6.1_crypto@1.0.1:
+  /@jupyterlab/coreutils/5.6.1:
     resolution: {integrity: sha512-nS4ixC9H53lFzdszOfZfDhlM2hlXfOtQAn6TnA/0Ra/gTBQ+LEbFIWdAp588iKuv8eKX39O/Us53T4oq24A31g==}
     dependencies:
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/signaling': 1.11.1
       minimist: 1.2.8
@@ -1338,19 +1341,19 @@ packages:
       - crypto
     dev: false
 
-  /@jupyterlab/nbformat/3.6.1_crypto@1.0.1:
+  /@jupyterlab/nbformat/3.6.1:
     resolution: {integrity: sha512-fLJTAwnQZ/5H9dBV/noqlkbGmGBbcsgd0FHWyMVIq+efKFX6CW1MOk61uM76rfahkke3XgYgvlXsw7i7lEIhcA==}
     dependencies:
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
     transitivePeerDependencies:
       - crypto
     dev: false
 
-  /@jupyterlab/observables/4.6.1_crypto@1.0.1:
+  /@jupyterlab/observables/4.6.1:
     resolution: {integrity: sha512-ez+fxyE3qwQ9grZ0nj2fpgcPIGySs/cNfojfcQatziV2rbFZzrBJJsWFSBhPO55vJd1Mue21aPw1eEK3ok4Wfw==}
     dependencies:
       '@lumino/algorithm': 1.9.2
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/messaging': 1.10.3
       '@lumino/signaling': 1.11.1
@@ -1358,18 +1361,18 @@ packages:
       - crypto
     dev: false
 
-  /@jupyterlab/services/6.6.1_crypto@1.0.1:
+  /@jupyterlab/services/6.6.1:
     resolution: {integrity: sha512-4YIwTsfx7+JO7Lz9YFTpUvniA3aHdR5dDQJfdo9TsCMxs+NDVfjNAvp9VHa1xNJWYll4Ay31lYWbvuN/SI+KEA==}
     dependencies:
-      '@jupyterlab/coreutils': 5.6.1_crypto@1.0.1
-      '@jupyterlab/nbformat': 3.6.1_crypto@1.0.1
-      '@jupyterlab/observables': 4.6.1_crypto@1.0.1
-      '@jupyterlab/settingregistry': 3.6.1_crypto@1.0.1
-      '@jupyterlab/statedb': 3.6.1_crypto@1.0.1
+      '@jupyterlab/coreutils': 5.6.1
+      '@jupyterlab/nbformat': 3.6.1
+      '@jupyterlab/observables': 4.6.1
+      '@jupyterlab/settingregistry': 3.6.1
+      '@jupyterlab/statedb': 3.6.1
       '@lumino/algorithm': 1.9.2
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
-      '@lumino/polling': 1.11.4_crypto@1.0.1
+      '@lumino/polling': 1.11.4
       '@lumino/signaling': 1.11.1
       node-fetch: 2.6.9
       ws: 7.5.9
@@ -1380,12 +1383,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@jupyterlab/settingregistry/3.6.1_crypto@1.0.1:
+  /@jupyterlab/settingregistry/3.6.1:
     resolution: {integrity: sha512-zNCYIK6/oWG6JnhmwRGE/Zvn5Xhj0kovcJgTlOSHGyIiHqLfJA9TzHZDNUDANqqxAg4+H9fYdh1+agi4XWGL8A==}
     dependencies:
-      '@jupyterlab/statedb': 3.6.1_crypto@1.0.1
-      '@lumino/commands': 1.21.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@jupyterlab/statedb': 3.6.1
+      '@lumino/commands': 1.21.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/signaling': 1.11.1
       ajv: 6.12.6
@@ -1394,11 +1397,11 @@ packages:
       - crypto
     dev: false
 
-  /@jupyterlab/statedb/3.6.1_crypto@1.0.1:
+  /@jupyterlab/statedb/3.6.1:
     resolution: {integrity: sha512-6+fGzKUCaWBKX/fZDdXR++WgfvYE+Dv5ma8gkgcHaS2vEup2snkmgZ8fBUJXm5xVpU4KhXjTUb7dafLfG7BL3Q==}
     dependencies:
-      '@lumino/commands': 1.21.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/commands': 1.21.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/properties': 1.8.2
       '@lumino/signaling': 1.11.1
@@ -1413,12 +1416,12 @@ packages:
   /@lumino/algorithm/1.9.2:
     resolution: {integrity: sha512-Z06lp/yuhz8CtIir3PNTGnuk7909eXt4ukJsCzChsGuot2l5Fbs96RJ/FOHgwCedaX74CtxPjXHXoszFbUA+4A==}
 
-  /@lumino/application/1.31.3_crypto@1.0.1:
+  /@lumino/application/1.31.3:
     resolution: {integrity: sha512-XnsXm5PD9QevJRl/pHJziYmhRKqJYjEOTL6Vh9dtKpPPML57uswOj59Pokxx/yCvym1xRF9iDVvujy3KallRwQ==}
     dependencies:
-      '@lumino/commands': 1.21.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
-      '@lumino/widgets': 1.37.1_crypto@1.0.1
+      '@lumino/commands': 1.21.1
+      '@lumino/coreutils': 1.12.1
+      '@lumino/widgets': 1.37.1
     transitivePeerDependencies:
       - crypto
     dev: true
@@ -1428,11 +1431,11 @@ packages:
     dependencies:
       '@lumino/algorithm': 1.9.2
 
-  /@lumino/commands/1.21.1_crypto@1.0.1:
+  /@lumino/commands/1.21.1:
     resolution: {integrity: sha512-d1zJmwz5bHU0BM/Rl3tRdZ7/WgXnFB0bM7x7Bf0XDlmX++jnU9k0j3mh6/5JqCGLmIApKCRwVqSaV7jPmSJlcQ==}
     dependencies:
       '@lumino/algorithm': 1.9.2
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/domutils': 1.8.2
       '@lumino/keyboard': 1.8.2
@@ -1441,11 +1444,9 @@ packages:
     transitivePeerDependencies:
       - crypto
 
-  /@lumino/coreutils/1.12.1_crypto@1.0.1:
+  /@lumino/coreutils/1.12.1:
     resolution: {integrity: sha512-JLu3nTHzJk9N8ohZ85u75YxemMrmDzJdNgZztfP7F7T7mxND3YVNCkJG35a6aJ7edu1sIgCjBxOvV+hv27iYvQ==}
     peerDependencies:
-      crypto: 1.0.1
-    dependencies:
       crypto: 1.0.1
 
   /@lumino/disposable/1.10.4:
@@ -1457,10 +1458,10 @@ packages:
   /@lumino/domutils/1.8.2:
     resolution: {integrity: sha512-QIpMfkPJrs4GrWBuJf2Sn1fpyVPmvqUUAeD8xAQo8+4V5JAT0vUDLxZ9HijefMgNCi3+Bs8Z3lQwRCrz+cFP1A==}
 
-  /@lumino/dragdrop/1.14.4_crypto@1.0.1:
+  /@lumino/dragdrop/1.14.4:
     resolution: {integrity: sha512-IHX2M8Yqs2YsFHHXKSKiYLgv9DEuhyyKoDS85Chg34J9OaPC5ocT0AmNVnpeq9T4A50sg3vdL9mSRCZ0f302Gw==}
     dependencies:
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
     transitivePeerDependencies:
       - crypto
@@ -1474,10 +1475,10 @@ packages:
       '@lumino/algorithm': 1.9.2
       '@lumino/collections': 1.9.3
 
-  /@lumino/polling/1.11.4_crypto@1.0.1:
+  /@lumino/polling/1.11.4:
     resolution: {integrity: sha512-yC7JLssj3mqVK6TsYj7dg4AG0rcsC42YtpoDLtz9yzO84Q5flQUfmjAPQB6oPA6wZOlISs3iasF+uO2w1ls5jg==}
     dependencies:
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/signaling': 1.11.1
     transitivePeerDependencies:
@@ -1498,15 +1499,15 @@ packages:
     dependencies:
       '@lumino/algorithm': 1.9.2
 
-  /@lumino/widgets/1.37.1_crypto@1.0.1:
+  /@lumino/widgets/1.37.1:
     resolution: {integrity: sha512-/whz5B/hL0fjv0bR8JYZ+Emx+CH7HBwXc4TqI9PrrHGm3g6+jRJAyIFGZcQubqkPxxHrRE/VxQgoDKGhINw/Gw==}
     dependencies:
       '@lumino/algorithm': 1.9.2
-      '@lumino/commands': 1.21.1_crypto@1.0.1
-      '@lumino/coreutils': 1.12.1_crypto@1.0.1
+      '@lumino/commands': 1.21.1
+      '@lumino/coreutils': 1.12.1
       '@lumino/disposable': 1.10.4
       '@lumino/domutils': 1.8.2
-      '@lumino/dragdrop': 1.14.4_crypto@1.0.1
+      '@lumino/dragdrop': 1.14.4
       '@lumino/keyboard': 1.8.2
       '@lumino/messaging': 1.10.3
       '@lumino/properties': 1.8.2
@@ -1559,14 +1560,13 @@ packages:
       - supports-color
     dev: false
 
-  /@mdx-js/rollup/2.3.0_rollup@3.18.0:
+  /@mdx-js/rollup/2.3.0:
     resolution: {integrity: sha512-wLvRfJS/M4UmdqTd+WoaySEE7q4BIejYf1xAHXYvtT1du/1Tl/z2450Gg2+Hu7fh05KwRRiehiTP9Yc/Dtn0fA==}
     peerDependencies:
       rollup: '>=2'
     dependencies:
       '@mdx-js/mdx': 2.3.0
-      '@rollup/pluginutils': 5.0.2_rollup@3.18.0
-      rollup: 3.18.0
+      '@rollup/pluginutils': 5.0.2
       source-map: 0.7.4
       vfile: 5.3.7
     transitivePeerDependencies:
@@ -1638,7 +1638,7 @@ packages:
       escalade: 3.1.1
     dev: false
 
-  /@rollup/pluginutils/5.0.2_rollup@3.18.0:
+  /@rollup/pluginutils/5.0.2:
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1650,7 +1650,6 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.18.0
     dev: false
 
   /@svitejs/changesets-changelog-github-compact/1.1.0:
@@ -1715,13 +1714,13 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.21.1
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
     dev: true
 
   /@types/eslint/8.21.1:
     resolution: {integrity: sha512-rc9K8ZpVjNcLs8Fp0dkozd5Pt2Apk1glO4Vgz8ix1u6yFByxfqo5Yavpy65o+93TAe24jr7v+eSBtFLvOQtCRQ==}
     dependencies:
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
       '@types/json-schema': 7.0.11
     dev: true
 
@@ -1737,7 +1736,6 @@ packages:
 
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
-    dev: false
 
   /@types/hast/2.3.4:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
@@ -2678,10 +2676,6 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  /crypto/1.0.1:
-    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
-    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
 
   /css-loader/5.2.7_webpack@5.76.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -6191,12 +6185,10 @@ packages:
       '@pkgr/utils': 2.3.1
       tslib: 2.5.0
 
-  /tailwindcss/3.2.7_postcss@8.4.21:
+  /tailwindcss/3.2.7:
     resolution: {integrity: sha512-B6DLqJzc21x7wntlH/GsZwEXTBttVSl1FtCzC8WP4oBc/NKef7kaax5jeihkkCEWc831/5NDJ9gRNDK6NEioQQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

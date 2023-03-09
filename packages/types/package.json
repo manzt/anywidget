@@ -14,5 +14,8 @@
   },
   "scripts": {
     "check": "tsc --noEmit && publint"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^6.0.1"
   }
 }

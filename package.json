@@ -5,9 +5,9 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "pnpm build:nb && pnpm build:lab",
-		"build:nb": "pnpm --filter anywidget build && cp packages/main/dist/index.js src/anywidget/nbextension/index.js",
-		"build:lab": "jupyter labextension build ./packages/main",
-		"clean": "rm -rf dist src/anywidget/nbextension/index.js src/anywidget/labextension",
+		"build:nb": "pnpm --filter anywidget build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
+		"build:lab": "jupyter labextension build ./packages/anywidget",
+		"clean": "rm -rf src/anywidget/nbextension/index.js src/anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && npm install",
 		"release": "python -m build && changeset publish && twine upload dist-python/*"
 	},
