@@ -1,5 +1,5 @@
 ---
-"anywidget": patch
+"anywidget": minor
 ---
 
 feat: auto-create (and watch) `FileContents` for valid file paths

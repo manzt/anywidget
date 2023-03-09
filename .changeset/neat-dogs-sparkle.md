@@ -1,5 +1,5 @@
 ---
-"anywidget": patch
+"anywidget": minor
 ---
 
 feat: add `anywidget/types` to npm package to allow opt-in strictness
