@@ -1,0 +1,32 @@
+{
+	"name": "anywidget",
+	"main": "src/index.js",
+	"version": "0.1.2",
+	"author": "Trevor Manz",
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"main": "dist/index.js"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"scripts": {
+		"build": "esbuild --bundle --format=esm --outfile=dist/index.js src/index.js"
+	},
+	"dependencies": {
+		"@jupyter-widgets/base": "^6.0.1"
+	},
+	"jupyterlab": {
+		"extension": "src/plugin",
+		"outputDir": "anywidget/labextension",
+		"sharedPackages": {
+			"@jupyter-widgets/base": {
+				"bundled": false,
+				"singleton": true
+			}
+		}
+	}
+}

@@ -1,40 +1,20 @@
 {
-	"name": "anywidget",
-	"main": "src/index.js",
-	"version": "0.2.0",
+	"name": "@anywidget/monorepo",
+	"main": "packages/main/src/index.js",
+	"version": "0.1.2",
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"main": "dist/index.js"
-	},
-	"exports": {
-		".": "./dist/index.js",
-		"./vite": {
-			"import": "./dist/vite.mjs",
-			"require": "./dist/vite.cjs"
-		},
-		"./types": {
-			"types": "./dist/types.d.ts",
-			"import": "./dist/types.mjs",
-			"require": "./dist/types.cjs"
-		}
-	},
 	"scripts": {
-		"build": "npm run build:nb && npm run build:lab",
-		"build:python": "python -m build --outdir dist-python .",
-		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
+		"build": "pnpm -r build",
+		"build:nb": "pnpm --filter anywidget build && cp packages/main/dist/index.js anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build .",
-		"prepack": "rm -rf dist && node ./scripts/prepack.mjs",
-		"clean": "rm -rf dist-python dist anywidget/nbextension/index.js anywidget/labextension/",
 		"version": "changeset version && npm install",
 		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
 	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.1"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
 		"@jupyterlab/builder": "^3.6.2",
@@ -43,7 +23,7 @@
 		"typescript": "^5.0.2"
 	},
 	"jupyterlab": {
-		"extension": "src/plugin",
+		"extension": "packages/main",
 		"outputDir": "anywidget/labextension",
 		"sharedPackages": {
 			"@jupyter-widgets/base": {
