@@ -4,12 +4,12 @@
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"scripts": {
-		"build": "pnpm run build:nb && pnpm run build:lab",
-		"clean": "rm -rf dist src/anywidget/nbextension/index.js src/anywidget/labextension",
+		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter anywidget build && cp packages/main/dist/index.js src/anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build ./packages/main",
+		"clean": "rm -rf dist src/anywidget/nbextension/index.js src/anywidget/labextension",
 		"version": "changeset version && npm install",
-		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
+		"release": "python -m build && changeset publish && twine upload dist-python/*"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
