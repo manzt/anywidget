@@ -72,7 +72,7 @@ npm = "pnpm"
 build_cmd = "build"
 
 [tool.hatch.version]
-path = "packages/main/package.json"
+path = "packages/anywidget/package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
