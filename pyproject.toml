@@ -24,7 +24,7 @@ test = [
     "pydantic",
     "pytest",
     "pytest-cov",
-    "ruff==0.0.238",
+    "ruff",
 ]
 dev = [
     "psygnal",
