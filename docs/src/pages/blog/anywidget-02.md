@@ -1,5 +1,6 @@
 ---
 title: "Modern Web Meets Jupyter"
+description: "v0.2: Modern Web Development Meets Jupyter"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 image: {
