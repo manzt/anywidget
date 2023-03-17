@@ -189,7 +189,7 @@ to allow for the special JSX syntax (e.g., `<App />`).
 To start using **anywidget** v0.2, upgrade your package using pip:
 
 ```python
-pip install --upgrade anywidget
+pip install --upgrade "anywidget[dev]"
 ```
 
 I encourage you to explore the new features in **anywidget** v0.2 and experience the

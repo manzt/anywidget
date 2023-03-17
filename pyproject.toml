@@ -16,6 +16,7 @@ dependencies = [
     "ipywidgets",
     "importlib_metadata ; python_version < '3.8'",
     "typing_extensions",
+    "psygnal",
 ]
 
 [project.optional-dependencies]
@@ -27,7 +28,6 @@ test = [
     "ruff",
 ]
 dev = [
-    "psygnal",
     "watchfiles",
 ]
 
