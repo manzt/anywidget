@@ -1,5 +1,5 @@
 ---
-title: "Modern Web Dev Meets Jupyter"
+title: "Modern Web Meets Jupyter"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 image: {
@@ -53,7 +53,7 @@ in a prior **anywidget** release, but in v0.2 it is fully integrated in the top-
 This feature provides a seamless (opt-in) front-end development experience on par
 with modern front-end frameworks.
 
-### Simplifying Front-End Code Loading
+### Effortless Front-End Integration
 
 **anywidget** previously required the `_esm` and `_css` attributes (i.e., the widget front-end code)
 to be Python strings. Therefore, separate files had to be read manually from disk:

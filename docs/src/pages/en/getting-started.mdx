@@ -99,7 +99,28 @@ export function render(view) {
 }
 ```
 
+The `render` function can also (optionally) return a callback that is executed any time the view is
+removed from the DOM. This feature is useful when dealing with complex event listeners, subscriptions,
+or third-party libraries that require proper teardwon.
+
+```javascript
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+  // Create DOM elements and set up subscribers
+  return () => {
+    // Optionally cleanup
+  };
+}
+```
+
 You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
+
+> Both `_esm` and `_css` can either be a Python string containing actual front-end code
+or alternatively **file paths**. If a file path is provided during development,
+you opt in to [**anywidget**'s native HMR](/blog/anywidget-02/#native-hot-module-replacement-hmr).
+**anywidget** will start listening for modifications to the referenced files and instantly 
+apply changes to the front-end.
+
 
 ## Motivation
 
