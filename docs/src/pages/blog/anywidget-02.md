@@ -38,7 +38,7 @@ previewing some of these features or read on to learn more._
 improve the widget development experience. Some of these features have been on my
 wishlist for Jupyter for a while, and I am thrilled to finally share them!
 
-### Native Hot Module Replacement (HMR):
+### Native Hot Module Replacement (HMR)
 
 Hot Module Replacement (HMR) is a powerful tool implemented in modern
 frameworks like [Vite](https://vitejs.dev/) that enables developers to see
