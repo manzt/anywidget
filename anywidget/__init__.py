@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from ._version import __version__  # noqa
-from .widget import AnyWidget  # noqa
+from ._version import __version__
+from .widget import AnyWidget
+
+__all__ = ["AnyWidget", "__version__"]
 
 
 def _jupyter_labextension_paths() -> list[dict]:
