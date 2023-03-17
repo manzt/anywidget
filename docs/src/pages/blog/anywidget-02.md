@@ -12,6 +12,10 @@ image: {
 _TL;DR: **anywidget** v0.2 brings modern web development to Jupyter. You can now
 use a **file path** to enable **anywidget**'s integrated Hot Module Replacement (HMR):_
 
+```sh
+pip install --upgrade "anywidget[dev]"
+```
+
 ```python
 import pathlib
 import anywidget
@@ -188,7 +192,7 @@ to allow for the special JSX syntax (e.g., `<App />`).
 
 To start using **anywidget** v0.2, upgrade your package using pip:
 
-```python
+```sh
 pip install --upgrade "anywidget[dev]"
 ```
 
