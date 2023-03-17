@@ -1,6 +1,6 @@
 ---
 title: "Modern Web Meets Jupyter"
-description: "v0.2: Modern Web Development Meets Jupyter"
+description: "Announcing anywidget v0.2: Modern Web Development in Jupyter"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
 image: {
