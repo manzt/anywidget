@@ -11,7 +11,7 @@ custom jupyter widgets made easy
 - 📚 **publish to PyPI** like any other Python package
 - 🤖 prototype **within** `.ipynb` or `.py` files
 - 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
-- ⚡ develop (optionally) with [Vite](https://vitejs.dev/) for **instant HMR**
+- ⚡ develop with **instant HMR**, like modern web frameworks
 
 Learn more in
 [the announcement](https://anywidget.dev/blog/introducing-anywidget).
