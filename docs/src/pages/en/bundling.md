@@ -19,9 +19,14 @@ unsupported browser syntax.
 If using a bundler, make sure to load the final bundled assets in your widget
 and not the original/untransformed JavaScript source files.
 
-## Example (esbuild)
+## esbuild
 
-### Setup
+[esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in Golang. 
+It can transform **TypeScript, JSX, and CSS files** and includes zero
+JavaScrit dependencies. Binaries can be [installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
+making it a great fit for **anywidget** projects.
+
+### Project Setup
 
 The following project structure contains a python package (`hello_widget`) with
 separate JS/CSS source code under `src/`:
@@ -38,12 +43,10 @@ hello_widget/
 
 ### Build
 
-We can bundle these assets into `hello_widget/static` with
-[esbuild](https://esbuild.github.io/getting-started/) without any configuration
-(or install):
+We can bundle these assets into `hello_widget/static` with `esbuild`:
 
 ```bash
-npx esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js
+esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js
 #
 #  hello_widget/static/index.js   150b
 #  hello_widget/static/index.css   81b
@@ -63,23 +66,34 @@ import traitlets
 bundler_output_dir = pathlib.Path(__file__).parent / "static"
 
 class HelloWidget(anywidget.AnyWidget):
-  _esm = (bundler_output_dir / "index.js").read_text()
-  _css = (bundler_output_dir / "styles.css").read_text()
+  _esm = bundler_output_dir / "index.js"
+  _css = bundler_output_dir / "styles.css"
   name = traitlets.Unicode().tag(sync=True)
 ```
 
-> **Note** `esbuild` is the most simple option for bundling, but it must be
-> executed manually each time changes are made to the JS or CSS source files in
-> order to see changes in Python. See the Vite example for a better developer
-> experience.
+### Development
 
-## Example (Vite, recommended)
+The `esbuild` CLI also includes a "watch" mode, which tells esbuild to
+listen for changes on the file system and automatically rebuild whenever
+a file changes that could invalidate the build. **anywidget**'s
+[native HMR](/blog/anywidget-02#native-hot-module-replacement-hmr) will
+watch for changes to the re-bundled outputs from `esbuild`, swapping in
+the new bundle in the front end.
 
-We recommend using [Vite](https://vitejs.dev/) while developing your widget at
-this stage. It is simple to configure, and our custom _plugin_ allows for
-best-in-class developer experience.
+```bash
+esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js --watch
+```
 
-### Setup
+
+## Vite
+
+Our [Vite](https://vitejs.dev/) plugin offers a more fully featured development
+experience compared to **anywidget**'s builtin HMR, but at the cost of added
+project complexity and tooling. Vite is a good choice if you are want to
+use a front-end framework like Svelte or Vue or need more fine grain control
+over your bundling.
+
+### Project Setup
 
 From the root of the project structure above.
 
@@ -94,13 +108,13 @@ Create a `vite.config.js` file with the following configuration:
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	build: {
-		outDir: "hello_widget/static",
-		lib: {
-			entry: ["src/index.js"],
-			formats: ["es"],
-		},
-	},
+  build: {
+    outDir: "hello_widget/static",
+    lib: {
+      entry: ["src/index.js"],
+      formats: ["es"],
+    },
+  },
 });
 ```
 
@@ -134,29 +148,11 @@ npx vite build
 # hello_widget/static/index.mjs  0.13 kB │ gzip: 0.14 kB
 ```
 
-So far, this example demonstrates Vite's bundling capabilities which are similar
-to esbuild. However, Vite really shines during _development_ with its second
-major feature: a modern development server that enables extremely fast
-[Hot Module Replacement (HMR)](https://vitejs.dev/guide/features.html#hot-module-replacement).
-
 ### Development
 
-Frontend development tools have evolved rapidly in the last few years to enable
-instant, precise updates to client code without reloading the page or blowing
-away application state. Unfortunately, the cookiecutter templates for custom
-Jupyter Widgets have not caught up with the times and still require full page
-loads and re-bundles to see new changes.
-
-_This all changes with **anywidget**_
-
 The Vite plugin for **anywidget** extends its dev server with precise HMR
-support for Jupyter Widgets. During development, changes made to your widget
-view are **instantly** reflected in all active output cells without a full page
-refresh. Model state is additionally preserved so you do not need to re-run the
-Python cell to setup state.
-
-To get started with HMR for your widget, install the `anywidget` Plugin and add
-the following to your `vite.config.js`:
+support for Jupyter Widgets. To get started with HMR for your widget,
+install the `anywidget` Plugin and add the following to your `vite.config.js`:
 
 ```bash
 npm install -D anywidget

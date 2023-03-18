@@ -1,4 +1,3 @@
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -10,35 +9,6 @@
 /* Global focus outline reset */
 *:focus:not(:focus-visible) {
 	outline: none;
-}
-
-/* Firefox */
-* {
-	scrollbar-color: var(--theme-dim-light) transparent;
-}
-
-/* Webkit */
-/* Make scrollbars transparent except for main page scrollbar. */
-::-webkit-scrollbar,
-::-webkit-scrollbar-track {
-	background-color: transparent;
-}
-body::-webkit-scrollbar,
-body::-webkit-scrollbar-track {
-	background: var(--theme-bg-gradient);
-}
-
-::-webkit-scrollbar-thumb {
-	background-color: var(--theme-dim-light);
-	border: 4px solid transparent;
-	background-clip: content-box;
-	border-radius: 10px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	:root {
-		scroll-behavior: smooth;
-	}
 }
 
 :root {
@@ -61,14 +31,6 @@ body {
 	font-size: clamp(0.9rem, 0.75rem + 0.375vw + var(--user-font-scale), 1rem);
 	line-height: 1.5;
 	max-width: 100vw;
-}
-
-ul {
-	list-style-type: disc;
-}
-
-ol {
-	list-style-type: decimal;
 }
 
 nav ul {
@@ -150,7 +112,10 @@ small,
 
 a {
 	color: var(--theme-text-accent);
+	font-weight: 400;
 	text-underline-offset: 0.08em;
+	align-items: center;
+	gap: 0.5rem;
 }
 
 article > section :is(ul, ol) > * + * {
@@ -197,7 +162,7 @@ a > code {
 }
 
 a > code::before {
-	content: "";
+	content: '';
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -255,6 +220,9 @@ pre {
 	--padding-block: 1rem;
 	--padding-inline: 2rem;
 	padding: var(--padding-block) var(--padding-inline);
+	padding-right: calc(var(--padding-inline) * 2);
+	margin-left: calc(var(--padding-inline) * -1);
+	margin-right: calc(var(--padding-inline) * -1);
 	font-family: var(--font-mono);
 
 	line-height: 1.5;
@@ -297,6 +265,7 @@ blockquote code {
 @media (min-width: 37.75em) {
 	pre {
 		--padding-inline: 1.25rem;
+		border-radius: 8px;
 		margin-left: 0;
 		margin-right: 0;
 	}
@@ -313,6 +282,11 @@ blockquote {
 
 img {
 	max-width: 100%;
+}
+
+.flex {
+	display: flex;
+	align-items: center;
 }
 
 button {
@@ -334,14 +308,15 @@ button {
 
 h2.heading {
 	font-size: 1rem;
+	font-weight: 700;
 	padding: 0.1rem 1rem;
+	text-transform: uppercase;
 	margin-bottom: 0.5rem;
 }
 
 .header-link {
 	font-size: 1em;
-	transition: border-inline-start-color 100ms ease-out,
-		background-color 200ms ease-out;
+	transition: border-inline-start-color 100ms ease-out, background-color 200ms ease-out;
 	border-left: 4px solid var(--theme-divider);
 }
 
@@ -355,7 +330,6 @@ h2.heading {
 	color: inherit;
 	text-decoration: none;
 	unicode-bidi: plaintext;
-	color: var(--theme-text-lighter);
 }
 
 @media (min-width: 50em) {
