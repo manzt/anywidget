@@ -65,6 +65,20 @@ class CounterWidget(anywidget.AnyWidget):
     count = traitlets.Int(0).tag(sync=True)
 ```
 
+Front-end code can also live in separate files (recommend):
+
+```python
+import pathlib
+import anywidget
+import traitlets
+
+class CounterWidget(anywidget.AnyWidget):
+    _esm = pathlib.Path("index.js")
+    _css = pathlib.Path("styles.ccs")
+
+    count = traitlets.Int(0).tag(sync=True)
+```
+
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
 more.
 
