@@ -90,7 +90,7 @@ Therefore, `render` primarily serves two purposes:
 The Jupyter Widgets framework is build on top of the IPython Comm framework (short for communication).
 It's worth reading the [_Low Level Widget Explanation_](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Low%20Level.html#Low-Level-Widget-Explanation)
 to understand the core of Jupyter Widget's Model, View, Controller (MVC) architecture, but in
-short the Comm framework exposes to mechanisms to send/receive data to/from the frond end:
+short the Comm framework exposes two mechanisms to send/receive data to/from the frond end:
 
 ### 1. Traitlets
 
@@ -101,7 +101,7 @@ framework to handle synchronizing that value to the front end. Take the followin
 `CustomWidget`:
 
 ```python
-class CustomWidget(anywidget.Widget):
+class CustomWidget(anywidget.AnyWidget):
     _esm = (pathlib.Path(__file__).parent / "index.js").read_text()
     my_value = traitlets.Int(0).tag(sync=True)
 ```
