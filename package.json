@@ -2,7 +2,7 @@
 	"name": "@anywidget/monorepo",
 	"scripts": {
 		"build": "pnpm build:nb && pnpm build:lab",
-		"build:nb": "pnpm --filter anywidget build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
+		"build:nb": "pnpm --filter=!docs build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build ./packages/anywidget",
 		"clean": "rm -rf src/anywidget/nbextension/index.js src/anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && npm install",
