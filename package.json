@@ -1,8 +1,5 @@
 {
 	"name": "@anywidget/monorepo",
-	"version": "0.1.2",
-	"author": "Trevor Manz",
-	"license": "MIT",
 	"scripts": {
 		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter anywidget build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
