@@ -12,9 +12,11 @@ from anywidget._file_contents import FileContents
 from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
 from watchfiles import Change
 
+here = pathlib.Path(__file__).parent
+
 
 def test_version():
-    with open(pathlib.Path(__file__).parent / "../package.json") as f:
+    with open(here / "../packages/anywidget/package.json") as f:
         pkg = json.load(f)
 
     assert anywidget.__version__ == pkg["version"]
