@@ -82,10 +82,25 @@ class CounterWidget(anywidget.AnyWidget):
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
 more.
 
-## Development
+## Contributing
+
+This is a monorepo, meaning the repo holds multiple packages. It requires the use of [pnpm](https://pnpm.js.org/en/).
+You can [install pnpm](https://pnpm.io/installation) with:
 
 ```bash
-pip install -e .
+npm i -g pnpm
+```
+
+Then, create a Python virtual environment with a complete development install:
+
+```bash
+pip install -e ".[dev,test]"
+```
+
+or alternatively use the [`hatch`](https://github.com/pypa/hatch) CLI:
+
+```bash
+hatch shell
 ```
 
 If you are using the classic Jupyter Notebook you need to install the
