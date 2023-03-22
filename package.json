@@ -1,49 +1,21 @@
 {
-	"name": "anywidget",
-	"main": "src/index.js",
-	"version": "0.2.0",
-	"author": "Trevor Manz",
-	"license": "MIT",
-	"files": [
-		"dist"
-	],
-	"publishConfig": {
-		"main": "dist/index.js"
-	},
-	"exports": {
-		".": "./dist/index.js",
-		"./vite": {
-			"import": "./dist/vite.mjs",
-			"require": "./dist/vite.cjs"
-		},
-		"./types": {
-			"types": "./dist/types.d.ts",
-			"import": "./dist/types.mjs",
-			"require": "./dist/types.cjs"
-		}
-	},
+	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build": "npm run build:nb && npm run build:lab",
-		"build:python": "python -m build --outdir dist-python .",
-		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
-		"build:lab": "jupyter labextension build .",
-		"prepack": "rm -rf dist && node ./scripts/prepack.mjs",
-		"clean": "rm -rf dist-python dist anywidget/nbextension/index.js anywidget/labextension/",
+		"build": "pnpm build:nb && pnpm build:lab",
+		"build:nb": "pnpm --filter=!docs build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
+		"build:lab": "jupyter labextension build ./packages/anywidget",
+		"clean": "rm -rf src/anywidget/nbextension/index.js src/anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && npm install",
-		"release": "npm run prepack && npm run build:python && changeset publish && twine upload dist-python/*"
-	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.1"
+		"release": "python -m build && changeset publish && twine upload dist-python/*"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
-		"@jupyterlab/builder": "^3.6.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.17.12",
 		"typescript": "^5.0.2"
 	},
 	"jupyterlab": {
-		"extension": "src/plugin",
+		"extension": "packages/main",
 		"outputDir": "anywidget/labextension",
 		"sharedPackages": {
 			"@jupyter-widgets/base": {
@@ -51,5 +23,6 @@
 				"singleton": true
 			}
 		}
-	}
+	},
+	"packageManager": "pnpm@7.30.0"
 }

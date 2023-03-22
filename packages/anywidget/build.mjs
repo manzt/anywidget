@@ -7,10 +7,9 @@ import * as esbuild from "esbuild";
 
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-let src = path.join(__dirname, "..", "src");
-let dist = path.join(__dirname, "..", "dist");
+let src = path.join(__dirname, "src");
+let dist = path.join(__dirname, "dist");
 
-// bundle the widget
 await esbuild.build({
 	entryPoints: [path.join(src, "index.js")],
 	bundle: true,
@@ -18,24 +17,20 @@ await esbuild.build({
 	outfile: path.join(dist, "index.js"),
 });
 
-// Just copy over the ESM
-await fs.copyFile(
-	path.join(src, "vite-plugin.js"),
+// re-export all exports from @anywidget/vite
+await fs.writeFile(
 	path.join(dist, "vite.mjs"),
+	`export * from "@anywidget/vite";`,
+);
+await fs.writeFile(
+	path.join(dist, "vite.cjs"),
+	`module.exports = require("@anywidget/vite");`,
 );
 
-// Transform the vite plugin to CJS
-await esbuild.build({
-	entryPoints: [path.join(src, "vite-plugin.js")],
-	format: "cjs",
-	outfile: path.join(dist, "vite.cjs"),
-});
-
-
-// Copy over the types and create empty files
-await fs.copyFile(
-	path.join(src, "types.d.ts"),
+// re-export all exports from @anywidget/types
+await fs.writeFile(
 	path.join(dist, "types.d.ts"),
+	`export * from "@anywidget/types";`,
 );
 await fs.writeFile(path.join(dist, "types.mjs"), "");
 await fs.writeFile(path.join(dist, "types.cjs"), "");
