@@ -65,9 +65,13 @@ importers:
 
   packages/anywidget:
     specifiers:
+      '@anywidget/types': workspace:*
+      '@anywidget/vite': workspace:*
       '@jupyter-widgets/base': ^6.0.2
       '@jupyterlab/builder': ^3.6.2
     dependencies:
+      '@anywidget/types': link:../types
+      '@anywidget/vite': link:../vite
       '@jupyter-widgets/base': 6.0.2
     devDependencies:
       '@jupyterlab/builder': 3.6.2
