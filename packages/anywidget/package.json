@@ -11,13 +11,24 @@
 		"main": "dist/index.js"
 	},
 	"exports": {
-		".": "./dist/index.js"
+		".": "./dist/index.js",
+		"./vite": {
+			"import": "./dist/vite.mjs",
+			"require": "./dist/vite.cjs"
+		},
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"import": "./dist/types.mjs",
+			"require": "./dist/types.cjs"
+		}
 	},
 	"scripts": {
-		"build": "esbuild --bundle --format=esm --outfile=dist/index.js src/index.js"
+		"build": "node build.mjs"
 	},
 	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.2"
+		"@jupyter-widgets/base": "^6.0.2",
+		"@anywidget/types": "workspace:*",
+		"@anywidget/vite": "workspace:*"
 	},
 	"devDependencies": {
 		"@jupyterlab/builder": "^3.6.2"
