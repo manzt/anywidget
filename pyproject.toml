@@ -29,6 +29,7 @@ test = [
 ]
 dev = [
     "watchfiles",
+    "ipykernel",
 ]
 
 [project.urls]
