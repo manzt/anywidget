@@ -39,33 +39,50 @@ counter`;
 	url={"localhost:8888/Demo.ipynb"}
 	showGrid={false}
 >
-	<div class="text-sm bg-transparent flex flex-col space-y-4">
-		<pre
-			class="bg-transparent p-2 rounded border border-gray-400 col-span-4 w-full">{notebookCode}</pre>
+	<div class="text-sm flex-col space-y-4">
 
-		<div class="col-span-4">
+		<button id="input-1" class="hover:border-gray-50 w-full rounded border border-solid border-gray-400 text-left text-sm bg-transparent">
+			<code class="py-2 text-left whitespace-pre text-gray-200 bg-transparent">{notebookCode}</code>
+			<div class="absolute text-white top-0">Run cell</div>
+		</button>
+
+		<div>
 			<button
 				class="text-xs text-white py-2 px-4 hover:bg-primary-800 bg-primary-600 rounded shadow"
-				id="btn"
+				id="output-1"
 			>
 			</button>
 		</div>
 
-		<pre
-			class="bg-transparent col-span-4 p-2 rounded border border-gray-400 w-full">counter.value</pre>
+		<button id="input-2" class="hover:border-gray-50 w-full rounded border border-solid border-gray-400 text-left text-sm bg-transparent">
+			<code class="py-2 text-left whitespace-pre text-gray-200 bg-transparent">counter.value</code>
+		</button>
 
-		<pre class="text-sm bg-transparent pl-1 py-0" id="pyoutput"></pre>
+		<pre id="output-2" class="text-xs bg-transparent pl-1 py-0"></pre>
 	</div>
 </CodeHero>
 
 <script is:inline>
 	let count = 0;
-	let btn = document.querySelector("#btn");
-	let pyoutput = document.querySelector("#pyoutput");
+	let input1 = document.querySelector("#input-1");
+	let output1 = document.querySelector("#output-1");
+	let input2 = document.querySelector("#input-2");
+	let output2 = document.querySelector("#output-2");
+
 	function setCount(value) {
-		btn.innerHTML = `count is ${value}`;
-		pyoutput.innerHTML = value;
+		output1.innerHTML = `count is ${value}`;
 	}
-	btn.addEventListener("click", () => setCount(++count));
+
+	input1.addEventListener("click", () => {
+		setCount(count = 0);
+	});
+	output1.addEventListener("click", () => {
+		setCount(++count);
+	});
+	input2.addEventListener("click", () => {
+		output2.innerHTML = count;
+	});
+
 	setCount(0);
+	output2.innerHTML = "0";
 </script>
