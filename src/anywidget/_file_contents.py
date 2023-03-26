@@ -67,7 +67,13 @@ class FileContents:
         changes : Iterator[tuple[int, str]]
             An iterator that yields any time the file changes until the file is deleted.
         """
-        from watchfiles import Change, watch
+        try:
+            from watchfiles import Change, watch
+        except ImportError as exc:
+            raise ImportError(
+                "watchfiles is required to watch for file changes during development. "
+                "Install with `pip install watchfiles`."
+            ) from exc
 
         for changes in watch(self._path, stop_event=self._stop_event):
             for change, path in changes:
