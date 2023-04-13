@@ -92,8 +92,8 @@ async function load_esm(esm) {
 	try {
 	  let widget = await import(/* webpackIgnore: true */ url);
 	} catch(e) {
-		console.log(e);
-		throw e;
+    console.log(e);
+    throw e;
 	}
 	URL.revokeObjectURL(url);
 	return widget;
