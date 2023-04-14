@@ -2,9 +2,9 @@
 	"name": "@anywidget/monorepo",
 	"scripts": {
 		"build": "pnpm build:nb && pnpm build:lab",
-		"build:nb": "pnpm --filter=!docs build && cp packages/anywidget/dist/index.js src/anywidget/nbextension/index.js",
-		"build:lab": "jupyter labextension build ./packages/anywidget",
-		"clean": "rm -rf src/anywidget/nbextension/index.js src/anywidget/labextension && pnpm -r exec rm -rf dist",
+		"build:nb": "pnpm --filter=!docs build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
+		"build:lab": "jupyter labextension build packages/anywidget",
+		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
 		"release": "python -m build && changeset publish && twine upload dist-python/*"
 	},
@@ -13,16 +13,6 @@
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.17.12",
 		"typescript": "^5.0.2"
-	},
-	"jupyterlab": {
-		"extension": "packages/main",
-		"outputDir": "anywidget/labextension",
-		"sharedPackages": {
-			"@jupyter-widgets/base": {
-				"bundled": false,
-				"singleton": true
-			}
-		}
 	},
 	"packageManager": "pnpm@7.30.0"
 }
