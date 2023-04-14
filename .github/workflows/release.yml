@@ -39,6 +39,6 @@ jobs:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
