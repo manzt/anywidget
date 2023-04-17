@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.2.2
+
+### Patch Changes
+
+- feat: log an re-raise error on ESM import failure ([#105](https://github.com/manzt/anywidget/pull/105))
+
 ## 0.2.1
 
 ### Patch Changes
