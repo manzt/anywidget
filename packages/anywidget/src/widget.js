@@ -90,10 +90,10 @@ async function load_esm(esm) {
 		new Blob([esm], { type: "text/javascript" }),
 	);
 	try {
-	  let widget = await import(/* webpackIgnore: true */ url);
-	} catch(e) {
-    console.log(e);
-    throw e;
+		let widget = await import(/* webpackIgnore: true */ url);
+	} catch (e) {
+		console.log(e);
+		throw e;
 	}
 	URL.revokeObjectURL(url);
 	return widget;
