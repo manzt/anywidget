@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.2.3
+
+### Patch Changes
+
+- fix: JS variable scope issue ([`eacc99c`](https://github.com/manzt/anywidget/commit/eacc99ccee32d112d9ca9d31e959f1af15fe4471))
+
 ## 0.2.2
 
 ### Patch Changes
