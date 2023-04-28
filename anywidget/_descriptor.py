@@ -662,4 +662,4 @@ def _get_msgspec_state(obj: msgspec.Struct) -> dict:
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
-    return msgspec.json.decode(msgspec.json.encode(obj))
+    return cast(dict, msgspec.to_builtins(obj))
