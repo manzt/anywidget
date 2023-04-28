@@ -662,4 +662,7 @@ def _get_msgspec_state(obj: msgspec.Struct) -> dict:
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
+    # FIXME:
+    # see discussion here:
+    # https://github.com/manzt/anywidget/pull/64/files#r1129327721
     return cast(dict, msgspec.to_builtins(obj))
