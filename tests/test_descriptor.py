@@ -3,8 +3,6 @@ import time
 import weakref
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
-import weakref
-from typing import ClassVar
 from unittest.mock import MagicMock, patch
 
 import anywidget._descriptor

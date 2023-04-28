@@ -37,3 +37,4 @@ repos:
           - pydantic
           - psygnal
           - watchfiles
+          - msgspec

@@ -38,10 +38,9 @@ from ._util import (
 )
 from ._version import __version__
 
-
 if TYPE_CHECKING:  # pragma: no cover
-    import psygnal
     import msgspec
+    import psygnal
     import pydantic
     import traitlets
     from ipykernel.comm import Comm
