@@ -60,6 +60,7 @@ export const SIDEBAR: Sidebar = {
 		],
 		Blog: [
 			{ text: "Introducing anywidget", link: "blog/introducing-anywidget" },
+			{ text: "Modern Web Meets Jupyter", link: "blog/anywidget-02" },
 		],
 	},
 };

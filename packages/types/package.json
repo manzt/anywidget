@@ -1,0 +1,21 @@
+{
+  "name": "@anywidget/types",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "utility types for anywidget",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit && publint"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^6.0.1"
+  }
+}

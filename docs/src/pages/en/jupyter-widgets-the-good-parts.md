@@ -31,17 +31,15 @@ Concretely, custom widgets are traditionally defined like:
 import { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 
 // All boilerplate, anywidget takes care of this ...
-class CustomModel extends DOMWidgetModel {
-	/* ... */
-}
+class CustomModel extends DOMWidgetModel { /* ... */ }
 
 class CustomView extends DOMWidgetView {
-	render() {
-		let view = this;
-		let el = this.el;
-		let model = this.model;
-		/* ... */
-	}
+  render() {
+    let view = this;
+    let el = this.el;
+    let model = this.model;
+    /* ... */
+  }
 }
 
 export { CustomModel, CustomView };
@@ -52,11 +50,11 @@ export { CustomModel, CustomView };
 In **anywidget**, the above code simplies to just:
 
 ```javascript
-/** @param {DOMWidgetView} view */
+/** @param view {DOMWidgetView} view */
 export function render(view) {
-	let el = view.el;
-	let model = view.model;
-	/* ... */
+  let el = view.el;
+  let model = view.model;
+  /* ... */
 }
 ```
 
@@ -92,7 +90,7 @@ Therefore, `render` primarily serves two purposes:
 The Jupyter Widgets framework is build on top of the IPython Comm framework (short for communication).
 It's worth reading the [_Low Level Widget Explanation_](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Low%20Level.html#Low-Level-Widget-Explanation)
 to understand the core of Jupyter Widget's Model, View, Controller (MVC) architecture, but in
-short the Comm framework exposes to mechanisms to send/receive data to/from the frond end:
+short the Comm framework exposes two mechanisms to send/receive data to/from the frond end:
 
 ### 1. Traitlets
 
@@ -103,7 +101,7 @@ framework to handle synchronizing that value to the front end. Take the followin
 `CustomWidget`:
 
 ```python
-class CustomWidget(anywidget.Widget):
+class CustomWidget(anywidget.AnyWidget):
     _esm = (pathlib.Path(__file__).parent / "index.js").read_text()
     my_value = traitlets.Int(0).tag(sync=True)
 ```
@@ -116,7 +114,7 @@ end. The `render` function now has the ability to:
 ```javascript
 // index.js
 export function render(view) {
-	let my_value = view.model.get("my_value");
+  let my_value = view.model.get("my_value");
 }
 ```
 
@@ -125,8 +123,8 @@ export function render(view) {
 ```javascript
 // index.js
 export function render(view) {
-	view.model.set("my_value", 42);
-	view.model.save_changes(); // required to send update to Python
+  view.model.set("my_value", 42);
+  view.model.save_changes(); // required to send update to Python
 }
 ```
 
@@ -135,11 +133,11 @@ export function render(view) {
 ```javascript
 // index.js
 export function render(view) {
-	function on_change() {
-		let new_my_value = view.model.get("my_value");
-		console.log(`The 'my_value' changed to: ${new_my_value}`);
-	}
-	view.model.on("change:my_value", on_change);
+  function on_change() {
+    let new_my_value = view.model.get("my_value");
+    console.log(`The 'my_value' changed to: ${new_my_value}`);
+  }
+  view.model.on("change:my_value", on_change);
 }
 ```
 

@@ -28,7 +28,7 @@ ecosystem, allowing your widget to run automatically in **Jupyter Notebooks**,
 ## Example
 
 ```
-pip install anywidget
+pip install "anywidget[dev]"
 ```
 
 ```python
@@ -67,7 +67,7 @@ counter
 
 What's going on here:
 
-- `value` is a stateful property for that both the client JavaScript and Python have access to.
+- `count` is a stateful property for that both the client JavaScript and Python have access to.
   Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
   keyword argument.
 
@@ -78,10 +78,10 @@ What's going on here:
   It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
 
 ```javascript
-/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
 export function render(view) {
-	// Render model contents and setup dynamic updates
-	// See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
+  // Render model contents and setup dynamic updates
+  // See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
 }
 ```
 
@@ -92,14 +92,35 @@ Therefore, dependencies can be imported directly via a fully qualified URL.
 ```javascript
 import * as d3 from "https://esm.sh/d3@7";
 
-/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
 export function render(view) {
-	let selection = d3.select(view.el);
-	/* ... */
+  let selection = d3.select(view.el);
+  /* ... */
+}
+```
+
+The `render` function can also (optionally) return a callback that is executed any time the view is
+removed from the DOM. This feature is useful when dealing with complex event listeners, subscriptions,
+or third-party libraries that require proper teardwon.
+
+```javascript
+/** @param view {import("@jupyter-widgets/base").DOMWidgetView} */
+export function render(view) {
+  // Create DOM elements and set up subscribers
+  return () => {
+    // Optionally cleanup
+  };
 }
 ```
 
 You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
+
+> Both `_esm` and `_css` can either be a Python string containing actual front-end code
+or alternatively **file paths**. If a file path is provided during development,
+you opt in to [**anywidget**'s native HMR](/blog/anywidget-02/#native-hot-module-replacement-hmr).
+**anywidget** will start listening for modifications to the referenced files and instantly 
+apply changes to the front-end.
+
 
 ## Motivation
 

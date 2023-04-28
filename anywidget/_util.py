@@ -1,11 +1,30 @@
 from __future__ import annotations
 
-from typing import TypeVar, cast
+import contextlib
+import pathlib
+import sys
+from functools import lru_cache
+from typing import Any
 
+from ._file_contents import FileContents
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
-T = TypeVar("T", list, dict, tuple)
-
+_WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
+_ANYWIDGET_ID_KEY = "_anywidget_id"
+_ESM_KEY = "_esm"
+_CSS_KEY = "_css"
+_DEFAULT_ESM = """
+export function render(view) {
+  console.log("Dev note: No _esm defined for this widget:", view);
+  let url = "https://anywidget.dev/en/getting-started/";
+  view.el.innerHTML = `<p>
+    <strong>Dev note</strong>:
+    <a href='${url}' target='blank'>Implement an <code>_esm</code> attribute</a>
+    on AnyWidget subclass <code>${view.model.get('_anywidget_id')}</code>
+    to customize this widget.
+  </p>`;
+}
+"""
 
 # next 3 functions vendored with modifications from ipywidgets
 # BSD-3-Clause
@@ -13,7 +32,9 @@ T = TypeVar("T", list, dict, tuple)
 # https://github.com/jupyter-widgets/ipywidgets/blob/7325e5952efb71bd69692b2d7ed815646c0ac521/python/ipywidgets/ipywidgets/widgets/widget.py
 
 
-def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list) -> T:
+def _separate_buffers(
+    substate: Any, path: list, buffer_paths: list, buffers: list
+) -> Any:
     """For internal, see _remove_buffers.
 
     remove binary types from dicts and lists, but keep track of their paths any part of
@@ -32,9 +53,9 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                     _sub = list(substate)  # shallow clone list/tuple
                 _sub[i] = None
                 buffers.append(v)
-                buffer_paths.append(path + [i])
+                buffer_paths.append([*path, i])
             elif isinstance(v, (dict, list, tuple)):
-                _v = _separate_buffers(cast("T", v), path + [i], buffer_paths, buffers)
+                _v = _separate_buffers(v, [*path, i], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
                     if _sub is None:
                         _sub = list(substate)  # shallow clone list/tuple
@@ -46,9 +67,9 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
                     _sub = dict(substate)  # shallow clone dict
                 del _sub[k]
                 buffers.append(v)
-                buffer_paths.append(path + [k])
+                buffer_paths.append([*path, k])
             elif isinstance(v, (dict, list, tuple)):
-                _v = _separate_buffers(cast("T", v), path + [k], buffer_paths, buffers)
+                _v = _separate_buffers(v, [*path, k], buffer_paths, buffers)
                 if v is not _v:  # only assign when value changed
                     if _sub is None:
                         _sub = dict(substate)  # shallow clone dict
@@ -58,8 +79,8 @@ def _separate_buffers(substate: T, path: list, buffer_paths: list, buffers: list
     return _sub if _sub is not None else substate
 
 
-def remove_buffers(state: T) -> tuple[T, list[list], list[memoryview]]:
-    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
+def remove_buffers(state: Any) -> tuple[Any, list[list], list[memoryview]]:
+    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts.
 
     A binary message part is a memoryview, bytearray, or python 3 bytes object.
 
@@ -93,8 +114,10 @@ def put_buffers(
     state: dict,
     buffer_paths: list[list[str | int]],
     buffers: list[memoryview],
-):
-    """The inverse of _remove_buffers, except here we modify the existing dict/lists.
+) -> None:
+    """The inverse of _remove_buffers.
+
+    ...except here we modify the existing dict/lists.
     Modifying should be fine, since this is used when state comes from the wire.
     """
     for buffer_path, buffer in zip(buffer_paths, buffers):
@@ -104,3 +127,59 @@ def put_buffers(
         for key in buffer_path[:-1]:
             obj = obj[key]
         obj[buffer_path[-1]] = buffer
+
+
+def in_colab() -> bool:
+    """Determines whether in Google Colab."""
+    return "google.colab.output" in sys.modules
+
+
+@lru_cache(maxsize=None)
+def enable_custom_widget_manager_once() -> None:
+    """Enables Google Colab's custom widget manager so third-party widgets display.
+
+    See https://github.com/googlecolab/colabtools/issues/498#issuecomment-998308485
+    """
+    sys.modules["google.colab.output"].enable_custom_widget_manager()
+
+
+def get_repr_metadata() -> dict:
+    """Creates metadata dict for _repr_mimebundle_.
+
+    If in Google Colab, enables custom widgets as a side effect
+    and injects the `custom_widget_manager` metadata for more
+    consistent rendering.
+
+    See https://github.com/manzt/anywidget/issues/63#issuecomment-1427194000.
+    """
+    if not in_colab():
+        return {}
+
+    enable_custom_widget_manager_once()
+    url = sys.modules["google.colab.output"]._widgets._installed_url
+
+    if url is None:
+        return {}
+
+    return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
+
+
+def try_file_contents(x: Any) -> FileContents | None:
+    """Try to coerce x into a FileContents object."""
+    if not isinstance(x, (str, pathlib.Path)):
+        return None
+
+    maybe_path = pathlib.Path(x)
+
+    # Could raise OSError if not a path and exceeds max path length
+    with contextlib.suppress(OSError):
+        maybe_path = pathlib.Path(maybe_path).resolve().absolute()
+        if maybe_path.is_file():
+            # Start a watch thread if file is outside of site-packages
+            # (i.e., likely a development install)
+            return FileContents(
+                path=maybe_path,
+                start_thread="site-packages" not in maybe_path.parts,
+            )
+
+    return None

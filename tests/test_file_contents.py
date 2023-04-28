@@ -5,9 +5,8 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 import watchfiles
-from watchfiles import Change
-
 from anywidget._file_contents import FileContents
+from watchfiles import Change
 
 
 def test_file_contents_no_watch(tmp_path: pathlib.Path):

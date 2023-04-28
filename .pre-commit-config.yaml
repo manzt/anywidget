@@ -1,0 +1,39 @@
+# run all checks with `pre-commit run --all-files`
+
+ci:
+  autoupdate_schedule: monthly
+  autofix_commit_msg: "style(pre-commit.ci): auto fixes [...]"
+  autoupdate_commit_msg: "ci(pre-commit.ci): autoupdate"
+
+repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.246
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.12.1
+    hooks:
+      - id: validate-pyproject
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.991
+    hooks:
+      - id: mypy
+        # needed ignores will depend on what is in the environment
+        # so with a more minimal environment here than the IDE
+        # we allow "unused" type ignore comments 
+        args: [--no-warn-unused-ignores]
+        exclude: tests|docs
+        # packages in the pre-commit env will determine what can be type checked
+        # it does NOT automatically include all packages required by the project
+        additional_dependencies:
+          - pydantic
+          - psygnal
+          - watchfiles

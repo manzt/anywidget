@@ -12,8 +12,8 @@ anywidget/labextension/package.json
 anywidget/labextension/static/*
 
 dist/
-dist-python/
-
 
 .astro
 .coverage
+.dmypy.json
+.venv

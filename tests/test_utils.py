@@ -1,4 +1,15 @@
-from anywidget._util import remove_buffers, put_buffers
+import pathlib
+import sys
+from unittest.mock import MagicMock
+
+import pytest
+from anywidget._file_contents import FileContents
+from anywidget._util import (
+    get_repr_metadata,
+    put_buffers,
+    remove_buffers,
+    try_file_contents,
+)
 
 
 def test_remove_and_put_buffers():
@@ -58,3 +69,54 @@ def test_remove_and_put_buffers():
     # tuple to a list
     state_before["z"] = list(state_before["z"])
     assert state_before == state
+
+
+def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
+    mock = MagicMock()
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    get_repr_metadata()
+    get_repr_metadata()
+    assert mock.enable_custom_widget_manager.assert_called_once
+
+
+def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
+    meta = get_repr_metadata()
+    assert meta == {}
+
+    mock = MagicMock()
+    mock._widgets._installed_url = None
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    meta = get_repr_metadata()
+    assert meta == {}
+
+    mock = MagicMock()
+    mock._widgets._installed_url = "foo"
+    monkeypatch.setitem(sys.modules, "google.colab.output", mock)
+    meta = get_repr_metadata()
+    assert meta == {
+        "application/vnd.jupyter.widget-view+json": {
+            "colab": {"custom_widget_manager": {"url": "foo"}}
+        }
+    }
+
+
+def test_try_file_contents(tmp_path: pathlib.Path):
+    foo = tmp_path / "foo.txt"
+
+    assert try_file_contents(foo) is None
+
+    foo.write_text("foo")
+
+    file_contents = try_file_contents(foo)
+    assert isinstance(file_contents, FileContents)
+    assert file_contents._background_thread is not None
+    file_contents.stop_thread()  # stop the background thread for CI
+
+    site_packages = tmp_path / "site-packages"
+    site_packages.mkdir()
+    bar = site_packages / "bar.txt"
+    bar.write_text("bar")
+
+    file_contents = try_file_contents(bar)
+    assert isinstance(file_contents, FileContents)
+    assert file_contents._background_thread is None

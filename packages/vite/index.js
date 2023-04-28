@@ -1,3 +1,4 @@
+/** @type {(src: string) => string} */
 let template = (src) => `
 import.meta.hot.accept("${src}", (newModule) => {
 	import.meta.hot.data.render = newModule.render;
@@ -57,7 +58,7 @@ export default function () {
 			}
 		},
 		configureServer(server) {
-			server.middlewares.use((req, res, next) => {
+			server.middlewares.use((req, _res, next) => {
 				if (req.url.endsWith("?anywidget")) {
 					// turn into a bare identifier
 					let path = req.url.slice(0, -"?anywidget".length);

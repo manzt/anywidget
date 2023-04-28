@@ -1,46 +1,18 @@
 {
-	"name": "anywidget",
-	"main": "src/index.js",
-	"version": "0.1.0",
-	"author": "Trevor Manz",
-	"license": "MIT",
-	"files": [
-		"dist"
-	],
-	"publishConfig": {
-		"main": "dist/index.js"
-	},
-	"exports": {
-		".": "./dist/index.js",
-		"./vite": {
-			"import": "./dist/vite.mjs",
-			"require": "./dist/vite.cjs"
-		}
-	},
+	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build": "npm run build:nb && npm run build:lab",
-		"build:nb": "esbuild --bundle --format=esm --outfile=anywidget/nbextension/index.js src/index.js",
-		"build:lab": "jupyter labextension build .",
-		"build:vite-plugin": "esbuild --format=cjs --outfile=dist/vite.cjs vite-plugin.js && cp vite-plugin.js dist/vite.mjs",
-		"prepack": "rm -rf dist && npm run build:nb && mkdir dist && cp anywidget/nbextension/index.js dist/index.js && npm run build:vite-plugin",
-		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension/"
-	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.1"
+		"build": "pnpm build:nb && pnpm build:lab",
+		"build:nb": "pnpm --filter=!docs build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
+		"build:lab": "jupyter labextension build packages/anywidget",
+		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
+		"version": "changeset version && pnpm install",
+		"release": "python -m build && changeset publish && twine upload dist/*"
 	},
 	"devDependencies": {
-		"@jupyter-widgets/base": "^6.0.1",
-		"@jupyterlab/builder": "^3.5.0",
-		"esbuild": "^0.15.12"
+		"@changesets/cli": "^2.26.0",
+		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
+		"esbuild": "^0.17.12",
+		"typescript": "^5.0.2"
 	},
-	"jupyterlab": {
-		"extension": "src/plugin",
-		"outputDir": "anywidget/labextension",
-		"sharedPackages": {
-			"@jupyter-widgets/base": {
-				"bundled": false,
-				"singleton": true
-			}
-		}
-	}
+	"packageManager": "pnpm@7.30.0"
 }

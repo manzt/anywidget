@@ -1,0 +1,46 @@
+{
+	"name": "anywidget",
+	"main": "src/index.js",
+	"version": "0.2.3",
+	"author": "Trevor Manz",
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"main": "dist/index.js"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./vite": {
+			"import": "./dist/vite.mjs",
+			"require": "./dist/vite.cjs"
+		},
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"import": "./dist/types.mjs",
+			"require": "./dist/types.cjs"
+		}
+	},
+	"scripts": {
+		"build": "node build.mjs"
+	},
+	"dependencies": {
+		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6",
+		"@anywidget/types": "workspace:*",
+		"@anywidget/vite": "workspace:*"
+	},
+	"devDependencies": {
+		"@jupyterlab/builder": "^3.6.2"
+	},
+	"jupyterlab": {
+		"extension": "src/plugin",
+		"outputDir": "../../anywidget/labextension",
+		"sharedPackages": {
+			"@jupyter-widgets/base": {
+				"bundled": false,
+				"singleton": true
+			}
+		}
+	}
+}
