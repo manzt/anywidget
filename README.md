@@ -25,7 +25,7 @@ Learn more in
 may be installed with `pip`:
 
 ```bash
-pip install "anywidget[dev]"
+pip install anywidget
 ```
 
 It is also available on
