@@ -2,4 +2,4 @@
 "anywidget": patch
 ---
 
-fix: add `watchfiles` as a directy dependency
+fix: add `watchfiles` as a direct dependency
