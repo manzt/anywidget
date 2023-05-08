@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.2.4
+
+### Patch Changes
+
+- fix: add `watchfiles` as a direct dependency ([#116](https://github.com/manzt/anywidget/pull/116))
+
 ## 0.2.3
 
 ### Patch Changes
