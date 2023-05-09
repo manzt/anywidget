@@ -4,7 +4,6 @@ import contextlib
 import pathlib
 import sys
 from functools import lru_cache
-from os import stat
 from typing import Any
 
 from ._file_contents import FileContents
@@ -176,7 +175,8 @@ def _should_start_thread(path: pathlib.Path) -> bool:
         import warnings
 
         warnings.warn(
-            "anywidget: Live-reloading feature is disabled. To enable, please install the 'watchfiles' package.",
+            "anywidget: Live-reloading feature is disabled."
+            " To enable, please install the 'watchfiles' package.",
             stacklevel=2,
         )
 
