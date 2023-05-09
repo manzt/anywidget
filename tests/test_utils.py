@@ -120,3 +120,18 @@ def test_try_file_contents(tmp_path: pathlib.Path):
     file_contents = try_file_contents(bar)
     assert isinstance(file_contents, FileContents)
     assert file_contents._background_thread is None
+
+
+def test_try_file_contents_warns(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
+):
+    monkeypatch.setitem(sys.modules, "watchfiles", None)
+
+    foo = tmp_path / "foo.txt"
+    foo.write_text("foo")
+
+    with pytest.warns(UserWarning, match="anywidget:"):
+        file_contents = try_file_contents(foo)
+
+    assert isinstance(file_contents, FileContents)
+    assert file_contents._background_thread is None

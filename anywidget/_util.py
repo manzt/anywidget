@@ -164,6 +164,27 @@ def get_repr_metadata() -> dict:
     return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
 
 
+def _should_start_thread(path: pathlib.Path) -> bool:
+    if "site-packages" in path.parts:
+        # file is inside site-packages, likely not a local development install
+        return False
+
+    try:
+        import watchfiles  # noqa: F401
+    except ImportError:
+        import warnings
+
+        warnings.warn(
+            "anywidget: Live-reloading feature is disabled."
+            " To enable, please install the 'watchfiles' package.",
+            stacklevel=2,
+        )
+
+        return False
+
+    return True
+
+
 def try_file_contents(x: Any) -> FileContents | None:
     """Try to coerce x into a FileContents object."""
     if not isinstance(x, (str, pathlib.Path)):
@@ -175,11 +196,9 @@ def try_file_contents(x: Any) -> FileContents | None:
     with contextlib.suppress(OSError):
         maybe_path = pathlib.Path(maybe_path).resolve().absolute()
         if maybe_path.is_file():
-            # Start a watch thread if file is outside of site-packages
-            # (i.e., likely a development install)
             return FileContents(
                 path=maybe_path,
-                start_thread="site-packages" not in maybe_path.parts,
+                start_thread=_should_start_thread(maybe_path),
             )
 
     return None
