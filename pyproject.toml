@@ -28,8 +28,8 @@ test = [
     "ruff",
 ]
 dev = [
-    "comm",
-    "watchfiles",
+    "comm>=0.1.0",
+    "watchfiles>=0.18.0",
 ]
 
 [project.urls]
