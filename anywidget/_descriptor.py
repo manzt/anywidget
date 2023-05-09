@@ -7,8 +7,8 @@
   `_repr_mimebundle_` attribute is accessed on an instance of the decorated class, a
   `ReprMimeBundle` instance is created and returned.
 - A `ReprMimeBundle` is first and foremost a callable object that implements the
-  `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages an
-  ipykernel Comm instance that is used to send the state of the python model to the
+  `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages a
+  Comm instance that is used to send the state of the python model to the
   javascript view.  This is done lazily, so that the Comm is only created when the
   `_repr_mimebundle_` is first accessed.
 - `ReprMimeBundle` has the logic to get/set the state of the python model, and will keep
@@ -39,10 +39,10 @@ from ._util import (
 from ._version import __version__
 
 if TYPE_CHECKING:  # pragma: no cover
+    import comm
     import psygnal
     import pydantic
     import traitlets
-    from ipykernel.comm import Comm
     from typing_extensions import TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
@@ -76,10 +76,10 @@ _ANYWIDGET_STATE = {
 
 def open_comm(
     target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
-) -> Comm:
-    from ipykernel.comm import Comm
+) -> comm.DummyComm:
+    import comm
 
-    return Comm(  # type: ignore[no-untyped-call]
+    return comm.create_comm(
         target_name=target_name,
         metadata={"version": version},
         data={"state": _ANYWIDGET_STATE},
@@ -89,10 +89,10 @@ def open_comm(
 # cache of comms: mapp of id(obj) -> Comm.
 # we use id(obj) rather than WeakKeyDictionary because we can't assume that the
 # object has a __hash__ method
-_COMMS: dict[int, Comm] = {}
+_COMMS: dict[int, comm.DummyComm] = {}
 
 
-def _comm_for(obj: object) -> Comm:
+def _comm_for(obj: object) -> comm.DummyComm:
     """Get or create a communcation channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple
@@ -246,7 +246,7 @@ class ReprMimeBundle:
 
     which is to say, it returns a mimebundle (mapping of mimetypes to data) when called.
 
-    This object *also* controls an ipykernel.Comm channel between the front-end js view
+    This object *also* controls an Comm channel between the front-end js view
     and some python model object (`obj`),
 
     Parameters
