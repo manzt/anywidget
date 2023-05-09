@@ -39,10 +39,10 @@ from ._util import (
 from ._version import __version__
 
 if TYPE_CHECKING:  # pragma: no cover
+    import comm
     import psygnal
     import pydantic
     import traitlets
-    from ipykernel.comm import Comm
     from typing_extensions import TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
@@ -76,10 +76,10 @@ _ANYWIDGET_STATE = {
 
 def open_comm(
     target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
-) -> Comm:
-    from ipykernel.comm import Comm
+) -> comm.DummyComm:
+    import comm
 
-    return Comm(  # type: ignore[no-untyped-call]
+    return comm.create_comm(
         target_name=target_name,
         metadata={"version": version},
         data={"state": _ANYWIDGET_STATE},
@@ -89,10 +89,10 @@ def open_comm(
 # cache of comms: mapp of id(obj) -> Comm.
 # we use id(obj) rather than WeakKeyDictionary because we can't assume that the
 # object has a __hash__ method
-_COMMS: dict[int, Comm] = {}
+_COMMS: dict[int, comm.DummyComm] = {}
 
 
-def _comm_for(obj: object) -> Comm:
+def _comm_for(obj: object) -> comm.DummyComm:
     """Get or create a communcation channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple

@@ -29,7 +29,7 @@ test = [
     "ruff",
 ]
 dev = [
-    "ipykernel",
+    "comm",
 ]
 
 [project.urls]
