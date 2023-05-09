@@ -2,4 +2,4 @@
 "anywidget": patch
 ---
 
-revert `watchfiles` to optional-dependency
+fix: revert `watchfiles` to optional-dependency
