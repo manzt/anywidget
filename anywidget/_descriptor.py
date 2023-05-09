@@ -7,8 +7,8 @@
   `_repr_mimebundle_` attribute is accessed on an instance of the decorated class, a
   `ReprMimeBundle` instance is created and returned.
 - A `ReprMimeBundle` is first and foremost a callable object that implements the
-  `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages an
-  ipykernel Comm instance that is used to send the state of the python model to the
+  `_repr_mimebundle_` protocol that jupyter expects.  However, it also manages a
+  Comm instance that is used to send the state of the python model to the
   javascript view.  This is done lazily, so that the Comm is only created when the
   `_repr_mimebundle_` is first accessed.
 - `ReprMimeBundle` has the logic to get/set the state of the python model, and will keep
@@ -246,7 +246,7 @@ class ReprMimeBundle:
 
     which is to say, it returns a mimebundle (mapping of mimetypes to data) when called.
 
-    This object *also* controls an ipykernel.Comm channel between the front-end js view
+    This object *also* controls an Comm channel between the front-end js view
     and some python model object (`obj`),
 
     Parameters
