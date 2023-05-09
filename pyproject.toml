@@ -17,7 +17,6 @@ dependencies = [
     "importlib-metadata ; python_version < '3.8'",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
-    "watchfiles>=0.18.0",
 ]
 
 [project.optional-dependencies]
@@ -30,6 +29,7 @@ test = [
 ]
 dev = [
     "comm",
+    "watchfiles",
 ]
 
 [project.urls]
