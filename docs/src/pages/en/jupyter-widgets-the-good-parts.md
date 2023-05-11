@@ -102,7 +102,7 @@ framework to handle synchronizing that value to the front end. Take the followin
 
 ```python
 class CustomWidget(anywidget.AnyWidget):
-    _esm = (pathlib.Path(__file__).parent / "index.js").read_text()
+    _esm = pathlib.Path("index.js")
     my_value = traitlets.Int(0).tag(sync=True)
 ```
 
