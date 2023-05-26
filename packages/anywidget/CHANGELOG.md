@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.3.1
+
+### Patch Changes
+
+- fix: properly cache cleanup function for HMR ([#122](https://github.com/manzt/anywidget/pull/122))
+
 ## 0.3.0
 
 ### Minor Changes
