@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 Often the ESM required to connect a JavaScript library to Python with
 **anywidget** is minimal and can easily be inlined _within_ the Python module as
 a string. This feature allows Python developers to be productive with
-**anywidget** without requiring intimite knowledge or the overhead of frontend
+**anywidget** without requiring intimate knowledge or the overhead of frontend
 tooling (e.g., `npm`/`yarn`/`pnpm`, Webpack/Vite/esbuild).
 
 As **anywidget** projects mature, however, it is recommended to organize the
@@ -89,7 +89,7 @@ esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js --watch
 
 Our [Vite](https://vitejs.dev/) plugin offers a more fully featured development
 experience compared to **anywidget**'s builtin HMR, but at the cost of added
-project complexity and tooling. Vite is a good choice if you are want to
+project complexity and tooling. Vite is a good choice if you want to
 use a front-end framework like Svelte or Vue or need more fine grain control
 over your bundling.
 
@@ -136,7 +136,7 @@ hello_widget/
 
 ### Build
 
-We can now bundle the assets into `hellow_widget/static` with Vite, just like
+We can now bundle the assets into `hello_widget/static` with Vite, just like
 esbuild. Again, make sure the final bundled assets are loaded by the Python
 module.
 
@@ -214,5 +214,5 @@ class HelloWidget(anywidget.AnyWidget):
   name = traitlets.Unicode().tag(sync=True)
 ```
 
-Any changes to `src/*` will now be updated immediate in active output cells with
-for this widget. Happy coding!
+Any changes to `src/*` will now be updated immediately in active output cells with
+this widget. Happy coding!
