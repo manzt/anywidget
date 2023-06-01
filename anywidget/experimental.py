@@ -10,7 +10,12 @@ __all__ = ["widget", "MimeBundleDescriptor"]
 ModelT = typing.TypeVar("ModelT")
 
 
-def widget(*, esm: str | pathlib.Path, css: None | str | pathlib.Path = None, **kwargs):
+def widget(
+    *,
+    esm: str | pathlib.Path,
+    css: None | str | pathlib.Path = None,
+    **kwargs: typing.Any,
+) -> typing.Callable[[ModelT], ModelT]:
     """Decorator to register a widget class as a mimebundle.
 
     Parameters
