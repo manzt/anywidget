@@ -40,6 +40,7 @@ from ._version import __version__
 
 if TYPE_CHECKING:  # pragma: no cover
     import comm
+    import msgspec
     import psygnal
     import pydantic
     import traitlets
@@ -485,6 +486,9 @@ def determine_state_getter(obj: object) -> Callable[[Any], Serializable]:
     if _is_pydantic_model(obj):
         return _get_pydantic_state
 
+    if _is_msgspec_struct(obj):
+        return _get_msgspec_state
+
     # pickle protocol ... probably not type-safe enough for our purposes
     # https://docs.python.org/3/library/pickle.html#object.__getstate__
     # if hasattr(type(obj), "__getstate__"):
@@ -642,3 +646,22 @@ def _get_pydantic_state(obj: pydantic.BaseModel) -> Serializable:
     expects.)
     """
     return json.loads(obj.json())
+
+
+# ------------- msgspec support --------------
+
+
+def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
+    """Return `True` if an object is an instance of msgspec.Struct."""
+    msgspec = sys.modules.get("msgspec")
+    return isinstance(obj, msgspec.Struct) if msgspec is not None else False
+
+
+def _get_msgspec_state(obj: msgspec.Struct) -> dict:
+    """Get the state of a msgspec.Struct instance."""
+    import msgspec
+
+    # FIXME:
+    # see discussion here:
+    # https://github.com/manzt/anywidget/pull/64/files#r1129327721
+    return cast(dict, msgspec.to_builtins(obj))
