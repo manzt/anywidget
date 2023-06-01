@@ -17,5 +17,5 @@ def test_decorator():
 
     foo = Foo()
 
-    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor) # type: ignore
-    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle) # type: ignore
+    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
