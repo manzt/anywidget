@@ -1,5 +1,27 @@
 # anywidget
 
+## 0.3.1
+
+### Patch Changes
+
+- fix: properly cache cleanup function for HMR ([#122](https://github.com/manzt/anywidget/pull/122))
+
+## 0.3.0
+
+### Minor Changes
+
+- fix: replace deprecated `ipykernel.comm.Comm` with `comm` module ([#119](https://github.com/manzt/anywidget/pull/119))
+
+### Patch Changes
+
+- fix: revert `watchfiles` to optional-dependency ([#118](https://github.com/manzt/anywidget/pull/118))
+
+## 0.2.4
+
+### Patch Changes
+
+- fix: add `watchfiles` as a direct dependency ([#116](https://github.com/manzt/anywidget/pull/116))
+
 ## 0.2.3
 
 ### Patch Changes

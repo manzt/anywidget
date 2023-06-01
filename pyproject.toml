@@ -29,8 +29,8 @@ test = [
     "ipython<8.13; python_version < '3.9'",
 ]
 dev = [
-    "watchfiles",
-    "ipykernel",
+    "comm>=0.1.0",
+    "watchfiles>=0.18.0",
 ]
 
 [project.urls]
@@ -149,5 +149,5 @@ disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
 # this might be missing in pre-commit, but they aren't typed anyway
-module = ["ipywidgets", "traitlets.*", "ipykernel.*", "IPython.*"]
+module = ["ipywidgets", "traitlets.*", "comm", "IPython.*"]
 ignore_missing_imports = true
