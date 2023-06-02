@@ -118,3 +118,31 @@ When this descriptor is accessed on an instance, it will
     - a
       [`psygnal.SignalGroup`](https://psygnal.readthedocs.io/en/latest/dataclasses/)
       on the object (conventionally named `events`)
+
+## The `widget` decorator
+
+In practice, we'd like the `MimeBundleDescriptor` to be a low-level API that most
+users don't need to interact with directly.  The `anywidget.experimental.widget`
+decorator provides a higher-level API that can be used to create a widget from
+any python object that implements a known data-class pattern and observer.
+
+Here's an example of how to use the `widget` decorator to create a widget from a
+`dataclasses.dataclass`, that uses psygnal's [evented-dataclass pattern](https://psygnal.readthedocs.io/en/latest/dataclasses/) for
+observers:
+
+```python
+esm = "export function render(view) {}"
+css = ".foo { color: red;}"
+
+@widget(esm=esm, css=css)
+@psygnal.evented
+@dataclasses.dataclass
+class Foo:
+    bar: str = "baz"
+
+foo = Foo()
+```
+
+> In the future, `@widget` may automatically add the `@psygnal.evented`
+> decorator and/or the dataclass decorator if a pattern isn't automatically
+> detected, but for now all must be explicitly added.
