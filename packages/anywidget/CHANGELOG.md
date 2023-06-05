@@ -1,5 +1,24 @@
 # anywidget
 
+## 0.4.1
+
+### Patch Changes
+
+- feat: Add `anywidget.experimental` with simple decorator ([#126](https://github.com/manzt/anywidget/pull/126))
+
+  ```python
+  import dataclasses
+  import psygnal
+
+  from anywidget.experimental import widget
+
+  @widget(esm="index.js")
+  @psygnal.evented
+  @dataclasses.dataclass
+  class Counter:
+      value: int = 0
+  ```
+
 ## 0.4.0
 
 ### Minor Changes
