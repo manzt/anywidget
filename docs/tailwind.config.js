@@ -1,7 +1,7 @@
-const colors = require("tailwindcss/colors");
+import * as colors from "tailwindcss/colors.js";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
 	content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
 	theme: {
 		extend: {
