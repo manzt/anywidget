@@ -6,8 +6,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
 	image: {
-		// TODO: change to public/banner-minimal.png when repo is public
-		src: "https://user-images.githubusercontent.com/24403730/212561522-74377f45-45fe-4d21-b40a-bb7099f710a9.png",
+		src: "https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/banner-minimal.png",
 		alt: "anywidget logo on white background",
 	},
 	twitter: "trevmanz",
@@ -41,10 +40,10 @@ export const ALGOLIA = {
 	apiKey: "f8be8ea567a2b746ccc3986f9db3a129",
 };
 
-export type Sidebar = Record<
-	(typeof KNOWN_LANGUAGE_CODES)[number],
+export type Sidebar = {
+	[Code in (typeof KNOWN_LANGUAGE_CODES)[number]]:
 	Record<string, { text: string; link: string }[]>
->;
+};
 export const SIDEBAR: Sidebar = {
 	en: {
 		Guide: [
@@ -53,8 +52,10 @@ export const SIDEBAR: Sidebar = {
 				text: "Jupyter Widgets: The Good Parts",
 				link: "en/jupyter-widgets-the-good-parts",
 			},
-			{ text: "Advanced: Bundling", link: "en/bundling" },
-			{ text: "Advanced: Experimental Features", link: "en/experimental" },
+		],
+		Advanced: [
+			{ text: "Bundling", link: "en/bundling" },
+			{ text: "Experimental Features", link: "en/experimental" },
 		],
 		Notebooks: [
 			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
