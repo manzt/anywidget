@@ -11,7 +11,7 @@ layout: ../../layouts/MainLayout.astro
 
 In order to understand the motivation and function of some features in the
 `experimental` module, it is helpful to have a brief overview of how widgets
-work in Jupyter.  This is summarized below, but for a more in-depth explanation,
+work in Jupyter. This is summarized below, but for a more in-depth explanation,
 see the [jupyter-widgets messaging
 protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schema/messages.md).
 
@@ -19,10 +19,10 @@ protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schem
 
 When representing a python object, many front-ends REPLs, [including
 IPython](https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_),
-will look for a `_repr_mimebundle_` method on the object.  If found, this method
+will look for a `_repr_mimebundle_` method on the object. If found, this method
 must return a dictionary of data, keyed by [MIME
 type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types),
-that can be used to render the object in the front-end.  A super simple
+that can be used to render the object in the front-end. A super simple
 plain-text representation of an object might look like this:
 
 ```python
@@ -50,9 +50,9 @@ to display.
 ### 3. The `Comm` object
 
 A `comm.base_comm.BaseComm` object manages communication between the front end (Javascript model)
-and the backend (Python model).  When the user modifies the state of the python object, the comm
+and the backend (Python model). When the user modifies the state of the python object, the comm
 must send a message containing the updated JSON state to the front end, so that the widget view
-can be update.  Similarly, when the user interacts with the widget in the browser, the front end
+can be update. Similarly, when the user interacts with the widget in the browser, the front end
 must send a message to the backend, so that the python model can be updated.
 
 ### Summary
@@ -106,23 +106,23 @@ When this descriptor is accessed on an instance, it will
 1. create a new `Comm` channel for this object.
 2. determine what data-class pattern the object uses, and set-up serialization
    of the object currently supporting:
-    - [`dataclasses.dataclass`](https://docs.python.org/3/library/dataclasses.html)
-    - [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/)
-    - [`traitlets.HasTraits`](https://traitlets.readthedocs.io/en/stable/)
-    - [`msgspec.Struct`](https://jcristharif.com/msgspec/structs.html)
-    - any class implementing a `_get_anywidget_state` method that returns the
-      object state as a `dict`.
+   - [`dataclasses.dataclass`](https://docs.python.org/3/library/dataclasses.html)
+   - [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/)
+   - [`traitlets.HasTraits`](https://traitlets.readthedocs.io/en/stable/)
+   - [`msgspec.Struct`](https://jcristharif.com/msgspec/structs.html)
+   - any class implementing a `_get_anywidget_state` method that returns the
+     object state as a `dict`.
 3. determine what observer pattern the object uses, and set-up two-way data
-    binding between the object and the `comm`, currently supporting:
-    - [`traitlets.HasTraits`](https://traitlets.readthedocs.io/en/stable/)
-    - a
-      [`psygnal.SignalGroup`](https://psygnal.readthedocs.io/en/latest/dataclasses/)
-      on the object (conventionally named `events`)
+   binding between the object and the `comm`, currently supporting:
+   - [`traitlets.HasTraits`](https://traitlets.readthedocs.io/en/stable/)
+   - a
+     [`psygnal.SignalGroup`](https://psygnal.readthedocs.io/en/latest/dataclasses/)
+     on the object (conventionally named `events`)
 
 ## The `widget` decorator
 
 In practice, we'd like the `MimeBundleDescriptor` to be a low-level API that most
-users don't need to interact with directly.  The `anywidget.experimental.widget`
+users don't need to interact with directly. The `anywidget.experimental.widget`
 decorator provides a higher-level API that can be used to create a widget from
 any python object that implements a known data-class pattern and observer.
 

@@ -21,7 +21,7 @@ and not the original/untransformed JavaScript source files.
 
 ## esbuild
 
-[esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in Golang. 
+[esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in Golang.
 It can transform **TypeScript, JSX, and CSS files** and includes zero
 JavaScrit dependencies. Binaries can be [installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
 making it a great fit for **anywidget** projects.
@@ -84,7 +84,6 @@ the new bundle in the front end.
 esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js --watch
 ```
 
-
 ## Vite
 
 Our [Vite](https://vitejs.dev/) plugin offers a more fully featured development
@@ -108,13 +107,13 @@ Create a `vite.config.js` file with the following configuration:
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  build: {
-    outDir: "hello_widget/static",
-    lib: {
-      entry: ["src/index.js"],
-      formats: ["es"],
-    },
-  },
+	build: {
+		outDir: "hello_widget/static",
+		lib: {
+			entry: ["src/index.js"],
+			formats: ["es"],
+		},
+	},
 });
 ```
 

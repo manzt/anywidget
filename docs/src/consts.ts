@@ -41,8 +41,10 @@ export const ALGOLIA = {
 };
 
 export type Sidebar = {
-	[Code in (typeof KNOWN_LANGUAGE_CODES)[number]]:
-	Record<string, { text: string; link: string }[]>
+	[Code in (typeof KNOWN_LANGUAGE_CODES)[number]]: Record<
+		string,
+		{ text: string; link: string }[]
+	>;
 };
 export const SIDEBAR: Sidebar = {
 	en: {
