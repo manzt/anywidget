@@ -382,7 +382,7 @@ class ReprMimeBundle:
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
         data = {
-            "text/plain": repr(self),
+            "text/plain": repr(self._obj()),
             _WIDGET_MIME_TYPE: {
                 "version_major": _PROTOCOL_VERSION_MAJOR,
                 "version_minor": _PROTOCOL_VERSION_MINOR,
