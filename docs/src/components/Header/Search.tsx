@@ -30,7 +30,7 @@ export default function Search() {
 	}, [setIsOpen]);
 
 	const onInput = useCallback(
-		(e) => {
+		(e: KeyboardEvent) => {
 			setIsOpen(true);
 			setInitialQuery(e.key);
 		},

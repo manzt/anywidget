@@ -22,7 +22,7 @@ export default defineConfig({
 		// Support .ipynb pages
 		ipynb({ execute: false }),
 		// Added for custom landing page
-		tailwind(),
+		tailwind({ config: { applyBaseStyles: false } }),
 		// Suports components in markdown
 		mdx(),
 	],

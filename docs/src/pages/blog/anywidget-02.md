@@ -3,10 +3,11 @@ title: "Modern Web Meets Jupyter"
 description: "Announcing anywidget v0.2: Modern Web Development in Jupyter"
 layout: ../../layouts/MainLayout.astro
 authors: ["Trevor Manz"]
-image: {
-  src: "https://user-images.githubusercontent.com/24403730/213607015-e3fb38f9-5e75-439b-95c9-99e1fde11955.png",
-  alt: "anywidget logo and counter example using API",
-}
+image:
+  {
+    src: "https://user-images.githubusercontent.com/24403730/213607015-e3fb38f9-5e75-439b-95c9-99e1fde11955.png",
+    alt: "anywidget logo and counter example using API",
+  }
 ---
 
 _TL;DR: **anywidget** v0.2 brings modern web development to Jupyter. You can now
@@ -125,20 +126,19 @@ the associated widget code may also define the expected types on the Model (i.e.
 
 /** @type {import("anywidget/types").Render<Model>} */
 export function render(view) {
-  let value = view.model.get("value");
-  //^? number
+	let value = view.model.get("value");
+	//^? number
 
-  view.model.get("nope");
-  // type error, `nope` is not defined on Model
+	view.model.get("nope");
+	// type error, `nope` is not defined on Model
 
-  view.model.set("value", "not a number");
-  //^? type error, must be a number
+	view.model.set("value", "not a number");
+	//^? type error, must be a number
 }
 ```
 
 The `import("anywidget/widget").Render<Model>` utilty strictly types the `render` function such that
 `view.model.get` and `view.model.set` are typed based on the user-defined `Model`.
-
 
 This feature brings Jupyter Widgets one step closer to having **end-to-end type safety**, and
 the use of TypeScript within JSDoc comments means that widget front-end code can benefit
@@ -152,41 +152,39 @@ a callback that is executed any time the a view is removed from the DOM. This en
 when dealing with complex event listeners, subscriptions, or third-party libraries that require proper
 teardown.
 
-Although this feature might not be essential for all use cases, it provides a flexible and more declarative 
+Although this feature might not be essential for all use cases, it provides a flexible and more declarative
 way to ensure proper cleanup when needed:
 
 ```javascript
 export function render(view) {
-  // Create DOM elements and set up subscribers
-  return () => {
-    // Optionally cleanup
-  };
+	// Create DOM elements and set up subscribers
+	return () => {
+		// Optionally cleanup
+	};
 }
 ```
 
 This new API is particularly useful when working with third-party libraries like React
-that take control of the DOM and require proper cleanup to prevent exceptions when 
+that take control of the DOM and require proper cleanup to prevent exceptions when
 elements are unmounted. For example:
-
 
 ```javascript
 import * as React from "https://esm.sh/react@18";
 import * as ReactDOM from "https://esm.sh/react-dom@18/client";
 
 function App(props) {
-  return <h1>Hello, world</h1>
+	return <h1>Hello, world</h1>;
 }
 
 export function render(view) {
-  let root = ReactDOM.createRoot(view.el);
-  root.render(<App />)
-  return () => root.unmount();
+	let root = ReactDOM.createRoot(view.el);
+	root.render(<App />);
+	return () => root.unmount();
 }
 ```
 
-> Note: The above front-end code requires transformation with tool like `esbuild` 
-to allow for the special JSX syntax (e.g., `<App />`).
-
+> Note: The above front-end code requires transformation with tool like `esbuild`
+> to allow for the special JSX syntax (e.g., `<App />`).
 
 ## Getting Started
 

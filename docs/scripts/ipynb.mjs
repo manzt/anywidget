@@ -154,8 +154,8 @@ async function renderCellsMarkdown(nb, options) {
 		return renderMarkdown(content, {
 			...options.config.markdown,
 			fileURL: new URL(`file://${options.fileId}`),
-			contentDir: new URL("./content/", options.config.srcDir),
 			// @ts-expect-error
+			contentDir: new URL("./content/", options.config.srcDir),
 			frontmatter: options.frontmatter,
 		});
 	}
@@ -188,8 +188,9 @@ function vitePlugin(options) {
 		name: "ipynb",
 		enforce: "pre",
 		async transform(_, id) {
-			if (!id.endsWith("ipynb")) return;
+			if (!id.endsWith(".ipynb")) return;
 			let { fileId, fileUrl } = getFileInfo(id, options.config);
+
 			let nb = await readNotebook(fileId, options.execute);
 
 			let frontmatter = {};

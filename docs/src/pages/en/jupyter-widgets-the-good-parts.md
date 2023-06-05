@@ -31,15 +31,17 @@ Concretely, custom widgets are traditionally defined like:
 import { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 
 // All boilerplate, anywidget takes care of this ...
-class CustomModel extends DOMWidgetModel { /* ... */ }
+class CustomModel extends DOMWidgetModel {
+	/* ... */
+}
 
 class CustomView extends DOMWidgetView {
-  render() {
-    let view = this;
-    let el = this.el;
-    let model = this.model;
-    /* ... */
-  }
+	render() {
+		let view = this;
+		let el = this.el;
+		let model = this.model;
+		/* ... */
+	}
 }
 
 export { CustomModel, CustomView };
@@ -52,9 +54,9 @@ In **anywidget**, the above code simplies to just:
 ```javascript
 /** @param view {DOMWidgetView} view */
 export function render(view) {
-  let el = view.el;
-  let model = view.model;
-  /* ... */
+	let el = view.el;
+	let model = view.model;
+	/* ... */
 }
 ```
 
@@ -114,7 +116,7 @@ end. The `render` function now has the ability to:
 ```javascript
 // index.js
 export function render(view) {
-  let my_value = view.model.get("my_value");
+	let my_value = view.model.get("my_value");
 }
 ```
 
@@ -123,8 +125,8 @@ export function render(view) {
 ```javascript
 // index.js
 export function render(view) {
-  view.model.set("my_value", 42);
-  view.model.save_changes(); // required to send update to Python
+	view.model.set("my_value", 42);
+	view.model.save_changes(); // required to send update to Python
 }
 ```
 
@@ -133,11 +135,11 @@ export function render(view) {
 ```javascript
 // index.js
 export function render(view) {
-  function on_change() {
-    let new_my_value = view.model.get("my_value");
-    console.log(`The 'my_value' changed to: ${new_my_value}`);
-  }
-  view.model.on("change:my_value", on_change);
+	function on_change() {
+		let new_my_value = view.model.get("my_value");
+		console.log(`The 'my_value' changed to: ${new_my_value}`);
+	}
+	view.model.on("change:my_value", on_change);
 }
 ```
 

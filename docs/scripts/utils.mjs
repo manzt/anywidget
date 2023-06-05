@@ -1,14 +1,5 @@
 // @ts-check
 import matter from "gray-matter";
-import { normalizePath } from "vite";
-import { fileURLToPath } from "node:url";
-
-// absolute path of "astro/jsx-runtime"
-let astroJsxRuntimeModulePath = normalizePath(
-	fileURLToPath(
-		new URL("../node_modules/astro/dist/jsx-runtime/index.js", import.meta.url)
-	)
-);
 
 /**
  * @param {string} code
@@ -98,12 +89,13 @@ export function createAstroComponentString({
 
 	// deno-fmt-ignore
 	return `
-	import { Fragment, jsx as h } from ${JSON.stringify(astroJsxRuntimeModulePath)};
+	import { Fragment, jsx as h } from 'astro/jsx-runtime';
 	${layout ? `import Layout from ${JSON.stringify(layout)};` : ""}
 	const html = ${JSON.stringify(html)};
 	export const frontmatter = ${JSON.stringify(frontmatter)};
 	export const file = ${JSON.stringify(fileId)};
 	export const url = ${JSON.stringify(fileUrl)};
+
 	export function rawContent() {
 		return ${JSON.stringify(raw)};
 	}
