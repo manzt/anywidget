@@ -67,6 +67,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     """Test that the descriptor decorator makes a comm, and gets/sets state."""
 
     VAL = 1
+    REPR = "FOO"
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
@@ -74,6 +75,9 @@ def test_descriptor(mock_comm: MagicMock) -> None:
 
         def _get_anywidget_state(self):
             return {"value": self.value}
+
+        def __repr__(self) -> str:
+            return REPR
 
     foo = Foo()
     mock_comm.send.assert_not_called()  # we haven't yet created a comm object
@@ -94,6 +98,9 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.reset_mock()
     mock_comm.handle_msg({"content": {"data": {"method": "request_state"}}})
     mock_comm.send.assert_called()
+
+    # uses the base class repr for plain text
+    assert foo._repr_mimebundle_()[0]["text/plain"] == REPR
 
 
 def test_state_setter(mock_comm: MagicMock):
