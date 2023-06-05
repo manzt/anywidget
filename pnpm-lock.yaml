@@ -47,6 +47,9 @@ importers:
       '@docsearch/react':
         specifier: ^3.1.0
         version: 3.3.3(@algolia/client-search@4.15.0)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@types/html-escaper':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/node':
         specifier: ^18.0.0
         version: 18.14.6
@@ -1985,6 +1988,10 @@ packages:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
     dependencies:
       '@types/unist': 2.0.6
+
+  /@types/html-escaper@3.0.0:
+    resolution: {integrity: sha512-OcJcvP3Yk8mjYwf/IdXZtTE1tb/u0WF0qa29ER07ZHCYUBZXSN29Z1mBS+/96+kNMGTFUAbSz9X+pHmHpZrTCw==}
+    dev: false
 
   /@types/is-ci@3.0.0:
     resolution: {integrity: sha512-Q0Op0hdWbYd1iahB+IFNQcWXFq4O0Q5MwQP7uN0souuQ4rPg1vEYcnIOfr1gY+M+6rc8FGoRaBO1mOOvL29sEQ==}
