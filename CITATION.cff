@@ -1,0 +1,36 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: anywidget
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Trevor
+    family-names: Manz
+    email: trevor.j.manz@gmail.com
+    affiliation: Harvard Medical School
+    orcid: 'https://orcid.org/0000-0001-7694-5164'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.8010549
+    description: Zenodo
+repository-code: 'https://github.com/manzt/anywidget'
+url: 'https://anywidget.dev'
+abstract: >-
+  anywidget is a Python library that simplifies the creation
+  and maintenance of Jupyter Widgets, making them more
+  accessible for computational scientists. By leveraging
+  ECMAScript modules (ESM), it addresses complex widget
+  packaging issues, enhancing the utility and
+  interoperability of custom widgets across different
+  environments.
+keywords:
+  - Jupyter Notebooks
+  - Jupyter Widgets
+  - Data Visualization
+  - Interactive Computing
+  - Data Analysis
+license: MIT
