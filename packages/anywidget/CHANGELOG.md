@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.4.2
+
+### Patch Changes
+
+- fix(descriptor): forward base obj repr for text/plain mimetype ([#131](https://github.com/manzt/anywidget/pull/131))
+
 ## 0.4.1
 
 ### Patch Changes
