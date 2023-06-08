@@ -89,5 +89,5 @@ class FileContents:
 
     def __str__(self) -> str:
         if self._contents is None:
-            self._contents = self._path.read_text()
+            self._contents = self._path.read_text(encoding="utf-8")
         return self._contents
