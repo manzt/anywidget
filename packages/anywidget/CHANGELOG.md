@@ -1,5 +1,13 @@
 # anywidget
 
+## 0.4.3
+
+### Patch Changes
+
+- fix: Specify UTF-8 encoding in `FileContents.__str__` ([#135](https://github.com/manzt/anywidget/pull/135))
+
+  Fixes an `UnicodeDecodeError` observed on Windows when special characters are present in `_esm` or `_css` elements of a widget.
+
 ## 0.4.2
 
 ### Patch Changes
