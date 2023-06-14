@@ -1,11 +1,11 @@
 // @ts-check
 import { name, version } from "../package.json";
 
-/** @typedef {import("@jupyter-widgets/base").WidgetModel} WidgetModel */
+/** @typedef {{ model: import("@jupyter-widgets/base").WidgetModel, el: HTMLElement }} RenderContext */
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: { model: WidgetModel, el: HTMLElement }) => Promise<undefined | (() => Promise<void>)>}
+ *  @prop render {(context: RenderContext) => Promise<undefined | (() => Promise<void>)>}
  */
 
 /**

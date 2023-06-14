@@ -10,11 +10,11 @@ export interface AnyModel<T extends ObjectHash = ObjectHash>
 	set<K extends keyof T>(key: K, value: T[K]): void;
 }
 
-export interface AnyView<Model> {
+export interface RenderContext<Model> {
 	model: Model;
 	el: HTMLElement;
 }
 
 export interface Render<T extends ObjectHash = ObjectHash> {
-	(view: AnyView<AnyModel<T>>): MaybePromise<void | CleanupFn>;
+	(context: RenderContext<AnyModel<T>>): MaybePromise<void | CleanupFn>;
 }
