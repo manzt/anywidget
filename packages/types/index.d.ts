@@ -8,11 +8,11 @@ export interface AnyModel<T extends ObjectHash = ObjectHash>
 	extends DOMWidgetModel {
 	get<K extends keyof T>(key: K): T[K];
 	set<K extends keyof T>(key: K, value: T[K]): void;
-	views: Record<string, Promise<AnyView<AnyModel<T>>>>;
 }
 
-export interface AnyView<Model extends DOMWidgetModel> extends DOMWidgetView {
+export interface AnyView<Model> {
 	model: Model;
+	el: HTMLElement;
 }
 
 export interface Render<T extends ObjectHash = ObjectHash> {

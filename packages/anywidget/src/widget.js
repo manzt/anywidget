@@ -1,11 +1,11 @@
 // @ts-check
 import { name, version } from "../package.json";
 
-/** @typedef {import("@jupyter-widgets/base").WidgetView} WidgetView */
+/** @typedef {import("@jupyter-widgets/base").WidgetModel} WidgetModel */
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: WidgetView) => Promise<undefined | (() => Promise<void>)>}
+ *  @prop render {(view: { model: WidgetModel, el: HTMLElement }) => Promise<undefined | (() => Promise<void>)>}
  */
 
 /**
@@ -160,7 +160,7 @@ export default function (base) {
 					view.stopListening(this);
 
 					// render the view with the updated render
-					let cleanup = await widget.render(view);
+					let cleanup = await widget.render({ model: this, el: view.el });
 					view._anywidget_cached_cleanup = cleanup ?? (() => {});
 				}
 			});
@@ -171,7 +171,7 @@ export default function (base) {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
-			let cleanup = await widget.render(this);
+			let cleanup = await widget.render({ model: this.model, el: this.el });
 			this._anywidget_cached_cleanup = cleanup ?? (() => {});
 		}
 
