@@ -96,9 +96,6 @@ importers:
 
   packages/anywidget:
     dependencies:
-      '@anywidget/types':
-        specifier: workspace:*
-        version: link:../types
       '@anywidget/vite':
         specifier: workspace:*
         version: link:../vite
@@ -106,6 +103,9 @@ importers:
         specifier: ^2 || ^3 || ^4 || ^5 || ^6
         version: 6.0.2(crypto@1.0.1)
     devDependencies:
+      '@anywidget/types':
+        specifier: workspace:*
+        version: link:../types
       '@jupyterlab/builder':
         specifier: ^3.6.2
         version: 3.6.2(crypto@1.0.1)(esbuild@0.17.12)
