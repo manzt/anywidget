@@ -110,11 +110,7 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2(crypto@1.0.1)(esbuild@0.17.12)
 
-  packages/types:
-    dependencies:
-      '@jupyter-widgets/base':
-        specifier: ^6.0.1
-        version: 6.0.2(crypto@1.0.1)
+  packages/types: {}
 
   packages/vite:
     devDependencies:
