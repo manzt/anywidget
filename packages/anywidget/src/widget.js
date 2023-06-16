@@ -103,15 +103,16 @@ async function load_esm(esm) {
  * @returns {import("@anywidget/types").RenderContext}
  *
  * Prunes the view down to the minimum context necessary for rendering.
- * Calls to `model.get` and `model.set` automatically add the view as 
+ * Calls to `model.get` and `model.set` automatically add the view as
  * context to the model, so we can gracefully unsubscribe from events
  * added by the user-defined render.
  */
 function extract_context(view) {
 	let model = {
-		get: view.model.get,
-		set: view.model.set,
-		save_changes: view.model.save_changes,
+		/** @param {string} name */
+		get: view.model.get.bind(view.model),
+		set: view.model.set.bind(view.model),
+		save_changes: view.model.save_changes.bind(view.model),
 		/**
 		 * @param {string} name
 		 * @param {any} callback
@@ -129,7 +130,6 @@ function extract_context(view) {
 	};
 	return { model, el: view.el };
 }
-
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
@@ -182,7 +182,9 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 					// render the view with the updated render
 					let cleanup = await widget.render(extract_context(view));
-					view._anywidget_cached_cleanup = cleanup ?? (() => { this.off(null, null, view) });
+					view._anywidget_cached_cleanup = cleanup ?? (() => {
+						this.off(null, null, view);
+					});
 				}
 			});
 		}
@@ -193,7 +195,9 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
 			let cleanup = await widget.render(extract_context(this));
-			this._anywidget_cached_cleanup = cleanup ?? (() => { this.model.off(null, null, this) });
+			this._anywidget_cached_cleanup = cleanup ?? (() => {
+				this.model.off(null, null, this);
+			});
 		}
 
 		/** @type {() => Promise<void> | void} */
@@ -208,5 +212,3 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 	return { AnyModel, AnyView };
 }
-
-
