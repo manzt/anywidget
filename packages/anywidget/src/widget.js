@@ -171,7 +171,12 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 					let widget = await load_esm(this.get("_esm"));
 
 					// call any cleanup logic defined by the previous module.
-					await view._anywidget_cached_cleanup();
+					try {
+						await view._anywidget_cached_cleanup();
+					} catch (e) {
+						console.warn("[anywidget] error cleaning up previous module.", e);
+						view._anywidget_cached_cleanup = () => {};
+					}
 
 					// Remove all event listeners added by the user-defined render.
 					this.off(null, null, view);
