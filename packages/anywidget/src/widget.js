@@ -164,16 +164,17 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
-				let views =
-					/** @type {Promise<AnyView>[]} */ (/** @type {unknown} */ (Object
-						.values(this.views ?? {})));
+				let views = (/** @type {unknown} */ (Object.values(this.views ?? {})));
 
-				for await (let view of views) {
+				for await (let view of (/** @type {Promise<AnyView>[]} */ (views))) {
 					// load updated esm
 					let widget = await load_esm(this.get("_esm"));
 
 					// call any cleanup logic defined by the previous module.
 					await view._anywidget_cached_cleanup();
+
+					// Remove all event listeners added by the user-defined render.
+					this.off(null, null, view);
 
 					// `view.$el` is a cached jQuery object for the view's element.
 					// This removes all child nodes but avoids deleting the root so
@@ -182,9 +183,8 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 					// render the view with the updated render
 					let cleanup = await widget.render(extract_context(view));
-					view._anywidget_cached_cleanup = cleanup ?? (() => {
-						this.off(null, null, view);
-					});
+
+					view._anywidget_cached_cleanup = cleanup ?? (() => {});
 				}
 			});
 		}
@@ -195,9 +195,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
 			let cleanup = await widget.render(extract_context(this));
-			this._anywidget_cached_cleanup = cleanup ?? (() => {
-				this.model.off(null, null, this);
-			});
+			this._anywidget_cached_cleanup = cleanup ?? (() => {});
 		}
 
 		/** @type {() => Promise<void> | void} */
