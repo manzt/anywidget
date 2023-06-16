@@ -20,10 +20,9 @@ that removes boilerplate and packaging details.
 ### Comparison with traditional Jupyter Widgets
 
 **anywidget** simplies creating your widget's front-end code. Its only requirement
-is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and exports a function
-called `render`. This `render` function just an alias for the traditional
-[`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method) method,
-except that your Widget's view is passed as the first argument.
+is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) 
+and exports a function called `render`. This `render` function is similar to the traditional
+[`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method).
 
 Concretely, custom widgets are traditionally defined like:
 
@@ -49,18 +48,18 @@ export { CustomModel, CustomView };
 
 ... which must be transformed, bundled, and installed in multiple notebook environments.
 
-In **anywidget**, the above code simplies to just:
+In **anywidget**, the above code simplies to:
 
 ```javascript
-/** @param view {DOMWidgetView} view */
-export function render(view) {
-	let el = view.el;
-	let model = view.model;
+/** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
+export function render(context) {
+	let el = context.el;
+	let model = context.model;
 	/* ... */
 }
 ```
 
-... which explicity defines the widget view (i.e., `CustomView`) via the `render`
+... which explicity defines the widget view via the `render`
 function, and (implicitly) **anywidget** defines the associated widget
 model (i.e., `CustomModel`). **anywidget** front-end code is often so
 minimal that it can easily be inlined as a Python string:
@@ -68,10 +67,9 @@ minimal that it can easily be inlined as a Python string:
 ```python
 class CustomWidget(anywidget.AnyWidget):
     _esm = """
-    /** @param {DOMWidgetView} view */
-    export function render(view) {
-      let el = view.el;
-      let model = view.model;
+    export function render(context) {
+      let el = context.el;
+      let model = context.model;
       /* ... */
     }
     """
@@ -83,9 +81,9 @@ Just like `DOMWidgetView.render`, your widget's `render` function
 is executed exactly **one per output cell** that displays the widget instance.
 Therefore, `render` primarily serves two purposes:
 
-1. Initializing content to display (i.e., create and append element(s) to `view.el`)
+1. Initializing content to display (i.e., create and append element(s) to `context.el`)
 2. Registering event handlers to update or display model state any time it changes
-   (i.e., passing callbacks to `view.model.on`)
+   (i.e., passing callbacks to `context.model.on`)
 
 ## Connecting JavaScript with Python
 

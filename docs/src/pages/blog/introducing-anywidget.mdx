@@ -443,8 +443,8 @@ ExampleWidget()
   updates for the widget.
 
 ```javascript
-/** @param {import("@jupyter-widgets/base").DOMWidgetView} */
-export function render(view) {
+/** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
+export function render({ model, el }) {
 	// Render model contents and setup dynamic updates
 }
 ```
@@ -556,8 +556,8 @@ pip install anywidget
 ```
 
 **anywidget** is new and still under active development. **It should _not_
-yet be used in production since the API can change and some critical features are missing**
-(e.g., APIs to extend the `DOMWidgetModel` with custom serializers and `DOMWidgetView` with lifecycle hooks). With that said, it is already [in use](https://github.com/vitessce/vitessce-python) and ready for testing.
+yet be used in production since the API can change and some critical features are missing**.
+With that said, it is already [in use](https://github.com/vitessce/vitessce-python) and ready for testing.
 
 I hope using **anywidget** is simple and enjoyable. I have personally found
 it valuable in my work as a visualization researcher to quickly iterate on new

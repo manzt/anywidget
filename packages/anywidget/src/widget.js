@@ -1,11 +1,9 @@
 // @ts-check
 import { name, version } from "../package.json";
 
-/** @typedef {import("@jupyter-widgets/base").WidgetView} WidgetView */
-
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {(view: WidgetView) => Promise<undefined | (() => Promise<void>)>}
+ *  @prop render {import("@anywidget/types").Render}
  */
 
 /**
@@ -101,8 +99,8 @@ async function load_esm(esm) {
 }
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
-export default function (base) {
-	class AnyModel extends base.DOMWidgetModel {
+export default function ({ DOMWidgetModel, DOMWidgetView }) {
+	class AnyModel extends DOMWidgetModel {
 		static model_name = "AnyModel";
 		static model_module = name;
 		static model_module_version = version;
@@ -111,7 +109,7 @@ export default function (base) {
 		static view_module = name;
 		static view_module_version = version;
 
-		/** @param {Parameters<InstanceType<base["DOMWidgetModel"]>["initialize"]>} args */
+		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
 			super.initialize(...args);
 
@@ -133,10 +131,11 @@ export default function (base) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
-				let views = (/** @type {Promise<AnyView>[]} */ (Object.values(this.views ?? {})));
+				let views =
+					/** @type {Promise<AnyView>[]} */ (/** @type {unknown} */ (Object
+						.values(this.views ?? {})));
 
 				for await (let view of views) {
-
 					// load updated esm
 					let widget = await load_esm(this.get("_esm"));
 
@@ -160,18 +159,18 @@ export default function (base) {
 					view.stopListening(this);
 
 					// render the view with the updated render
-					let cleanup = await widget.render(view);
+					let cleanup = await widget.render({ model: this, el: view.el });
 					view._anywidget_cached_cleanup = cleanup ?? (() => {});
 				}
 			});
 		}
 	}
 
-	class AnyView extends base.DOMWidgetView {
+	class AnyView extends DOMWidgetView {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
-			let cleanup = await widget.render(this);
+			let cleanup = await widget.render({ model: this.model, el: this.el });
 			this._anywidget_cached_cleanup = cleanup ?? (() => {});
 		}
 
