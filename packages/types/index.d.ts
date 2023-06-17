@@ -1,13 +1,21 @@
-import type { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
+type MaybePromise<T> = T | Promise<T>;
 
 type ObjectHash = Record<string, any>;
-type MaybePromise<T> = T | Promise<T>;
 type CleanupFn = () => MaybePromise<void>;
 
-export interface AnyModel<T extends ObjectHash = ObjectHash>
-	extends DOMWidgetModel {
+/**
+ * JavaScript events (used in the methods of the Events interface)
+ */
+interface EventHandler {
+	(...args: any[]): void;
+}
+
+export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	get<K extends keyof T>(key: K): T[K];
 	set<K extends keyof T>(key: K, value: T[K]): void;
+	save_changes(): void;
+    on(eventName: string, callback: EventHandler): void;
+    off(eventName?: string | null, callback?: EventHandler | null): void;
 }
 
 export interface RenderContext<Model> {

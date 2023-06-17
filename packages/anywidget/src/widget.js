@@ -98,6 +98,39 @@ async function load_esm(esm) {
 	return widget;
 }
 
+/**
+ * @param {import("@jupyter-widgets/base").DOMWidgetView} view
+ * @returns {import("@anywidget/types").RenderContext}
+ *
+ * Prunes the view down to the minimum context necessary for rendering.
+ * Calls to `model.get` and `model.set` automatically add the view as
+ * context to the model, so we can gracefully unsubscribe from events
+ * added by the user-defined render.
+ */
+function extract_context(view) {
+	let model = {
+		/** @param {string} name */
+		get: view.model.get.bind(view.model),
+		set: view.model.set.bind(view.model),
+		save_changes: view.model.save_changes.bind(view.model),
+		/**
+		 * @param {string} name
+		 * @param {any} callback
+		 */
+		on(name, callback) {
+			view.model.on(name, callback, view);
+		},
+		/**
+		 * @param {string} name
+		 * @param {any} callback
+		 */
+		off(name, callback) {
+			view.model.off(name, callback, view);
+		},
+	};
+	return { model, el: view.el };
+}
+
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	class AnyModel extends DOMWidgetModel {
@@ -131,35 +164,31 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
-				let views =
-					/** @type {Promise<AnyView>[]} */ (/** @type {unknown} */ (Object
-						.values(this.views ?? {})));
+				let views = (/** @type {unknown} */ (Object.values(this.views ?? {})));
 
-				for await (let view of views) {
+				for await (let view of (/** @type {Promise<AnyView>[]} */ (views))) {
 					// load updated esm
 					let widget = await load_esm(this.get("_esm"));
 
 					// call any cleanup logic defined by the previous module.
-					await view._anywidget_cached_cleanup();
+					try {
+						await view._anywidget_cached_cleanup();
+					} catch (e) {
+						console.warn("[anywidget] error cleaning up previous module.", e);
+						view._anywidget_cached_cleanup = () => {};
+					}
+
+					// Remove all event listeners added by the user-defined render.
+					this.off(null, null, view);
 
 					// `view.$el` is a cached jQuery object for the view's element.
 					// This removes all child nodes but avoids deleting the root so
 					// we can rerender.
 					view.$el.empty();
 
-					// Unsubscribe from any handlers registered to `view.listenTo`
-					// Sadly we can't just `model.off` because it removes everything,
-					// including handlers not setup by the child view.
-					//
-					// We could override `model.on` with a particular `context` if none is
-					// provided, letting us unsubscribe from only events from views
-					// e.g., `model.off(null, null, anywidgetSymbol)`, but that might
-					// be more trouble than it's worth and this is just a feature for
-					// development.
-					view.stopListening(this);
-
 					// render the view with the updated render
-					let cleanup = await widget.render({ model: this, el: view.el });
+					let cleanup = await widget.render(extract_context(view));
+
 					view._anywidget_cached_cleanup = cleanup ?? (() => {});
 				}
 			});
@@ -170,7 +199,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
 			let widget = await load_esm(this.model.get("_esm"));
-			let cleanup = await widget.render({ model: this.model, el: this.el });
+			let cleanup = await widget.render(extract_context(this));
 			this._anywidget_cached_cleanup = cleanup ?? (() => {});
 		}
 
