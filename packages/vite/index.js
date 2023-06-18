@@ -1,41 +1,11 @@
 /** @type {(src: string) => string} */
 let template = (src) => `
-let noop = () => {};
-
-import.meta.hot.accept("${src}", (newModule) => {
-	import.meta.hot.data.render = newModule.render;
-	refresh();
-});
-
-export async function render({ model, el } ) {
-	if (!import.meta.hot.data.render) {
-		let m = await import("${src}");
-		import.meta.hot.data.render = m.render;
-		import.meta.hot.data.cleanup = noop;
-	}
-	import.meta.hot.data.model = model;
-	import.meta.hot.data.el = el;
-	refresh();
-}
+function noop() {}
 
 function emptyElement(el) {
 	while (el.firstChild) {
 		el.removeChild(el.firstChild);
 	}
-}
-
-async function refresh() {
-	let data = import.meta.hot.data;
-	try {
-		await data.cleanup();
-	} catch (e) {
-		console.warn("[anywidget] error cleaning up previous module.", e);
-		import.meta.hot.data.cleanup = noop;
-	}
-	data.model.off();
-	emptyElement(data.el);
-	let cleanup = await data.render({ model: data.model, el: data.el });
-	import.meta.hot.data.cleanup = cleanup ?? noop;
 }
 
 function showErrorOverlay(err) {
@@ -48,6 +18,42 @@ function showErrorOverlay(err) {
 
 window.addEventListener("error", showErrorOverlay);
 window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
+
+import.meta.hot.accept("${src}", (newModule) => {
+	for (let context of import.meta.hot.data.contexts) {
+		context.render = newModule.render;
+	}
+	refresh();
+});
+
+export async function render({ model, el } ) {
+	let m = await import("${src}");
+	if (import.meta.hot.data.contexts == null) {
+		import.meta.hot.data.contexts = [];
+	}
+	import.meta.hot.data.contexts.push({
+		render: m.render,
+		cleanup: noop,
+		model: model,
+		el: el,
+	});
+	refresh();
+}
+
+async function refresh() {
+	for (let context of import.meta.hot.data.contexts) {
+		try {
+			await context.cleanup();
+		} catch (e) {
+			console.warn("[anywidget] error cleaning up previous module.", e);
+			context.cleanup = noop;
+		}
+		context.model.off();
+		emptyElement(context.el);
+		let cleanup = await context.render({ model: context.model, el: context.el });
+		context.cleanup = cleanup ?? noop;
+	}
+}
 `;
 
 /** @returns {import("vite").Plugin} */
