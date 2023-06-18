@@ -1,5 +1,12 @@
 # anywidget
 
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`79098be`](https://github.com/manzt/anywidget/commit/79098be4bc5a1ce1023318b179b8e73ab3e59be3)]:
+  - @anywidget/vite@0.1.0
+
 ## 0.5.0
 
 ### Minor Changes
