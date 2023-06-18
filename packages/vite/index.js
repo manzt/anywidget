@@ -32,11 +32,7 @@ export async function render({ model, el } ) {
 	if (import.meta.hot.data.contexts == null) {
 		import.meta.hot.data.contexts = [];
 	}
-	import.meta.hot.data.contexts.push({
-		cleanup: noop,
-		model: model,
-		el: el,
-	});
+	import.meta.hot.data.contexts.push({ cleanup: noop, model, el });
 	refresh();
 }
 
@@ -46,7 +42,7 @@ async function refresh() {
 		try {
 			await context.cleanup();
 		} catch (e) {
-			console.warn("[anywidget] error cleaning up previous module.", e);
+			console.debug("[anywidget] error cleaning up previous module.", e);
 			context.cleanup = noop;
 		}
 		context.model.off();
