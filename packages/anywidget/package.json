@@ -26,8 +26,8 @@
 		"build": "node build.mjs"
 	},
 	"dependencies": {
-		"@anywidget/vite": "workspace:*",
-		"@anywidget/types": "workspace:*",
+		"@anywidget/vite": "workspace:~",
+		"@anywidget/types": "workspace:~",
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6"
 	},
 	"devDependencies": {

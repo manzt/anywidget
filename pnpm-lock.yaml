@@ -97,10 +97,10 @@ importers:
   packages/anywidget:
     dependencies:
       '@anywidget/types':
-        specifier: workspace:*
+        specifier: workspace:~
         version: link:../types
       '@anywidget/vite':
-        specifier: workspace:*
+        specifier: workspace:~
         version: link:../vite
       '@jupyter-widgets/base':
         specifier: ^2 || ^3 || ^4 || ^5 || ^6
