@@ -1,33 +1,41 @@
 /** @type {(src: string) => string} */
 let template = (src) => `
+let noop = () => {};
+
 import.meta.hot.accept("${src}", (newModule) => {
 	import.meta.hot.data.render = newModule.render;
 	refresh();
 });
 
-export async function render(view) {
+export async function render({ model, el } ) {
 	if (!import.meta.hot.data.render) {
 		let m = await import("${src}");
 		import.meta.hot.data.render = m.render;
+		import.meta.hot.data.cleanup = noop;
 	}
-	import.meta.hot.data.view = view;
+	import.meta.hot.data.model = model;
+	import.meta.hot.data.el = el;
 	refresh();
+}
+
+function emptyElement(el) {
+	while (el.firstChild) {
+		el.removeChild(el.firstChild);
+	}
 }
 
 async function refresh() {
 	let data = import.meta.hot.data;
-	// clear event listeners
-	data.view.model.off();
-	let views = await Promise.all(
-		Object.values(data.view.model.views)
-	);
-	for (let view of views) {
-		// clean up all child elements
-		while (view.el.firstChild) {
-			view.el.removeChild(view.el.firstChild);
-		}
-		data.render(view);
+	try {
+		await data.cleanup();
+	} catch (e) {
+		console.warn("[anywidget] error cleaning up previous module.", e);
+		import.meta.hot.data.cleanup = noop;
 	}
+	data.model.off();
+	emptyElement(data.el);
+	let cleanup = await data.render({ model: data.model, el: data.el });
+	import.meta.hot.data.cleanup = cleanup ?? noop;
 }
 
 function showErrorOverlay(err) {
