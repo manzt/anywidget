@@ -20,19 +20,19 @@ window.addEventListener("error", showErrorOverlay);
 window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
 
 import.meta.hot.accept("${src}", (newModule) => {
-	for (let context of import.meta.hot.data.contexts) {
-		context.render = newModule.render;
-	}
+	import.meta.hot.data.render = newModule.render;
 	refresh();
 });
 
 export async function render({ model, el } ) {
-	let m = await import("${src}");
+	if (import.meta.hot.data.render == null) {
+		let m = await import("${src}");
+		import.meta.hot.data.render = m.render;
+	}
 	if (import.meta.hot.data.contexts == null) {
 		import.meta.hot.data.contexts = [];
 	}
 	import.meta.hot.data.contexts.push({
-		render: m.render,
 		cleanup: noop,
 		model: model,
 		el: el,
@@ -41,6 +41,7 @@ export async function render({ model, el } ) {
 }
 
 async function refresh() {
+	let render = import.meta.hot.data.render;
 	for (let context of import.meta.hot.data.contexts) {
 		try {
 			await context.cleanup();
@@ -50,7 +51,7 @@ async function refresh() {
 		}
 		context.model.off();
 		emptyElement(context.el);
-		let cleanup = await context.render({ model: context.model, el: context.el });
+		let cleanup = await render({ model: context.model, el: context.el });
 		context.cleanup = cleanup ?? noop;
 	}
 }
