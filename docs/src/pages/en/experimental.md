@@ -131,7 +131,7 @@ Here's an example of how to use the `widget` decorator to create a widget from a
 observers:
 
 ```python
-esm = "export function render(view) {}"
+esm = "export function render({ model, el }) {}"
 css = ".foo { color: red;}"
 
 @widget(esm=esm, css=css)

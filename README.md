@@ -48,18 +48,18 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     # Widget front-end JavaScript code
     _esm = """
-    export function render(view) {
-      let getCount = () => view.model.get("count");
+    export function render({ model, el }) {
+      let getCount = () => model.get("count");
       let button = document.createElement("button");
       button.innerHTML = `count is ${getCount()}`;
       button.addEventListener("click", () => {
-        view.model.set("count", getCount() + 1);
-        view.model.save_changes();
+        model.set("count", getCount() + 1);
+        model.save_changes();
       });
-      view.model.on("change:count", () => {
+      model.on("change:count", () => {
         button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(button);
+      el.appendChild(button);
     }
     """
     # Stateful property that can be accessed by JavaScript & Python
