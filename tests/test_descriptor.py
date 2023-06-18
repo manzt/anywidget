@@ -293,7 +293,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
 
     esm = site_packages / "foo.js"
     esm.write_text(
-        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+        "export function render({ model, el }) { el.innerText = 'Hello, world'; }"
     )
 
     class Foo:

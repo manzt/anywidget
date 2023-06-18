@@ -125,20 +125,20 @@ the associated widget code may also define the expected types on the Model (i.e.
  */
 
 /** @type {import("anywidget/types").Render<Model>} */
-export function render(view) {
-	let value = view.model.get("value");
+export function render({ model, el }) {
+	let value = model.get("value");
 	//^? number
 
-	view.model.get("nope");
+	model.get("nope");
 	// type error, `nope` is not defined on Model
 
-	view.model.set("value", "not a number");
+	model.set("value", "not a number");
 	//^? type error, must be a number
 }
 ```
 
 The `import("anywidget/widget").Render<Model>` utilty strictly types the `render` function such that
-`view.model.get` and `view.model.set` are typed based on the user-defined `Model`.
+`model.get` and `model.set` are typed based on the user-defined `Model`.
 
 This feature brings Jupyter Widgets one step closer to having **end-to-end type safety**, and
 the use of TypeScript within JSDoc comments means that widget front-end code can benefit
@@ -156,7 +156,7 @@ Although this feature might not be essential for all use cases, it provides a fl
 way to ensure proper cleanup when needed:
 
 ```javascript
-export function render(view) {
+export function render({ model, el }) {
 	// Create DOM elements and set up subscribers
 	return () => {
 		// Optionally cleanup
@@ -176,8 +176,8 @@ function App(props) {
 	return <h1>Hello, world</h1>;
 }
 
-export function render(view) {
-	let root = ReactDOM.createRoot(view.el);
+export function render({ model, el }) {
+	let root = ReactDOM.createRoot(el);
 	root.render(<App />);
 	return () => root.unmount();
 }

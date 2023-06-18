@@ -25,18 +25,18 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     # Widget front-end JavaScript code
     _esm = """
-    export function render(view) {
-      let getCount = () => view.model.get("count");
+    export function render({ model, el }) {
+      let getCount = () => model.get("count");
       let button = document.createElement("button");
       button.innerHTML = `count is ${getCount()}`;
       button.addEventListener("click", () => {
-        view.model.set("count", getCount() + 1);
-        view.model.save_changes();
+        model.set("count", getCount() + 1);
+        model.save_changes();
       });
-      view.model.on("change:count", () => {
+      model.on("change:count", () => {
         button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(button);
+      el.appendChild(button);
     }
     """
     # Stateful property that can be accessed by JavaScript & Python
@@ -410,13 +410,13 @@ import traitlets
 class ExampleWidget(anywidget.AnyWidget):
     # anywidget, required #
     _esm = """
-    export function render(view) {
-        view.el.classList.add("custom-widget");
+    export function render({ model, el }) {
+        el.classList.add("custom-widget");
         function value_changed() {
-            view.el.textContent = view.model.get("value");
+            el.textContent = model.get("value");
         }
         value_changed();
-        view.model.on("change:value", value_changed);
+        model.on("change:value", value_changed);
     }
     """
     # anywidget, optional #
@@ -484,19 +484,19 @@ import traitlets
 
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
-    export function render(view) {
-      let getCount = () => view.model.get("count");
+    export function render({ model, el }) {
+      let getCount = () => model.get("count");
       let button = document.createElement("button");
       button.classList.add("counter-button");
       button.innerHTML = `count is ${getCount()}`;
       button.addEventListener("click", () => {
-        view.model.set("count", getCount() + 1);
-        view.model.save_changes();
+        model.set("count", getCount() + 1);
+        model.save_changes();
       });
-      view.model.on("change:count", () => {
+      model.on("change:count", () => {
         button.innerHTML = `count is ${getCount()}`;
       });
-      view.el.appendChild(button);
+      el.appendChild(button);
     }
     """
     _css="""
@@ -526,14 +526,14 @@ class ConfettiWidget(anywidget.AnyWidget):
     _esm = """
     import confetti from "https://esm.sh/canvas-confetti@1.6";
 
-    export function render(view) {
+    export function render({ model, el }) {
       let btn = document.createElement("button");
       btn.classList.add("confetti-button");
       btn.innerHTML = "click me!";
       btn.addEventListener("click", () => {
         confetti();
       });
-      view.el.appendChild(btn);
+      el.appendChild(btn);
     }
     """
     _css="""

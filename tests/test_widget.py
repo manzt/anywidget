@@ -24,8 +24,8 @@ def test_version():
 
 def test_basic():
     ESM = """
-    export function render(view) {
-        view.el.innerText = "Hello, world";
+    export function render({ model, el }) {
+        el.innerText = "Hello, world";
     }
     """
 
@@ -50,8 +50,8 @@ def test_default_esm():
 
 def test_creates_fully_qualified_identifier():
     ESM = """
-    export function render(view) {
-        view.el.innerText = "Hello, world";
+    export function render({ model, el }) {
+        el.innerText = "Hello, world";
     }
     """
 
@@ -70,8 +70,8 @@ def test_infer_traitlets():
     """
 
     ESM = """
-    export function render(view) {
-        view.el.innerText = "Hello, world";
+    export function render({ model, el }) {
+        el.innerText = "Hello, world";
     }
     """
 
@@ -94,8 +94,8 @@ def test_infer_traitlets_partial():
     """
 
     ESM = """
-    export function render(view) {
-        view.el.innerText = "Hello, world";
+    export function render({ model, el }) {
+        el.innerText = "Hello, world";
     }
     """
 
@@ -135,7 +135,7 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
 def test_infer_file_contents(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
     esm.write_text(
-        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+        "export function render({ model, el }) { el.innerText = 'Hello, world'; }"
     )
 
     site_packages = tmp_path / "site-packages"
@@ -207,7 +207,7 @@ def test_missing_file_no_infer(tmp_path: pathlib.Path):
 def test_explicit_file_contents(tmp_path: pathlib.Path):
     path = tmp_path / "foo.js"
     path.write_text(
-        "export function render(view) { view.el.innerText = 'Hello, world'; }"
+        "export function render({ model, el }) { el.innerText = 'Hello, world'; }"
     )
     esm = FileContents(path, start_thread=False)
 

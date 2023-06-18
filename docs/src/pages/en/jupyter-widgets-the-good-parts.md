@@ -113,8 +113,8 @@ end. The `render` function now has the ability to:
 
 ```javascript
 // index.js
-export function render(view) {
-	let my_value = view.model.get("my_value");
+export function render({ model, el }) {
+	let my_value = model.get("my_value");
 }
 ```
 
@@ -122,9 +122,9 @@ export function render(view) {
 
 ```javascript
 // index.js
-export function render(view) {
-	view.model.set("my_value", 42);
-	view.model.save_changes(); // required to send update to Python
+export function render({ model, el }) {
+	model.set("my_value", 42);
+	model.save_changes(); // required to send update to Python
 }
 ```
 
@@ -132,12 +132,12 @@ export function render(view) {
 
 ```javascript
 // index.js
-export function render(view) {
+export function render({ model, el }) {
 	function on_change() {
-		let new_my_value = view.model.get("my_value");
+		let new_my_value = model.get("my_value");
 		console.log(`The 'my_value' changed to: ${new_my_value}`);
 	}
-	view.model.on("change:my_value", on_change);
+	model.on("change:my_value", on_change);
 }
 ```
 
@@ -176,13 +176,13 @@ framework ensures it stays in sync with all the different components.
 
 A second mechanism to send data to the front end is with custom messages. Within
 your `render` function, you can listen to `msg:custom` events on the
-`view.model`. For example,
+`model`. For example,
 
 ```python
 class CustomMessageWidget(anywidget.AnyWidget):
     _esm = """
-    export function render(view) {
-      view.model.on("msg:custom", msg => {
+    export function render({ model, el }) {
+      model.on("msg:custom", msg => {
          console.log(`new message: ${JSON.stringify(msg)}`);
        });
     }
@@ -245,7 +245,7 @@ Here are some general recommendations for being productive with **anywidget**:
 - **Prefer Traitlets over custom messages for state synchronization**. Widget state can be
   fully recreated from traits without Python running, whereas custom messages require both
   an active Python kernel and special ordering of function calls. Write logic that treats
-  your `view.model` as the source of truth (see
+  your `model` as the source of truth (see
   [Two-Way Data-Binding Example](https://anywidget.dev/blog/introducing-anywidget/#examples)).
 
 - **Use the browser console**. View errors or intermediate values in your front-end
