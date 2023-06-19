@@ -108,22 +108,15 @@ async function load_esm(esm) {
  * added by the user-defined render.
  */
 function extract_context(view) {
+	/** @type {import("@anywidget/types").AnyModel} */
 	let model = {
-		/** @param {string} name */
 		get: view.model.get.bind(view.model),
 		set: view.model.set.bind(view.model),
 		save_changes: view.model.save_changes.bind(view.model),
-		/**
-		 * @param {string} name
-		 * @param {any} callback
-		 */
+		send: view.model.send.bind(view.model),
 		on(name, callback) {
 			view.model.on(name, callback, view);
 		},
-		/**
-		 * @param {string} name
-		 * @param {any} callback
-		 */
 		off(name, callback) {
 			view.model.off(name, callback, view);
 		},
