@@ -13,12 +13,13 @@ interface EventHandler {
 export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	get<K extends keyof T>(key: K): T[K];
 	set<K extends keyof T>(key: K, value: T[K]): void;
+	off(eventName?: string | null, callback?: EventHandler | null): void;
+	on(eventName: string, callback: EventHandler): void;
 	save_changes(): void;
-    on(eventName: string, callback: EventHandler): void;
-    off(eventName?: string | null, callback?: EventHandler | null): void;
+	send(content: any, callbacks?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): void;
 }
 
-export interface RenderContext<Model> {
+export interface RenderContext<Model extends AnyModel> {
 	model: Model;
 	el: HTMLElement;
 }
