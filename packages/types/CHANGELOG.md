@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.1
+
+### Patch Changes
+
+- fix: re-expose model.send for custom messages ([#146](https://github.com/manzt/anywidget/pull/146))
+
 ## 0.1.0
 
 ### Minor Changes
