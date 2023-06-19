@@ -1,5 +1,15 @@
 # anywidget
 
+## 0.5.2
+
+### Patch Changes
+
+- fix: re-expose model.send for custom messages ([#146](https://github.com/manzt/anywidget/pull/146))
+
+- Updated dependencies [[`5a5787b`](https://github.com/manzt/anywidget/commit/5a5787b517075dd8f2c6607dcbc0deac481a9df3), [`774f139`](https://github.com/manzt/anywidget/commit/774f139f45b747caafaa0fac0fd7588d97078db2)]:
+  - @anywidget/vite@0.1.1
+  - @anywidget/types@0.1.1
+
 ## 0.5.1
 
 ### Patch Changes
