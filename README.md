@@ -85,68 +85,8 @@ more.
 
 ## Contributing
 
-This is a monorepo, meaning the repo holds multiple packages. It requires the use of [pnpm](https://pnpm.js.org/en/).
-You can [install pnpm](https://pnpm.io/installation) with:
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to develop **anywidget** locally.
 
-```bash
-npm i -g pnpm
-```
+## License
 
-Then, create a Python virtual environment with a complete development install:
-
-```bash
-pip install -e ".[dev,test]"
-```
-
-or alternatively use the [`hatch`](https://github.com/pypa/hatch) CLI:
-
-```bash
-hatch shell
-```
-
-If you are using the classic Jupyter Notebook you need to install the
-nbextension:
-
-```bash
-jupyter nbextension install --py --symlink --sys-prefix anywidget
-jupyter nbextension enable --py --sys-prefix anywidget
-```
-
-Note for developers:
-
-- the `-e` pip option allows one to modify the Python code in-place. Restart the
-  kernel in order to see the changes.
-- the `--symlink` argument on Linux or OS X allows one to modify the JavaScript
-  code in-place. This feature is not available with Windows.
-
-For developing with JupyterLab:
-
-```bash
-jupyter labextension develop --overwrite anywidget
-```
-
-## Sending PRs
-
-### Code styling
-
-There are a few guidelines we follow:
-
-- For JavaScript, internal variables are written with
-  `snake_case` while external APIs are written with `camelCase` (if applicable).
-- For Python, ensure `black --check .` and `ruff .` pass. You can run
-  `black .` and `ruff --fix .` to format and fix linting errors.
-
-### Generating changelogs
-
-For changes to be reflected in package changelogs, run `npx changeset` and
-follow the prompts. 
-
-> **Note** not every PR requires a changeset. Since changesets are focused on 
-> releases and changelogs, changes to the repository that don't effect these
-> won't need a changeset (e.g., documentation, tests).
-
-## Release
-
-The [Changesets GitHub action](https://github.com/changesets/action) will create
-and update a PR that applies changesets and publishes new versions of
-**anywidget** to NPM and PyPI.
+[MIT](https://github.com/manzt/anywidget/blob/main/LICENSE)
