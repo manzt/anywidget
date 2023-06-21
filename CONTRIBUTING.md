@@ -80,8 +80,7 @@ There are a few guidelines we follow:
 
 - For JavaScript, internal variables are written with `snake_case` while
   external APIs are written with `camelCase` (if applicable).
-- For Python, ensure `black --check .` and `ruff .` pass. You can run `black .`
-  and `ruff --fix .` to format and fix linting errors.
+- For Python, ensure `hatch run lint` passes. You can run `hatch run fmt` to format and fix linting errors.
 
 ### Generating changelogs
 
