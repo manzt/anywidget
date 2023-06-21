@@ -154,13 +154,13 @@ support for Jupyter Widgets. To get started with HMR for your widget,
 install the `anywidget` Plugin and add the following to your `vite.config.js`:
 
 ```bash
-npm install -D anywidget
+npm install -D @anywidget/vite
 ```
 
 ```diff
 // vite.config.js
 import { defineConfig } from "vite";
-+ import anywidget from "anywidget/vite";
++ import anywidget from "@anywidget/vite";
 
 export default defineConfig({
   build: {
