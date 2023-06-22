@@ -11,13 +11,12 @@ npm install @anywidget/types
 ## Usage
 
 ```javascript
-// @ts-check
 /**
  * @typedef Model
- * @prop {number} value - the current count value
+ * @prop {number} value - the current count
  */
 
-/** @type {import("anywidget/types").Render<Model>} */
+/** @type {import("@anywidget/types").Render<Model>} */
 export function render({ model, el }) {
 	let value = model.get("value");
 	//^? number
