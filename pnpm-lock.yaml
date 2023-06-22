@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -103,10 +103,10 @@ importers:
   packages/anywidget:
     dependencies:
       '@anywidget/types':
-        specifier: workspace:~
+        specifier: workspace:~0.1.1
         version: link:../types
       '@anywidget/vite':
-        specifier: workspace:~
+        specifier: workspace:~0.1.1
         version: link:../vite
       '@jupyter-widgets/base':
         specifier: ^2 || ^3 || ^4 || ^5 || ^6
