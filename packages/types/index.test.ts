@@ -116,7 +116,7 @@ describe("AnyModel.on", () => {
 	it("infers any for unknown event", async () => {
 		let model = createModelMock<{ value: number }>();
 		await new Promise<void>((resolve) => {
-			model.on("blah:to", (...args) => {
+			model.on("foo:bar", (...args) => {
 				expectTypeOf(args).toEqualTypeOf<any[]>();
 				resolve();
 			});
