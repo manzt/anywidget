@@ -4,5 +4,6 @@
 		"allowJs": true,
 		"checkJs": true,
 		"resolveJsonModule": true
-	}
+	},
+	"include": ["src/**/*"]
 }

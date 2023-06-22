@@ -13,6 +13,6 @@
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "vitest typecheck --run"
   }
 }
