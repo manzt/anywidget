@@ -113,6 +113,7 @@ function extract_context(view) {
 		set: view.model.set.bind(view.model),
 		save_changes: view.model.save_changes.bind(view.model),
 		send: view.model.send.bind(view.model),
+		// @ts-expect-error
 		on(name, callback) {
 			view.model.on(name, callback, view);
 		},

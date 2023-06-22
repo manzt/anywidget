@@ -28,11 +28,12 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/types": "workspace:~",
-		"@anywidget/vite": "workspace:~",
+		"@anywidget/types": "workspace:~0.1.1",
+		"@anywidget/vite": "workspace:~0.1.1",
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6"
 	},
 	"devDependencies": {
+		"@jupyter-widgets/base-manager": "^1.0.5",
 		"@jupyterlab/builder": "^3.6.4"
 	},
 	"jupyterlab": {

@@ -32,4 +32,3 @@ export function render({ model, el }) {
 ## License
 
 MIT
-

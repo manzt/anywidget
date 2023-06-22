@@ -1,4 +1,4 @@
-name: CI (Python)
+name: CI
 
 on:
   push:
@@ -10,14 +10,16 @@ on:
 
 jobs:
 
-  Lint:
+  LintPython:
+    name: Python / Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       # this could be replaced with pre-commit.ci
       - run: pipx run pre-commit run --all-files
 
-  Test:
+  TestPython:
+    name: Python / Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,3 +45,29 @@ jobs:
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
 
       - uses: codecov/codecov-action@v3
+
+  TypecheckJavaScript:
+    name: JavaScript / Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: |
+          pnpm install
+          pnpm typecheck
+
+  TestJavaScript:
+    name: JavaScript / Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: |
+          pnpm install
+          pnpm test -- --run
