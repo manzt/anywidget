@@ -18,8 +18,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - run: pnpm install
-      - run: pnpm typecheck
+      - run: |
+          pnpm install
+          pnpm typecheck
 
   Test:
     runs-on: ubuntu-latest
@@ -29,4 +30,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - run: pnpm test -- --run
+      - run: |
+          pnpm install
+          pnpm test -- --run
