@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.1",
   "description": "utility types for anywidget",
-  "main": "index.js",
+  "main": "index.mjs",
   "types": "index.d.ts",
   "exports": {
     ".": {
@@ -13,6 +13,7 @@
     }
   },
   "scripts": {
-    "check": "tsc --noEmit && publint"
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm run typecheck && publint"
   }
 }
