@@ -1,5 +1,6 @@
 {
 	"name": "anywidget",
+	"type": "module",
 	"main": "src/index.js",
 	"version": "0.5.2",
 	"author": "Trevor Manz",
@@ -23,15 +24,16 @@
 		}
 	},
 	"scripts": {
-		"build": "node build.mjs"
+		"build": "node build.mjs",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/vite": "workspace:~",
 		"@anywidget/types": "workspace:~",
+		"@anywidget/vite": "workspace:~",
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6"
 	},
 	"devDependencies": {
-		"@jupyterlab/builder": "^3.6.2"
+		"@jupyterlab/builder": "^3.6.4"
 	},
 	"jupyterlab": {
 		"extension": "src/plugin",

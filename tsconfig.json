@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "esnext",
+		"moduleResolution": "nodenext",
+		"target": "esnext",
+		"allowJs": true,
+		"isolatedModules": true,
+		"skipLibCheck": true,
+		"types": ["vitest"]
+	}
+}

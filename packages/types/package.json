@@ -13,6 +13,7 @@
     }
   },
   "scripts": {
-    "check": "tsc --noEmit && publint"
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm run typecheck && publint"
   }
 }
