@@ -1,7 +1,9 @@
 import { describe, expectTypeOf, it, vi } from "vitest";
 import type { AnyModel, ObjectHash } from "./index.js";
 
-type MockModel<T extends ObjectHash> = AnyModel<T> & { execute_callbacks(): void };
+type MockModel<T extends ObjectHash> = AnyModel<T> & {
+	execute_callbacks(): void;
+};
 
 function createModelMock<T extends ObjectHash = ObjectHash>(): MockModel<T> {
 	let callbacks: Array<() => void> = [];
@@ -16,7 +18,7 @@ function createModelMock<T extends ObjectHash = ObjectHash>(): MockModel<T> {
 		send: vi.fn(),
 		execute_callbacks() {
 			callbacks.forEach((cb) => cb());
-		}
+		},
 	};
 }
 
@@ -54,7 +56,7 @@ describe("AnyModel.on", () => {
 	it("infers custom message payload for untyped Model", async () => {
 		let model = createModelMock();
 		await new Promise<void>((resolve) => {
-			model.on('msg:custom', (msg, buffers) => {
+			model.on("msg:custom", (msg, buffers) => {
 				expectTypeOf(msg).toEqualTypeOf<any>();
 				expectTypeOf(buffers).toEqualTypeOf<DataView[]>();
 				resolve();
@@ -66,7 +68,7 @@ describe("AnyModel.on", () => {
 	it("infers custom message payload for typed Model", async () => {
 		let model = createModelMock<{ value: number }>();
 		await new Promise<void>((resolve) => {
-			model.on('msg:custom', (msg, buffers) => {
+			model.on("msg:custom", (msg, buffers) => {
 				expectTypeOf(msg).toEqualTypeOf<any>();
 				expectTypeOf(buffers).toEqualTypeOf<DataView[]>();
 				resolve();
@@ -78,7 +80,7 @@ describe("AnyModel.on", () => {
 	it("infers any payload for untyped Model", async () => {
 		let model = createModelMock();
 		await new Promise<void>((resolve) => {
-			model.on('change:value', (context, value) => {
+			model.on("change:value", (context, value) => {
 				expectTypeOf(context).toEqualTypeOf<unknown>();
 				expectTypeOf(value).toEqualTypeOf<any>();
 				resolve();
@@ -90,7 +92,7 @@ describe("AnyModel.on", () => {
 	it("infers typed payload for typed Model", async () => {
 		let model = createModelMock<{ value: number }>();
 		await new Promise<void>((resolve) => {
-			model.on('change:value', (context, value) => {
+			model.on("change:value", (context, value) => {
 				expectTypeOf(context).toEqualTypeOf<unknown>();
 				expectTypeOf(value).toEqualTypeOf<number>();
 				resolve();
@@ -102,7 +104,7 @@ describe("AnyModel.on", () => {
 	it("infers any payload for unknown field of typed Model", async () => {
 		let model = createModelMock<{ value: number }>();
 		await new Promise<void>((resolve) => {
-			model.on('change:foo', (context, value) => {
+			model.on("change:foo", (context, value) => {
 				expectTypeOf(context).toEqualTypeOf<unknown>();
 				expectTypeOf(value).toEqualTypeOf<any>();
 				resolve();
@@ -114,12 +116,11 @@ describe("AnyModel.on", () => {
 	it("infers any for unknown event", async () => {
 		let model = createModelMock<{ value: number }>();
 		await new Promise<void>((resolve) => {
-			model.on('blah:to', (...args) => {
+			model.on("blah:to", (...args) => {
 				expectTypeOf(args).toEqualTypeOf<any[]>();
 				resolve();
 			});
 			model.execute_callbacks();
 		});
 	});
-
 });
