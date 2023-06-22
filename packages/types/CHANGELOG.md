@@ -1,5 +1,24 @@
 # @anywidget/types
 
+## 0.1.2
+
+### Patch Changes
+
+- feat: Autocomplete event names for known model events ([#151](https://github.com/manzt/anywidget/pull/151))
+
+  ```javascript
+  /**
+   * @typedef Model
+   * @prop {number} value - the current count
+   */
+
+  /** @type {import("@anywidget/types").Render<Model>} */
+  export function render({ model, el }) {
+    model.on("change:value", () => { /* ... */);
+             // ^ auto-completed in editor
+  }
+  ```
+
 ## 0.1.1
 
 ### Patch Changes
