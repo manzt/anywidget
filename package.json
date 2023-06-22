@@ -7,13 +7,14 @@
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
 		"release": "python -m build && changeset publish && twine upload dist/*",
-		"test": "vitest",
+		"test": "vitest --environment=happy-dom",
 		"typecheck": "pnpm --parallel --recursive typecheck"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.17.12",
+		"happy-dom": "^9.20.3",
 		"publint": "^0.1.12",
 		"typescript": "^5.0.2",
 		"vitest": "^0.32.2"
