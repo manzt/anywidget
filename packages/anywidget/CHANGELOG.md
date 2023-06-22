@@ -1,5 +1,12 @@
 # anywidget
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [[`581e40c`](https://github.com/manzt/anywidget/commit/581e40cd10e2440c574ff0e3b51bc5fd7b85b391)]:
+  - @anywidget/types@0.1.2
+
 ## 0.5.2
 
 ### Patch Changes
