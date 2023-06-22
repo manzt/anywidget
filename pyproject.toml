@@ -11,10 +11,9 @@ authors = [
 license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
     "ipywidgets>=7.6.0",
-    "importlib-metadata; python_version < '3.8'",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
 ]
@@ -26,7 +25,7 @@ test = [
     "pytest",
     "pytest-cov",
     "ruff",
-    "msgspec; python_version > '3.7'",
+    "msgspec",
     "ipython<8.13; python_version < '3.9'",
 ]
 dev = [
@@ -85,7 +84,7 @@ test = "pytest . --cov anywidget --cov-report term-missing"
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 88
-target-version = "py37"
+target-version = "py38"
 src = ["anywidget", "tests"]
 extend-select = [
     "E",    # style errors
