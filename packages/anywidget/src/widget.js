@@ -1,4 +1,3 @@
-// @ts-check
 import { name, version } from "../package.json";
 
 /**
