@@ -5,5 +5,5 @@
 		"checkJs": true,
 		"resolveJsonModule": true
 	},
-	"include": ["src/**/*"]
+	"include": ["src/**/*", "__tests__/**/*"]
 }

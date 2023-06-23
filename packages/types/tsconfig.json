@@ -1,3 +1,10 @@
 {
-	"extends": "../../tsconfig.json"
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		// TODO: We want to typecheck index.d.ts but not the
+		// rest of the node_modules.
+		// "skipLibCheck": false
+	}
 }
