@@ -103,10 +103,10 @@ importers:
   packages/anywidget:
     dependencies:
       '@anywidget/types':
-        specifier: workspace:~0.1.1
+        specifier: workspace:~
         version: link:../types
       '@anywidget/vite':
-        specifier: workspace:~0.1.1
+        specifier: workspace:~
         version: link:../vite
       '@jupyter-widgets/base':
         specifier: ^2 || ^3 || ^4 || ^5 || ^6
