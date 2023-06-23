@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING, Literal, Protocol, Sequence
 
-from typing_extensions import Literal, Protocol, TypedDict
+from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
     from ._descriptor import MimeBundleDescriptor
