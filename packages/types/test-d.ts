@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from "vitest";
-import type { AnyModel } from "../index.js";
+import type { AnyModel } from "./index.js";
 
 declare let model: AnyModel;
 declare let typedModel: AnyModel<{ value: number, name: string }>;
