@@ -3,6 +3,8 @@
 	"compilerOptions": {
 		"moduleResolution": "node",
 		"esModuleInterop": true,
-		"skipLibCheck": false
+		// TODO: We want to typecheck index.d.ts but not the
+		// rest of the node_modules.
+		// "skipLibCheck": false
 	}
 }
