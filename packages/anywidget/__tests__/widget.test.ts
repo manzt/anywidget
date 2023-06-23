@@ -19,6 +19,7 @@ class MockComm implements widgets.IClassicComm {
 
 	constructor() {
 		this.comm_id = `mock-comm-id-${num_coms}`;
+		this.target_name = `mock-target-name-${num_coms}`;
 		num_coms += 1;
 	}
 	on_open(fn: () => void): void {
@@ -74,7 +75,7 @@ class DummyManager extends baseManager.ManagerBase {
 		moduleName: string,
 		_moduleVersion: string,
 	): Promise<any> {
-		let mod = {
+		let mod: Record<string, any> | undefined = {
 			"@jupyter-widgets/base": widgets,
 			"anywidget": anywidget,
 		}[moduleName];

@@ -48,3 +48,5 @@ export interface RenderContext<T extends ObjectHash = ObjectHash> {
 export interface Render<T extends ObjectHash = ObjectHash> {
 	(context: RenderContext<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
+
+
