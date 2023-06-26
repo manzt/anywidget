@@ -1,5 +1,16 @@
 # anywidget
 
+## 0.6.0
+
+### Minor Changes
+
+- feat!: Drop support for Python 3.7 ([#161](https://github.com/manzt/anywidget/pull/161))
+
+### Patch Changes
+
+- Updated dependencies [[`272782b`](https://github.com/manzt/anywidget/commit/272782bb919355854cf23ccba430c87b7cc28523)]:
+  - @anywidget/types@0.1.3
+
 ## 0.5.3
 
 ### Patch Changes

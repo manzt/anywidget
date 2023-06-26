@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.3
+
+### Patch Changes
+
+- feat: Infer event payloads from model ([`272782b`](https://github.com/manzt/anywidget/commit/272782bb919355854cf23ccba430c87b7cc28523))
+
 ## 0.1.2
 
 ### Patch Changes
