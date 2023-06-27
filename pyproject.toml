@@ -14,6 +14,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
     "ipywidgets>=7.6.0",
+    "importlib-metadata; python_version < '3.8'",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
 ]
