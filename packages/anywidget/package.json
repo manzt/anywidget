@@ -34,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@jupyter-widgets/base-manager": "^1.0.5",
-		"@jupyterlab/builder": "^4.0.2"
+		"@jupyterlab/builder": "^3.6.5"
 	},
 	"jupyterlab": {
 		"extension": "src/plugin",
