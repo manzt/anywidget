@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.6.1
+
+### Patch Changes
+
+- feat: Bring back support for Python 3.7 ([#167](https://github.com/manzt/anywidget/pull/167))
+
 ## 0.6.0
 
 ### Minor Changes
