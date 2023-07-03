@@ -11,7 +11,7 @@
 		"typecheck": "pnpm --parallel --recursive typecheck"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.26.1",
+		"@changesets/cli": "^2.26.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.18.10",
 		"happy-dom": "^9.20.3",
