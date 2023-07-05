@@ -642,10 +642,10 @@ def _get_pydantic_state(obj: pydantic.BaseModel) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)
-    we call obj.json() here, and then cast back to a dict (which is what the comm
-    expects.)
+    we call obj.model_dump_json() here, and then cast back to a dict (which is what
+    the comm expects).
     """
-    return json.loads(obj.json())
+    return json.loads(obj.model_dump_json())
 
 
 # ------------- msgspec support --------------
