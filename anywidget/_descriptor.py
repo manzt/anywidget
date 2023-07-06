@@ -484,7 +484,9 @@ def determine_state_getter(obj: object) -> Callable[[Any], Serializable]:
         return _get_traitlets_state
 
     if _is_pydantic_model(obj):
-        return _get_pydantic_state
+        if hasattr(obj, "model_dump"):
+            return _get_pydantic_state_v2
+        return _get_pydantic_state_v1
 
     if _is_msgspec_struct(obj):
         return _get_msgspec_state
@@ -638,14 +640,19 @@ def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
     return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
-def _get_pydantic_state(obj: pydantic.BaseModel) -> Serializable:
+def _get_pydantic_state_v1(obj: pydantic.BaseModel) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)
-    we call obj.json() here, and then cast back to a dict (which is what the comm
-    expects.)
+    we call obj.json() here, and then cast back to a dict (which is what
+    the comm expects).
     """
     return json.loads(obj.json())
+
+
+def _get_pydantic_state_v2(obj: pydantic.BaseModel) -> Serializable:
+    """Get the state of a pydantic (v2) BaseModel instance."""
+    return obj.model_dump(mode="json")
 
 
 # ------------- msgspec support --------------
