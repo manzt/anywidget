@@ -33,7 +33,7 @@
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6"
 	},
 	"devDependencies": {
-		"@jupyter-widgets/base-manager": "^1.0.5",
+		"@jupyter-widgets/base-manager": "^1.0.6",
 		"@jupyterlab/builder": "^3.6.5"
 	},
 	"jupyterlab": {
