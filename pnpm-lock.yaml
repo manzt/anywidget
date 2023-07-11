@@ -113,8 +113,8 @@ importers:
         version: 2.0.0
     devDependencies:
       '@jupyter-widgets/base-manager':
-        specifier: ^1.0.5
-        version: 1.0.5(crypto@1.0.1)
+        specifier: ^1.0.6
+        version: 1.0.6(crypto@1.0.1)
       '@jupyterlab/builder':
         specifier: ^3.6.5
         version: 3.6.5(crypto@1.0.1)(esbuild@0.18.11)
@@ -1290,10 +1290,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  /@jupyter-widgets/base-manager@1.0.5(crypto@1.0.1):
-    resolution: {integrity: sha512-+pagXIXBbSq1NdqaJ8xJj52SF3t0zyUofDHVZ1bFrfWIhl5qZuLxtD16PvnqO+n1gIPLlW238Og6QuIGKOKkZQ==}
+  /@jupyter-widgets/base-manager@1.0.6(crypto@1.0.1):
+    resolution: {integrity: sha512-CZmDBbImzK3tUuGLmZDRXqPyLxwzZHuHOD/reYr87A4kbBrREe7xFxWqr+v0iLcadxwtzNdP+H+bQUF+S76NXw==}
     dependencies:
-      '@jupyter-widgets/base': 6.0.4(crypto@1.0.1)
+      '@jupyter-widgets/base': 6.0.5(crypto@1.0.1)
       '@jupyterlab/services': 6.6.4(crypto@1.0.1)
       '@lumino/coreutils': 1.12.1(crypto@1.0.1)
       base64-js: 1.5.1
@@ -1324,8 +1324,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@jupyter-widgets/base@6.0.4(crypto@1.0.1):
-    resolution: {integrity: sha512-w5KUL8q44Isp0N/ElOAJbPSgWBdeGZO5EYEcz50rfqYAUMSh2Qx0oQJYMddbRgi8b5CajGHFvcHTfvwaNDLSmA==}
+  /@jupyter-widgets/base@6.0.5(crypto@1.0.1):
+    resolution: {integrity: sha512-33LXLYKHOJSinTcmFF7ScNtVU8RMo/8HRknyLKauB5t99cuov3ULpL0fTiV272EAWYrGVZ6eGrNUyJY3kbqCqg==}
     dependencies:
       '@jupyterlab/services': 6.6.4(crypto@1.0.1)
       '@lumino/coreutils': 1.12.1(crypto@1.0.1)
