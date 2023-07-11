@@ -30,7 +30,7 @@
 	"dependencies": {
 		"@anywidget/types": "workspace:~",
 		"@anywidget/vite": "workspace:~",
-		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6"
+		"@jupyter-widgets/base": "^6"
 	},
 	"devDependencies": {
 		"@jupyter-widgets/base-manager": "^1.0.6",
