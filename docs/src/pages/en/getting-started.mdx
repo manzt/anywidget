@@ -101,7 +101,7 @@ export function render({ model, el }) {
 
 The `render` function can also (optionally) return a callback that is executed any time the view is
 removed from the DOM. This feature is useful when dealing with complex event listeners, subscriptions,
-or third-party libraries that require proper teardwon.
+or third-party libraries that require proper teardown.
 
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
