@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.6.2
+
+### Patch Changes
+
+- feat(descriptor): Auto-detect and serialize `pydantic` v1 and v2 models ([`518ced9`](https://github.com/manzt/anywidget/commit/518ced9ffae209c06d85d2f0de2ed37d51d67edb))
+
 ## 0.6.1
 
 ### Patch Changes
