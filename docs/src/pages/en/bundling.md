@@ -4,26 +4,15 @@ description: Docs bundling
 layout: ../../layouts/MainLayout.astro
 ---
 
-Often the ESM required to connect a JavaScript library to Python with
-**anywidget** is minimal and can easily be inlined _within_ the Python module as
-a string. This feature allows Python developers to be productive with
-**anywidget** without requiring intimate knowledge or the overhead of frontend
-tooling (e.g., `npm`/`yarn`/`pnpm`, Webpack/Vite/esbuild).
-
-As **anywidget** projects mature, however, it is recommended to organize the
-JavaScript source into separate files which can be merged together into a single
-optimized ESM file. This merging process is called _bundling_ and is required by
-popular fontend frameworks (e.g., React, Vue, Solid, Svelte) which use
-unsupported browser syntax.
-
-If using a bundler, make sure to load the final bundled assets in your widget
-and not the original/untransformed JavaScript source files.
+**anywidget** does not require you to bundle or transform your JavaScript source code.
+However, the use of local dependencies or non-standard syntax (e.g., React, Vue, Solid, Svelte)
+necessitates the use of a bundler to merge together files into a single optimized ESM file.
 
 ## esbuild
 
 [esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in Golang.
 It can transform **TypeScript, JSX, and CSS files** and includes zero
-JavaScrit dependencies. Binaries can be [installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
+JavaScript dependencies. Binaries can be [installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
 making it a great fit for **anywidget** projects.
 
 ### Project Setup
