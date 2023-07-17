@@ -18,14 +18,14 @@ importers:
         specifier: ^0.18.11
         version: 0.18.11
       happy-dom:
-        specifier: ^10.0.7
-        version: 10.0.7
+        specifier: ^10.5.1
+        version: 10.5.1
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
       vitest:
         specifier: ^0.32.4
-        version: 0.32.4(happy-dom@10.0.7)
+        version: 0.32.4(happy-dom@10.5.1)
 
   docs:
     dependencies:
@@ -3805,8 +3805,8 @@ packages:
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
 
-  /happy-dom@10.0.7:
-    resolution: {integrity: sha512-NRMRGQcJ3BuIikmzXjrVJdV72ZbEeljE0cES2zQ2NomUFytsMGJCKZ2o3TjMwoCMh5yWY93DUMjR9PYr5WW0ug==}
+  /happy-dom@10.5.1:
+    resolution: {integrity: sha512-xWgO/Q7/o9S6mV3oy0M9i4yFlYjwwm12vHKWvygIQAxuDo8wKrAegJCNBDCweskW9cfgYtkLojC/aSvWJPq1AQ==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -7090,7 +7090,7 @@ packages:
     dependencies:
       vite: 4.3.9(@types/node@18.0.0)
 
-  /vitest@0.32.4(happy-dom@10.0.7):
+  /vitest@0.32.4(happy-dom@10.5.1):
     resolution: {integrity: sha512-3czFm8RnrsWwIzVDu/Ca48Y/M+qh3vOnF16czJm98Q/AN1y3B6PBsyV8Re91Ty5s7txKNjEhpgtGPcfdbh2MZg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -7134,7 +7134,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 10.0.7
+      happy-dom: 10.5.1
       local-pkg: 0.4.3
       magic-string: 0.30.0
       pathe: 1.1.1
