@@ -6,22 +6,21 @@ import * as ReactDOM from "react-dom/client";
 let ModelContext = React.createContext((/** @type {any} */ (null)));
 
 /**
- * @template {import("@anywidget/types").ObjectHash} Model
- * @template {keyof Model & string} T
- * @param {T} key
+ * @template T
+ *
+ * @param {string} key
  * @returns {[T, (value: T) => void]}
  */
 export function useModelState(key) {
 	let model = React.useContext(ModelContext);
-	if (!model) throw new Error("ModelContext not found");
-
+	if (!model) throw new Error("Model not found");
 	let [value, setValue] = React.useState(model.get(key));
 	React.useEffect(() => {
+		if (!model) return;
 		let callback = () => setValue(model.get(key));
 		model.on(`change:${key}`, callback);
 		return () => model.off(`change:${key}`, callback);
 	}, [model, key]);
-
 	return [value, (value) => {
 		model.set(key, value);
 		model.save_changes();
