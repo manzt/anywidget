@@ -1,0 +1,32 @@
+{
+  "name": "@anywidget/react",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "React utilities for anywidget",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@anywidget/types": "workspace:^"
+  }
+}
