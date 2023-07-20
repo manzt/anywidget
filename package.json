@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
-		"esbuild": "^0.18.11",
+		"esbuild": "^0.18.13",
 		"happy-dom": "^10.0.7",
 		"typescript": "^5.1.6",
 		"vitest": "^0.32.4"
