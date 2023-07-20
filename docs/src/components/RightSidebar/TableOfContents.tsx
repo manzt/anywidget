@@ -58,7 +58,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 
 		const headingsObserver = new IntersectionObserver(
 			setCurrent,
-			observerOptions
+			observerOptions,
 		);
 
 		// Observe all the headings in the main page content.

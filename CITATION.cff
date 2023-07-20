@@ -12,13 +12,13 @@ authors:
     family-names: Manz
     email: trevor.j.manz@gmail.com
     affiliation: Harvard Medical School
-    orcid: 'https://orcid.org/0000-0001-7694-5164'
+    orcid: "https://orcid.org/0000-0001-7694-5164"
 identifiers:
   - type: doi
     value: 10.5281/zenodo.8010549
     description: Zenodo
-repository-code: 'https://github.com/manzt/anywidget'
-url: 'https://anywidget.dev'
+repository-code: "https://github.com/manzt/anywidget"
+url: "https://anywidget.dev"
 abstract: >-
   anywidget is a Python library that simplifies the creation
   and maintenance of Jupyter Widgets, making them more

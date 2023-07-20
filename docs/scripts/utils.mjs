@@ -35,7 +35,7 @@ function appendForwardSlash(path) {
  */
 export function getFileInfo(id, config) {
 	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base
+		config.site ? new URL(config.base, config.site).pathname : config.base,
 	);
 
 	// Try to grab the file's actual URL

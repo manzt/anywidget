@@ -140,7 +140,7 @@ function widgetClientHtml(widgetState) {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 	<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
 	<script type="application/vnd.jupyter.widget-state+json">${JSON.stringify(
-		widgetState
+		widgetState,
 	)}</script>\n`;
 }
 

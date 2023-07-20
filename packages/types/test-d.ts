@@ -2,7 +2,7 @@ import { describe, it, expectTypeOf } from "vitest";
 import type { AnyModel } from "./index.js";
 
 declare let model: AnyModel;
-declare let typedModel: AnyModel<{ value: number, name: string }>;
+declare let typedModel: AnyModel<{ value: number; name: string }>;
 
 describe("AnyModel.get", () => {
 	it("uses strict types when model is provided", () => {

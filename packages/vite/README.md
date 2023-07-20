@@ -17,7 +17,7 @@ import anywidget from "@anywidget/vite";
 
 export default defineConfig({
 	plugins: [anywidget()],
-})
+});
 ```
 
 Read the [docs](https://anywidget.dev/en/bundling/#vite) to learn more
@@ -26,4 +26,3 @@ about configuring Vite with **anywidget** for your project.
 ## License
 
 MIT
-

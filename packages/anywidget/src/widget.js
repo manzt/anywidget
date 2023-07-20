@@ -83,9 +83,7 @@ async function load_esm(esm) {
 	if (is_href(esm)) {
 		return import(/* webpackIgnore: true */ esm);
 	}
-	let url = URL.createObjectURL(
-		new Blob([esm], { type: "text/javascript" }),
-	);
+	let url = URL.createObjectURL(new Blob([esm], { type: "text/javascript" }));
 	let widget;
 	try {
 		widget = await import(/* webpackIgnore: true */ url);
@@ -157,9 +155,9 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
-				let views = (/** @type {unknown} */ (Object.values(this.views ?? {})));
+				let views = /** @type {unknown} */ (Object.values(this.views ?? {}));
 
-				for await (let view of (/** @type {Promise<AnyView>[]} */ (views))) {
+				for await (let view of /** @type {Promise<AnyView>[]} */ (views)) {
 					// load updated esm
 					let widget = await load_esm(this.get("_esm"));
 
