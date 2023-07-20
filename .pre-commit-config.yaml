@@ -28,7 +28,7 @@ repos:
       - id: mypy
         # needed ignores will depend on what is in the environment
         # so with a more minimal environment here than the IDE
-        # we allow "unused" type ignore comments 
+        # we allow "unused" type ignore comments
         args: [--no-warn-unused-ignores]
         exclude: tests|docs
         # packages in the pre-commit env will determine what can be type checked

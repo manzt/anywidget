@@ -59,7 +59,7 @@ class DummyManager extends baseManager.ManagerBase {
 	async display_view(
 		_msg: unknown,
 		view: widgets.DOMWidgetView,
-		_options: unknown,
+		_options: unknown
 	) {
 		// TODO: make this a spy
 		// TODO: return an html element
@@ -73,15 +73,18 @@ class DummyManager extends baseManager.ManagerBase {
 	async loadClass(
 		className: string,
 		moduleName: string,
-		_moduleVersion: string,
+		_moduleVersion: string
 	): Promise<any> {
 		let mod: Record<string, any> | undefined = {
 			"@jupyter-widgets/base": widgets,
-			"anywidget": anywidget,
+			anywidget: anywidget,
 		}[moduleName];
-		return mod?.[className] ?? (() => {
-			throw new Error(`Cannot find module ${moduleName}`);
-		})();
+		return (
+			mod?.[className] ??
+			(() => {
+				throw new Error(`Cannot find module ${moduleName}`);
+			})()
+		);
 	}
 
 	async _get_comm_info() {
@@ -101,14 +104,17 @@ describe("AnyModel", async () => {
 	it("loads", async () => {
 		let widget_manager = new DummyManager();
 
-		let model = await widget_manager.new_widget({
-			model_name: "AnyModel",
-			model_module: "anywidget",
-			model_module_version: "0.1.0",
-			view_name: "AnyView",
-			view_module: "anywidget",
-			view_module_version: "0.1.0",
-		}, { _esm });
+		let model = await widget_manager.new_widget(
+			{
+				model_name: "AnyModel",
+				model_module: "anywidget",
+				model_module_version: "0.1.0",
+				view_name: "AnyView",
+				view_module: "anywidget",
+				view_module_version: "0.1.0",
+			},
+			{ _esm }
+		);
 
 		expect(model).toBeInstanceOf(anywidget.AnyModel);
 	});

@@ -4,7 +4,7 @@ define(function () {
 	window.requirejs?.config({
 		map: {
 			"*": {
-				"anywidget": "nbextensions/anywidget/index",
+				anywidget: "nbextensions/anywidget/index",
 			},
 		},
 	});

@@ -20,17 +20,17 @@ await esbuild.build({
 // re-export all exports from @anywidget/vite
 await fs.writeFile(
 	path.join(dist, "vite.mjs"),
-	`export * from "@anywidget/vite";`,
+	`export * from "@anywidget/vite";`
 );
 await fs.writeFile(
 	path.join(dist, "vite.cjs"),
-	`module.exports = require("@anywidget/vite");`,
+	`module.exports = require("@anywidget/vite");`
 );
 
 // re-export all exports from @anywidget/types
 await fs.writeFile(
 	path.join(dist, "types.d.ts"),
-	`export * from "@anywidget/types";`,
+	`export * from "@anywidget/types";`
 );
 await fs.writeFile(path.join(dist, "types.mjs"), "");
 await fs.writeFile(path.join(dist, "types.cjs"), "");

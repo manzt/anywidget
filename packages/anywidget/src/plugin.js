@@ -13,7 +13,7 @@ export default {
 	requires: [base.IJupyterWidgetRegistry],
 	activate: (
 		/** @type {unknown} */ _app,
-		/** @type {JupyterLabRegistry} */ registry,
+		/** @type {JupyterLabRegistry} */ registry
 	) => {
 		let exports = create(base);
 		registry.registerWidget({ name, version, exports });

@@ -1,24 +1,24 @@
 {
-  "name": "@anywidget/vite",
-  "type": "module",
-  "version": "0.1.1",
-  "description": "a vite plugin for anywidget",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
-  },
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "devDependencies": {
-    "vite": "^4.4.4"
-  },
-  "peerDependencies": {
-    "vite": "^4.4.4"
-  }
+	"name": "@anywidget/vite",
+	"type": "module",
+	"version": "0.1.1",
+	"description": "a vite plugin for anywidget",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {
+		"build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
+	},
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"import": "./index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"devDependencies": {
+		"vite": "^4.4.4"
+	},
+	"peerDependencies": {
+		"vite": "^4.4.4"
+	}
 }
