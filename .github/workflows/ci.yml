@@ -10,6 +10,17 @@ on:
 
 jobs:
 
+  Prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - run: pnpm install --frozen-lock
+      - run: pnpm lint
+
   LintPython:
     name: Python / Lint
     runs-on: ubuntu-latest

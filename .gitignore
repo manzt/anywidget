@@ -4,6 +4,7 @@ __pycache__/
 .eggs/*
 
 .ipynb_checkpoints/
+.mypy_cache/
 
 node_modules/
 
