@@ -9,18 +9,6 @@ on:
       - main
 
 jobs:
-
-  Prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18.x"
-      - run: pnpm install --frozen-lock
-      - run: pnpm lint
-
   LintPython:
     name: Python / Lint
     runs-on: ubuntu-latest
@@ -56,6 +44,19 @@ jobs:
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
 
       - uses: codecov/codecov-action@v3
+
+  LintJavaScript:
+    name: JavaScript / Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - run: |
+          pnpm install
+          pnpm lint
 
   TypecheckJavaScript:
     name: JavaScript / Typecheck
