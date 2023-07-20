@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.4
+
+### Patch Changes
+
+- feat: expose the `IWidgetManager` from `@jupyter-widgets/base` to render function. ([`f2dbdbf`](https://github.com/manzt/anywidget/commit/f2dbdbfb099f26132001193a4e9aa3d59849af4f))
+
 ## 0.1.3
 
 ### Patch Changes
