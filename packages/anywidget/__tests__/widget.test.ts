@@ -59,7 +59,7 @@ class DummyManager extends baseManager.ManagerBase {
 	async display_view(
 		_msg: unknown,
 		view: widgets.DOMWidgetView,
-		_options: unknown
+		_options: unknown,
 	) {
 		// TODO: make this a spy
 		// TODO: return an html element
@@ -73,7 +73,7 @@ class DummyManager extends baseManager.ManagerBase {
 	async loadClass(
 		className: string,
 		moduleName: string,
-		_moduleVersion: string
+		_moduleVersion: string,
 	): Promise<any> {
 		let mod: Record<string, any> | undefined = {
 			"@jupyter-widgets/base": widgets,
@@ -113,7 +113,7 @@ describe("AnyModel", async () => {
 				view_module: "anywidget",
 				view_module_version: "0.1.0",
 			},
-			{ _esm }
+			{ _esm },
 		);
 
 		expect(model).toBeInstanceOf(anywidget.AnyModel);

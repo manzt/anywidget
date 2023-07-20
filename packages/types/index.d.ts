@@ -16,28 +16,28 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	set<K extends keyof T>(key: K, value: T[K]): void;
 	off<K extends keyof T>(
 		eventName?: LiteralUnion<`change:${K & string}` | "msg:custom"> | null,
-		callback?: EventHandler | null
+		callback?: EventHandler | null,
 	): void;
 	on(
 		eventName: "msg:custom",
-		callback: (msg: any, buffers: DataView[]) => void
+		callback: (msg: any, buffers: DataView[]) => void,
 	): void;
 	on<K extends `change:${keyof T & string}`>(
 		eventName: K,
 		callback: K extends `change:${infer Key}`
 			? ChangeEventHandler<T[Key]>
-			: never
+			: never,
 	): void;
 	on<K extends `change:${string}`>(
 		eventName: K,
-		callback: ChangeEventHandler<any>
+		callback: ChangeEventHandler<any>,
 	): void;
 	on(eventName: string, callback: EventHandler): void;
 	save_changes(): void;
 	send(
 		content: any,
 		callbacks?: any,
-		buffers?: ArrayBuffer[] | ArrayBufferView[]
+		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
 }
 
