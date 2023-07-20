@@ -2,7 +2,7 @@
 	"name": "anywidget",
 	"type": "module",
 	"main": "src/index.js",
-	"version": "0.6.2",
+	"version": "0.6.3",
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"files": [
