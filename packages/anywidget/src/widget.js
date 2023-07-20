@@ -118,6 +118,7 @@ function extract_context(view) {
 		off(name, callback) {
 			view.model.off(name, callback, view);
 		},
+		widget_manager: view.model.widget_manager,
 	};
 	return { model, el: view.el };
 }
