@@ -3,7 +3,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
 /** @type {React.Context<import("@anywidget/types").AnyModel>} */
-let ModelContext = React.createContext((/** @type {any} */ (null)));
+let ModelContext = React.createContext(/** @type {any} */ (null));
 
 /**
  * @template T
@@ -21,10 +21,13 @@ export function useModelState(key) {
 		model.on(`change:${key}`, callback);
 		return () => model.off(`change:${key}`, callback);
 	}, [model, key]);
-	return [value, (value) => {
-		model.set(key, value);
-		model.save_changes();
-	}];
+	return [
+		value,
+		(value) => {
+			model.set(key, value);
+			model.save_changes();
+		},
+	];
 }
 
 /**
