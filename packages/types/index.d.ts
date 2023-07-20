@@ -1,3 +1,5 @@
+import type { IWidgetManager } from "@jupyter-widgets/base";
+
 type Awaitable<T> = T | Promise<T>;
 type ObjectHash = Record<string, any>;
 type ChangeEventHandler<Payload> = (_: unknown, value: Payload) => void;
@@ -39,6 +41,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 		callbacks?: any,
 		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
+	widget_manager: IWidgetManager;
 }
 
 export interface RenderContext<T extends ObjectHash = ObjectHash> {
