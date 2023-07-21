@@ -16,7 +16,6 @@ export function useModelState(key) {
 	if (!model) throw new Error("Model not found");
 	let [value, setValue] = React.useState(model.get(key));
 	React.useEffect(() => {
-		if (!model) return;
 		let callback = () => setValue(model.get(key));
 		model.on(`change:${key}`, callback);
 		return () => model.off(`change:${key}`, callback);
@@ -35,7 +34,7 @@ export function useModelState(key) {
  * @returns {import("@anywidget/types").Render}
  */
 export function createRender(Widget) {
-	return function ({ model, el }) {
+	return ({ model, el }) => {
 		let root = ReactDOM.createRoot(el);
 		root.render(
 			React.createElement(
