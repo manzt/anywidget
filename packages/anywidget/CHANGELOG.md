@@ -191,11 +191,11 @@
 
   /** @type {import("anywidget/types").Render<{ value: number }>} */
   export function render(view) {
-    let value = view.model.get("value");
-    //^ ? `number`
+  	let value = view.model.get("value");
+  	//^ ? `number`
 
-    view.model.set("value", "not-a-number");
-    // Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
+  	view.model.set("value", "not-a-number");
+  	// Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
   }
   ```
 
