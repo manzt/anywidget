@@ -118,6 +118,37 @@ importers:
         specifier: ^3.6.5
         version: 3.6.5(crypto@1.0.1)(esbuild@0.18.15)
 
+  packages/create-anywidget:
+    dependencies:
+      "@clack/prompts":
+        specifier: ^0.6.3
+        version: 0.6.3
+      kleur:
+        specifier: ^4.1.5
+        version: 4.1.5
+
+  packages/create-anywidget/template-react/js:
+    dependencies:
+      "@anywidget/react":
+        specifier: ^0.0.1
+        version: link:../../../react
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      "@types/react":
+        specifier: ^18.2.14
+        version: 18.2.15
+      "@types/react-dom":
+        specifier: ^18.2.6
+        version: 18.2.7
+      esbuild:
+        specifier: ^0.18.14
+        version: 0.18.15
+
   packages/react:
     dependencies:
       "@anywidget/types":
@@ -1077,6 +1108,29 @@ packages:
       human-id: 1.0.2
       prettier: 2.8.8
     dev: true
+
+  /@clack/core@0.3.2:
+    resolution:
+      {
+        integrity: sha512-FZnsNynwGDIDktx6PEZK1EuCkFpY4ldEX6VYvfl0dqeoLPb9Jpw1xoUXaVcGR8ExmYNm1w2vdGdJkEUYD/2pqg==,
+      }
+    dependencies:
+      picocolors: 1.0.0
+      sisteransi: 1.0.5
+    dev: false
+
+  /@clack/prompts@0.6.3:
+    resolution:
+      {
+        integrity: sha512-AM+kFmAHawpUQv2q9+mcB6jLKxXGjgu/r2EQjEwujgpCdzrST6BJqYw00GRn56/L/Izw5U7ImoLmy00X/r80Pw==,
+      }
+    dependencies:
+      "@clack/core": 0.3.2
+      picocolors: 1.0.0
+      sisteransi: 1.0.5
+    dev: false
+    bundledDependencies:
+      - is-unicode-supported
 
   /@discoveryjs/json-ext@0.5.7:
     resolution:
