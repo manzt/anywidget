@@ -5,6 +5,12 @@ import * as ReactDOM from "react-dom/client";
 /** @type {React.Context<import("@anywidget/types").AnyModel>} */
 let ModelContext = React.createContext(/** @type {any} */ (null));
 
+export function useModel() {
+	let model = React.useContext(ModelContext);
+	if (!model) throw new Error("Model not found");
+	return model;
+}
+
 /**
  * @template T
  *
@@ -12,8 +18,7 @@ let ModelContext = React.createContext(/** @type {any} */ (null));
  * @returns {[T, (value: T) => void]}
  */
 export function useModelState(key) {
-	let model = React.useContext(ModelContext);
-	if (!model) throw new Error("Model not found");
+	let model = useModel();
 	let [value, setValue] = React.useState(model.get(key));
 	React.useEffect(() => {
 		let callback = () => setValue(model.get(key));
