@@ -7,6 +7,8 @@ import * as url from "node:url";
 import * as p from "@clack/prompts";
 import { bold, cyan, grey } from "kleur/colors";
 
+import { create } from "./create.js";
+
 let pkg = await fs.promises
 	.readFile(new URL("package.json", import.meta.url), "utf-8")
 	.then(JSON.parse);
@@ -66,21 +68,6 @@ const options = await p.group(
 	},
 	{ onCancel: () => process.exit(1) },
 );
-
-console.log(`
-${cyan(JSON.stringify(options, null, 2))}
-`)
-
-/**
- * @param {string} target
- * @param {Record<string, any>} options
- */
-async function create(target, options) {
-	let template_dir = fs.readdirSync(path.resolve(__dirname, options.template), {
-		recursive: true,
-	});
-	console.log(template_dir);
-}
 
 await create(cwd, {
 	name: path.basename(path.resolve(cwd)),

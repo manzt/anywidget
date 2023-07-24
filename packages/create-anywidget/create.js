@@ -6,19 +6,50 @@ import * as url from "node:url";
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /** @param {string} root */
-async function *walk(root) {
+async function* walk(root) {
 	for (let entry of await fs.readdir(root, { withFileTypes: true })) {
 		if (entry.isFile()) {
 			yield {
 				type: "file",
-				path: path.resolve(root, entry.name)
-			}
+				path: path.resolve(root, entry.name),
+			};
 		} else if (entry.isDirectory()) {
 			yield {
 				type: "directory",
-				path: path.resolve(root, entry.name)
+				path: path.resolve(root, entry.name),
+			};
+			yield* walk(path.resolve(root, entry.name));
+		} else {
+			throw Error("unknown type");
+		}
+	}
+}
+
+/**
+ * @param {string} root
+ * @param {string} old_name
+ * @param {string} new_name
+ */
+async function walk_and_rename(root, old_name, new_name) {
+	let entries = await fs.readdir(root, { withFileTypes: true });
+	for (let entry of entries) {
+		let current_path = path.join(root, entry.name);
+		if (entry.isDirectory()) {
+			if (entry.name === old_name) {
+				let new_path = path.join(root, new_name);
+				await fs.rename(current_path, new_path);
+				current_path = new_path;
 			}
-			yield *walk(path.resolve(root, entry.name));
+			await walk_and_rename(current_path, old_name, new_name);
+		} else if (entry.isFile()) {
+			if (entry.name === "_gitignore") {
+				let new_path = current_path.replace("_gitignore", ".gitignore");
+				await fs.rename(current_path, new_path);
+				current_path = new_path;
+			}
+			let content = await fs.readFile(current_path, "utf-8");
+			content = content.replace(new RegExp(old_name, "g"), new_name);
+			await fs.writeFile(current_path, content, "utf8");
 		} else {
 			throw Error("unknown type");
 		}
@@ -29,16 +60,9 @@ async function *walk(root) {
  * @param {string} target
  * @param {Record<string, any>} options
  */
-async function create(target, options) {
-
+export async function create(target, options) {
 	await fs.cp(path.resolve(__dirname, options.template), target, {
 		recursive: true,
 	});
-
-	for await (let item of walk(path.resolve(__dirname, options.template))) {
-		console.log(item);
-	}
+	await walk_and_rename(target, "my_widget", options.name);
 }
-
-let cwd = process.argv[2];
-create(cwd, { name: path.basename(cwd), template: "template-react" });
