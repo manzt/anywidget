@@ -127,6 +127,50 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
+  packages/create-anywidget/foo/js:
+    dependencies:
+      "@anywidget/react":
+        specifier: ^0.0.1
+        version: link:../../../react
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      "@types/react":
+        specifier: ^18.2.14
+        version: 18.2.15
+      "@types/react-dom":
+        specifier: ^18.2.6
+        version: 18.2.7
+      esbuild:
+        specifier: ^0.18.14
+        version: 0.18.15
+
+  packages/create-anywidget/my-widget/js:
+    dependencies:
+      "@anywidget/react":
+        specifier: ^0.0.1
+        version: link:../../../react
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      "@types/react":
+        specifier: ^18.2.14
+        version: 18.2.15
+      "@types/react-dom":
+        specifier: ^18.2.6
+        version: 18.2.7
+      esbuild:
+        specifier: ^0.18.14
+        version: 0.18.15
+
   packages/create-anywidget/template-react/js:
     dependencies:
       "@anywidget/react":

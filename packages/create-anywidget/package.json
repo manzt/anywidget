@@ -8,6 +8,7 @@
 	},
 	"files": [
 		"index.js",
+		"create.js",
 		"template-*"
 	],
 	"engines": {
