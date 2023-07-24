@@ -3,6 +3,8 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as url from "node:url";
 
+import snakecase from "just-snake-case";
+
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /** @param {string} root */
@@ -64,5 +66,5 @@ export async function create(target, options) {
 	await fs.cp(path.resolve(__dirname, options.template), target, {
 		recursive: true,
 	});
-	await walk_and_rename(target, "my_widget", options.name);
+	await walk_and_rename(target, "my_widget", snakecase(options.name));
 }

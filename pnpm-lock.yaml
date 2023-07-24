@@ -124,6 +124,9 @@ importers:
       "@clack/prompts":
         specifier: ^0.6.3
         version: 0.6.3
+      just-snake-case:
+        specifier: ^3.2.0
+        version: 3.2.0
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
@@ -4935,6 +4938,13 @@ packages:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /just-snake-case@3.2.0:
+    resolution:
+      {
+        integrity: sha512-iugHP9bSE0jOq3BzN0W0rdu/OOkFirPe8FtUw6v9y37UlbUDgJ1x4xiGNfUhI6mV9dc/paaifyiyn+F+mrm8gw==,
+      }
+    dev: false
 
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
