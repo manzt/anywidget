@@ -67,12 +67,19 @@ const options = await p.group(
 	{ onCancel: () => process.exit(1) },
 );
 
+console.log(`
+${cyan(JSON.stringify(options, null, 2))}
+`)
+
 /**
- * @param {string} dir
+ * @param {string} target
  * @param {Record<string, any>} options
  */
-async function create(dir, options) {
-	console.log({ dir, options });
+async function create(target, options) {
+	let template_dir = fs.readdirSync(path.resolve(__dirname, options.template), {
+		recursive: true,
+	});
+	console.log(template_dir);
 }
 
 await create(cwd, {
