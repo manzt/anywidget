@@ -11,15 +11,28 @@ export function getModel() {
 	return model;
 }
 
+/**
+ * @template Model
+ * @typedef {{ [Key in keyof Model]: import("svelte/store").Writable<Model[Key]> }} Stores
+ */
+
 /** @type {Record<string, import("svelte/store").Writable<any>>} key */
 let cache = {};
-export let stores = new Proxy(/** @type {any} */ ({}), {
-	get(_, key) {
-		if (typeof key !== "string") return;
-		if (!cache[key]) cache[key] = anywriteable(key);
-		return cache[key];
-	},
-});
+
+/**
+ * @template Model
+ * @returns {Stores<Model>}
+ */
+export function getModelStores() {
+	return new Proxy(/** @type {Stores<Model>} */ ({}), { 
+		get(_, key) {
+			// @ts-expect-error
+			if (cache[key]) return cache[key];
+			// @ts-expect-error
+			return cache[key] = anywriteable(key);
+		}
+	});
+}
 
 /**
  * @template T
@@ -27,7 +40,8 @@ export let stores = new Proxy(/** @type {any} */ ({}), {
  * @param {string} key
  * @returns {import("svelte/store").Writable<T>}
  */
-export function anywriteable(key) {
+function anywriteable(key) {
+	let model = getModel();
 	let { subscribe, set } = writable(model.get(key));
 	let update = () => set(model.get(key));
 	model.on(`change:${key}`, update);
