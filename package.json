@@ -9,8 +9,8 @@
 		"release": "python -m build && changeset publish && twine upload dist/*",
 		"test": "vitest --environment=happy-dom",
 		"typecheck": "pnpm --parallel --recursive typecheck",
-		"format": "prettier --ignore-path=.gitignore --use-tabs --write .",
-		"lint": "prettier --ignore-path=.gitignore --use-tabs --check ."
+		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
+		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml ."
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
