@@ -9,13 +9,13 @@
 		"release": "python -m build && changeset publish && twine upload dist/*",
 		"test": "vitest --environment=happy-dom",
 		"typecheck": "pnpm --parallel --recursive typecheck",
-		"format": "prettier --ignore-path=.gitignore --use-tabs --write .",
-		"lint": "prettier --ignore-path=.gitignore --use-tabs --check ."
+		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
+		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml ."
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
-		"esbuild": "^0.18.15",
+		"esbuild": "^0.18.16",
 		"happy-dom": "^10.5.2",
 		"prettier": "^3.0.0",
 		"prettier-plugin-astro": "^0.11.0",
