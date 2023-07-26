@@ -2,19 +2,17 @@
 import { onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
-/** @type {import("@anywidget/types").AnyModel} */
-let model;
-
-/** @returns {import("@anywidget/types").AnyModel}*/
-export function getModel() {
-	if (!model) throw new Error("No model");
-	return model;
-}
-
 /**
  * @template Model
  * @typedef {{ [Key in keyof Model]: import("svelte/store").Writable<Model[Key]> }} Stores
  */
+
+/** @type {import("@anywidget/types").AnyModel} */
+export let model = new Proxy(/** @type {any} */ ({}), {
+	get() {
+		throw new Error("No model. Must first `createRender` to initialize.");
+	},
+});
 
 /** @type {Record<string, import("svelte/store").Writable<any>>} key */
 let cache = {};
@@ -35,7 +33,6 @@ export const stores = new Proxy(/** @type {Stores<any>} */ ({}), {
  * @returns {import("svelte/store").Writable<T>}
  */
 function anywriteable(key) {
-	let model = getModel();
 	let { subscribe, set } = writable(model.get(key));
 	let update = () => set(model.get(key));
 	model.on(`change:${key}`, update);
