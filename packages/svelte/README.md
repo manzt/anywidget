@@ -36,6 +36,12 @@ export let render = createRender(Counter);
 rollup -p @rollup/plugin-node-resolve -p rollup-plugin-svelte index.js > bundle.js
 ```
 
+## Acknowledgements
+
+Special thanks to [Daria Vasyukova](https://github.com/gereleth) for [the idea](https://twitter.com/gereleth/status/1620164274491654145) and
+[Donny Bertucci](https://github.com/xnought) for the [initial implementation](https://github.com/xnought/svelte-store-anywidget),
+which lead to this package.
+
 ## License
 
 MIT
