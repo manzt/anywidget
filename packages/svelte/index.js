@@ -19,20 +19,14 @@ export function getModel() {
 /** @type {Record<string, import("svelte/store").Writable<any>>} key */
 let cache = {};
 
-/**
- * @template Model
- * @returns {Stores<Model>}
- */
-export function getModelStores() {
-	return new Proxy(/** @type {Stores<Model>} */ ({}), {
-		get(_, key) {
-			// @ts-expect-error
-			if (cache[key]) return cache[key];
-			// @ts-expect-error
-			return (cache[key] = anywriteable(key));
-		},
-	});
-}
+export const stores = new Proxy(/** @type {Stores<any>} */ ({}), {
+	get(_, key) {
+		// @ts-expect-error
+		if (cache[key]) return cache[key];
+		// @ts-expect-error
+		return (cache[key] = anywriteable(key));
+	},
+});
 
 /**
  * @template T
