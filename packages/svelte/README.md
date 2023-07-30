@@ -29,11 +29,35 @@ export let render = createRender(Counter);
     let { count } = stores;
 </script>
 
-<button on:click={() => $count += 1}Count is {$count}</button>
+<button on:click={() => $count += 1}>Count is {$count}</button>
+```
+
+You'll need to compile the above source files into a single ESM entrypoint
+for **anywidget** with a bundler. We currently recommend using [Rollup](https://rollupjs.org/).
+
+Example:
+
+```sh
+pnpm add -D rollup @rollup/plugin-node-resolve rollup-plugin-svelte
+```
+
+```js
+// rollup.config.js
+import svelte from "rollup-plugin-svelte";
+import resolve from "@rollup/plugin-node-resolve";
+
+export default {
+  input: "index.js",
+  output: "bundle.js",
+  plugins: [
+    svelte({ emitCss: false }),
+    resolve(),
+  ]
+}
 ```
 
 ```sh
-rollup -p @rollup/plugin-node-resolve -p rollup-plugin-svelte index.js > bundle.js
+rollup -c rollup.config.js --watch
 ```
 
 ## Acknowledgements

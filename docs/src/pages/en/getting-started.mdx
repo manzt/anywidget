@@ -75,7 +75,7 @@ What's going on here:
   in the global scope if using this feature, so take care in avoid global overrides.
 
 - `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
-  It must _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
+  It _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
 
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
