@@ -14,8 +14,8 @@ custom jupyter widgets made easy
 - 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - ⚡ develop with **instant HMR**, like modern web frameworks
 
-Learn more in
-[the announcement](https://anywidget.dev/blog/introducing-anywidget).
+Learn more in the
+[Jupyter blog](https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102).
 
 ## Installation
 
