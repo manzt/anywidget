@@ -2,6 +2,8 @@
 import { onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
+let model_marker = Symbol("anywidget.model");
+
 /**
  * @template Model
  * @typedef {{ [Key in keyof Model]: import("svelte/store").Writable<Model[Key]> }} Stores
@@ -9,8 +11,24 @@ import { writable } from "svelte/store";
 
 /** @type {import("@anywidget/types").AnyModel} */
 export let model = new Proxy(/** @type {any} */ ({}), {
-	get() {
-		throw new Error("No model. Must first `createRender` to initialize.");
+	get(target, key) {
+		try {
+			return target[model_marker][key];
+		} catch (e) {
+			if (e instanceof TypeError) {
+				throw new Error(
+					"Model not set. Did you forget to call `createRender`?",
+				);
+			}
+			throw e;
+		}
+	},
+	set(target, key, value) {
+		if (key !== model_marker) {
+			throw new Error("Model is read-only");
+		}
+		target[model_marker] = value;
+		return true;
 	},
 });
 
@@ -56,7 +74,8 @@ function anywriteable(key) {
  */
 export function createRender(Widget) {
 	return (ctx) => {
-		model = ctx.model;
+		// @ts-expect-error
+		model[model_marker] = ctx.model;
 		const widget = new Widget({ target: ctx.el });
 		return () => widget.$destroy();
 	};
