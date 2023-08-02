@@ -1,5 +1,11 @@
 # @anywidget/svelte
 
+## 0.0.3
+
+### Patch Changes
+
+- fix: broken import in WrapperComponent ([#219](https://github.com/manzt/anywidget/pull/219))
+
 ## 0.0.2
 
 ### Patch Changes
