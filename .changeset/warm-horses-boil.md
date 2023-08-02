@@ -2,4 +2,4 @@
 "@anywidget/svelte": patch
 ---
 
-feat: use ES6 Proxy to enable store updates
+feat: Use Context API to expose `model` and `stores` to components.
