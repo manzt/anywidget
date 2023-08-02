@@ -2,7 +2,7 @@
 import { getContext, onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
-import { MODEL_CONTEXT_NAME, STORES_CONTEXT_NAME } from "./constants.js";
+import { MODEL_SYMBOL, STORES_SYMBOL } from "./constants.js";
 import WrapperComponent from "./WrapperComponent.svelte";
 
 /**
@@ -17,7 +17,7 @@ import WrapperComponent from "./WrapperComponent.svelte";
  * @returns {import("svelte/store").Writable<T>}
  */
 function anywriteable(key) {
-	let model = getContext(MODEL_CONTEXT_NAME);
+	let model = getContext(MODEL_SYMBOL);
 	let { subscribe, set } = writable(model.get(key));
 	let update = () => set(model.get(key));
 	model.on(`change:${key}`, update);
@@ -38,7 +38,7 @@ function anywriteable(key) {
 /** @type {import("@anywidget/types").AnyModel} */
 export let model = new Proxy(/** @type {any} */ ({}), {
 	get(_, key) {
-		return getContext(MODEL_CONTEXT_NAME)[key];
+		return getContext(MODEL_SYMBOL)[key];
 	},
 });
 
@@ -47,7 +47,7 @@ export let stores = new Proxy(
 	{},
 	{
 		get(_, key) {
-			let cache = getContext(STORES_CONTEXT_NAME);
+			let cache = getContext(STORES_SYMBOL);
 			if (cache[key] === undefined) {
 				cache[key] = anywriteable(/** @type {string} */ (key));
 			}
