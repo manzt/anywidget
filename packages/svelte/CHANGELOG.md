@@ -1,5 +1,11 @@
 # @anywidget/svelte
 
+## 0.0.2
+
+### Patch Changes
+
+- feat: use JS Symbols to scope access to Svelte Context ([#215](https://github.com/manzt/anywidget/pull/215))
+
 ## 0.0.1
 
 ### Patch Changes
