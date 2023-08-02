@@ -1,6 +1,6 @@
 <script>
 	import { setContext } from "svelte";
-	import { MODEL_SYMBOL, STORES_SYMBOL } from "./contants.js";
+	import { MODEL_SYMBOL, STORES_SYMBOL } from "./constants.js";
 
 	export let model;
 	export let Component;
