@@ -1,30 +1,14 @@
 // @ts-check
-import { onDestroy } from "svelte";
+import { getContext, onDestroy } from "svelte";
 import { writable } from "svelte/store";
+
+import { MODEL_CONTEXT_NAME, STORES_CONTEXT_NAME } from "./constants.js";
+import WrapperComponent from "./WrapperComponent.svelte";
 
 /**
  * @template Model
  * @typedef {{ [Key in keyof Model]: import("svelte/store").Writable<Model[Key]> }} Stores
  */
-
-/** @type {import("@anywidget/types").AnyModel} */
-export let model = new Proxy(/** @type {any} */ ({}), {
-	get() {
-		throw new Error("No model. Must first `createRender` to initialize.");
-	},
-});
-
-/** @type {Record<string, import("svelte/store").Writable<any>>} key */
-let cache = {};
-
-export const stores = new Proxy(/** @type {Stores<any>} */ ({}), {
-	get(_, key) {
-		// @ts-expect-error
-		if (cache[key]) return cache[key];
-		// @ts-expect-error
-		return (cache[key] = anywriteable(key));
-	},
-});
 
 /**
  * @template T
@@ -33,6 +17,7 @@ export const stores = new Proxy(/** @type {Stores<any>} */ ({}), {
  * @returns {import("svelte/store").Writable<T>}
  */
 function anywriteable(key) {
+	let model = getContext(MODEL_CONTEXT_NAME);
 	let { subscribe, set } = writable(model.get(key));
 	let update = () => set(model.get(key));
 	model.on(`change:${key}`, update);
@@ -50,14 +35,35 @@ function anywriteable(key) {
 	};
 }
 
+/** @type {import("@anywidget/types").AnyModel} */
+export let model = new Proxy(/** @type {any} */ ({}), {
+	get(_, key) {
+		return getContext(MODEL_CONTEXT_NAME)[key];
+	},
+});
+
+/** @type {Stores<import("@anywidget/types").ObjectHash>} */
+export let stores = new Proxy({}, {
+	get(_, key) {
+		let cache = getContext(STORES_CONTEXT_NAME);
+		if (cache[key] === undefined) {
+			cache[key] = anywriteable(/** @type {string} */ (key));
+		}
+		return cache[key];
+	},
+});
+
+
 /**
  * @param {import("svelte").ComponentType} Widget
  * @returns {import("@anywidget/types").Render}
  */
 export function createRender(Widget) {
-	return (ctx) => {
-		model = ctx.model;
-		const widget = new Widget({ target: ctx.el });
+	return ({ model, el }) => {
+		let widget = new WrapperComponent({
+			target: el,
+			props: { model, Component: Widget },
+		});
 		return () => widget.$destroy();
 	};
 }
