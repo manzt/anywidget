@@ -6,7 +6,7 @@
 		"build:lab": "jupyter labextension build packages/anywidget",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
-		"release": "python -m build && changeset publish && twine upload dist/*",
+		"release": "python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom",
 		"typecheck": "pnpm --parallel --recursive typecheck",
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
