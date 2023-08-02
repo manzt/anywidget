@@ -43,16 +43,18 @@ export let model = new Proxy(/** @type {any} */ ({}), {
 });
 
 /** @type {Stores<import("@anywidget/types").ObjectHash>} */
-export let stores = new Proxy({}, {
-	get(_, key) {
-		let cache = getContext(STORES_CONTEXT_NAME);
-		if (cache[key] === undefined) {
-			cache[key] = anywriteable(/** @type {string} */ (key));
-		}
-		return cache[key];
+export let stores = new Proxy(
+	{},
+	{
+		get(_, key) {
+			let cache = getContext(STORES_CONTEXT_NAME);
+			if (cache[key] === undefined) {
+				cache[key] = anywriteable(/** @type {string} */ (key));
+			}
+			return cache[key];
+		},
 	},
-});
-
+);
 
 /**
  * @param {import("svelte").ComponentType} Widget
