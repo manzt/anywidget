@@ -8,7 +8,7 @@ import psygnal
 
 from ._descriptor import MimeBundleDescriptor
 
-__all__ = ["widget", "MimeBundleDescriptor"]
+__all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
 T = typing.TypeVar("T", bound="type[typing.Any]")
