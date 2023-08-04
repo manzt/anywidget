@@ -20,6 +20,7 @@ def test_decorator():
     assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
     assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
 
+
 def test_dataclass():
     esm = "export function render({ model , el }) {}"
     css = ".foo { color: red;}"
