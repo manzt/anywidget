@@ -97,11 +97,6 @@ def dataclass(
     """
 
     def _decorator(cls: T) -> T:
-        if dataclass_kwargs.get("frozen", False):
-            raise ValueError(
-                "The 'anywidget.experimental.dataclass' decorator does not support "
-                "dataclasses with `frozen=True`."
-            )
         cls = dataclasses.dataclass(cls, **dataclass_kwargs)  # type: ignore
         cls = psygnal.evented(cls)
         cls = widget(esm=esm, css=css)(cls)
