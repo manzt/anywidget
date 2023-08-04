@@ -12,7 +12,6 @@ __all__ = ["widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
 T = typing.TypeVar("T", bound="type[typing.Any]")
-F = typing.TypeVar("F", bound=typing.Callable)
 
 
 def widget(
