@@ -97,7 +97,7 @@ def dataclass(
     """
 
     def _decorator(cls: T) -> T:
-        cls = dataclasses.dataclass(cls, **dataclass_kwargs)  # type: ignore
+        cls = dataclasses.dataclass(cls, **dataclass_kwargs)
         cls = psygnal.evented(cls)
         cls = widget(esm=esm, css=css)(cls)
         return cls
