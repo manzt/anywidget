@@ -11,7 +11,7 @@ from ._descriptor import MimeBundleDescriptor
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
-T = typing.TypeVar("T", bound="type[typing.Any]")
+T = typing.TypeVar("T")
 
 
 def widget(
@@ -97,9 +97,9 @@ def dataclass(
     """
 
     def _decorator(cls: T) -> T:
-        cls = dataclasses.dataclass(cls, **dataclass_kwargs)
-        cls = psygnal.evented(cls)
+        cls = dataclasses.dataclass(cls, **dataclass_kwargs) # type: ignore
+        cls = psygnal.evented(cls) # type: ignore
         cls = widget(esm=esm, css=css)(cls)
         return cls
 
-    return _decorator(cls) if cls is not None else _decorator
+    return _decorator(cls) if cls is not None else _decorator # type: ignore
