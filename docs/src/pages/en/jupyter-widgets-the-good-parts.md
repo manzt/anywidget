@@ -48,7 +48,7 @@ export { CustomModel, CustomView };
 
 ... which must be transformed, bundled, and installed in multiple notebook environments.
 
-In **anywidget**, the above code simplies to:
+In **anywidget**, the above code simplifies to:
 
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
@@ -90,7 +90,7 @@ Therefore, `render` primarily serves two purposes:
 The Jupyter Widgets framework is build on top of the IPython Comm framework (short for communication).
 It's worth reading the [_Low Level Widget Explanation_](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Low%20Level.html#Low-Level-Widget-Explanation)
 to understand the core of Jupyter Widget's Model, View, Controller (MVC) architecture, but in
-short the Comm framework exposes two mechanisms to send/receive data to/from the frond end:
+short the Comm framework exposes two mechanisms to send/receive data to/from the front end:
 
 ### 1. Traitlets
 
