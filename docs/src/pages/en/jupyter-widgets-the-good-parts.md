@@ -19,7 +19,7 @@ that removes boilerplate and packaging details.
 
 ### Comparison with traditional Jupyter Widgets
 
-**anywidget** simplies creating your widget's front-end code. Its only requirement
+**anywidget** simplifies creating your widget's front-end code. Its only requirement
 is that your widget front-end code is a valid [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 and exports a function called `render`. This `render` function is similar to the traditional
 [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method).
