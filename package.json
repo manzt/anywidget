@@ -17,7 +17,7 @@
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.18.19",
 		"happy-dom": "^10.10.4",
-		"prettier": "^3.0.1",
+		"prettier": "^3.0.2",
 		"prettier-plugin-astro": "^0.11.1",
 		"typescript": "^5.1.6",
 		"vitest": "^0.32.4"
