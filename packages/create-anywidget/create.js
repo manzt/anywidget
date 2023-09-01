@@ -1,5 +1,3 @@
-// @ts-check
-
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as url from "node:url";
@@ -7,19 +5,16 @@ import snakecase from "just-snake-case";
 
 export async function create(target, options) {
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
   const copyFrom = path.resolve(__dirname, options.template);
   const copyTo = target;
+  const newName = snakecase(options.name); 
 
-  // read all files from the template folder and store them in a json file
   const allFiles = await gatherFiles(copyFrom);
-
-  // rename the path that is named _gitignore to .gitignore
   const updatedFiles = renameGitignore(allFiles);
+  const updatedContentFiles = replaceWidgetName(updatedFiles, newName); // Pass newName as argument
+  const updatedPathFiles = updateFilePaths(updatedContentFiles, copyFrom, copyTo, newName); // Pass newName as argument
 
-  const updatedContentFiles = replaceWidgetName(updatedFiles, options);
-
-  const updatedPathFiles = updateFilePaths(updatedContentFiles, copyFrom, copyTo);
+  console.log(copyTo);
   try {
     await createFiles(updatedPathFiles);
     console.log("All files created successfully!");
@@ -33,7 +28,6 @@ async function gatherFiles(startDir) {
 
   async function walk(dir) {
     const files = await fs.readdir(dir);
-
     for (const file of files) {
       const entry = path.join(dir, file);
       const stats = await fs.stat(entry);
@@ -46,7 +40,6 @@ async function gatherFiles(startDir) {
       }
     }
   }
-
   await walk(startDir);
   return results;
 }
@@ -60,34 +53,27 @@ function renameGitignore(files) {
   });
 }
 
-function replaceWidgetName(files, options) {
-  const newName = snakecase(options.name);
+function replaceWidgetName(files, newName) {
   return files.map((file) => {
     file.content = file.content.replace(/my_widget/g, newName);
     return file;
   });
 }
-function updateFilePaths(files, sourceDir, destDir) {
+
+function updateFilePaths(files, sourceDir, destDir, newName) {
   return files.map((file) => {
-    file.path = file.path.replace(sourceDir, destDir);
+    let newPath = file.path.replace(sourceDir, destDir);
+    newPath = newPath.replace(/my_widget/g, newName); // Replace folder name
+    file.path = newPath;
     return file;
   });
 }
 
-/**
- * Writes the files to the specified paths with the given content.
- * @param {Array} files - The array of file objects to write.
- * @returns {Promise} Resolves when all files are written.
- */
 async function createFiles(files) {
   const writePromises = files.map(async (file) => {
-    // Ensure the directory structure exists
     await fs.mkdir(path.dirname(file.path), { recursive: true });
-
     // Write (or overwrite) the file
     await fs.writeFile(file.path, file.content, "utf-8");
-
-    // Log the file that was written
     console.log(`Created: ${file.path}`);
   });
 
