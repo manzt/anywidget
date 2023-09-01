@@ -70,7 +70,7 @@ const options = await p.group(
 );
 
 await create(cwd, {
-  name: path.resolve(cwd),
+	name: path.basename(path.resolve(cwd)),
   template: /** @type {'react'} */ (options.template),
 });
 
