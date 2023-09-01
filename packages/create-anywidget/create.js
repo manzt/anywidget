@@ -20,7 +20,6 @@ export async function create(target, options) {
   const updatedContentFiles = replaceWidgetName(updatedFiles, options);
 
   const updatedPathFiles = updateFilePaths(updatedContentFiles, copyFrom, copyTo);
-  console.log(copyTo);
   try {
     await createFiles(updatedPathFiles);
     console.log("All files created successfully!");
