@@ -63,7 +63,12 @@ function replaceWidgetName(files, newName) {
 function updateFilePaths(files, sourceDir, destDir, newName) {
   return files.map((file) => {
     let newPath = file.path.replace(sourceDir, destDir);
-    newPath = newPath.replace(/my_widget/g, newName); // Replace folder name
+    
+    // Check if path has the structure 'src/my_widget'
+    if (newPath.includes('src/my_widget')) {
+      newPath = newPath.replace(/src\/my_widget/g, 'src/' + newName);
+    }
+
     file.path = newPath;
     return file;
   });
