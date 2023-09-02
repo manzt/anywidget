@@ -18,17 +18,3 @@ dev = [
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
 features = ["dev"]
-
-[tool.hatch.build]
-artifacts = ["src/my_widget/widget.js"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/my_widget/widget.js"]
-skip-if-exists = ["src/my_widget/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
