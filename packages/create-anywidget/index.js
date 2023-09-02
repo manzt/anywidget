@@ -82,8 +82,8 @@ let template = await p.select({
 			{
 				label: "JSDoc TypeScript",
 				hint: "Deno project. No bundler, requires CDN-only imports. You probably don't want this.",
-				value: "template-vanilla-deno-jsdoc"
-			}
+				value: "template-vanilla-deno-jsdoc",
+			},
 		],
 		react: [
 			{

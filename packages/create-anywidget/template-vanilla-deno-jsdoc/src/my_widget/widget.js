@@ -1,4 +1,4 @@
-import confetti from "https://esm.sh/canvas-confetti@1.6.0"
+import confetti from "https://esm.sh/canvas-confetti@1.6.0";
 
 /** @typedef {{ value: number }} Model */
 
