@@ -1,10 +1,5 @@
-node_modules
 dist
 
 # Python
 __pycache__
 .ipynb_checkpoints
-
-# Build files
-src/**/*.js
-src/**/*.css
