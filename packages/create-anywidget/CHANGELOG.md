@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.1.1
+
+### Patch Changes
+
+- fix: ensure assets are checked in for JDoc template ([#251](https://github.com/manzt/anywidget/pull/251))
+
 ## 0.1.0
 
 ### Minor Changes
