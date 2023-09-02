@@ -64,7 +64,7 @@ let options = await p.group(
 						// @ts-expect-error not sure why this is complaining
 						value: path.resolve(__dirname, "template-react"),
 					},
-				]
+				],
 			}),
 	},
 	{ onCancel: () => process.exit(1) },
