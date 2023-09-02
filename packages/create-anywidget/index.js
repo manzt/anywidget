@@ -50,7 +50,7 @@ let framework = await p.select({
 	options: [
 		{
 			label: "Vanilla",
-			hint: "No dependencies",
+			hint: "No framework, just JS and CSS.",
 			value: "vanilla",
 		},
 		{
@@ -72,20 +72,21 @@ let template = await p.select({
 		vanilla: [
 			{
 				label: "JavaScript",
-				hint: "Plain JavaScript",
 				value: "template-vanilla",
 			},
 			{
 				label: "TypeScript",
-				hint: "TypeScript",
 				value: "template-vanilla-ts",
 			}
 		],
 		react: [
 			{
 				label: "JavaScript",
-				hint: "Plain JavaScript (JSX)",
 				value: "template-react",
+			},
+			{
+				label: "TypeScript",
+				value: "template-react-ts",
 			}
 		]
 	}[framework],
@@ -105,9 +106,10 @@ let writtenPaths = await create(cwd, {
 
 p.outro("Your project is ready!");
 
-for (const path of writtenPaths) {
-  console.log(`  ${bold(path)}`);
-}
+// TODO: should we print the files?
+// for (const path of writtenPaths) {
+//   console.log(`  ${bold(path)}`);
+// }
 
 console.log("\nNext steps:");
 let i = 1;
