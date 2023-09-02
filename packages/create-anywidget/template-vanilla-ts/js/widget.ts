@@ -1,8 +1,9 @@
 import "./styles.css";
 
-export function render(
-	{ model, el }: import("@anywidget/types").RenderContext,
-) {
+export function render({
+	model,
+	el,
+}: import("@anywidget/types").RenderContext) {
 	let btn = document.createElement("button");
 	btn.innerHTML = `count is ${model.get("value")}`;
 	btn.addEventListener("click", () => {

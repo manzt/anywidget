@@ -58,7 +58,7 @@ let framework = await p.select({
 			hint: "React with JSX",
 			value: "react",
 		},
-	]
+	],
 });
 
 if (p.isCancel(framework)) {
@@ -77,7 +77,7 @@ let template = await p.select({
 			{
 				label: "TypeScript",
 				value: "template-vanilla-ts",
-			}
+			},
 		],
 		react: [
 			{
@@ -87,10 +87,10 @@ let template = await p.select({
 			{
 				label: "TypeScript",
 				value: "template-react-ts",
-			}
-		]
+			},
+		],
 	}[framework],
-})
+});
 
 if (p.isCancel(template)) {
 	process.exit(1);
