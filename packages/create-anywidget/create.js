@@ -7,20 +7,20 @@ export async function create(target, options) {
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
   const copyFrom = path.resolve(__dirname, options.template);
   const copyTo = target;
-  const newName = snakecase(options.name); 
+  const newName = snakecase(options.name);
 
   const allFiles = await gatherFiles(copyFrom);
   const updatedFiles = renameGitignore(allFiles);
-  const updatedContentFiles = replaceWidgetName(updatedFiles, newName); // Pass newName as argument
-  const updatedPathFiles = updateFilePaths(updatedContentFiles, copyFrom, copyTo, newName); // Pass newName as argument
+  const updatedContentFiles = replaceWidgetName(updatedFiles, newName);
+  const updatedPathFiles = updateFilePaths(
+    updatedContentFiles,
+    copyFrom,
+    copyTo,
+    newName
+  );
 
-  console.log(copyTo);
-  try {
-    await createFiles(updatedPathFiles);
-    console.log("All files created successfully!");
-  } catch (err) {
-    console.error("Error writing files:", err);
-  }
+  await writeFiles(updatedPathFiles);
+  return updatedPathFiles.map((file) => file.path);
 }
 
 async function gatherFiles(startDir) {
@@ -63,10 +63,10 @@ function replaceWidgetName(files, newName) {
 function updateFilePaths(files, sourceDir, destDir, newName) {
   return files.map((file) => {
     let newPath = file.path.replace(sourceDir, destDir);
-    
+
     // Check if path has the structure 'src/my_widget'
-    if (newPath.includes('src/my_widget')) {
-      newPath = newPath.replace(/src\/my_widget/g, 'src/' + newName);
+    if (newPath.includes("src/my_widget")) {
+      newPath = newPath.replace(/src\/my_widget/g, "src/" + newName);
     }
 
     file.path = newPath;
@@ -79,7 +79,6 @@ async function createFiles(files) {
     await fs.mkdir(path.dirname(file.path), { recursive: true });
     // Write (or overwrite) the file
     await fs.writeFile(file.path, file.content, "utf-8");
-    console.log(`Created: ${file.path}`);
   });
 
   await Promise.all(writePromises);

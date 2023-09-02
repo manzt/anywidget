@@ -35,8 +35,7 @@ if (cwd === ".") {
 if (fs.existsSync(cwd)) {
   if (fs.readdirSync(cwd).length > 0) {
     let force = await p.confirm({
-      message:
-        "Directory not empty. Continue? No files will be overwritten, and the git archive won't be touched.",
+      message: "Directory not empty. Continue?",
       initialValue: false,
     });
     // bail if `force` is `false` or the user cancelled with Ctrl-C
@@ -69,10 +68,16 @@ const options = await p.group(
   { onCancel: () => process.exit(1) }
 );
 
-await create(cwd, {
-	name: path.basename(path.resolve(cwd)),
-  template: /** @type {'react'} */ (options.template),
-});
+try {
+  const writtenPaths = await create(cwd, {
+    name: path.basename(path.resolve(cwd)),
+    template: /** @type {'react'} */ (options.template),
+  });
+  console.log("All files created successfully:", writtenPaths);
+} catch (err) {
+  console.error("Error writing files:", err);
+  process.exit(1);
+}
 
 p.outro("Your project is ready!");
 
