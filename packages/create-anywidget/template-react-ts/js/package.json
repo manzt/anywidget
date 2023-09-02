@@ -1,8 +1,7 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild --minify --format=esm --bundle --outdir=../src/my_widget widget.tsx",
-		"lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+		"build": "esbuild --minify --format=esm --bundle --outdir=../src/my_widget src/widget.tsx"
 	},
 	"dependencies": {
 		"@anywidget/react": "^0.0.2",
