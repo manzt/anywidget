@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.1.2
+
+### Patch Changes
+
+- fix: paths for tsconfig.json ([#253](https://github.com/manzt/anywidget/pull/253))
+
 ## 0.1.1
 
 ### Patch Changes
