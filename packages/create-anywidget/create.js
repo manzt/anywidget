@@ -82,5 +82,5 @@ async function createFiles(files) {
     console.log(`Created: ${file.path}`);
   });
 
-  return Promise.all(writePromises);
+  await Promise.all(writePromises);
 }

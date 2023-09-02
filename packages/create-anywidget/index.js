@@ -89,7 +89,7 @@ console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
 // prettier-ignore
 console.log(
 	`  ${i++}: ${
-		bold(cyan('git add -A && git commit -m "add widget infrastructure"'))
+		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
 	} (optional)`,
 );
 
