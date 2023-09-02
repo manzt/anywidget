@@ -71,11 +71,18 @@ let template = await p.select({
 		vanilla: [
 			{
 				label: "JavaScript",
+				hint: "esbuild",
 				value: "template-vanilla",
 			},
 			{
 				label: "TypeScript",
+				hint: "esbuild",
 				value: "template-vanilla-ts",
+			},
+			{
+				label: "JSDoc TypeScript",
+				hint: "Deno project. No bundler, requires CDN-only imports. You probably don't want this.",
+				value: "template-vanilla-deno-jsdoc",
 			},
 		],
 		react: [
@@ -125,11 +132,14 @@ console.log(
 	} (optional)`,
 );
 
-console.log(`  ${i++}: ${bold(cyan("cd js"))}`);
-console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
+if (template !== "template-vanilla-deno-jsdoc") {
+	console.log(`  ${i++}: ${bold(cyan("cd js"))}`);
+	console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
 
-console.log(`  ${i++}: ${bold(cyan("npm run dev"))}`);
-console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
+	console.log(`  ${i++}: ${bold(cyan("npm run dev"))}`);
+	console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
+}
+
 console.log(
 	`\nStuck? Visit us at ${cyan("https://github.com/manzt/anywidget")}`,
 );
