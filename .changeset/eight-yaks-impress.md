@@ -3,3 +3,5 @@
 ---
 
 fix: safely write and rename files within an existing `.git` directory
+
+Thank you @kolibril13!
