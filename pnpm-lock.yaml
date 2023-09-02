@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -121,7 +121,7 @@ importers:
 
   packages/create-anywidget:
     dependencies:
-      "@clack/prompts":
+      '@clack/prompts':
         specifier: ^0.6.3
         version: 0.6.3
       just-snake-case:
@@ -131,55 +131,11 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
-  packages/create-anywidget/foo/js:
-    dependencies:
-      "@anywidget/react":
-        specifier: ^0.0.1
-        version: link:../../../react
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      "@types/react":
-        specifier: ^18.2.14
-        version: 18.2.15
-      "@types/react-dom":
-        specifier: ^18.2.6
-        version: 18.2.7
-      esbuild:
-        specifier: ^0.18.14
-        version: 0.18.15
-
-  packages/create-anywidget/my-widget/js:
-    dependencies:
-      "@anywidget/react":
-        specifier: ^0.0.1
-        version: link:../../../react
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      "@types/react":
-        specifier: ^18.2.14
-        version: 18.2.15
-      "@types/react-dom":
-        specifier: ^18.2.6
-        version: 18.2.7
-      esbuild:
-        specifier: ^0.18.14
-        version: 0.18.15
-
   packages/create-anywidget/template-react/js:
     dependencies:
-      "@anywidget/react":
+      '@anywidget/react':
         specifier: ^0.0.1
-        version: link:../../../react
+        version: 0.0.1(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -187,15 +143,15 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      "@types/react":
+      '@types/react':
         specifier: ^18.2.14
-        version: 18.2.15
-      "@types/react-dom":
+        version: 18.2.21
+      '@types/react-dom':
         specifier: ^18.2.6
         version: 18.2.7
       esbuild:
         specifier: ^0.18.14
-        version: 0.18.15
+        version: 0.18.19
 
   packages/react:
     dependencies:
@@ -382,6 +338,25 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
+
+  /@anywidget/react@0.0.1(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-IcogcHW218q63k99lIK8Diih2yw7YNKW/JM5GtSjD3I1HYGtZQvAbTNGdxD1OWBt0uvk7IuuWxJ1jRGRYNix9g==}
+    peerDependencies:
+      '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@anywidget/types': 0.1.4
+      '@types/react': 18.2.21
+      '@types/react-dom': 18.2.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@anywidget/types@0.1.4:
+    resolution: {integrity: sha512-EBkIWOfSPX2nYsZK5PjmuyFLv0pJu/zyqDMmNB7ed+wePE7dwubgHiPiLY20BPJ4ihtXEH7hqYgDkmGUKEMVjw==}
+    dev: false
 
   /@astrojs/compiler@1.6.0:
     resolution: {integrity: sha512-vxuzp09jAW/ZQ8C4Itf6/OsF76TNjBQC06FNpcayKOzxYkCGHTLh7+0lF4ywmG/fDgSc+f1x7kKxxEKl4nqXvQ==}
@@ -935,22 +910,16 @@ packages:
     dev: true
 
   /@clack/core@0.3.2:
-    resolution:
-      {
-        integrity: sha512-FZnsNynwGDIDktx6PEZK1EuCkFpY4ldEX6VYvfl0dqeoLPb9Jpw1xoUXaVcGR8ExmYNm1w2vdGdJkEUYD/2pqg==,
-      }
+    resolution: {integrity: sha512-FZnsNynwGDIDktx6PEZK1EuCkFpY4ldEX6VYvfl0dqeoLPb9Jpw1xoUXaVcGR8ExmYNm1w2vdGdJkEUYD/2pqg==}
     dependencies:
       picocolors: 1.0.0
       sisteransi: 1.0.5
     dev: false
 
   /@clack/prompts@0.6.3:
-    resolution:
-      {
-        integrity: sha512-AM+kFmAHawpUQv2q9+mcB6jLKxXGjgu/r2EQjEwujgpCdzrST6BJqYw00GRn56/L/Izw5U7ImoLmy00X/r80Pw==,
-      }
+    resolution: {integrity: sha512-AM+kFmAHawpUQv2q9+mcB6jLKxXGjgu/r2EQjEwujgpCdzrST6BJqYw00GRn56/L/Izw5U7ImoLmy00X/r80Pw==}
     dependencies:
-      "@clack/core": 0.3.2
+      '@clack/core': 0.3.2
       picocolors: 1.0.0
       sisteransi: 1.0.5
     dev: false
@@ -2404,7 +2373,6 @@ packages:
     resolution: {integrity: sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==}
     dependencies:
       '@types/react': 18.2.21
-    dev: true
 
   /@types/react@18.2.21:
     resolution: {integrity: sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==}
@@ -4940,10 +4908,7 @@ packages:
     dev: true
 
   /just-snake-case@3.2.0:
-    resolution:
-      {
-        integrity: sha512-iugHP9bSE0jOq3BzN0W0rdu/OOkFirPe8FtUw6v9y37UlbUDgJ1x4xiGNfUhI6mV9dc/paaifyiyn+F+mrm8gw==,
-      }
+    resolution: {integrity: sha512-iugHP9bSE0jOq3BzN0W0rdu/OOkFirPe8FtUw6v9y37UlbUDgJ1x4xiGNfUhI6mV9dc/paaifyiyn+F+mrm8gw==}
     dev: false
 
   /kind-of@6.0.3:
