@@ -1,70 +1,85 @@
-// @ts-check
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as url from "node:url";
-
 import snakecase from "just-snake-case";
 
-let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-/** @param {string} root */
-async function* walk(root) {
-	for (let entry of await fs.readdir(root, { withFileTypes: true })) {
-		if (entry.isFile()) {
-			yield {
-				type: "file",
-				path: path.resolve(root, entry.name),
-			};
-		} else if (entry.isDirectory()) {
-			yield {
-				type: "directory",
-				path: path.resolve(root, entry.name),
-			};
-			yield* walk(path.resolve(root, entry.name));
-		} else {
-			throw Error("unknown type");
-		}
-	}
-}
-
-/**
- * @param {string} root
- * @param {string} old_name
- * @param {string} new_name
- */
-async function walk_and_rename(root, old_name, new_name) {
-	let entries = await fs.readdir(root, { withFileTypes: true });
-	for (let entry of entries) {
-		let current_path = path.join(root, entry.name);
-		if (entry.isDirectory()) {
-			if (entry.name === old_name) {
-				let new_path = path.join(root, new_name);
-				await fs.rename(current_path, new_path);
-				current_path = new_path;
-			}
-			await walk_and_rename(current_path, old_name, new_name);
-		} else if (entry.isFile()) {
-			if (entry.name === "_gitignore") {
-				let new_path = current_path.replace("_gitignore", ".gitignore");
-				await fs.rename(current_path, new_path);
-				current_path = new_path;
-			}
-			let content = await fs.readFile(current_path, "utf-8");
-			content = content.replace(new RegExp(old_name, "g"), new_name);
-			await fs.writeFile(current_path, content, "utf8");
-		} else {
-			throw Error("unknown type");
-		}
-	}
-}
-
-/**
- * @param {string} target
- * @param {Record<string, any>} options
- */
 export async function create(target, options) {
-	await fs.cp(path.resolve(__dirname, options.template), target, {
-		recursive: true,
-	});
-	await walk_and_rename(target, "my_widget", snakecase(options.name));
+  const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+  const copyFrom = path.resolve(__dirname, options.template);
+  const copyTo = target;
+  const newName = snakecase(options.name);
+
+  const allFiles = await gatherFiles(copyFrom);
+  const updatedFiles = renameGitignore(allFiles);
+  const updatedContentFiles = replaceWidgetName(updatedFiles, newName);
+  const updatedPathFiles = updateFilePaths(
+    updatedContentFiles,
+    copyFrom,
+    copyTo,
+    newName
+  );
+
+  await createFiles(updatedPathFiles);
+  return updatedPathFiles.map((file) => file.path);
+}
+
+async function gatherFiles(startDir) {
+  const results = [];
+
+  async function walk(dir) {
+    const files = await fs.readdir(dir);
+    for (const file of files) {
+      const entry = path.join(dir, file);
+      const stats = await fs.stat(entry);
+
+      if (stats.isDirectory()) {
+        await walk(entry);
+      } else {
+        const content = await fs.readFile(entry, "utf-8");
+        results.push({ content, path: entry });
+      }
+    }
+  }
+  await walk(startDir);
+  return results;
+}
+
+function renameGitignore(files) {
+  return files.map((file) => {
+    if (path.basename(file.path) === "_gitignore") {
+      file.path = path.join(path.dirname(file.path), ".gitignore");
+    }
+    return file;
+  });
+}
+
+function replaceWidgetName(files, newName) {
+  return files.map((file) => {
+    file.content = file.content.replace(/my_widget/g, newName);
+    return file;
+  });
+}
+
+function updateFilePaths(files, sourceDir, destDir, newName) {
+  return files.map((file) => {
+    let newPath = file.path.replace(sourceDir, destDir);
+
+    // Check if path has the structure 'src/my_widget'
+    if (newPath.includes("src/my_widget")) {
+      newPath = newPath.replace(/src\/my_widget/g, "src/" + newName);
+    }
+
+    file.path = newPath;
+    return file;
+  });
+}
+
+async function createFiles(files) {
+  const writePromises = files.map(async (file) => {
+    await fs.mkdir(path.dirname(file.path), { recursive: true });
+    // Write (or overwrite) the file
+    await fs.writeFile(file.path, file.content, "utf-8");
+  });
+
+  await Promise.all(writePromises);
 }
