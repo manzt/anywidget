@@ -5,13 +5,11 @@
 		"lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0"
 	},
 	"dependencies": {
-		"@anywidget/react": "^0.0.1",
+		"@anywidget/react": "workspace:^",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@types/react": "^18.2.14",
-		"@types/react-dom": "^18.2.6",
-		"esbuild": "^0.18.14"
+		"esbuild": "^0.19.2"
 	}
 }
