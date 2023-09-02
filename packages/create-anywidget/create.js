@@ -19,7 +19,7 @@ export async function create(target, options) {
     newName
   );
 
-  await writeFiles(updatedPathFiles);
+  await createFiles(updatedPathFiles);
   return updatedPathFiles.map((file) => file.path);
 }
 
