@@ -21,72 +21,93 @@ ${grey(`create-anywidget version ${pkg.version}`)}
 p.intro("Welcome to anywidget!");
 
 if (cwd === ".") {
-	const dir = await p.text({
+	let dir = await p.text({
 		message: "Where should we create your project?",
 		placeholder: "  (hit Enter to use current directory)",
 	});
-	if (p.isCancel(dir)) process.exit(1);
+	if (p.isCancel(dir)) {
+		process.exit(1);
+	}
 	if (dir) {
-		cwd = /** @type {string} */ (dir);
+		cwd = dir;
 	}
 }
 
-if (fs.existsSync(cwd)) {
-	if (fs.readdirSync(cwd).length > 0) {
-		let force = await p.confirm({
-			message: "Directory not empty. Continue?",
-			initialValue: false,
-		});
-		// bail if `force` is `false` or the user cancelled with Ctrl-C
-		if (force !== true) {
-			process.exit(1);
-		}
-	}
-}
-
-let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-let options = await p.group(
-	{
-		template: () =>
-			p.select({
-				message: "Which anywidget template?",
-				options: [
-					{
-						label: "Vanilla",
-						hint: "A vanilla anywidget template",
-						// @ts-expect-error not sure why this is complaining
-						value: path.resolve(__dirname, "template-vanilla"),
-					},
-					{
-						label: "React",
-						hint: "A React anywidget template",
-						// @ts-expect-error not sure why this is complaining
-						value: path.resolve(__dirname, "template-react"),
-					},
-				],
-			}),
-	},
-	{ onCancel: () => process.exit(1) },
-);
-
-let writtenPaths;
-try {
-	writtenPaths = await create(cwd, {
-		name: path.basename(path.resolve(cwd)),
-		template: /** @type {'react'} */ (options.template),
+if (fs.existsSync(cwd) && fs.readdirSync(cwd).length > 0) {
+	let force = await p.confirm({
+		message: "Directory not empty. Continue?",
+		initialValue: false,
 	});
-} catch (err) {
-	console.error("Error writing files:", err);
+	// bail if `force` is `false` or the user cancelled with Ctrl-C
+	if (force !== true) {
+		process.exit(1);
+	}
+}
+
+/** @type { "vanilla" | "react"  | symbol } */
+let framework = await p.select({
+	message: "Which framework?",
+	options: [
+		{
+			label: "Vanilla",
+			hint: "No dependencies",
+			value: "vanilla",
+		},
+		{
+			label: "React",
+			hint: "React with JSX",
+			value: "react",
+		},
+	]
+});
+
+if (p.isCancel(framework)) {
 	process.exit(1);
 }
 
+/** @type { string | symbol } */
+let template = await p.select({
+	message: "Which variant?",
+	options: {
+		vanilla: [
+			{
+				label: "JavaScript",
+				hint: "Plain JavaScript",
+				value: "template-vanilla",
+			},
+			{
+				label: "TypeScript",
+				hint: "TypeScript",
+				value: "template-vanilla-ts",
+			}
+		],
+		react: [
+			{
+				label: "JavaScript",
+				hint: "Plain JavaScript (JSX)",
+				value: "template-react",
+			}
+		]
+	}[framework],
+})
+
+if (p.isCancel(template)) {
+	process.exit(1);
+}
+
+let writtenPaths = await create(cwd, {
+	name: path.basename(path.resolve(cwd)),
+	template: template,
+}).catch((err) => {
+	console.error("Error writing files:", err);
+	process.exit(1);
+});
+
 p.outro("Your project is ready!");
 
-// TODO: Print the files?
-// for (const path of writtenPaths) {
-//   console.log(`  ${bold(path)}`);
-// }
+for (const path of writtenPaths) {
+  console.log(`  ${bold(path)}`);
+}
 
 console.log("\nNext steps:");
 let i = 1;

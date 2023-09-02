@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild --minify --format=esm --bundle --outdir=../src/my_widget widget.js",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"esbuild": "^0.18.14",
+		"typescript": "^5.2.2"
+	},
+	"dependencies": {
+		"@anywidget/types": "^0.1.4"
+	}
+}
