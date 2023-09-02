@@ -2,7 +2,6 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import * as url from "node:url";
 import * as p from "@clack/prompts";
 import { bold, cyan, grey } from "kleur/colors";
 

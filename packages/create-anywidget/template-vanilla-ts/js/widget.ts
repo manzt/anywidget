@@ -1,9 +1,13 @@
+import type { RenderContext } from "@anywidget/types";
 import "./styles.css";
 
-export function render({
-	model,
-	el,
-}: import("@anywidget/types").RenderContext) {
+/* Specifies attributes defined with traitlets in ../src/my_widget/__init__.py */
+interface WidgetModel {
+	value: number;
+	/* Add your own */
+}
+
+export function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
 	btn.innerHTML = `count is ${model.get("value")}`;
 	btn.addEventListener("click", () => {
