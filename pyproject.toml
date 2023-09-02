@@ -93,6 +93,7 @@ test = "pytest . --cov anywidget --cov-report term-missing"
 line-length = 88
 target-version = "py37"
 src = ["anywidget", "tests"]
+exclude = ["packages"]
 extend-select = [
     "E",    # style errors
     "F",    # flakes

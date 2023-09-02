@@ -30,7 +30,7 @@ repos:
         # so with a more minimal environment here than the IDE
         # we allow "unused" type ignore comments
         args: [--no-warn-unused-ignores]
-        exclude: tests|docs
+        exclude: tests|docs|packages
         # packages in the pre-commit env will determine what can be type checked
         # it does NOT automatically include all packages required by the project
         additional_dependencies:
