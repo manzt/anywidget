@@ -16,7 +16,9 @@ export async function create(target, options) {
 	const newName = snakecase(options.name);
 
 	const allFiles = await gatherFiles(copyFrom);
-	const updatedFiles = renameGitignore(allFiles);
+	const updatedFiles = renameFiles(allFiles, {
+		"_gitignore": ".gitignore",
+	});
 	const updatedContentFiles = replaceWidgetName(updatedFiles, newName);
 	const updatedPathFiles = updateFilePaths(
 		updatedContentFiles,
@@ -55,12 +57,16 @@ async function gatherFiles(startDir) {
 
 /**
  * @param {File[]} files
+ * @param {Record<string, string>} replacements
  * @returns {File[]}
  */
-function renameGitignore(files) {
+function renameFiles(files, replacements) {
 	return files.map((file) => {
-		if (path.basename(file.path) === "_gitignore") {
-			file.path = path.join(path.dirname(file.path), ".gitignore");
+		if (path.basename(file.path) in replacements) {
+			file.path = path.join(
+				path.dirname(file.path),
+				replacements[path.basename(file.path)],
+			);
 		}
 		return file;
 	});

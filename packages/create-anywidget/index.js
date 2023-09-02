@@ -67,18 +67,23 @@ const options = await p.group(
 	{ onCancel: () => process.exit(1) },
 );
 
+let writtenPaths;
 try {
-	const writtenPaths = await create(cwd, {
+	writtenPaths = await create(cwd, {
 		name: path.basename(path.resolve(cwd)),
 		template: /** @type {'react'} */ (options.template),
 	});
-	console.log("All files created successfully:", writtenPaths);
 } catch (err) {
 	console.error("Error writing files:", err);
 	process.exit(1);
 }
 
 p.outro("Your project is ready!");
+
+// TODO: Print the files?
+// for (const path of writtenPaths) {
+// 	console.log(`  ${bold(path)}`);
+// }
 
 console.log("\nNext steps:");
 let i = 1;
@@ -88,14 +93,15 @@ if (relative !== "") {
 	console.log(`  ${i++}: ${bold(cyan(`cd ${relative}`))}`);
 }
 
-console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
-
 // prettier-ignore
 console.log(
 	`  ${i++}: ${
 		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
 	} (optional)`,
 );
+
+console.log(`  ${i++}: ${bold(cyan("cd js"))}`);
+console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
 
 console.log(`  ${i++}: ${bold(cyan("npm run dev"))}`);
 console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
