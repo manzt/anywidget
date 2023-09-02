@@ -45,23 +45,26 @@ if (fs.existsSync(cwd)) {
 }
 
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-const options = await p.group(
+
+let options = await p.group(
 	{
 		template: () =>
 			p.select({
 				message: "Which anywidget template?",
-				// @ts-expect-error i have no idea what is going on here
-				options: fs
-					.readdirSync(__dirname)
-					.filter((dir) => dir.startsWith("template-"))
-					.map((dir) => {
-						let title = dir.replace(/^template-/, "");
-						return {
-							label: title,
-							hint: `A ${title} anywidget template`,
-							value: dir,
-						};
-					}),
+				options: [
+					{
+						label: "Vanilla",
+						hint: "A vanilla anywidget template",
+						// @ts-expect-error not sure why this is complaining
+						value: path.resolve(__dirname, "template-vanilla"),
+					},
+					{
+						label: "React",
+						hint: "A React anywidget template",
+						// @ts-expect-error not sure why this is complaining
+						value: path.resolve(__dirname, "template-react"),
+					},
+				]
 			}),
 	},
 	{ onCancel: () => process.exit(1) },
@@ -82,7 +85,7 @@ p.outro("Your project is ready!");
 
 // TODO: Print the files?
 // for (const path of writtenPaths) {
-// 	console.log(`  ${bold(path)}`);
+//   console.log(`  ${bold(path)}`);
 // }
 
 console.log("\nNext steps:");

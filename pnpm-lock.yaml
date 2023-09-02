@@ -55,8 +55,8 @@ importers:
   packages/create-anywidget:
     dependencies:
       '@clack/prompts':
-        specifier: ^0.6.3
-        version: 0.6.3
+        specifier: ^0.7.0
+        version: 0.7.0
       just-snake-case:
         specifier: ^3.2.0
         version: 3.2.0
@@ -336,17 +336,17 @@ packages:
       prettier: 2.8.8
     dev: true
 
-  /@clack/core@0.3.2:
-    resolution: {integrity: sha512-FZnsNynwGDIDktx6PEZK1EuCkFpY4ldEX6VYvfl0dqeoLPb9Jpw1xoUXaVcGR8ExmYNm1w2vdGdJkEUYD/2pqg==}
+  /@clack/core@0.3.3:
+    resolution: {integrity: sha512-5ZGyb75BUBjlll6eOa1m/IZBxwk91dooBWhPSL67sWcLS0zt9SnswRL0l26TVdBhb0wnWORRxUn//uH6n4z7+A==}
     dependencies:
       picocolors: 1.0.0
       sisteransi: 1.0.5
     dev: false
 
-  /@clack/prompts@0.6.3:
-    resolution: {integrity: sha512-AM+kFmAHawpUQv2q9+mcB6jLKxXGjgu/r2EQjEwujgpCdzrST6BJqYw00GRn56/L/Izw5U7ImoLmy00X/r80Pw==}
+  /@clack/prompts@0.7.0:
+    resolution: {integrity: sha512-0MhX9/B4iL6Re04jPrttDm+BsP8y6mS7byuv0BvXgdXhbV5PdlsHt55dvNsuBCPZ7xq1oTAOOuotR9NFbQyMSA==}
     dependencies:
-      '@clack/core': 0.3.2
+      '@clack/core': 0.3.3
       picocolors: 1.0.0
       sisteransi: 1.0.5
     dev: false
