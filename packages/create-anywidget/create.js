@@ -17,7 +17,7 @@ export async function create(target, options) {
 
 	const allFiles = await gatherFiles(copyFrom);
 	const updatedFiles = renameFiles(allFiles, {
-		"_gitignore": ".gitignore",
+		_gitignore: ".gitignore",
 	});
 	const updatedContentFiles = replaceWidgetName(updatedFiles, newName);
 	const updatedPathFiles = updateFilePaths(
