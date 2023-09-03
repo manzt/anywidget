@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.2.0
+
+### Minor Changes
+
+- feat: move `package.json` to template root directories ([#256](https://github.com/manzt/anywidget/pull/256))
+
+  This makes it more ergonomic to install JavaScript dependencies and start the development server.
+
 ## 0.1.3
 
 ### Patch Changes
