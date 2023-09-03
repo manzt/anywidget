@@ -209,7 +209,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 
 function get_tsconfig() {
 	return json_dumps({
-		"include": ["src"],
+		"include": ["js"],
 		"compilerOptions": {
 			"target": "ES2020",
 			"module": "ESNext",
@@ -235,42 +235,42 @@ function get_tsconfig() {
 
 const esbuild_templates = {
 	"template-react": {
-		entry_point: "js/src/widget.jsx",
+		entry_point: "js/widget.jsx",
 		files: [
-			{ path: "js/src/widget.jsx", render: widget_react },
-			{ path: "js/src/styles.css", render: styles },
+			{ path: "js/widget.jsx", render: widget_react },
+			{ path: "js/styles.css", render: styles },
 		],
 		dependencies: ["@anywidget/react", "react", "react-dom"],
 		dev_dependencies: [],
 	},
 	"template-react-ts": {
-		entry_point: "js/src/widget.tsx",
+		entry_point: "js/widget.tsx",
 		files: [
-			{ path: "js/src/widget.tsx", render: widget_react_ts },
-			{ path: "js/src/styles.css", render: styles },
-			{ path: "js/tsconfig.json", render: get_tsconfig },
+			{ path: "js/widget.tsx", render: widget_react_ts },
+			{ path: "js/styles.css", render: styles },
+			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: ["@anywidget/react", "react", "react-dom"],
 		dev_dependencies: ["@types/react", "@types/react-dom", "typescript"],
 	},
 	"template-vanilla": {
-		entry_point: "js/src/widget.js",
+		entry_point: "js/widget.js",
 		files: [
-			{ path: "js/src/widget.js", render: widget_vanilla },
-			{ path: "js/src/styles.css", render: styles },
+			{ path: "js/widget.js", render: widget_vanilla },
+			{ path: "js/styles.css", render: styles },
 		],
 		dependencies: [],
 		dev_dependencies: [],
 	},
 	"template-vanilla-ts": {
-		entry_point: "js/src/widget.ts",
+		entry_point: "js/widget.ts",
 		files: [
-			{ path: "js/src/widget.ts", render: widget_vanilla_ts },
-			{ path: "js/src/styles.css", render: styles },
-			{ path: "js/tsconfig.json", render: get_tsconfig },
+			{ path: "js/widget.ts", render: widget_vanilla_ts },
+			{ path: "js/styles.css", render: styles },
+			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: [],
-		dev_dependencies: ["@types/anywidget", "typescript"],
+		dev_dependencies: ["@anywidget/types", "typescript"],
 	},
 };
 
@@ -315,7 +315,7 @@ async function gather_esbuild_template_files(type, name) {
 			build:
 				`esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
 			...(ts_config_path
-				? { typecheck: `tsc --noEmit --project ${ts_config_path}` }
+				? { typecheck: `tsc --noEmit` }
 				: {}),
 		},
 		dependencies: gather_dependencies(template.dependencies),
