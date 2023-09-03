@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.3.0
+
+### Minor Changes
+
+- feat: unify templating system within `create.js` ([#263](https://github.com/manzt/anywidget/pull/263))
+
+  Allows for more dynamic templates and sharing of common Python setup between templates.
+
 ## 0.2.1
 
 ### Patch Changes
