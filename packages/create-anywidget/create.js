@@ -276,11 +276,10 @@ const esbuild_templates = {
 };
 
 /**
- * @param {keyof esbuild_templates} type
+ * @param {typeof esbuild_templates[keyof esbuild_templates]} template
  * @param {string} name
  */
-async function gather_esbuild_template_files(type, name) {
-	let template = esbuild_templates[type];
+async function render_template(template, name) {
 	let build_dir = `src/${name}/static`;
 	let rook_pkg = await fs
 		.readFile(path.join(__dirname, "package.json"), "utf-8")
@@ -379,10 +378,10 @@ export function render({ model, el }) {
 `;
 
 /**
- * @param {keyof esbuild_templates | "template-vanilla-deno-jsdoc"} type
+ * @param {TemplateType} type
  * @param {string} name
  */
-export async function gather_files(type, name) {
+async function gather_files(type, name) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
 			{ path: `README.md`, content: readme(name) },
@@ -394,7 +393,10 @@ export async function gather_files(type, name) {
 			{ path: `src/${name}/static/styles.css`, content: styles(name) },
 		];
 	}
-	return gather_esbuild_template_files(type, name);
+	if (type in esbuild_templates) {
+		return render_template(esbuild_templates[type], name);
+	}
+	throw new Error(`Unknown template type: ${type}`);
 }
 
 /** @typedef {{ content: string, path: string }} File */
