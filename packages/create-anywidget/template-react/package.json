@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild --minify --format=esm --bundle --outdir=../src/my_widget src/widget.tsx"
+		"build": "esbuild --minify --format=esm --bundle --outdir=src/my_widget widget.jsx"
 	},
 	"dependencies": {
 		"@anywidget/react": "^0.0.2",
@@ -9,8 +9,6 @@
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@types/react": "^18.2.21",
-		"@types/react-dom": "^18.2.7",
 		"esbuild": "^0.19.2"
 	}
 }

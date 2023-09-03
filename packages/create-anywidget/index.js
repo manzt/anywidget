@@ -132,7 +132,6 @@ console.log(
 );
 
 if (template !== "template-vanilla-deno-jsdoc") {
-	console.log(`  ${i++}: ${bold(cyan("cd js"))}`);
 	console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
 
 	console.log(`  ${i++}: ${bold(cyan("npm run dev"))}`);
