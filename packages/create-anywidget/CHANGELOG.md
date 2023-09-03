@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.2.1
+
+### Patch Changes
+
+- feat: use `src/my_widget/static` directory for build assets ([`6e2cc42`](https://github.com/manzt/anywidget/commit/6e2cc42da5893576eb3007455966ad9fa709fe9c))
+
+- fix: point esbuild to source in js folder ([#260](https://github.com/manzt/anywidget/pull/260))
+
 ## 0.2.0
 
 ### Minor Changes
