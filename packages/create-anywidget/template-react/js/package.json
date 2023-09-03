@@ -4,7 +4,7 @@
 		"build": "esbuild --minify --format=esm --bundle --outdir=../src/my_widget widget.jsx"
 	},
 	"dependencies": {
-		"@anywidget/react": "workspace:^",
+		"@anywidget/react": "^0.0.2",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
