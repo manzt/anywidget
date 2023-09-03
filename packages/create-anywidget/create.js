@@ -32,7 +32,8 @@ features = ["dev"]
 
 /** @param {string} name */
 let pyproject_toml_with_hatch_jupyter_builder = (name) =>
-	pyproject_toml(name) + `\n
+	pyproject_toml(name) +
+	`\n
 [tool.hatch.build]
 artifacts = ["src/${name}/static/*"]
 
@@ -209,26 +210,26 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 
 function get_tsconfig() {
 	return json_dumps({
-		"include": ["js"],
-		"compilerOptions": {
-			"target": "ES2020",
-			"module": "ESNext",
-			"lib": ["ES2020", "DOM", "DOM.Iterable"],
-			"skipLibCheck": true,
+		include: ["js"],
+		compilerOptions: {
+			target: "ES2020",
+			module: "ESNext",
+			lib: ["ES2020", "DOM", "DOM.Iterable"],
+			skipLibCheck: true,
 
 			/* Bundler mode */
-			"moduleResolution": "bundler",
-			"allowImportingTsExtensions": true,
-			"resolveJsonModule": true,
-			"isolatedModules": true,
-			"noEmit": true,
-			"jsx": "react",
+			moduleResolution: "bundler",
+			allowImportingTsExtensions: true,
+			resolveJsonModule: true,
+			isolatedModules: true,
+			noEmit: true,
+			jsx: "react",
 
 			/* Linting */
-			"strict": true,
-			"noUnusedLocals": true,
-			"noUnusedParameters": true,
-			"noFallthroughCasesInSwitch": true,
+			strict: true,
+			noUnusedLocals: true,
+			noUnusedParameters: true,
+			noFallthroughCasesInSwitch: true,
 		},
 	});
 }
@@ -281,10 +282,9 @@ const esbuild_templates = {
 async function gather_esbuild_template_files(type, name) {
 	let template = esbuild_templates[type];
 	let build_dir = `src/${name}/static`;
-	let rook_pkg = await fs.readFile(
-		path.join(__dirname, "package.json"),
-		"utf-8",
-	).then(JSON.parse);
+	let rook_pkg = await fs
+		.readFile(path.join(__dirname, "package.json"), "utf-8")
+		.then(JSON.parse);
 
 	/**
 	 * pnpm will help us keep package versions in sync over time, along with dependabot.
@@ -307,20 +307,17 @@ async function gather_esbuild_template_files(type, name) {
 		return deps;
 	}
 	let ts_config_path = template.files.find((file) =>
-		file.path.includes("tsconfig.json")
+		file.path.includes("tsconfig.json"),
 	)?.path;
 	let package_json = {
 		scripts: {
 			dev: "npm run build -- --sourcemap=inline --watch",
-			build:
-				`esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
-			...(ts_config_path
-				? { typecheck: `tsc --noEmit` }
-				: {}),
+			build: `esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
+			...(ts_config_path ? { typecheck: `tsc --noEmit` } : {}),
 		},
 		dependencies: gather_dependencies(template.dependencies),
 		devDependencies: {
-			"esbuild": rook_pkg.devDependencies.esbuild,
+			esbuild: rook_pkg.devDependencies.esbuild,
 			...gather_dependencies(template.dev_dependencies),
 		},
 	};
@@ -341,18 +338,18 @@ async function gather_esbuild_template_files(type, name) {
 }
 
 let deno_json = {
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+	lock: false,
+	compilerOptions: {
+		checkJs: true,
+		allowJs: true,
+		lib: ["ES2020", "DOM", "DOM.Iterable"],
 	},
-	"fmt": {
-		"useTabs": true,
+	fmt: {
+		useTabs: true,
 	},
-	"lint": {
-		"rules": {
-			"exclude": ["prefer-const"],
+	lint: {
+		rules: {
+			exclude: ["prefer-const"],
 		},
 	},
 };
