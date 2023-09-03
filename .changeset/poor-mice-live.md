@@ -2,4 +2,4 @@
 "create-anywidget": patch
 ---
 
-fix(create-anywidget): point esbuild to js folder
+fix: point esbuild to source in js folder
