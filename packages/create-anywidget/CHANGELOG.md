@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.1.3
+
+### Patch Changes
+
+- fix: ensure templates have correct @anywidget/\* versions ([#257](https://github.com/manzt/anywidget/pull/257))
+
 ## 0.1.2
 
 ### Patch Changes
