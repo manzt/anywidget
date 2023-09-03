@@ -4,6 +4,93 @@ import * as url from "node:url";
 
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
+/** @param {any} obj */
+function json_dumps(obj) {
+	return JSON.stringify(obj, null, "\t");
+}
+
+/** @param {string} name */
+let pyproject_toml = (name) =>
+	`\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "${name}"
+version = "0.0.0"
+dependencies = ["anywidget"]
+
+[project.optional-dependencies]
+dev = ["watchfiles", "jupyterlab"]
+
+# automatically add the dev feature to the default env (e.g., hatch shell)
+[tool.hatch.envs.default]
+features = ["dev"]
+`;
+
+/** @param {string} name */
+let pyproject_toml_with_hatch_jupyter_builder = (name) =>
+	pyproject_toml(name) + `\n
+[tool.hatch.build]
+artifacts = ["src/${name}/static/*"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/${name}/static/widget.js"]
+skip-if-exists = ["src/${name}/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = "npm"
+build_cmd = "build"
+path = "js"
+`;
+
+/** @param {string} name */
+let __init__ = (name) =>
+	`\
+import importlib.metadata
+import pathlib
+
+import anywidget
+import traitlets
+
+try:
+    __version__ = importlib.metadata.version("${name}")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "unknown"
+
+
+class Counter(anywidget.AnyWidget):
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
+    value = traitlets.Int(0).tag(sync=True)
+`;
+
+/** @param {string[]} extras */
+let gitignore = (extras = []) =>
+	`\
+node_modules
+dist
+
+# Python
+__pycache__
+.ipynb_checkpoints
+
+${extras.join("\n")}
+`;
+
+/** @param {string} name */
+let readme = (name) =>
+	`\
+# ${name}
+
+\`\`\`sh
+pip install ${name}
+\`\`\`
+`;
+
 /** @param {string} name */
 let styles = (name) =>
 	`\
@@ -120,7 +207,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 `;
 
 function get_tsconfig() {
-	return {
+	return json_dumps({
 		"include": ["src"],
 		"compilerOptions": {
 			"target": "ES2020",
@@ -142,7 +229,7 @@ function get_tsconfig() {
 			"noUnusedParameters": true,
 			"noFallthroughCasesInSwitch": true,
 		},
-	};
+	});
 }
 
 const esbuild_templates = {
@@ -188,14 +275,14 @@ const esbuild_templates = {
 
 /**
  * @param {keyof esbuild_templates} type
- * @param {string} build_dir
  * @param {string} name
  */
-async function render_esbuild_template(type, build_dir, name) {
+async function gather_esbuild_template_files(type, name) {
+	let template = esbuild_templates[type];
+	let build_dir = `src/${name}/static`;
 	let root_pkg_json = await fs.promises
 		.readFile(path.join(__dirname, "package.json"), "utf-8")
 		.then(JSON.parse);
-
 	/**
 	 * pnpm will help us keep package versions in sync over time, along with dependabot.
 	 * so we lookup the version from there for any dependencies in our templates.
@@ -216,41 +303,97 @@ async function render_esbuild_template(type, build_dir, name) {
 		}
 		return deps;
 	}
-
-	let template = esbuild_templates[type];
-
 	let ts_config_path = template.files.find((file) =>
 		file.path.includes("tsconfig.json")
 	)?.path;
-
 	let package_json = {
 		scripts: {
 			dev: "npm run build -- --sourcemap=inline --watch",
 			build:
 				`esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
-			...(ts_config_path ? { typecheck: `tsc --noEmit --project ${ts_config_path}` } : {}),
+			...(ts_config_path
+				? { typecheck: `tsc --noEmit --project ${ts_config_path}` }
+				: {}),
 		},
 		dependencies: gather_dependencies(template.dependencies),
-		devDependencies: gather_dependencies(template.dev_dependencies),
+		devDependencies: {
+			"esbuild": root_pkg_json.devDependencies.esbuild,
+			...gather_dependencies(template.dev_dependencies),
+		},
 	};
-
-	let files = template.files.map((file) => ({
-		path: file.path,
-		content: file.render(name),
-	}));
-
-	files.push({
-		path: "package.json",
-		content: JSON.stringify(package_json, null, "\t"),
-	});
-
-	return files;
+	return [
+		{ path: `README.md`, content: readme(name) },
+		{ path: `.gitignore`, content: gitignore([`src/${name}/static`]) },
+		{ path: `package.json`, content: json_dumps(package_json) },
+		{
+			path: `pyproject.toml`,
+			content: pyproject_toml_with_hatch_jupyter_builder(name),
+		},
+		{ path: `src/${name}/__init__.py`, content: __init__(name) },
+		...template.files.map((file) => ({
+			path: file.path,
+			content: file.render(name),
+		})),
+	];
 }
 
-console.log(
-	await render_esbuild_template(
-		"template-react-ts",
-		"src/my_widget/static",
-		"react",
-	),
-);
+let deno_json = {
+	"lock": false,
+	"compilerOptions": {
+		"checkJs": true,
+		"allowJs": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+	},
+	"fmt": {
+		"useTabs": true,
+	},
+	"lint": {
+		"rules": {
+			"exclude": ["prefer-const"],
+		},
+	},
+};
+
+/** @param {string} name */
+let widget_esm = (name) =>
+	`\
+import confetti from "https://esm.sh/canvas-confetti@1.6.0";
+
+/** @typedef {{ value: number }} Model */
+
+/** @type {import("npm:@anywidget/types").Render<Model>} */
+export function render({ model, el }) {
+	let btn = document.createElement("button");
+	btn.classList.add("${name}-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
+		model.save_changes();
+	});
+	model.on("change:value", () => {
+		confetti();
+		btn.innerHTML = \`count is \${model.get("value")}\`;
+	});
+	el.appendChild(btn);
+}
+`;
+
+/**
+ * @param {keyof esbuild_templates | "template-vanilla-deno-jsdoc"} type
+ * @param {string} name
+ */
+export async function gather_files(type, name) {
+	if (type === "template-vanilla-deno-jsdoc") {
+		return [
+			{ path: `README.md`, content: readme(name) },
+			{ path: `pyproject.toml`, content: pyproject_toml(name) },
+			{ path: `deno.json`, content: json_dumps(deno_json) },
+			{ path: `.gitignore`, content: gitignore() },
+			{ path: `src/${name}/__init__.py`, content: __init__(name) },
+			{ path: `src/${name}/static/widget.js`, content: widget_esm(name) },
+			{ path: `src/${name}/static/styles.css`, content: styles(name) },
+		];
+	} else {
+		return gather_esbuild_template_files(type, name);
+	}
+}
