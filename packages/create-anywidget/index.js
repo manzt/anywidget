@@ -103,7 +103,7 @@ if (p.isCancel(template)) {
 
 let writtenPaths = await create(cwd, {
 	name: path.basename(path.resolve(cwd)),
-	template: template,
+	template: /** @type {import("./create.js").TemplateType} */ (template),
 }).catch((err) => {
 	console.error("Error writing files:", err);
 	process.exit(1);
