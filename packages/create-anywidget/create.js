@@ -28,8 +28,12 @@ async function get_dependency_versions(template) {
 	// The "workspace:" is not published to npm, so if present, we are working locally.
 	if (Object.values(lookup).some((v) => /^workspace:/.test(v))) {
 		let overrides = await gather_workspace_overrides();
-		lookup = { ...lookup, ...overrides };
+		for (let name of Object.keys(lookup)) {
+			lookup[name] = overrides[name] ?? lookup[name];
+		}
 	}
+
+	console.log(lookup);
 
 	/** @param {string[]} deps */
 	function create_pkg_entry(deps) {
