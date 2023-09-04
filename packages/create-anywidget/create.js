@@ -10,6 +10,64 @@ function json_dumps(obj) {
 	return JSON.stringify(obj, null, "\t");
 }
 
+/** @param {string} path */
+async function read_json(path) {
+	return fs.readFile(path, "utf-8").then(JSON.parse);
+}
+
+/**
+ * pnpm will help us keep package versions in sync over time, along with dependabot,
+ * so we lookup the version from `package.json` to use for those in our templates.
+ *
+ * @param {{ dependencies: string[], dev_dependencies: string[]}} template
+ */
+async function get_dependency_versions(template) {
+	let rook_pkg = await read_json(path.join(__dirname, "package.json"));
+	let lookup = rook_pkg.devDependencies;
+
+	// The "workspace:" is not published to npm, so if present, we are working locally.
+	if (Object.values(lookup).some((v) => /^workspace:/.test(v))) {
+		let overrides = await gather_workspace_overrides();
+		for (let name of Object.keys(lookup)) {
+			lookup[name] = overrides[name] ?? lookup[name];
+		}
+	}
+
+	/** @param {string[]} deps */
+	function create_pkg_entry(deps) {
+		/** @type {Record<string, string>} */
+		let entry = {};
+		for (let dep of deps) {
+			let version = lookup[dep];
+			if (!version) {
+				throw new Error(
+					`No version found for ${dep}. Must add to create-anywidget/package.json.`,
+				);
+			}
+			entry[dep] = version;
+		}
+		return entry;
+	}
+	return {
+		dependencies: create_pkg_entry(template.dependencies),
+		devDependencies: create_pkg_entry(template.dev_dependencies),
+	};
+}
+
+/** @returns {Promise<Record<string, string>>} */
+async function gather_workspace_overrides() {
+	let dirs = await fs.readdir(path.join(__dirname, ".."));
+	let entries = dirs
+		.filter((dir) => dir !== "create-anywidget")
+		.map(async (dir) => {
+			let pkg = await read_json(
+				path.join(__dirname, "..", dir, "package.json"),
+			);
+			return [pkg.name, pkg.version];
+		});
+	return Promise.all(entries).then(Object.fromEntries);
+}
+
 /** @param {string} name */
 let pyproject_toml = (name) =>
 	`\
@@ -241,7 +299,7 @@ const esbuild_templates = {
 			{ path: "js/widget.jsx", render: widget_react },
 			{ path: "js/styles.css", render: styles },
 		],
-		dependencies: ["@anywidget/react", "react", "react-dom"],
+		dependencies: ["@anywidget/react", "esbuild", "react", "react-dom"],
 		dev_dependencies: [],
 	},
 	"template-react-ts": {
@@ -252,7 +310,12 @@ const esbuild_templates = {
 			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: ["@anywidget/react", "react", "react-dom"],
-		dev_dependencies: ["@types/react", "@types/react-dom", "typescript"],
+		dev_dependencies: [
+			"@types/react",
+			"@types/react-dom",
+			"esbuild",
+			"typescript",
+		],
 	},
 	"template-vanilla": {
 		entry_point: "js/widget.js",
@@ -261,7 +324,7 @@ const esbuild_templates = {
 			{ path: "js/styles.css", render: styles },
 		],
 		dependencies: [],
-		dev_dependencies: [],
+		dev_dependencies: ["esbuild"],
 	},
 	"template-vanilla-ts": {
 		entry_point: "js/widget.ts",
@@ -271,7 +334,7 @@ const esbuild_templates = {
 			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: [],
-		dev_dependencies: ["@anywidget/types", "typescript"],
+		dev_dependencies: ["@anywidget/types", "esbuild", "typescript"],
 	},
 };
 
@@ -281,45 +344,21 @@ const esbuild_templates = {
  */
 async function render_template(template, name) {
 	let build_dir = `src/${name}/static`;
-	let rook_pkg = await fs
-		.readFile(path.join(__dirname, "package.json"), "utf-8")
-		.then(JSON.parse);
-
-	/**
-	 * pnpm will help us keep package versions in sync over time, along with dependabot.
-	 * so we lookup the version from there for any dependencies in our templates.
-	 * @param {string[]} names
-	 * @returns {Record<string, string>}
-	 */
-	function gather_dependencies(names) {
-		/** @type {Record<string, string>} */
-		let deps = {};
-		for (let name of names) {
-			let version = rook_pkg.devDependencies[name];
-			if (!version) {
-				throw new Error(
-					`No version found for ${name}. Must add to create-anywidget/package.json.`,
-				);
-			}
-			deps[name] = version;
-		}
-		return deps;
-	}
-	let ts_config_path = template.files.find((file) =>
+	let tsconfig = template.files.find((file) =>
 		file.path.includes("tsconfig.json"),
-	)?.path;
+	);
 	let package_json = {
 		scripts: {
 			dev: "npm run build -- --sourcemap=inline --watch",
 			build: `esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
-			...(ts_config_path ? { typecheck: `tsc --noEmit` } : {}),
+			...(tsconfig ? { typecheck: `tsc --noEmit` } : {}),
 		},
-		dependencies: gather_dependencies(template.dependencies),
-		devDependencies: {
-			esbuild: rook_pkg.devDependencies.esbuild,
-			...gather_dependencies(template.dev_dependencies),
-		},
+		...(await get_dependency_versions(template)),
 	};
+	let files = template.files.map((file) => ({
+		path: file.path,
+		content: file.render(name),
+	}));
 	return [
 		{ path: `README.md`, content: readme(name) },
 		{ path: `.gitignore`, content: gitignore([`src/${name}/static`]) },
@@ -329,10 +368,7 @@ async function render_template(template, name) {
 			content: pyproject_toml_with_hatch_jupyter_builder(name),
 		},
 		{ path: `src/${name}/__init__.py`, content: __init__(name) },
-		...template.files.map((file) => ({
-			path: file.path,
-			content: file.render(name),
-		})),
+		...files,
 	];
 }
 
@@ -381,7 +417,7 @@ export function render({ model, el }) {
  * @param {TemplateType} type
  * @param {string} name
  */
-async function gather_files(type, name) {
+export async function gather_files(type, name) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
 			{ path: `README.md`, content: readme(name) },
