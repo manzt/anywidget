@@ -13,7 +13,7 @@ jobs:
     name: Python / Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # this could be replaced with pre-commit.ci
       - run: pipx run pre-commit run --all-files
 
@@ -25,7 +25,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
@@ -49,7 +49,7 @@ jobs:
     name: JavaScript / Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
@@ -62,7 +62,7 @@ jobs:
     name: JavaScript / Typecheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
@@ -75,7 +75,7 @@ jobs:
     name: JavaScript / Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.4.0
       - uses: actions/setup-node@v3
         with:
