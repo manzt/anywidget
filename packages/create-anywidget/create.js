@@ -186,7 +186,7 @@ let widget_react_ts = (name) =>
 	`\
 import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
-import "./styles.css";
+import "./widget.css";
 
 export const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
@@ -206,7 +206,7 @@ let widget_react = (name) =>
 	`\
 import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
-import "./styles.css";
+import "./widget.css";
 
 export const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
@@ -224,7 +224,7 @@ export const render = createRender(() => {
 /** @param {string} name */
 let widget_vanilla = (name) =>
 	`\
-import "./styles.css";
+import "./widget.css";
 
 export function render({ model, el }) {
 	let btn = document.createElement("button");
@@ -245,7 +245,7 @@ export function render({ model, el }) {
 let widget_vanilla_ts = (name) =>
 	`\
 import type { RenderContext } from "@anywidget/types";
-import "./styles.css";
+import "./widget.css";
 
 /* Specifies attributes defined with traitlets in ../src/${name}/__init__.py */
 interface WidgetModel {
@@ -294,54 +294,80 @@ function get_tsconfig() {
 	});
 }
 
-const esbuild_templates = {
+/** @type {Record<string, { entry_point: string, files: { path: string, render: (name: string) => string }[], dependencies: string[], dev_dependencies: string[] }>} */
+const bundled_templates = {
 	"template-react": {
 		entry_point: "js/widget.jsx",
 		files: [
 			{ path: "js/widget.jsx", render: widget_react },
-			{ path: "js/styles.css", render: styles },
+			{ path: "js/widget.css", render: styles },
 		],
-		dependencies: ["@anywidget/react", "esbuild", "react", "react-dom"],
+		dependencies: ["@anywidget/react", "react", "react-dom"],
 		dev_dependencies: [],
 	},
 	"template-react-ts": {
 		entry_point: "js/widget.tsx",
 		files: [
 			{ path: "js/widget.tsx", render: widget_react_ts },
-			{ path: "js/styles.css", render: styles },
+			{ path: "js/widget.css", render: styles },
 			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: ["@anywidget/react", "react", "react-dom"],
-		dev_dependencies: [
-			"@types/react",
-			"@types/react-dom",
-			"esbuild",
-			"typescript",
-		],
+		dev_dependencies: ["@types/react", "@types/react-dom", "typescript"],
 	},
 	"template-vanilla": {
 		entry_point: "js/widget.js",
 		files: [
 			{ path: "js/widget.js", render: widget_vanilla },
-			{ path: "js/styles.css", render: styles },
+			{ path: "js/widget.css", render: styles },
 		],
 		dependencies: [],
-		dev_dependencies: ["esbuild"],
+		dev_dependencies: [],
 	},
 	"template-vanilla-ts": {
 		entry_point: "js/widget.ts",
 		files: [
 			{ path: "js/widget.ts", render: widget_vanilla_ts },
-			{ path: "js/styles.css", render: styles },
+			{ path: "js/widget.css", render: styles },
 			{ path: "tsconfig.json", render: get_tsconfig },
 		],
 		dependencies: [],
-		dev_dependencies: ["@anywidget/types", "esbuild", "typescript"],
+		dev_dependencies: ["@anywidget/types", "typescript"],
 	},
 };
 
 /**
- * @param {typeof esbuild_templates[keyof esbuild_templates]} template
+ * @param {typeof bundled_templates[keyof bundled_templates]} template
+ * @param {{ build_dir: string, typecheck: boolean }} options
+ */
+async function generate_package_json(template, { build_dir, typecheck }) {
+	/** @type {Record<string, string>} */
+	let scripts = {
+		dev: "npm run build -- --sourcemap=inline --watch",
+	};
+
+	/** @type {string[]} */
+	let dev_extra = [];
+	if ("Bun" in globalThis) {
+		scripts.build = `bun build ${template.entry_point} --outdir=${build_dir} --asset-naming=[name].[ext]`;
+	} else {
+		scripts.build = `esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
+		dev_extra.push("esbuild");
+	}
+
+	let { dependencies, devDependencies } = await get_dependency_versions({
+		dependencies: template.dependencies,
+		dev_dependencies: [...template.dev_dependencies, ...dev_extra],
+	});
+
+	if (typecheck) {
+		scripts.typecheck = "tsc --noEmit";
+	}
+	return { scripts, dependencies, devDependencies };
+}
+
+/**
+ * @param {typeof bundled_templates[keyof bundled_templates]} template
  * @param {string} name
  */
 async function render_template(template, name) {
@@ -349,15 +375,10 @@ async function render_template(template, name) {
 	let tsconfig = template.files.find((file) =>
 		file.path.includes("tsconfig.json")
 	);
-	let package_json = {
-		scripts: {
-			dev: "npm run build -- --sourcemap=inline --watch",
-			build:
-				`esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
-			...(tsconfig ? { typecheck: `tsc --noEmit` } : {}),
-		},
-		...(await get_dependency_versions(template)),
-	};
+	let package_json = await generate_package_json(template, {
+		build_dir,
+		typecheck: !!tsconfig,
+	});
 	let files = template.files.map((file) => ({
 		path: file.path,
 		content: file.render(name),
@@ -429,17 +450,17 @@ export async function gather_files(type, name) {
 			{ path: `.gitignore`, content: gitignore() },
 			{ path: `src/${name}/__init__.py`, content: __init__(name) },
 			{ path: `src/${name}/static/widget.js`, content: widget_esm(name) },
-			{ path: `src/${name}/static/styles.css`, content: styles(name) },
+			{ path: `src/${name}/static/widget.css`, content: styles(name) },
 		];
 	}
-	if (type in esbuild_templates) {
-		return render_template(esbuild_templates[type], name);
+	if (type in bundled_templates) {
+		return render_template(bundled_templates[type], name);
 	}
 	throw new Error(`Unknown template type: ${type}`);
 }
 
 /** @typedef {{ content: string, path: string }} File */
-/** @typedef {keyof esbuild_templates | "template-vanilla-deno-jsdoc"} TemplateType */
+/** @typedef {keyof bundled_templates | "template-vanilla-deno-jsdoc"} TemplateType */
 
 /**
  * @param {string} target
