@@ -18,8 +18,8 @@ importers:
         specifier: ^0.19.2
         version: 0.19.2
       happy-dom:
-        specifier: ^10.11.2
-        version: 10.11.2
+        specifier: ^11.0.2
+        version: 11.0.2
       prettier:
         specifier: ^3.0.3
         version: 3.0.3
@@ -31,7 +31,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.32.4
-        version: 0.32.4(happy-dom@10.11.2)
+        version: 0.32.4(happy-dom@11.0.2)
 
   packages/anywidget:
     dependencies:
@@ -2862,8 +2862,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /happy-dom@10.11.2:
-    resolution: {integrity: sha512-rzgmLjLkhyaOdFEyU8CWXzbgyCyM7wJHLqhaoeEVSTyur1fjcUaiNTHx+D4CPaLvx16tGy+SBPd9TVnP/kzL3w==}
+  /happy-dom@11.0.2:
+    resolution: {integrity: sha512-0yyYIBCByZVgWNuM+/tXXaAR+YUjsoXmzDisQ/KPI7Dt9kXtsPUOU6JAc/isVxridmeSb9/icthsaAhUBKJa4g==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -4887,7 +4887,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest@0.32.4(happy-dom@10.11.2):
+  /vitest@0.32.4(happy-dom@11.0.2):
     resolution: {integrity: sha512-3czFm8RnrsWwIzVDu/Ca48Y/M+qh3vOnF16czJm98Q/AN1y3B6PBsyV8Re91Ty5s7txKNjEhpgtGPcfdbh2MZg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -4931,7 +4931,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 10.11.2
+      happy-dom: 11.0.2
       local-pkg: 0.4.3
       magic-string: 0.30.1
       pathe: 1.1.1
