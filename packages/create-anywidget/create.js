@@ -349,7 +349,7 @@ async function generate_package_json(template, { build_dir, typecheck }) {
 	/** @type {string[]} */
 	let dev_extra = [];
 	if ("Bun" in globalThis) {
-		scripts.build = `bun build ${template.entry_point} --outdir=${build_dir} --asset-naming=[name].[ext]`;
+		scripts.build = `bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
 	} else {
 		scripts.build = `esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
 		dev_extra.push("esbuild");
