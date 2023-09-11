@@ -28,152 +28,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild --minify --format=esm --bundle --outdir=src/ipyfoo/static js/widget.jsx\\"
-	},
-	\\"dependencies\\": {
-		\\"@anywidget/react\\": \\"0.0.2\\",
-		\\"esbuild\\": \\"^0.19.2\\",
-		\\"react\\": \\"^18.2.0\\",
-		\\"react-dom\\": \\"^18.2.0\\"
-	},
-	\\"devDependencies\\": {}
-}",
-    "path": "package.json",
-  },
-  {
-    "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
-
-[project]
-name = \\"ipyfoo\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
-
-[project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = [\\"dev\\"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
-build_cmd = \\"build\\"
-path = \\"js\\"
-",
-    "path": "pyproject.toml",
-  },
-  {
-    "content": "import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
-    value = traitlets.Int(0).tag(sync=True)
-",
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": "import * as React from \\"react\\";
-import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./styles.css\\";
-
-export const render = createRender(() => {
-	const [value, setValue] = useModelState(\\"value\\");
-	return (
-		<button
-			className=\\"ipyfoo-counter-button\\"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
-	);
-});
-",
-    "path": "js/widget.jsx",
-  },
-  {
-    "content": ".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-",
-    "path": "js/styles.css",
-  },
-]
-`;
-
-exports[`create-anywidget > template-react-ts 1`] = `
-[
-  {
-    "content": "# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-",
-    "path": "README.md",
-  },
-  {
-    "content": "node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-",
-    "path": ".gitignore",
-  },
-  {
-    "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild --minify --format=esm --bundle --outdir=src/ipyfoo/static js/widget.tsx\\",
-		\\"typecheck\\": \\"tsc --noEmit\\"
+		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static\\"
 	},
 	\\"dependencies\\": {
 		\\"@anywidget/react\\": \\"0.0.2\\",
@@ -181,10 +36,7 @@ src/ipyfoo/static
 		\\"react-dom\\": \\"^18.2.0\\"
 	},
 	\\"devDependencies\\": {
-		\\"@types/react\\": \\"^18.2.21\\",
-		\\"@types/react-dom\\": \\"^18.2.7\\",
-		\\"esbuild\\": \\"^0.19.2\\",
-		\\"typescript\\": \\"^5.2.2\\"
+		\\"esbuild\\": \\"^0.19.2\\"
 	}
 }",
     "path": "package.json",
@@ -247,7 +99,156 @@ class Counter(anywidget.AnyWidget):
   {
     "content": "import * as React from \\"react\\";
 import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./styles.css\\";
+import \\"./widget.css\\";
+
+export const render = createRender(() => {
+	const [value, setValue] = useModelState(\\"value\\");
+	return (
+		<button
+			className=\\"ipyfoo-counter-button\\"
+			onClick={() => setValue(value + 1)}
+		>
+			count is {value}
+		</button>
+	);
+});
+",
+    "path": "js/widget.jsx",
+  },
+  {
+    "content": ".ipyfoo-counter-button {
+	background: linear-gradient(
+		300deg,
+		#9933ff 33.26%,
+		#ff6666 46.51%,
+		#faca30 59.77%,
+		#00cd99 73.03%,
+		#00ccff 86.29%
+	);
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	cursor: pointer;
+	font-family: \\"Roboto\\", sans-serif;
+	font-size: 2em;
+	margin: 10px;
+	padding: 10px 20px;
+	transition: transform 0.25s ease-in-out;
+}
+
+.ipyfoo-counter-button:hover {
+	transform: scale(1.05);
+}
+",
+    "path": "js/widget.css",
+  },
+]
+`;
+
+exports[`create-anywidget > template-react-ts 1`] = `
+[
+  {
+    "content": "# ipyfoo
+
+\`\`\`sh
+pip install ipyfoo
+\`\`\`
+",
+    "path": "README.md",
+  },
+  {
+    "content": "node_modules
+.venv
+dist
+
+# Python
+__pycache__
+.ipynb_checkpoints
+
+src/ipyfoo/static
+",
+    "path": ".gitignore",
+  },
+  {
+    "content": "{
+	\\"scripts\\": {
+		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
+		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/ipyfoo/static\\",
+		\\"typecheck\\": \\"tsc --noEmit\\"
+	},
+	\\"dependencies\\": {
+		\\"@anywidget/react\\": \\"0.0.2\\",
+		\\"react\\": \\"^18.2.0\\",
+		\\"react-dom\\": \\"^18.2.0\\"
+	},
+	\\"devDependencies\\": {
+		\\"@types/react\\": \\"^18.2.21\\",
+		\\"@types/react-dom\\": \\"^18.2.7\\",
+		\\"typescript\\": \\"^5.2.2\\",
+		\\"esbuild\\": \\"^0.19.2\\"
+	}
+}",
+    "path": "package.json",
+  },
+  {
+    "content": "[build-system]
+requires = [\\"hatchling\\"]
+build-backend = \\"hatchling.build\\"
+
+[project]
+name = \\"ipyfoo\\"
+version = \\"0.0.0\\"
+dependencies = [\\"anywidget\\"]
+
+[project.optional-dependencies]
+dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+
+# automatically add the dev feature to the default env (e.g., hatch shell)
+[tool.hatch.envs.default]
+features = [\\"dev\\"]
+
+
+[tool.hatch.build]
+only-packages = true
+artifacts = [\\"src/ipyfoo/static/*\\"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = \\"hatch_jupyter_builder.npm_builder\\"
+ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
+skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = \\"npm\\"
+build_cmd = \\"build\\"
+path = \\"js\\"
+",
+    "path": "pyproject.toml",
+  },
+  {
+    "content": "import importlib.metadata
+import pathlib
+
+import anywidget
+import traitlets
+
+try:
+    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = \\"unknown\\"
+
+
+class Counter(anywidget.AnyWidget):
+    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
+    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    value = traitlets.Int(0).tag(sync=True)
+",
+    "path": "src/ipyfoo/__init__.py",
+  },
+  {
+    "content": "import * as React from \\"react\\";
+import { createRender, useModelState } from \\"@anywidget/react\\";
+import \\"./widget.css\\";
 
 export const render = createRender(() => {
 	const [value, setValue] = useModelState<number>(\\"value\\");
@@ -288,7 +289,7 @@ export const render = createRender(() => {
 	transform: scale(1.05);
 }
 ",
-    "path": "js/styles.css",
+    "path": "js/widget.css",
   },
   {
     "content": "{
@@ -349,7 +350,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild --minify --format=esm --bundle --outdir=src/ipyfoo/static js/widget.js\\"
+		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/ipyfoo/static\\"
 	},
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
@@ -414,7 +415,7 @@ class Counter(anywidget.AnyWidget):
     "path": "src/ipyfoo/__init__.py",
   },
   {
-    "content": "import \\"./styles.css\\";
+    "content": "import \\"./widget.css\\";
 
 export function render({ model, el }) {
 	let btn = document.createElement(\\"button\\");
@@ -457,7 +458,7 @@ export function render({ model, el }) {
 	transform: scale(1.05);
 }
 ",
-    "path": "js/styles.css",
+    "path": "js/widget.css",
   },
 ]
 `;
@@ -598,7 +599,7 @@ export function render({ model, el }) {
 	transform: scale(1.05);
 }
 ",
-    "path": "src/ipyfoo/static/styles.css",
+    "path": "src/ipyfoo/static/widget.css",
   },
 ]
 `;
@@ -631,14 +632,14 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild --minify --format=esm --bundle --outdir=src/ipyfoo/static js/widget.ts\\",
+		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/ipyfoo/static\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
 		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"esbuild\\": \\"^0.19.2\\",
-		\\"typescript\\": \\"^5.2.2\\"
+		\\"typescript\\": \\"^5.2.2\\",
+		\\"esbuild\\": \\"^0.19.2\\"
 	}
 }",
     "path": "package.json",
@@ -700,7 +701,7 @@ class Counter(anywidget.AnyWidget):
   },
   {
     "content": "import type { RenderContext } from \\"@anywidget/types\\";
-import \\"./styles.css\\";
+import \\"./widget.css\\";
 
 /* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
 interface WidgetModel {
@@ -749,7 +750,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	transform: scale(1.05);
 }
 ",
-    "path": "js/styles.css",
+    "path": "js/widget.css",
   },
   {
     "content": "{
