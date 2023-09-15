@@ -93,6 +93,7 @@ let pyproject_toml_with_hatch_jupyter_builder = (name) =>
 	pyproject_toml(name) +
 	`\n
 [tool.hatch.build]
+only-packages = true
 artifacts = ["src/${name}/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -132,6 +133,7 @@ class Counter(anywidget.AnyWidget):
 let gitignore = (extras = []) =>
 	`\
 node_modules
+.venv
 dist
 
 # Python
