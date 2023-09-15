@@ -185,6 +185,38 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				}
 			});
 		}
+
+		/**
+		 * @param {Record<string, any>} state
+		 *
+		 * We override to support binary trailets because JSON.parse(JSON.stringify()) doesnt
+		 * propeprty clone binary data (it just returns an empty object).
+		 *
+		 * https://github.com/jupyter-widgets/ipywidgets/blob/47058a373d2c2b3acf101677b2745e14b76dd74b/packages/base/src/widget.ts#L562-L583
+		 *
+		 */
+		serialize(state) {
+			let serializers =
+				/** @type {DOMWidgetModel} */ (this.constructor).serializers || {};
+			for (let k of Object.keys(state)) {
+				try {
+					let serialize = serializers[k]?.serialize;
+					if (serialize) {
+						state[k] = serialize(state[k], this);
+					} else {
+						// the default serializer just deep-copies the object
+						state[k] = structuredClone(state[k]);
+					}
+					if (typeof state[k]?.toJSON === "function") {
+						state[k] = state[k].toJSON();
+					}
+				} catch (e) {
+					console.error("Error serializing widget state attribute: ", k);
+					throw e;
+				}
+			}
+			return state;
+		}
 	}
 
 	class AnyView extends DOMWidgetView {
