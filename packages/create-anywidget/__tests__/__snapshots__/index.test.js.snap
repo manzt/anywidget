@@ -13,6 +13,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -58,6 +59,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -155,6 +157,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -205,6 +208,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -330,6 +334,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -372,6 +377,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -513,6 +519,7 @@ features = [\\"dev\\"]
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -609,6 +616,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -654,6 +662,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
