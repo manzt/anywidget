@@ -132,6 +132,7 @@ class Counter(anywidget.AnyWidget):
 let gitignore = (extras = []) =>
 	`\
 node_modules
+.venv
 dist
 
 # Python
