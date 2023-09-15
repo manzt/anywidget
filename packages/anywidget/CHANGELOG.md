@@ -1,5 +1,13 @@
 # anywidget
 
+## 0.6.4
+
+### Patch Changes
+
+- fix: Keep support for binary traitlets ([#274](https://github.com/manzt/anywidget/pull/274))
+
+  Uses `structuredClone` to ensure binary data is automatically serialized, correctly. Applies [changes](https://github.com/jupyter-widgets/ipywidgets/pull/3689) reverted in `ipywidgets` 8.1.1.
+
 ## 0.6.3
 
 ### Patch Changes
@@ -191,11 +199,11 @@
 
   /** @type {import("anywidget/types").Render<{ value: number }>} */
   export function render(view) {
-  	let value = view.model.get("value");
-  	//^ ? `number`
+    let value = view.model.get("value");
+    //^ ? `number`
 
-  	view.model.set("value", "not-a-number");
-  	// Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
+    view.model.set("value", "not-a-number");
+    // Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
   }
   ```
 
