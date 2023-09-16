@@ -81,9 +81,9 @@ class DummyManager extends baseManager.ManagerBase {
 		}[moduleName];
 		return (
 			mod?.[className] ??
-			(() => {
-				throw new Error(`Cannot find module ${moduleName}`);
-			})()
+				(() => {
+					throw new Error(`Cannot find module ${moduleName}`);
+				})()
 		);
 	}
 

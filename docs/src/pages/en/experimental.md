@@ -12,16 +12,16 @@ layout: ../../layouts/MainLayout.astro
 In order to understand the motivation and function of some features in the
 `experimental` module, it is helpful to have a brief overview of how widgets
 work in Jupyter. This is summarized below, but for a more in-depth explanation,
-see the [jupyter-widgets messaging
-protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schema/messages.md).
+see the
+[jupyter-widgets messaging protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schema/messages.md).
 
 ### 1. The `_repr_mimebundle_` method
 
-When representing a python object, many front-ends REPLs, [including
-IPython](https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_),
+When representing a python object, many front-ends REPLs,
+[including IPython](https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_),
 will look for a `_repr_mimebundle_` method on the object. If found, this method
-must return a dictionary of data, keyed by [MIME
-type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types),
+must return a dictionary of data, keyed by
+[MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types),
 that can be used to render the object in the front-end. A super simple
 plain-text representation of an object might look like this:
 
@@ -49,31 +49,34 @@ to display.
 
 ### 3. The `Comm` object
 
-A `comm.base_comm.BaseComm` object manages communication between the front end (Javascript model)
-and the backend (Python model). When the user modifies the state of the python object, the comm
-must send a message containing the updated JSON state to the front end, so that the widget view
-can be update. Similarly, when the user interacts with the widget in the browser, the front end
-must send a message to the backend, so that the python model can be updated.
+A `comm.base_comm.BaseComm` object manages communication between the front end
+(Javascript model) and the backend (Python model). When the user modifies the
+state of the python object, the comm must send a message containing the updated
+JSON state to the front end, so that the widget view can be update. Similarly,
+when the user interacts with the widget in the browser, the front end must send
+a message to the backend, so that the python model can be updated.
 
 ### Summary
 
-In summary, we need the following to display a javascript-backed widget for
-a python object:
+In summary, we need the following to display a javascript-backed widget for a
+python object:
 
 1. A communication object to send messages between the backend python kernel and
    the frontend javascript code running in the browser.
 2. A python object that has the following properties:
    - A `_repr_mimebundle_` method that returns a
-     `application/vnd.jupyter.widget-view+json` MIME type with a `model_id` key pointing
-     to the comm object from step 1.
+     `application/vnd.jupyter.widget-view+json` MIME type with a `model_id` key
+     pointing to the comm object from step 1.
    - The ability to serialize/deserialize the state of the python object to/from
      JSON.
-   - An [observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) that sends
-     messages to the comm object when the state of the python object changes.
-3. A javascript object that is also aware of the `model_id` and can send messages
-   to the comm object when the state of the widget changes, or update the view
-   when the state of the python object changes (this is provided by the
-   [`@jupyter-widgets/base`](https://www.npmjs.com/package/@jupyter-widgets/base) package).
+   - An [observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) that
+     sends messages to the comm object when the state of the python object
+     changes.
+3. A javascript object that is also aware of the `model_id` and can send
+   messages to the comm object when the state of the widget changes, or update
+   the view when the state of the python object changes (this is provided by the
+   [`@jupyter-widgets/base`](https://www.npmjs.com/package/@jupyter-widgets/base)
+   package).
 
 ## MimeBundle Descriptor
 
@@ -121,14 +124,16 @@ When this descriptor is accessed on an instance, it will
 
 ## The `widget` decorator
 
-In practice, we'd like the `MimeBundleDescriptor` to be a low-level API that most
-users don't need to interact with directly. The `anywidget.experimental.widget`
-decorator provides a higher-level API that can be used to create a widget from
-any python object that implements a known data-class pattern and observer.
+In practice, we'd like the `MimeBundleDescriptor` to be a low-level API that
+most users don't need to interact with directly. The
+`anywidget.experimental.widget` decorator provides a higher-level API that can
+be used to create a widget from any python object that implements a known
+data-class pattern and observer.
 
 Here's an example of how to use the `widget` decorator to create a widget from a
-`dataclasses.dataclass`, that uses psygnal's [evented-dataclass pattern](https://psygnal.readthedocs.io/en/latest/dataclasses/) for
-observers:
+`dataclasses.dataclass`, that uses psygnal's
+[evented-dataclass pattern](https://psygnal.readthedocs.io/en/latest/dataclasses/)
+for observers:
 
 ```python
 esm = "export function render({ model, el }) {}"

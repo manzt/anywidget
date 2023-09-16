@@ -4,8 +4,7 @@
 
 ## Installation
 
-> **Warning**
-> This API is currently experimental an subject to change.
+> **Warning** This API is currently experimental an subject to change.
 
 ```sh
 npm install @anywidget/svelte
@@ -34,8 +33,8 @@ export let render = createRender(Counter);
 
 ## Bundlers
 
-You'll need to compile the above source files into a single ESM entrypoint
-for **anywidget** with a bundler.
+You'll need to compile the above source files into a single ESM entrypoint for
+**anywidget** with a bundler.
 
 ### Rollup
 
@@ -84,12 +83,15 @@ export default defineConfig({
 vite
 ```
 
-You can read more about using Vite with **anywidget** in [our documentation](https://anywidget.dev/en/bundling/#vite).
+You can read more about using Vite with **anywidget** in
+[our documentation](https://anywidget.dev/en/bundling/#vite).
 
 ## Acknowledgements
 
-Special thanks to [Daria Vasyukova](https://github.com/gereleth) for [the idea](https://twitter.com/gereleth/status/1620164274491654145) and
-[Donny Bertucci](https://github.com/xnought) for the [initial implementation](https://github.com/xnought/svelte-store-anywidget),
+Special thanks to [Daria Vasyukova](https://github.com/gereleth) for
+[the idea](https://twitter.com/gereleth/status/1620164274491654145) and
+[Donny Bertucci](https://github.com/xnought) for the
+[initial implementation](https://github.com/xnought/svelte-store-anywidget),
 which lead to this package.
 
 ## License

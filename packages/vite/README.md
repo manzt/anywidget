@@ -1,6 +1,7 @@
 # @anywidget/vite
 
-> A [Vite](https://vitejs.dev/) plugin for [**anywidget**](https://anywidget.dev)
+> A [Vite](https://vitejs.dev/) plugin for
+> [**anywidget**](https://anywidget.dev)
 
 ## Installation
 
@@ -20,8 +21,8 @@ export default defineConfig({
 });
 ```
 
-Read the [docs](https://anywidget.dev/en/bundling/#vite) to learn more
-about configuring Vite with **anywidget** for your project.
+Read the [docs](https://anywidget.dev/en/bundling/#vite) to learn more about
+configuring Vite with **anywidget** for your project.
 
 ## License
 

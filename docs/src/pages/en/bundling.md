@@ -4,15 +4,17 @@ description: Docs bundling
 layout: ../../layouts/MainLayout.astro
 ---
 
-**anywidget** does not require you to bundle or transform your JavaScript source code.
-However, the use of local dependencies or non-standard syntax (e.g., React, Vue, Solid, Svelte)
-necessitates the use of a bundler to merge together files into a single optimized ESM file.
+**anywidget** does not require you to bundle or transform your JavaScript source
+code. However, the use of local dependencies or non-standard syntax (e.g.,
+React, Vue, Solid, Svelte) necessitates the use of a bundler to merge together
+files into a single optimized ESM file.
 
 ## esbuild
 
-[esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in Golang.
-It can transform **TypeScript, JSX, and CSS files** and includes zero
-JavaScript dependencies. Binaries can be [installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
+[esbuild](https://esbuild.github.io/) is very fast JavaScript bundler written in
+Golang. It can transform **TypeScript, JSX, and CSS files** and includes zero
+JavaScript dependencies. Binaries can be
+[installed without `npm`](https://esbuild.github.io/getting-started/#other-ways-to-install),
 making it a great fit for **anywidget** projects.
 
 ### Project Setup
@@ -62,12 +64,12 @@ class HelloWidget(anywidget.AnyWidget):
 
 ### Development
 
-The `esbuild` CLI also includes a "watch" mode, which tells esbuild to
-listen for changes on the file system and automatically rebuild whenever
-a file changes that could invalidate the build. **anywidget**'s
-[native HMR](/blog/anywidget-02#native-hot-module-replacement-hmr) will
-watch for changes to the re-bundled outputs from `esbuild`, swapping in
-the new bundle in the front end.
+The `esbuild` CLI also includes a "watch" mode, which tells esbuild to listen
+for changes on the file system and automatically rebuild whenever a file changes
+that could invalidate the build. **anywidget**'s
+[native HMR](/blog/anywidget-02#native-hot-module-replacement-hmr) will watch
+for changes to the re-bundled outputs from `esbuild`, swapping in the new bundle
+in the front end.
 
 ```bash
 esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js --watch
@@ -77,9 +79,9 @@ esbuild --bundle --format=esm --outdir=hello_widget/static src/index.js --watch
 
 Our [Vite](https://vitejs.dev/) plugin offers a more fully featured development
 experience compared to **anywidget**'s builtin HMR, but at the cost of added
-project complexity and tooling. Vite is a good choice if you want to
-use a front-end framework like Svelte or Vue or need more fine grain control
-over your bundling.
+project complexity and tooling. Vite is a good choice if you want to use a
+front-end framework like Svelte or Vue or need more fine grain control over your
+bundling.
 
 ### Project Setup
 
@@ -139,8 +141,8 @@ npx vite build
 ### Development
 
 The Vite plugin for **anywidget** extends its dev server with precise HMR
-support for Jupyter Widgets. To get started with HMR for your widget,
-install the `anywidget` Plugin and add the following to your `vite.config.js`:
+support for Jupyter Widgets. To get started with HMR for your widget, install
+the `anywidget` Plugin and add the following to your `vite.config.js`:
 
 ```bash
 npm install -D @anywidget/vite
@@ -202,5 +204,5 @@ class HelloWidget(anywidget.AnyWidget):
   name = traitlets.Unicode().tag(sync=True)
 ```
 
-Any changes to `src/*` will now be updated immediately in active output cells with
-this widget. Happy coding!
+Any changes to `src/*` will now be updated immediately in active output cells
+with this widget. Happy coding!

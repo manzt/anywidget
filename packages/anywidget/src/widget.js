@@ -193,7 +193,6 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		 * propeprty clone binary data (it just returns an empty object).
 		 *
 		 * https://github.com/jupyter-widgets/ipywidgets/blob/47058a373d2c2b3acf101677b2745e14b76dd74b/packages/base/src/widget.ts#L562-L583
-		 *
 		 */
 		serialize(state) {
 			let serializers =
