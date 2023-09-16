@@ -12,7 +12,7 @@
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
 		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint",
-		"prepare": "tsc --build && pnpm -r build && pnpm publint"
+		"prepare": "pnpm clean && tsc --build && pnpm -r prepare && pnpm publint"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
