@@ -418,7 +418,7 @@ let deno_json = {
 /** @param {string} name */
 let widget_esm = (name) =>
 	`\
-import confetti from "https://esm.sh/canvas-confetti@1.6.0";
+import confetti from "https://esm.sh/canvas-confetti@1";
 
 /** @typedef {{ value: number }} Model */
 

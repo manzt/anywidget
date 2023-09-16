@@ -13,6 +13,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -57,6 +58,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -154,6 +156,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -203,6 +206,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -328,6 +332,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -368,6 +373,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -509,6 +515,7 @@ features = [\\"dev\\"]
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -540,7 +547,7 @@ class Counter(anywidget.AnyWidget):
     "path": "src/ipyfoo/__init__.py",
   },
   {
-    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1.6.0\\";
+    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
 
 /** @typedef {{ value: number }} Model */
 
@@ -605,6 +612,7 @@ pip install ipyfoo
   },
   {
     "content": "node_modules
+.venv
 dist
 
 # Python
@@ -649,6 +657,7 @@ features = [\\"dev\\"]
 
 
 [tool.hatch.build]
+only-packages = true
 artifacts = [\\"src/ipyfoo/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
@@ -1320,7 +1329,7 @@ class Counter(anywidget.AnyWidget):
     "path": "src/ipyfoo/__init__.py",
   },
   {
-    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1.6.0\\";
+    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
 
 /** @typedef {{ value: number }} Model */
 
