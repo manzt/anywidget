@@ -1,13 +1,23 @@
 {
 	"compilerOptions": {
-		"strict": true,
 		"target": "esnext",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"allowJs": true,
-		"checkJs": true,
-		"isolatedModules": true,
+		"strict": true,
+		"declaration": true,
+		"allowSyntheticDefaultImports": true,
+		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
-		"types": ["vitest"]
-	}
+		"allowJs": true,
+		"checkJs": true
+	},
+	"files": [],
+	"references": [
+		{ "path": "packages/types" },
+		{ "path": "packages/anywidget" },
+		{ "path": "packages/react" },
+		{ "path": "packages/svelte" },
+		{ "path": "packages/vite" },
+		{ "path": "packages/create-anywidget" }
+	]
 }

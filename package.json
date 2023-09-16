@@ -8,7 +8,7 @@
 		"version": "changeset version && pnpm install",
 		"release": "python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom",
-		"typecheck": "pnpm --parallel --recursive typecheck",
+		"typecheck": "tsc --noEmit",
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
 		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml ."
 	},
@@ -22,5 +22,8 @@
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.4"
 	},
-	"packageManager": "pnpm@8.6.1"
+	"packageManager": "pnpm@8.6.1",
+	"dependencies": {
+		"publint": "^0.2.2"
+	}
 }
