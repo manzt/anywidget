@@ -1,5 +1,19 @@
 # create-anywidget
 
+## 0.4.0
+
+### Minor Changes
+
+- feat: Support Bun and prefer built-in bundler over `esbuild` ([#269](https://github.com/manzt/anywidget/pull/269))
+
+  When running `bun create anywidget@latest`, the resulting package.json scripts
+  prefer the built-in bundler over esbuild. As a result, the vanilla JS template
+  has no dependencies.
+
+  ```sh
+  bun create anywidget@latest
+  ```
+
 ## 0.3.0
 
 ### Minor Changes
