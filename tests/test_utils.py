@@ -100,19 +100,31 @@ def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
     }
 
 
-def test_try_file_contents(tmp_path: pathlib.Path):
+def test_try_file_contents_development(tmp_path: pathlib.Path):
     foo = tmp_path / "foo.txt"
 
     assert try_file_contents(foo) is None
 
     foo.write_text("foo")
-
     file_contents = try_file_contents(foo)
     assert isinstance(file_contents, FileContents)
     assert file_contents._background_thread is not None
     file_contents.stop_thread()  # stop the background thread for CI
 
+
+def test_try_file_contents_production(tmp_path: pathlib.Path):
     site_packages = tmp_path / "site-packages"
+    site_packages.mkdir()
+    bar = site_packages / "bar.txt"
+    bar.write_text("bar")
+
+    file_contents = try_file_contents(bar)
+    assert isinstance(file_contents, FileContents)
+    assert file_contents._background_thread is None
+
+
+def test_try_file_contents_google_colab(tmp_path: pathlib.Path):
+    site_packages = tmp_path / "dist-packages"
     site_packages.mkdir()
     bar = site_packages / "bar.txt"
     bar.write_text("bar")
