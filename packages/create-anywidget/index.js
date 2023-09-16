@@ -27,12 +27,22 @@ let p = new Proxy(_p, {
 	},
 });
 
+// https://github.com/withastro/astro/blob/fca6892f8d6a30ceb1e04213be2414dd4cb4d389/packages/create-astro/src/actions/context.ts#L110-L115
+function detect_package_manager() {
+	if ("Bun" in globalThis) return "bun";
+	if (!process.env.npm_config_user_agent) return;
+	const specifier = process.env.npm_config_user_agent.split(" ")[0];
+	const name = specifier.substring(0, specifier.lastIndexOf("/"));
+	return name === "npminstall" ? "cnpm" : name;
+}
+
 let pkg = await fs.promises
 	.readFile(new URL("package.json", import.meta.url), "utf-8")
 	.then(JSON.parse);
 
 let cwd = process.argv[2] || ".";
 
+console.clear();
 console.log(`
 ${grey(`create-anywidget version ${pkg.version}`)}
 `);
@@ -121,9 +131,12 @@ if (p.isCancel(template)) {
 	process.exit(1);
 }
 
+let pkg_manager = detect_package_manager() ?? "npm";
+
 let writtenPaths = await create(cwd, {
 	name: path.basename(path.resolve(cwd)),
 	template: /** @type {import("./create.js").TemplateType} */ (template),
+	pkg_manager,
 }).catch((err) => {
 	console.error("Error writing files:", err);
 	process.exit(1);
@@ -152,9 +165,8 @@ console.log(
 );
 
 if (template !== "template-vanilla-deno-jsdoc") {
-	console.log(`  ${i++}: ${bold(cyan("npm install"))} (or pnpm install, etc)`);
-
-	console.log(`  ${i++}: ${bold(cyan("npm run dev"))}`);
+	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
+	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} run dev`))}`);
 	console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
 }
 

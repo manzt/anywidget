@@ -3,10 +3,10 @@
 exports[`create-anywidget (Bun) > template-react 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -20,7 +20,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -28,7 +28,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]\\"
+		\\"build\\": \\"bun build js/widget.jsx --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\"
 	},
 	\\"dependencies\\": {
 		\\"@anywidget/react\\": \\"0.0.2\\",
@@ -45,7 +45,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -59,18 +59,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -82,7 +81,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -92,7 +91,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import * as React from \\"react\\";
@@ -103,7 +102,7 @@ export const render = createRender(() => {
 	const [value, setValue] = useModelState(\\"value\\");
 	return (
 		<button
-			className=\\"ipyfoo-counter-button\\"
+			className=\\"undefined-counter-button\\"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -114,7 +113,7 @@ export const render = createRender(() => {
     "path": "js/widget.jsx",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -134,7 +133,7 @@ export const render = createRender(() => {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -146,10 +145,10 @@ export const render = createRender(() => {
 exports[`create-anywidget (Bun) > template-react-ts 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -163,7 +162,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -171,7 +170,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.tsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]\\",
+		\\"build\\": \\"bun build js/widget.tsx --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {
@@ -193,7 +192,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -207,18 +206,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -230,7 +228,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -240,7 +238,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import * as React from \\"react\\";
@@ -251,7 +249,7 @@ export const render = createRender(() => {
 	const [value, setValue] = useModelState<number>(\\"value\\");
 	return (
 		<button
-			className=\\"ipyfoo-counter-button\\"
+			className=\\"undefined-counter-button\\"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -262,7 +260,7 @@ export const render = createRender(() => {
     "path": "js/widget.tsx",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -282,7 +280,7 @@ export const render = createRender(() => {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -322,10 +320,10 @@ export const render = createRender(() => {
 exports[`create-anywidget (Bun) > template-vanilla 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -339,7 +337,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -347,7 +345,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]\\"
+		\\"build\\": \\"bun build js/widget.js --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\"
 	},
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {}
@@ -360,7 +358,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -374,18 +372,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -397,7 +394,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -407,14 +404,14 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import \\"./widget.css\\";
 
 export function render({ model, el }) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -429,7 +426,7 @@ export function render({ model, el }) {
     "path": "js/widget.js",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -449,7 +446,7 @@ export function render({ model, el }) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -461,10 +458,10 @@ export function render({ model, el }) {
 exports[`create-anywidget (Bun) > template-vanilla-deno-jsdoc 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -475,7 +472,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -534,7 +531,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -544,7 +541,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
@@ -554,7 +551,7 @@ class Counter(anywidget.AnyWidget):
 /** @type {import(\\"npm:@anywidget/types\\").Render<Model>} */
 export function render({ model, el }) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -567,10 +564,10 @@ export function render({ model, el }) {
 	el.appendChild(btn);
 }
 ",
-    "path": "src/ipyfoo/static/widget.js",
+    "path": "src/undefined/static/widget.js",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -590,11 +587,11 @@ export function render({ model, el }) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
-    "path": "src/ipyfoo/static/widget.css",
+    "path": "src/undefined/static/widget.css",
   },
 ]
 `;
@@ -602,10 +599,10 @@ export function render({ model, el }) {
 exports[`create-anywidget (Bun) > template-vanilla-ts 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -619,7 +616,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -627,7 +624,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]\\",
+		\\"build\\": \\"bun build js/widget.ts --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {},
@@ -644,7 +641,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -658,18 +655,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -681,7 +677,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -691,13 +687,13 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import type { RenderContext } from \\"@anywidget/types\\";
 import \\"./widget.css\\";
 
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
+/* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
 interface WidgetModel {
 	value: number;
 	/* Add your own */
@@ -705,7 +701,7 @@ interface WidgetModel {
 
 export function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -720,7 +716,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
     "path": "js/widget.ts",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -740,7 +736,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -780,10 +776,10 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 exports[`create-anywidget > template-react 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -797,7 +793,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -805,7 +801,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static\\"
+		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static\\"
 	},
 	\\"dependencies\\": {
 		\\"@anywidget/react\\": \\"0.0.2\\",
@@ -824,7 +820,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -838,18 +834,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -861,7 +856,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -871,7 +866,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import * as React from \\"react\\";
@@ -882,7 +877,7 @@ export const render = createRender(() => {
 	const [value, setValue] = useModelState(\\"value\\");
 	return (
 		<button
-			className=\\"ipyfoo-counter-button\\"
+			className=\\"undefined-counter-button\\"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -893,7 +888,7 @@ export const render = createRender(() => {
     "path": "js/widget.jsx",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -913,7 +908,7 @@ export const render = createRender(() => {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -925,10 +920,10 @@ export const render = createRender(() => {
 exports[`create-anywidget > template-react-ts 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -942,7 +937,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -950,7 +945,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/ipyfoo/static\\",
+		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {
@@ -973,7 +968,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -987,18 +982,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -1010,7 +1004,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -1020,7 +1014,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import * as React from \\"react\\";
@@ -1031,7 +1025,7 @@ export const render = createRender(() => {
 	const [value, setValue] = useModelState<number>(\\"value\\");
 	return (
 		<button
-			className=\\"ipyfoo-counter-button\\"
+			className=\\"undefined-counter-button\\"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -1042,7 +1036,7 @@ export const render = createRender(() => {
     "path": "js/widget.tsx",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1062,7 +1056,7 @@ export const render = createRender(() => {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1102,10 +1096,10 @@ export const render = createRender(() => {
 exports[`create-anywidget > template-vanilla 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -1119,7 +1113,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -1127,7 +1121,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/ipyfoo/static\\"
+		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static\\"
 	},
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
@@ -1142,7 +1136,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -1156,18 +1150,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -1179,7 +1172,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -1189,14 +1182,14 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import \\"./widget.css\\";
 
 export function render({ model, el }) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -1211,7 +1204,7 @@ export function render({ model, el }) {
     "path": "js/widget.js",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1231,7 +1224,7 @@ export function render({ model, el }) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1243,10 +1236,10 @@ export function render({ model, el }) {
 exports[`create-anywidget > template-vanilla-deno-jsdoc 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -1257,7 +1250,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -1316,7 +1309,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -1326,7 +1319,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
@@ -1336,7 +1329,7 @@ class Counter(anywidget.AnyWidget):
 /** @type {import(\\"npm:@anywidget/types\\").Render<Model>} */
 export function render({ model, el }) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -1349,10 +1342,10 @@ export function render({ model, el }) {
 	el.appendChild(btn);
 }
 ",
-    "path": "src/ipyfoo/static/widget.js",
+    "path": "src/undefined/static/widget.js",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1372,11 +1365,11 @@ export function render({ model, el }) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
-    "path": "src/ipyfoo/static/widget.css",
+    "path": "src/undefined/static/widget.css",
   },
 ]
 `;
@@ -1384,10 +1377,10 @@ export function render({ model, el }) {
 exports[`create-anywidget > template-vanilla-ts 1`] = `
 [
   {
-    "content": "# ipyfoo
+    "content": "# undefined
 
 \`\`\`sh
-pip install ipyfoo
+pip install undefined
 \`\`\`
 ",
     "path": "README.md",
@@ -1401,7 +1394,7 @@ dist
 __pycache__
 .ipynb_checkpoints
 
-src/ipyfoo/static
+src/undefined/static
 ",
     "path": ".gitignore",
   },
@@ -1409,7 +1402,7 @@ src/ipyfoo/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/ipyfoo/static\\",
+		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {},
@@ -1427,7 +1420,7 @@ requires = [\\"hatchling\\"]
 build-backend = \\"hatchling.build\\"
 
 [project]
-name = \\"ipyfoo\\"
+name = \\"undefined\\"
 version = \\"0.0.0\\"
 dependencies = [\\"anywidget\\"]
 
@@ -1441,18 +1434,17 @@ features = [\\"dev\\"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/ipyfoo/static/*\\"]
+artifacts = [\\"src/undefined/static/*\\"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/ipyfoo/static/widget.js\\"]
-skip-if-exists = [\\"src/ipyfoo/static/widget.js\\"]
+ensured-targets = [\\"src/undefined/static/widget.js\\"]
+skip-if-exists = [\\"src/undefined/static/widget.js\\"]
 dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"npm\\"
+npm = \\"undefined\\"
 build_cmd = \\"build\\"
-path = \\"js\\"
 ",
     "path": "pyproject.toml",
   },
@@ -1464,7 +1456,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"ipyfoo\\")
+    __version__ = importlib.metadata.version(\\"undefined\\")
 except importlib.metadata.PackageNotFoundError:
     __version__ = \\"unknown\\"
 
@@ -1474,13 +1466,13 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/ipyfoo/__init__.py",
+    "path": "src/undefined/__init__.py",
   },
   {
     "content": "import type { RenderContext } from \\"@anywidget/types\\";
 import \\"./widget.css\\";
 
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
+/* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
 interface WidgetModel {
 	value: number;
 	/* Add your own */
@@ -1488,7 +1480,7 @@ interface WidgetModel {
 
 export function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"ipyfoo-counter-button\\");
+	btn.classList.add(\\"undefined-counter-button\\");
 	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
 	btn.addEventListener(\\"click\\", () => {
 		model.set(\\"value\\", model.get(\\"value\\") + 1);
@@ -1503,7 +1495,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
     "path": "js/widget.ts",
   },
   {
-    "content": ".ipyfoo-counter-button {
+    "content": ".undefined-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1523,7 +1515,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	transition: transform 0.25s ease-in-out;
 }
 
-.ipyfoo-counter-button:hover {
+.undefined-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1556,3716 +1548,6 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	}
 }",
     "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-react 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {
-		"@anywidget/react": "0.0.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
-	},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import * as React from "react";
-import { createRender, useModelState } from "@anywidget/react";
-import "./widget.css";
-
-export const render = createRender(() => {
-	const [value, setValue] = useModelState("value");
-	return (
-		<button
-			className="ipyfoo-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
-	);
-});
-"
-,
-    "path": "js/widget.jsx",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-react-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.tsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {
-		"@anywidget/react": "0.0.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
-	},
-	"devDependencies": {
-		"@types/react": "^18.2.21",
-		"@types/react-dom": "^18.2.7",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import * as React from "react";
-import { createRender, useModelState } from "@anywidget/react";
-import "./widget.css";
-
-export const render = createRender(() => {
-	const [value, setValue] = useModelState<number>("value");
-	return (
-		<button
-			className="ipyfoo-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
-	);
-});
-"
-,
-    "path": "js/widget.tsx",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-react 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {
-		"@anywidget/react": "0.0.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
-	},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import * as React from "react";
-import { createRender, useModelState } from "@anywidget/react";
-import "./widget.css";
-
-export const render = createRender(() => {
-	const [value, setValue] = useModelState("value");
-	return (
-		<button
-			className="ipyfoo-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
-	);
-});
-"
-,
-    "path": "js/widget.jsx",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-react-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.tsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {
-		"@anywidget/react": "0.0.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
-	},
-	"devDependencies": {
-		"@types/react": "^18.2.21",
-		"@types/react-dom": "^18.2.7",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import * as React from "react";
-import { createRender, useModelState } from "@anywidget/react";
-import "./widget.css";
-
-export const render = createRender(() => {
-	const [value, setValue] = useModelState<number>("value");
-	return (
-		<button
-			className="ipyfoo-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
-	);
-});
-"
-,
-    "path": "js/widget.tsx",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
-	},
-	"dependencies": {},
-	"devDependencies": {}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import "./widget.css";
-
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla-ts 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-src/ipyfoo/static
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"{
-	"scripts": {
-		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@anywidget/types": "0.1.4",
-		"typescript": "^5.2.2"
-	}
-}"
-,
-    "path": "package.json",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-
-
-[tool.hatch.build]
-only-packages = true
-artifacts = ["src/ipyfoo/static/*"]
-
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/ipyfoo/static/widget.js"]
-skip-if-exists = ["src/ipyfoo/static/widget.js"]
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
-build_cmd = "build"
-path = "js"
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import type { RenderContext } from "@anywidget/types";
-import "./widget.css";
-
-/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
-interface WidgetModel {
-	value: number;
-	/* Add your own */
-}
-
-export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "js/widget.ts",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "js/widget.css",
-  },
-  {
-    "content": 
-"{
-	"include": [
-		"js"
-	],
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
-	}
-}"
-,
-    "path": "tsconfig.json",
-  },
-]
-`;
-
-exports[`create-anywidget (Bun) template-vanilla-deno-jsdoc 1`] = `
-[
-  {
-    "content": 
-"# ipyfoo
-
-\`\`\`sh
-pip install ipyfoo
-\`\`\`
-"
-,
-    "path": "README.md",
-  },
-  {
-    "content": 
-"[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name = "ipyfoo"
-version = "0.0.0"
-dependencies = ["anywidget"]
-
-[project.optional-dependencies]
-dev = ["watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
-"
-,
-    "path": "pyproject.toml",
-  },
-  {
-    "content": 
-"{
-	"lock": false,
-	"compilerOptions": {
-		"checkJs": true,
-		"allowJs": true,
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		]
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
-	}
-}"
-,
-    "path": "deno.json",
-  },
-  {
-    "content": 
-"node_modules
-.venv
-dist
-
-# Python
-__pycache__
-.ipynb_checkpoints
-
-
-"
-,
-    "path": ".gitignore",
-  },
-  {
-    "content": 
-"import importlib.metadata
-import pathlib
-
-import anywidget
-import traitlets
-
-try:
-    __version__ = importlib.metadata.version("ipyfoo")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
-
-
-class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
-    value = traitlets.Int(0).tag(sync=True)
-"
-,
-    "path": "src/ipyfoo/__init__.py",
-  },
-  {
-    "content": 
-"import confetti from "https://esm.sh/canvas-confetti@1";
-
-/** @typedef {{ value: number }} Model */
-
-/** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let btn = document.createElement("button");
-	btn.classList.add("ipyfoo-counter-button");
-	btn.innerHTML = \`count is ${model.get("value")}\`;
-	btn.addEventListener("click", () => {
-		model.set("value", model.get("value") + 1);
-		model.save_changes();
-	});
-	model.on("change:value", () => {
-		confetti();
-		btn.innerHTML = \`count is ${model.get("value")}\`;
-	});
-	el.appendChild(btn);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.js",
-  },
-  {
-    "content": 
-".ipyfoo-counter-button {
-	background: linear-gradient(
-		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
-		#00ccff 86.29%
-	);
-	border-radius: 10px;
-	border: 0;
-	color: white;
-	cursor: pointer;
-	font-family: "Roboto", sans-serif;
-	font-size: 2em;
-	margin: 10px;
-	padding: 10px 20px;
-	transition: transform 0.25s ease-in-out;
-}
-
-.ipyfoo-counter-button:hover {
-	transform: scale(1.05);
-}
-"
-,
-    "path": "src/ipyfoo/static/widget.css",
   },
 ]
 `;

@@ -15,6 +15,7 @@ async function read_json(path) {
 	return fs.readFile(path, "utf-8").then(JSON.parse);
 }
 
+
 /**
  * pnpm will help us keep package versions in sync over time, along with dependabot,
  * so we lookup the version from `package.json` to use for those in our templates.
@@ -88,8 +89,11 @@ dev = ["watchfiles", "jupyterlab"]
 features = ["dev"]
 `;
 
-/** @param {string} name */
-let pyproject_toml_with_hatch_jupyter_builder = (name) =>
+/**
+ * @param {string} name
+ * @param {string} npm
+ */
+let pyproject_toml_with_hatch_jupyter_builder = (name, npm) =>
 	pyproject_toml(name) +
 	`\n
 [tool.hatch.build]
@@ -103,9 +107,8 @@ skip-if-exists = ["src/${name}/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "npm"
+npm = "${npm}"
 build_cmd = "build"
-path = "js"
 `;
 
 /** @param {string} name */
@@ -370,9 +373,9 @@ async function generate_package_json(template, { build_dir, typecheck }) {
 
 /**
  * @param {typeof bundled_templates[keyof bundled_templates]} template
- * @param {string} name
+ * @param {{ name: string, pkg_manager: string }} options
  */
-async function render_template(template, name) {
+async function render_template(template, { name, pkg_manager }) {
 	let build_dir = `src/${name}/static`;
 	let tsconfig = template.files.find((file) =>
 		file.path.includes("tsconfig.json")
@@ -391,7 +394,7 @@ async function render_template(template, name) {
 		{ path: `package.json`, content: json_dumps(package_json) },
 		{
 			path: `pyproject.toml`,
-			content: pyproject_toml_with_hatch_jupyter_builder(name),
+			content: pyproject_toml_with_hatch_jupyter_builder(name, pkg_manager),
 		},
 		{ path: `src/${name}/__init__.py`, content: __init__(name) },
 		...files,
@@ -441,9 +444,9 @@ export function render({ model, el }) {
 
 /**
  * @param {TemplateType} type
- * @param {string} name
+ * @param {{ name: string, pkg_manager: string }} options
  */
-export async function gather_files(type, name) {
+export async function gather_files(type, { name, pkg_manager }) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
 			{ path: `README.md`, content: readme(name) },
@@ -456,7 +459,7 @@ export async function gather_files(type, name) {
 		];
 	}
 	if (type in bundled_templates) {
-		return render_template(bundled_templates[type], name);
+		return render_template(bundled_templates[type], { name, pkg_manager });
 	}
 	throw new Error(`Unknown template type: ${type}`);
 }
@@ -466,10 +469,14 @@ export async function gather_files(type, name) {
 
 /**
  * @param {string} target
- * @param {{ name: string, template: TemplateType }} options
+ * @param {{ name: string, template: TemplateType, pkg_manager: string }} options
  */
 export async function create(target, options) {
-	const files = await gather_files(options.template, snakecase(options.name));
+	const files = await gather_files(options.template, {
+		name: snakecase(options.name),
+		pkg_manager: options.pkg_manager,
+	});
+
 	const promises = files.map(async (file) => {
 		let location = path.resolve(target, file.path);
 		await fs.mkdir(path.dirname(location), { recursive: true });
