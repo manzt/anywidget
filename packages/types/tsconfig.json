@@ -1,9 +1,7 @@
 {
 	"extends": "../../tsconfig.json",
+	"include": ["*.ts"],
 	"compilerOptions": {
-		"esModuleInterop": true
-		// TODO: We want to typecheck index.d.ts but not the
-		// rest of the node_modules.
-		// "skipLibCheck": false
+		"outDir": "dist"
 	}
 }

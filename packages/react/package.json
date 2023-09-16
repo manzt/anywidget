@@ -5,15 +5,14 @@
 	"description": "React utilities for anywidget",
 	"main": "index.js",
 	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./index.js"
 		}
-	},
-	"scripts": {
-		"build": "tsc --declaration --emitDeclarationOnly --outDir dist",
-		"typecheck": "tsc --noEmit"
 	},
 	"peerDependencies": {
 		"@types/react": "^18.0.0",

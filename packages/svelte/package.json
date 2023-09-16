@@ -5,15 +5,14 @@
 	"description": "Svelte utilities for anywidget",
 	"main": "src/index.js",
 	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./src/index.js"
 		}
-	},
-	"scripts": {
-		"build": "tsc --declaration --emitDeclarationOnly --outDir dist",
-		"typecheck": "tsc --noEmit"
 	},
 	"peerDependencies": {
 		"svelte": "^4.0.0"

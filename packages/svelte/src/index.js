@@ -1,4 +1,3 @@
-// @ts-check
 import { getContext, onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
@@ -42,7 +41,7 @@ export let model = new Proxy(/** @type {any} */ ({}), {
 	},
 });
 
-/** @type {Stores<import("@anywidget/types").ObjectHash>} */
+/** @type {Stores<Record<string, any>>} */
 export let stores = new Proxy(
 	{},
 	{

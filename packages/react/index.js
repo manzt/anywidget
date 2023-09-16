@@ -1,10 +1,10 @@
-// @ts-check
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
 /** @type {React.Context<import("@anywidget/types").AnyModel>} */
 let ModelContext = React.createContext(/** @type {any} */ (null));
 
+/** @returns {import("@anywidget/types").AnyModel} */
 export function useModel() {
 	let model = React.useContext(ModelContext);
 	if (!model) throw new Error("Model not found");

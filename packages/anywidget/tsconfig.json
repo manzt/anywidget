@@ -1,9 +1,8 @@
 {
 	"extends": "../../tsconfig.json",
+	"include": ["src/**/*", "__tests__/**/*"],
 	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": true,
-		"resolveJsonModule": true
-	},
-	"include": ["src/**/*", "__tests__/**/*"]
+		"resolveJsonModule": true,
+		"noEmit": true
+	}
 }

@@ -4,13 +4,15 @@
 		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter=\"./packages/anywidget\" build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build packages/anywidget",
+		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
-		"release": "python -m build && changeset publish && twine upload --skip-existing dist/*",
-		"test": "vitest --environment=happy-dom",
-		"typecheck": "pnpm --parallel --recursive typecheck",
+		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
+		"test": "vitest --environment=happy-dom --run",
+		"typecheck": "tsc --build && vitest typecheck --run",
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
-		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml ."
+		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml .",
+		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
@@ -19,6 +21,7 @@
 		"happy-dom": "^11.0.2",
 		"prettier": "^3.0.3",
 		"prettier-plugin-astro": "^0.12.0",
+		"publint": "^0.2.2",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.4"
 	},

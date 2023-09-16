@@ -70,7 +70,7 @@ export default function () {
 		},
 		configureServer(server) {
 			server.middlewares.use((req, _res, next) => {
-				if (req.url.endsWith("?anywidget")) {
+				if (req.url?.endsWith("?anywidget")) {
 					// turn into a bare identifier
 					let path = req.url.slice(0, -"?anywidget".length);
 					req.url = "anywidget:" + path;

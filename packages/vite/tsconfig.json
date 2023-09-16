@@ -1,6 +1,6 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["*.js"],
+	"include": ["index.js"],
 	"compilerOptions": {
 		"outDir": "dist",
 		"emitDeclarationOnly": true

@@ -1,16 +1,13 @@
 {
 	"name": "anywidget",
 	"type": "module",
-	"main": "src/index.js",
 	"version": "0.6.4",
 	"author": "Trevor Manz",
 	"license": "MIT",
+	"main": "src/index.js",
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"main": "dist/index.js"
-	},
 	"exports": {
 		".": "./dist/index.js",
 		"./vite": {
@@ -24,8 +21,7 @@
 		}
 	},
 	"scripts": {
-		"build": "node build.mjs",
-		"typecheck": "tsc --noEmit"
+		"build": "node build.mjs"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:~",
@@ -45,5 +41,8 @@
 				"singleton": true
 			}
 		}
+	},
+	"publishConfig": {
+		"main": "dist/index.js"
 	}
 }

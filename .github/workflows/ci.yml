@@ -82,4 +82,4 @@ jobs:
           node-version: "18.x"
       - run: |
           pnpm install
-          pnpm test -- --run
+          pnpm test
