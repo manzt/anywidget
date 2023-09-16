@@ -15,7 +15,6 @@ async function read_json(path) {
 	return fs.readFile(path, "utf-8").then(JSON.parse);
 }
 
-
 /**
  * pnpm will help us keep package versions in sync over time, along with dependabot,
  * so we lookup the version from `package.json` to use for those in our templates.
