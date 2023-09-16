@@ -18,6 +18,7 @@ describe("create-anywidget", () => {
 
 describe("create-anywidget (Bun)", () => {
 	beforeAll(() => {
+		if ("Bun" in globalThis) return;
 		globalThis.Bun = true;
 	});
 

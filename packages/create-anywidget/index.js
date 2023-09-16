@@ -1,10 +1,31 @@
 #!/usr/bin/env node
 import * as fs from "node:fs";
 import * as path from "node:path";
-import * as p from "@clack/prompts";
+import * as _p from "@clack/prompts";
 import { bold, cyan, grey } from "kleur/colors";
 
 import { create } from "./create.js";
+
+let p = new Proxy(_p, {
+	/**
+	 * @template {keyof _p} T
+	 * @param {typeof _p} target
+	 * @param {T} prop
+	 */
+	get(target, prop) {
+		if (prop === "select" || prop === "text" || prop == "confirm") {
+			let fn = /** @type {(typeof _p)["text"]} */ (target[prop]);
+			/** @type {typeof fn} */
+			return async (opts) => {
+				let { value } = await target.group({
+					value: () => fn(opts),
+				});
+				return value;
+			};
+		}
+		return Reflect.get(target, prop);
+	},
+});
 
 let pkg = await fs.promises
 	.readFile(new URL("package.json", import.meta.url), "utf-8")
@@ -70,12 +91,10 @@ let template = await p.select({
 		vanilla: [
 			{
 				label: "JavaScript",
-				hint: "esbuild",
 				value: "template-vanilla",
 			},
 			{
 				label: "TypeScript",
-				hint: "esbuild",
 				value: "template-vanilla-ts",
 			},
 			{
