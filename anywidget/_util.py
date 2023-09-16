@@ -166,7 +166,11 @@ def get_repr_metadata() -> dict:
 
 def _should_start_thread(path: pathlib.Path) -> bool:
     if "site-packages" in path.parts:
-        # file is inside site-packages, likely not a local development install
+        # File is inside site-packages, likely not a local development install
+        return False
+
+    if "dist-packages" in path.parts:
+        # Debian-specific directory, where python packages are installed in Colab.
         return False
 
     try:
