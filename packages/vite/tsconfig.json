@@ -2,6 +2,7 @@
 	"extends": "../../tsconfig.json",
 	"include": ["index.js"],
 	"compilerOptions": {
-		"outDir": "dist"
+		"outDir": "dist",
+		"emitDeclarationOnly": true
 	}
 }

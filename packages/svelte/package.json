@@ -5,7 +5,9 @@
 	"description": "Svelte utilities for anywidget",
 	"main": "src/index.js",
 	"types": "dist/index.d.ts",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",

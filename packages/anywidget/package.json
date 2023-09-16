@@ -5,7 +5,9 @@
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"main": "src/index.js",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": "./dist/index.js",
 		"./vite": {

@@ -8,7 +8,9 @@
 	"scripts": {
 		"build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",

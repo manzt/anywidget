@@ -5,7 +5,9 @@
 	"description": "utility types for anywidget",
 	"main": "./index.ts",
 	"types": "./index.ts",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"exports": {
 		".": {
 			"types": "./index.ts",
