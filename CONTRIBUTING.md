@@ -36,10 +36,14 @@ You can deactivate the environment with `Ctrl + D` and reset it using
 
 Entry points to be aware of:
 
-- [`anywidget`](https://github.com/manzt/anywidget/tree/main/anywidget) - the primary Python package
-- [`packages/anywidget`](https://github.com/manzt/anywidget/tree/main/packages/anywidget) - the JavaScript component of the Python package
-- [`packages/types`](https://github.com/manzt/anywidget/tree/main/packages/types) - type declarations for anywidget (`@anywidget/types`)
-- [`packages/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite) - the [Vite](https://vitejs.dev/) plugin (`@anywidget/vite`)
+- [`anywidget`](https://github.com/manzt/anywidget/tree/main/anywidget) - the
+  primary Python package
+- [`packages/anywidget`](https://github.com/manzt/anywidget/tree/main/packages/anywidget) -
+  the JavaScript component of the Python package
+- [`packages/types`](https://github.com/manzt/anywidget/tree/main/packages/types) -
+  type declarations for anywidget (`@anywidget/types`)
+- [`packages/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite) -
+  the [Vite](https://vitejs.dev/) plugin (`@anywidget/vite`)
 
 ## Making changes
 
@@ -80,7 +84,8 @@ There are a few guidelines we follow:
 
 - For JavaScript, internal variables are written with `snake_case` while
   external APIs are written with `camelCase` (if applicable).
-- For Python, ensure `hatch run lint` passes. You can run `hatch run fmt` to format and fix linting errors.
+- For Python, ensure `hatch run lint` passes. You can run `hatch run fmt` to
+  format and fix linting errors.
 
 ### Generating changelogs
 

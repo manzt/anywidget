@@ -85,7 +85,8 @@ more.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to develop **anywidget** locally.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to develop
+**anywidget** locally.
 
 ## License
 

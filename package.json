@@ -10,13 +10,14 @@
 		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
 		"typecheck": "tsc --build && vitest typecheck --run",
-		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
-		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml .",
+		"format": "dprint fmt",
+		"lint": "dprint check",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
+		"dprint": "^0.41.0",
 		"esbuild": "^0.19.2",
 		"happy-dom": "^11.0.2",
 		"prettier": "^3.0.3",

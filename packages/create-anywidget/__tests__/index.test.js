@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { gather_files } from "../create.js";
 
 describe("create-anywidget", () => {

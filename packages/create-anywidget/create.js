@@ -347,12 +347,13 @@ const esbuild_templates = {
 async function render_template(template, name) {
 	let build_dir = `src/${name}/static`;
 	let tsconfig = template.files.find((file) =>
-		file.path.includes("tsconfig.json"),
+		file.path.includes("tsconfig.json")
 	);
 	let package_json = {
 		scripts: {
 			dev: "npm run build -- --sourcemap=inline --watch",
-			build: `esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
+			build:
+				`esbuild --minify --format=esm --bundle --outdir=${build_dir} ${template.entry_point}`,
 			...(tsconfig ? { typecheck: `tsc --noEmit` } : {}),
 		},
 		...(await get_dependency_versions(template)),
