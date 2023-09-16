@@ -7,13 +7,9 @@
 	"types": "./index.ts",
 	"exports": {
 		".": {
-			"import": "./index.ts",
-			"types": "./index.ts"
+			"types": "./index.ts",
+			"import": "./index.ts"
 		}
-	},
-	"scripts": {
-		"build": "tsc",
-		"typecheck": "vitest typecheck --run"
 	},
 	"dependencies": {
 		"@jupyter-widgets/base": "^6.0.6"
@@ -23,8 +19,8 @@
 		"types": "dist/index.d.ts",
 		"exports": {
 			".": {
-				"import": "./dist/index.js",
-				"types": "./dist/index.d.ts"
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js"
 			}
 		}
 	}

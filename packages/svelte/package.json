@@ -11,10 +11,6 @@
 			"import": "./src/index.js"
 		}
 	},
-	"scripts": {
-		"build": "tsc --declaration --emitDeclarationOnly",
-		"typecheck": "tsc --noEmit"
-	},
 	"peerDependencies": {
 		"svelte": "^4.0.0"
 	},

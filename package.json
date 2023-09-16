@@ -1,7 +1,6 @@
 {
 	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build:all": "tsc --build",
 		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter=\"./packages/anywidget\" build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build packages/anywidget",
@@ -9,10 +8,11 @@
 		"version": "changeset version && pnpm install",
 		"release": "python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --build && vitest typecheck --run",
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
 		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml .",
-		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
+		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint",
+		"prepare": "tsc --build && pnpm -r build && pnpm publint"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
