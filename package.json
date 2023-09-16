@@ -1,6 +1,7 @@
 {
 	"name": "@anywidget/monorepo",
 	"scripts": {
+		"build:all": "tsc --build",
 		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter=\"./packages/anywidget\" build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build packages/anywidget",
@@ -10,7 +11,8 @@
 		"test": "vitest --environment=happy-dom",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --ignore-path=.gitignore --use-tabs --write !pnpm-lock.yaml .",
-		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml ."
+		"lint": "prettier --ignore-path=.gitignore --use-tabs --check !pnpm-lock.yaml .",
+		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
@@ -19,11 +21,9 @@
 		"happy-dom": "^11.0.2",
 		"prettier": "^3.0.3",
 		"prettier-plugin-astro": "^0.12.0",
+		"publint": "^0.2.2",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.4"
 	},
-	"packageManager": "pnpm@8.6.1",
-	"dependencies": {
-		"publint": "^0.2.2"
-	}
+	"packageManager": "pnpm@8.6.1"
 }
