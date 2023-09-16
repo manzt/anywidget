@@ -5,6 +5,7 @@
 	"description": "React utilities for anywidget",
 	"main": "index.js",
 	"types": "dist/index.d.ts",
+	"files": ["dist"],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
