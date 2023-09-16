@@ -6,7 +6,7 @@
 	"main": "index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"prepare": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
+		"build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
 	},
 	"exports": {
 		".": {

@@ -19,8 +19,7 @@
 		}
 	},
 	"scripts": {
-		"build": "node build.mjs",
-		"prepare": "node build.mjs"
+		"build": "node build.mjs"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:~",
