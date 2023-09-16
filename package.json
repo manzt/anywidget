@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build": "pnpm build:nb && pnpm build:lab && pnpm build:packages",
+		"build": "pnpm build:nb && pnpm build:lab",
 		"build:nb": "pnpm --filter=\"./packages/anywidget\" build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
 		"build:lab": "jupyter labextension build packages/anywidget",
 		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
