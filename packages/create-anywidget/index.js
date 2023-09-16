@@ -125,7 +125,7 @@ if (relative !== "") {
 	console.log(`  ${i++}: ${bold(cyan(`cd ${relative}`))}`);
 }
 
-// prettier-ignore
+// dprint-ignore
 console.log(
 	`  ${i++}: ${
 		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
