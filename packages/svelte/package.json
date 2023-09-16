@@ -12,7 +12,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsc --declaration --emitDeclarationOnly --outDir dist",
+		"build": "tsc --declaration --emitDeclarationOnly",
 		"typecheck": "tsc --noEmit"
 	},
 	"peerDependencies": {

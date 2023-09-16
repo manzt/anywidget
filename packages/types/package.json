@@ -3,16 +3,20 @@
 	"type": "module",
 	"version": "0.1.4",
 	"description": "utility types for anywidget",
-	"main": "index.js",
-	"types": "index.d.ts",
-	"scripts": {
-		"typecheck": "vitest typecheck --run"
-	},
+	"main": "./index.ts",
+	"types": "./index.ts",
 	"exports": {
 		".": {
-			"import": "index.ts",
-			"types": "index.ts"
+			"import": "./index.ts",
+			"types": "./index.ts"
 		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"typecheck": "vitest typecheck --run"
+	},
+	"dependencies": {
+		"@jupyter-widgets/base": "^6.0.6"
 	},
 	"publishConfig": {
 		"main": "dist/index.js",
@@ -23,8 +27,5 @@
 				"types": "./dist/index.d.ts"
 			}
 		}
-	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.6"
 	}
 }

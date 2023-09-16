@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
 		"strict": true,
+		"target": "esnext",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"target": "esnext",
 		"allowJs": true,
 		"checkJs": true,
 		"isolatedModules": true,
