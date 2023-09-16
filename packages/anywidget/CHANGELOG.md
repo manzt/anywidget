@@ -1,5 +1,13 @@
 # anywidget
 
+## 0.6.5
+
+### Patch Changes
+
+- fix: disable auto-reloading in `dist-packages` ([#276](https://github.com/manzt/anywidget/pull/276))
+
+  When the package is located in `dist-packages`, auto-reloading is now disabled. This prevents unnecessary warnings when the package is used in environments like Google Colab which are likely non-development installs.
+
 ## 0.6.4
 
 ### Patch Changes
@@ -199,11 +207,11 @@
 
   /** @type {import("anywidget/types").Render<{ value: number }>} */
   export function render(view) {
-  	let value = view.model.get("value");
-  	//^ ? `number`
+    let value = view.model.get("value");
+    //^ ? `number`
 
-  	view.model.set("value", "not-a-number");
-  	// Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
+    view.model.set("value", "not-a-number");
+    // Error: Argument of type 'string' is not assignable to parameter of type 'number'. [2345]
   }
   ```
 
