@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.4.1
+
+### Patch Changes
+
+- fix: correctly detect bun as package manager ([#282](https://github.com/manzt/anywidget/pull/282))
+
 ## 0.4.0
 
 ### Minor Changes
