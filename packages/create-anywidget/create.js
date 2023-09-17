@@ -342,7 +342,10 @@ const bundled_templates = {
  * @param {typeof bundled_templates[keyof bundled_templates]} template
  * @param {{ build_dir: string, typecheck: boolean, pkg_manager: string }} options
  */
-async function generate_package_json(template, { build_dir, typecheck, pkg_manager }) {
+async function generate_package_json(
+	template,
+	{ build_dir, typecheck, pkg_manager },
+) {
 	/** @type {Record<string, string>} */
 	let scripts = {
 		dev: "npm run build -- --sourcemap=inline --watch",
