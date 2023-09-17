@@ -28,14 +28,16 @@ src/undefined/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.jsx --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\"
+		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static\\"
 	},
 	\\"dependencies\\": {
 		\\"@anywidget/react\\": \\"0.0.2\\",
 		\\"react\\": \\"^18.2.0\\",
 		\\"react-dom\\": \\"^18.2.0\\"
 	},
-	\\"devDependencies\\": {}
+	\\"devDependencies\\": {
+		\\"esbuild\\": \\"^0.19.2\\"
+	}
 }",
     "path": "package.json",
   },
@@ -170,7 +172,7 @@ src/undefined/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.tsx --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\",
+		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {
@@ -181,7 +183,8 @@ src/undefined/static
 	\\"devDependencies\\": {
 		\\"@types/react\\": \\"^18.2.21\\",
 		\\"@types/react-dom\\": \\"^18.2.7\\",
-		\\"typescript\\": \\"^5.2.2\\"
+		\\"typescript\\": \\"^5.2.2\\",
+		\\"esbuild\\": \\"^0.19.2\\"
 	}
 }",
     "path": "package.json",
@@ -345,10 +348,12 @@ src/undefined/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.js --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\"
+		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static\\"
 	},
 	\\"dependencies\\": {},
-	\\"devDependencies\\": {}
+	\\"devDependencies\\": {
+		\\"esbuild\\": \\"^0.19.2\\"
+	}
 }",
     "path": "package.json",
   },
@@ -624,13 +629,14 @@ src/undefined/static
     "content": "{
 	\\"scripts\\": {
 		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"bun build js/widget.ts --minify --format=esm --outdir=src/undefined/static --asset-naming=[name].[ext]\\",
+		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static\\",
 		\\"typecheck\\": \\"tsc --noEmit\\"
 	},
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
 		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"typescript\\": \\"^5.2.2\\"
+		\\"typescript\\": \\"^5.2.2\\",
+		\\"esbuild\\": \\"^0.19.2\\"
 	}
 }",
     "path": "package.json",

@@ -340,9 +340,12 @@ const bundled_templates = {
 
 /**
  * @param {typeof bundled_templates[keyof bundled_templates]} template
- * @param {{ build_dir: string, typecheck: boolean }} options
+ * @param {{ build_dir: string, typecheck: boolean, pkg_manager: string }} options
  */
-async function generate_package_json(template, { build_dir, typecheck }) {
+async function generate_package_json(
+	template,
+	{ build_dir, typecheck, pkg_manager },
+) {
 	/** @type {Record<string, string>} */
 	let scripts = {
 		dev: "npm run build -- --sourcemap=inline --watch",
@@ -350,7 +353,7 @@ async function generate_package_json(template, { build_dir, typecheck }) {
 
 	/** @type {string[]} */
 	let dev_extra = [];
-	if ("Bun" in globalThis) {
+	if (pkg_manager === "bun") {
 		scripts.build =
 			`bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
 	} else {
@@ -382,6 +385,7 @@ async function render_template(template, { name, pkg_manager }) {
 	let package_json = await generate_package_json(template, {
 		build_dir,
 		typecheck: !!tsconfig,
+		pkg_manager,
 	});
 	let files = template.files.map((file) => ({
 		path: file.path,
@@ -475,7 +479,6 @@ export async function create(target, options) {
 		name: snakecase(options.name),
 		pkg_manager: options.pkg_manager,
 	});
-
 	const promises = files.map(async (file) => {
 		let location = path.resolve(target, file.path);
 		await fs.mkdir(path.dirname(location), { recursive: true });
