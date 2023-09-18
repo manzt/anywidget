@@ -47,8 +47,8 @@ Bootstrap a new widget repository that is ready to publish to PyPI:
 npm create anywidget@latest # or pnpm, yarn
 ```
 
-Every template is a `hatchling`-based and uses the `hatchling-jupyter-builder`
-plugin to bundle the widget front-end code during a
+Every template is a `hatchling`-based Python project and uses the
+`hatchling-jupyter-builder` plugin to bundle the widget front-end code during a
 [PEP 517](https://peps.python.org/pep-0517/) build. We prefer
 [esbuild](https://esbuild.github.io/) for bundling in most of the templates,
 unless [Bun](https://bun.sh/) is used to create the project,
