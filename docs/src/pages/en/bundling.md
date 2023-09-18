@@ -9,35 +9,36 @@ code. However, the use of local dependencies or non-standard syntax (e.g.,
 TypeScript, React, Vue, Solid, Svelte) necessitates the use of a bundler to
 merge together files into a single optimized ESM file.
 
-## Disclaimer: Keeping anywidget Simple
+## Keeping it Simple
 
-For folks new to JavaScript, you might encounter suggestions or be tempted to
-use various front-end technologies. It's important to understand trade-offs in
-the context of widgets:
+For those new to JavaScript, you may be inclined to explore various front-end
+tools. Here are key considerations for widget context:
 
-1. **Deviation from Browser Standards**: **anywidget** emphasizes browser-native
-   JavaScript, ensuring the code you write is directly interpretable by
-   browsers. Using frameworks like React, Svelte, Vue, or even tools like
-   TypeScript introduces new concepts and syntax which can lead to
-   misconceptions when learning what is (and what is not) the front end.
+1. **Deviation from Browser Standards**: **anywidget** requires web-standard
+   ECMAScript modules, ensuring the code you write is directly interpretable by
+   web browsers. Introducing frameworks or tools like TypeScript can lead to
+   misconceptions about what is (and _what is not_) the front end, especially
+   when first learning.
 
 2. **Additional Tooling**: Such technologies require your front-end code to be
-   transformed before browsers can understand it, a step that needs to be
-   repeated any time you make changes. Without them, **anywidget** projects can
-   be packaged and developed purely with Python. However, adding such
-   technologies transforms your project into a hybrid of Python and JavaScript,
-   requiring tools like Node.js, a package manager, and bundler.
+   transformed to ESM for the browser to understand. Without them, **anywidget**
+   projects can be developed purely with Python. Incorporating them turns your
+   project into a Python-JavaScript hybrid, necessitating tools like Node.js and
+   bundlers.
 
-Our recommendation? Keep it simple and use browser-native JavaScript, avoiding
-JavaScript tooling and complexity. Navigating a hybrid JavaScript-Python project
-has its challenges; maintaining pure JavaScript offers long-term benefits. While
-front-end frameworks manage complex states, most widgets don't need this. If
-yours does, consider creating a dedicated JavaScript library for the widget's
-core.
+Our recommendation? Keep it simple:
 
-For TypeScript enthusiasts, consider TypeScript through
-[JSDoc comments](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html).
-It offers type safety without needing a build step.
+- **Framework**: You likely don't need one. If you do, think about crafting a
+  standalone JS library first, outside of the Python widget. Unsure? Start
+  without a framework.
+- **Dependencies**: Import from CDNs like [esm.sh](https://esm.sh/) or
+  [jsDelivr](https://www.jsdelivr.com/) first and get something working. Make
+  use to use versioned URLs for stability.
+- **Type-Safety**: While TypeScript is powerful, it requires browser
+  transformation. Use TypeScript within
+  [JSDoc comments](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)
+  for type-checking benefits in `.js` files, eliminating the need for a build
+  step.
 
 ## Project Templates
 
