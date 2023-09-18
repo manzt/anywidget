@@ -9,13 +9,11 @@ import CounterButton from "../../components/CounterButton.astro";
 ## What is anywidget?
 
 **anywidget** is a Python library that simplifies creating and publishing
-custom Jupyter widgets. No messy build configuration or complicated cookiecutter templates.
+custom [Jupyter Widgets](https://ipywidgets.readthedocs.io/en/latest/).
+No messy build configuration or complicated cookiecutter templates.
 
 It is <u>**not**</u> a new interactive widgets framework, but rather
-an abstraction for creating custom Jupyter widgets using modern web standards.
-**anywidget** solves the multi-platform packaging problem for the fragmented Jupyter
-ecosystem, allowing your widget to run automatically in **Jupyter Notebooks**,
-**Jupyter Lab**, **Google Colab**, **VSCode**, and more.
+an abstraction for creating custom Jupyter Widgets using modern web standards.
 
 ## Key features
 
@@ -24,6 +22,7 @@ ecosystem, allowing your widget to run automatically in **Jupyter Notebooks**,
 - 🤖 Prototype **within** `.ipynb` or `.py` files
 - 🚀 Run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
 - ⚡ Develop with **instant HMR**, like modern web frameworks
+
 
 ## Example
 
@@ -71,19 +70,11 @@ What's going on here:
   Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
   keyword argument.
 
-- `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
-  in the global scope if using this feature, so take care in avoid global overrides.
-
 - `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
-  It _must_ export a `render` custom rendering logic and initializes dynamic updates for the custom widget.
+  It _must_ export `render`, a function that defines rendering logic and initializes dynamic updates for the custom widget.
 
-```javascript
-/** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
-export function render({ model, el }) {
-	// Render model contents and setup dynamic updates
-	// See Jupyter widgets docs for more information: https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Rendering-model-contents
-}
-```
+- `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
+  in the global scope if using this feature, so take care to avoid naming conflicts.
 
 ECMAScript modules are the offical standard format to package JavaScript code for reuse and are supported
 natively across [all major browsers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#javascript.statements.export).
@@ -113,29 +104,25 @@ export function render({ model, el }) {
 }
 ```
 
-You may optionally [bundle](/en/bundling) your code to a single ESM target so that your widget works offline.
+## Progressive Development
 
-> Both `_esm` and `_css` can either be a Python string containing actual front-end code
-> or alternatively **file paths**. If a file path is provided during development,
-> you opt in to [**anywidget**'s native HMR](/blog/anywidget-02/#native-hot-module-replacement-hmr).
-> **anywidget** will start listening for modifications to the referenced files and instantly
-> apply changes to the front-end.
+As your widgets grow in complexity, it is recommended to separate your
+front-end code from your Python code. Just move the `_esm` and `_css` 
+definitions to separate files and reference them via path.
 
-## Motivation
+```python
+import pathlib
+import anywidget
+import traitlets
 
-Official
-[cookiecutter templates](https://github.com/jupyter-widgets/?q=cookiecutter&type=all&language=&sort=)
-provide the defacto approach for creating custom Jupyter widgets, but derived
-projects are bootstrapped with complicated packaging and distribution scripts
-which must be maintained by the widget author. While the cookiecutters initially
-ensure compatability with various notebook or notebook-like environments,
-substantial developer effort is required to keep the vendored tooling from
-breaking over time.
+class CounterWidget(anywidget.AnyWidget):
+    _esm = pathlib.Path(__file__).parent / "index.js"
+    _css = pathlib.Path(__file__).parent / "index.css"
+    count = traitlets.Int(0).tag(sync=True)
+```
 
-**anywidget** reduces this burden and improves the Jupyter widget developer
-experience. It ensures your widget's compatability with the fractured Jupyter
-ecosystem rather than requiring each author to solve this same multi-platform
-packaging problem. Creating custom widgets with **anywidget** is fun and easy.
-You can start prototyping _within_ a notebook and publish on PyPI like any other
-Python module. No need to create a new cookiecutter repo, maintain complicated
-build scripts, or understand JavaScript dependency/build tooling to get started.
+This is both easier to read and allows you to use your favorite editor/IDE for your front-end code.
+Using file paths also enables **anywidget**'s [built-in HMR](/blog/anywidget-02/#native-hot-module-replacement-hmr),
+allowing real-time updates to your widget during development (below).
+
+![Real-time widget development entirely from within JupyterLab](https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif)
