@@ -49,21 +49,20 @@ class CounterWidget(anywidget.AnyWidget):
     # Widget front-end JavaScript code
     _esm = """
     export function render({ model, el }) {
-      let getCount = () => model.get("count");
       let button = document.createElement("button");
-      button.innerHTML = `count is ${getCount()}`;
+      button.innerHTML = `count is ${model.get("value")}`;
       button.addEventListener("click", () => {
-        model.set("count", getCount() + 1);
+        model.set("value", model.get("value") + 1);
         model.save_changes();
       });
-      model.on("change:count", () => {
-        button.innerHTML = `count is ${getCount()}`;
+      model.on("change:value", () => {
+        button.innerHTML = `count is ${model.get("value")}`;
       });
       el.appendChild(button);
     }
     """
     # Stateful property that can be accessed by JavaScript & Python
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 ```
 
 Front-end code can also live in separate files (recommend):
@@ -76,8 +75,7 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = pathlib.Path("index.js")
     _css = pathlib.Path("styles.css")
-
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 ```
 
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
