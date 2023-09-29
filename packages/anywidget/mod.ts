@@ -1,19 +1,5 @@
 import mitt, { type Emitter } from "npm:mitt@3";
 
-declare global {
-	namespace Deno {
-		namespace jupyter {
-			function broadcast(
-				method: string,
-				content: Record<string, unknown>,
-				extra?: {
-					metadata?: Record<string, unknown>;
-				},
-			): Promise<void>;
-		}
-	}
-}
-
 class Comm {
 	id: string;
 	#protocol_version_major: number;
