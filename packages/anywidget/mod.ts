@@ -90,8 +90,9 @@ type FrontEndModel<State> = Model<State> & {
 	save_changes(): void;
 };
 
-export async function widget<State>({ state, render }: {
+export async function widget<State>({ state, render, imports }: {
 	state: State;
+	imports: string;
 	render: (
 		context: {
 			model: FrontEndModel<State>;
@@ -103,9 +104,10 @@ export async function widget<State>({ state, render }: {
 	let comm = new Comm();
 	await comm.init();
 	// TODO: more robust serialization of render function (with context?)
+	const _esm = `${imports}\nexport const render = ${render.toString()}`;
 	await comm.send_state({
 		...state,
-		_esm: "export const render = " + render.toString(),
+		_esm,
 	});
 	for (let key in state) {
 		model.on(`change:${key}`, (data) => {
