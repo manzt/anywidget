@@ -623,7 +623,7 @@ _TRAITLETS_SYNC_FLAG = "sync"
 # state isn't being synced without opting in.
 
 
-def _get_traitlets_state(obj: traitlets.HasTraits, **kwargs) -> Serializable:
+def _get_traitlets_state(obj: traitlets.HasTraits) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
     return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
@@ -695,7 +695,7 @@ def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
     return isinstance(obj, msgspec.Struct) if msgspec is not None else False
 
 
-def _get_msgspec_state(obj: msgspec.Struct, **kwargs) -> dict:
+def _get_msgspec_state(obj: msgspec.Struct) -> dict:
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
