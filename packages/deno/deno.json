@@ -1,0 +1,11 @@
+{
+	"lock": false,
+	"fmt": {
+		"useTabs": true
+	},
+	"lint": {
+		"rules": {
+			"exclude": ["prefer-const"]
+		}
+	}
+}
