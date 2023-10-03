@@ -1,5 +1,4 @@
 import mitt, { type Emitter } from "npm:mitt@3";
-// @deno-fmt-ignore
 import pkg from "../anywidget/package.json" with { type: "json" };
 
 class Comm {
