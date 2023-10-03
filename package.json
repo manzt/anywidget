@@ -18,7 +18,7 @@
 		"@changesets/cli": "^2.26.2",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"dprint": "^0.41.0",
-		"esbuild": "^0.19.2",
+		"esbuild": "^0.19.4",
 		"happy-dom": "^12.5.1",
 		"publint": "^0.2.2",
 		"typescript": "^5.2.2",
