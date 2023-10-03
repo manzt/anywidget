@@ -1,16 +1,15 @@
 import mitt, { type Emitter } from "npm:mitt@3";
+import pkg from "../packages/anywidget/package.json" with { type: "json" };
 
 class Comm {
 	id: string;
 	#protocol_version_major: number;
 	#protocol_version_minor: number;
-	#anywidget_version: string;
 
 	constructor() {
 		this.id = crypto.randomUUID();
 		this.#protocol_version_major = 2;
 		this.#protocol_version_minor = 1;
-		this.#anywidget_version = "0.6.5";
 	}
 
 	async init() {
@@ -23,10 +22,10 @@ class Comm {
 					"state": {
 						"_model_module": "anywidget",
 						"_model_name": "AnyModel",
-						"_model_module_version": this.#anywidget_version,
+						"_model_module_version": pkg.version,
 						"_view_module": "anywidget",
 						"_view_name": "AnyView",
-						"_view_module_version": this.#anywidget_version,
+						"_view_module_version": pkg.version,
 						"_view_count": null,
 					},
 				},
@@ -62,6 +61,7 @@ type ChangeEvents<State> = {
 	[K in (string & keyof State) as `change:${K}`]: State[K];
 };
 
+
 class Model<State> {
 	_state: State;
 	_emitter: Emitter<ChangeEvents<State>>;
@@ -89,6 +89,9 @@ class Model<State> {
 type FrontEndModel<State> = Model<State> & {
 	save_changes(): void;
 };
+
+// Requires mod user to include lib DOM in their compiler options if they want to use this type.
+type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T : unknown;
 
 export async function widget<State>({ state, render, imports }: {
 	state: State;
