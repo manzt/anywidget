@@ -1,5 +1,5 @@
 import mitt, { type Emitter } from "npm:mitt@3";
-import pkg from "../packages/anywidget/package.json" with { type: "json" };
+import pkg from "../anywidget/package.json" with { type: "json" };
 
 class Comm {
 	id: string;
