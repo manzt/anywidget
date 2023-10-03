@@ -1,4 +1,5 @@
 import mitt, { type Emitter } from "npm:mitt@3";
+// @deno-fmt-ignore
 import pkg from "../anywidget/package.json" with { type: "json" };
 
 class Comm {
@@ -61,7 +62,6 @@ type ChangeEvents<State> = {
 	[K in (string & keyof State) as `change:${K}`]: State[K];
 };
 
-
 class Model<State> {
 	_state: State;
 	_emitter: Emitter<ChangeEvents<State>>;
@@ -91,7 +91,8 @@ type FrontEndModel<State> = Model<State> & {
 };
 
 // Requires mod user to include lib DOM in their compiler options if they want to use this type.
-type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T : unknown;
+type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
+	: unknown;
 
 export async function widget<State>({ state, render, imports }: {
 	state: State;
