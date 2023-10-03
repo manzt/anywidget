@@ -182,7 +182,7 @@ src/undefined/static
 	},
 	\\"devDependencies\\": {
 		\\"@types/react\\": \\"^18.2.23\\",
-		\\"@types/react-dom\\": \\"^18.2.7\\",
+		\\"@types/react-dom\\": \\"^18.2.8\\",
 		\\"typescript\\": \\"^5.2.2\\",
 		\\"esbuild\\": \\"^0.19.4\\"
 	}
@@ -961,7 +961,7 @@ src/undefined/static
 	},
 	\\"devDependencies\\": {
 		\\"@types/react\\": \\"^18.2.23\\",
-		\\"@types/react-dom\\": \\"^18.2.7\\",
+		\\"@types/react-dom\\": \\"^18.2.8\\",
 		\\"typescript\\": \\"^5.2.2\\",
 		\\"esbuild\\": \\"^0.19.4\\"
 	}
