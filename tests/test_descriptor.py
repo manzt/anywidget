@@ -73,7 +73,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = VAL
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {"value": self.value}
 
         def __repr__(self) -> str:
@@ -110,7 +110,7 @@ def test_state_setter(mock_comm: MagicMock):
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {}
 
         def _set_anywidget_state(self, state):
@@ -130,7 +130,7 @@ def test_comm_cleanup():
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {}
 
     foo = Foo()
@@ -154,7 +154,7 @@ def test_detect_observer():
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor()
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {}
 
     with pytest.warns(UserWarning, match="Could not find a notifier"):
@@ -170,7 +170,7 @@ def test_descriptor_on_slots() -> None:
         _repr_mimebundle_ = MimeBundleDescriptor()
         value: int = 1
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {"value": self.value}
 
     with pytest.warns(UserWarning, match=".*is not weakrefable"):
@@ -300,7 +300,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
         _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
@@ -348,7 +348,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(bar=bar, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self):
+        def _get_anywidget_state(self, include: set[str] | None):
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
