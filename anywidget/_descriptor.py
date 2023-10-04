@@ -28,7 +28,6 @@ from typing import (
     Any,
     Callable,
     Iterable,
-    Protocol,
     Sequence,
     cast,
     overload,
@@ -53,9 +52,13 @@ if TYPE_CHECKING:  # pragma: no cover
     import psygnal
     import pydantic
     import traitlets
-    from typing_extensions import TypeAlias, TypeGuard
+    from typing_extensions import Protocol, TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
+
+    class _GetState(Protocol):
+        def __call__(self, obj: Any, include: set[str] | None) -> dict:
+            ...
 
     # catch all for types that can be serialized ... too hard to actually type
     Serializable: TypeAlias = Any
@@ -467,14 +470,7 @@ def _anywidget_id(obj: object) -> str:
     return f"{type(obj).__module__}.{type(obj).__name__}"
 
 
-class _GetState(Protocol):
-    def __call__(self, obj: Any, include: set[str] | None) -> Serializable:
-        ...
-
-
-def determine_state_getter(
-    obj: object,
-) -> _GetState:
+def determine_state_getter(obj: object) -> _GetState:
     """Autodetect how `obj` can be serialized to a dict.
 
     This looks for various special methods and patterns on the object (e.g. dataclass,
