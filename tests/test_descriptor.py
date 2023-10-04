@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 import pathlib
 import time
 import weakref
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Set, Union
 from unittest.mock import MagicMock, patch
 
 import anywidget._descriptor
@@ -48,7 +46,7 @@ def mock_comm():
     assert not _COMMS
 
 
-def _send_value(comm: Comm, value: int) -> int:
+def _send_value(comm: "Comm", value: int) -> int:
     # test that the object responds to incoming messages
     comm.handle_msg(
         {"content": {"data": {"method": "update", "state": {"value": value}}}}
@@ -56,7 +54,7 @@ def _send_value(comm: Comm, value: int) -> int:
     return value
 
 
-def _assert_sends_update(wdg: AnywidgetProtocol, comm: MagicMock, expect: int):
+def _assert_sends_update(wdg: "AnywidgetProtocol", comm: MagicMock, expect: int):
     # test that the comm sends update messages
     wdg._repr_mimebundle_.send_state({"value"})
     comm.send.assert_called_with(
@@ -75,7 +73,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = VAL
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {"value": self.value}
 
         def __repr__(self) -> str:
@@ -112,7 +110,7 @@ def test_state_setter(mock_comm: MagicMock):
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {}
 
         def _set_anywidget_state(self, state):
@@ -132,7 +130,7 @@ def test_comm_cleanup():
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {}
 
     foo = Foo()
@@ -156,7 +154,7 @@ def test_detect_observer():
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor()
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {}
 
     with pytest.warns(UserWarning, match="Could not find a notifier"):
@@ -172,7 +170,7 @@ def test_descriptor_on_slots() -> None:
         _repr_mimebundle_ = MimeBundleDescriptor()
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {"value": self.value}
 
     with pytest.warns(UserWarning, match=".*is not weakrefable"):
@@ -302,7 +300,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
         _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
@@ -350,7 +348,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(bar=bar, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
