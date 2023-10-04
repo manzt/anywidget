@@ -67,7 +67,10 @@ class Model<State> {
 
 	constructor(state: State) {
 		this._state = state;
-		this._emitter = mitt<ChangeEvents<State>>();
+		// types are messed up for mitt.
+		this._emitter = (mitt as unknown as typeof mitt.default)<
+			ChangeEvents<State>
+		>();
 	}
 	get<K extends keyof State>(key: K): State[K] {
 		return this._state[key];
