@@ -123,6 +123,32 @@ def test_state_setter(mock_comm: MagicMock):
     mock.assert_called_once_with(state)
 
 
+def test_state_setter_binary(mock_comm: MagicMock):
+    """Test that `_set_anywidget_state` is used when present."""
+    mock = MagicMock()
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: Union[Set[str], None]):
+            return {}
+
+        def _set_anywidget_state(self, state):
+            mock(state)
+
+    foo = Foo()
+    foo._repr_mimebundle_
+    mock_comm.handle_msg(
+        {
+            "content": {
+                "data": {"method": "update", "state": {}, "buffer_paths": [["value"]]}
+            },
+            "buffers": [b"hello"],
+        }
+    )
+    mock.assert_called_once_with({"value": b"hello"})
+
+
 def test_comm_cleanup():
     """Test that the comm is cleaned up when the object is deleted."""
     assert not _COMMS
