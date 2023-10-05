@@ -32,7 +32,6 @@ export const _internals = {
 	},
 };
 
-
 class Comm {
 	#id: string;
 	#anywidget_version: string;
