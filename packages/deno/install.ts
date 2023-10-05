@@ -58,4 +58,6 @@ for (let [name, reader] of Object.entries(archive.entries)) {
 console.log(`✅ Installed anywidget ${version} in ${out_dir}`);
 console.log(path.join(out_dir, "share/jupyter/labextensions/anywidget/"));
 console.log(path.join(out_dir, "share/jupyter/nbextensions/anywidget/"));
-console.log(path.join(out_dir, "etc/jupyter/nbconfig/notebook.d/anywidget.json"));
+console.log(
+	path.join(out_dir, "etc/jupyter/nbconfig/notebook.d/anywidget.json"),
+);

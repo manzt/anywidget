@@ -102,7 +102,7 @@ class Comm {
 			"comm_id": this.id,
 			"data": { "method": "update", "state": state },
 		}, {
-				"buffers": [],
+			"buffers": [],
 		});
 	}
 
