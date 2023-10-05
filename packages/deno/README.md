@@ -67,7 +67,7 @@ model;
 `In[2]:`
 
 ```typescript
-let dict = await Deno.readTextFile("/usr/share/dict/words").split("\n");
+let dict = await Deno.readTextFile("/usr/share/dict/words");
 for (let word of dict.split("\n")) {
 	model.set("letters", word);
 	await new Promise((resolve) => setTimeout(resolve, 500));
