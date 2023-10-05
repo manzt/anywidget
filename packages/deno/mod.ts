@@ -2,6 +2,36 @@ import mitt, { type Emitter } from "npm:mitt@3";
 
 // TODO: Find this automatically from where the jupyter assets are installed?
 const ANYWIDGET_VERSION = "0.6.5";
+const COMMS = new WeakMap<object, Comm>();
+
+type Broadcast = (
+	type: string,
+	content: Record<string, unknown>,
+	extra?: {
+		metadata?: Record<string, unknown>;
+	},
+) => Promise<void>;
+
+const jupyter_broadcast: Broadcast = (() => {
+	try {
+		// @ts-expect-error - Only available in Jupyter context
+		return Deno.jupyter.broadcast;
+	} catch (_) {
+		return async () => {};
+	}
+})();
+
+export const _internals = {
+	jupyter_broadcast,
+	get_comm(model: object): Comm {
+		let comm = COMMS.get(model);
+		if (!comm) {
+			throw new Error("No comm found for model");
+		}
+		return comm;
+	},
+};
+
 
 class Comm {
 	#id: string;
@@ -21,7 +51,7 @@ class Comm {
 	}
 
 	async init() {
-		await Deno.jupyter.broadcast(
+		await _internals.jupyter_broadcast(
 			"comm_open",
 			{
 				"comm_id": this.id,
@@ -48,7 +78,7 @@ class Comm {
 	}
 
 	async send_state(state: object) {
-		await Deno.jupyter.broadcast("comm_msg", {
+		await _internals.jupyter_broadcast("comm_msg", {
 			"comm_id": this.id,
 			"data": { "method": "update", "state": state },
 		});
@@ -119,7 +149,7 @@ type WidgetProps<State> = {
 
 // TODO: more robust serialization of render function (with context?)
 function to_esm<State>(
-	{ imports, render }: Pick<WidgetProps<State>, "imports" | "render">,
+	{ imports = "", render }: Pick<WidgetProps<State>, "imports" | "render">,
 ) {
 	return `${imports}\nexport const render = ${render.toString()}`;
 }
@@ -136,7 +166,7 @@ export async function widget<State>(
 			comm.send_state({ [key]: data });
 		});
 	}
-	return new Proxy(model, {
+	let obj = new Proxy(model, {
 		get(target, prop, receiver) {
 			if (prop === Symbol.for("Jupyter.display")) {
 				return comm.mimebundle.bind(comm);
@@ -144,4 +174,6 @@ export async function widget<State>(
 			return Reflect.get(target, prop, receiver);
 		},
 	});
+	COMMS.set(obj, comm);
+	return obj;
 }
