@@ -1,15 +1,23 @@
 import mitt, { type Emitter } from "npm:mitt@3";
-import pkg from "../anywidget/package.json" with { type: "json" };
+
+// TODO: Find this automatically from where the jupyter assets are installed?
+const ANYWIDGET_VERSION = "0.6.5";
 
 class Comm {
-	id: string;
+	#id: string;
+	#anywidget_version: string;
 	#protocol_version_major: number;
 	#protocol_version_minor: number;
 
-	constructor() {
-		this.id = crypto.randomUUID();
+	constructor({ anywidget_version }: { anywidget_version?: string }) {
+		this.#id = crypto.randomUUID();
+		this.#anywidget_version = anywidget_version ?? ANYWIDGET_VERSION;
 		this.#protocol_version_major = 2;
 		this.#protocol_version_minor = 1;
+	}
+
+	get id() {
+		return this.#id;
 	}
 
 	async init() {
@@ -22,10 +30,10 @@ class Comm {
 					"state": {
 						"_model_module": "anywidget",
 						"_model_name": "AnyModel",
-						"_model_module_version": pkg.version,
+						"_model_module_version": this.#anywidget_version,
 						"_view_module": "anywidget",
 						"_view_name": "AnyView",
-						"_view_module_version": pkg.version,
+						"_view_module_version": this.#anywidget_version,
 						"_view_count": null,
 					},
 				},
@@ -96,25 +104,33 @@ type FrontEndModel<State> = Model<State> & {
 type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
 	: unknown;
 
-export async function widget<State>({ state, render, imports }: {
+type WidgetProps<State> = {
+	/** The initial state of the widget. */
 	state: State;
-	imports: string;
+	/** A function that renders the widget. This function is serialized and sent to the front end. */
 	render: (
-		context: {
-			model: FrontEndModel<State>;
-			el: HTMLElement;
-		},
+		context: { model: FrontEndModel<State>; el: HTMLElement },
 	) => unknown;
-}) {
+	/** The imports required for the front-end function. */
+	imports?: string;
+	/** The version of anywidget to use. */
+	version?: string;
+};
+
+// TODO: more robust serialization of render function (with context?)
+function to_esm<State>(
+	{ imports, render }: Pick<WidgetProps<State>, "imports" | "render">,
+) {
+	return `${imports}\nexport const render = ${render.toString()}`;
+}
+
+export async function widget<State>(
+	{ state, render, imports, version }: WidgetProps<State>,
+) {
 	let model = new Model(state);
-	let comm = new Comm();
+	let comm = new Comm({ anywidget_version: version });
 	await comm.init();
-	// TODO: more robust serialization of render function (with context?)
-	const _esm = `${imports}\nexport const render = ${render.toString()}`;
-	await comm.send_state({
-		...state,
-		_esm,
-	});
+	await comm.send_state({ ...state, _esm: to_esm({ imports, render }) });
 	for (let key in state) {
 		model.on(`change:${key}`, (data) => {
 			comm.send_state({ [key]: data });
