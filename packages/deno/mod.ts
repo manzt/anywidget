@@ -88,7 +88,6 @@ class Comm {
 				},
 			},
 			{
-				"buffers": [],
 				"metadata": {
 					"version":
 						`${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
@@ -101,8 +100,6 @@ class Comm {
 		await _internals.jupyter_broadcast("comm_msg", {
 			"comm_id": this.id,
 			"data": { "method": "update", "state": state },
-		}, {
-			"buffers": [],
 		});
 	}
 
