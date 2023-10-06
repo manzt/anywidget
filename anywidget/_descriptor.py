@@ -23,7 +23,15 @@ import sys
 import warnings
 import weakref
 from dataclasses import asdict, is_dataclass
-from typing import TYPE_CHECKING, Any, Callable, Iterable, Sequence, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Iterable,
+    Sequence,
+    cast,
+    overload,
+)
 
 from ._file_contents import FileContents
 from ._util import (
@@ -44,9 +52,13 @@ if TYPE_CHECKING:  # pragma: no cover
     import psygnal
     import pydantic
     import traitlets
-    from typing_extensions import TypeAlias, TypeGuard
+    from typing_extensions import Protocol, TypeAlias, TypeGuard
 
     from ._protocols import CommMessage
+
+    class _GetState(Protocol):
+        def __call__(self, obj: Any, include: set[str] | None) -> dict:
+            ...
 
     # catch all for types that can be serialized ... too hard to actually type
     Serializable: TypeAlias = Any
@@ -328,9 +340,13 @@ class ReprMimeBundle:
         if obj is None:
             return  # pragma: no cover  ... the python object has been deleted
 
-        state = {**self._get_state(obj), **self._extra_state}
         if include is not None:
             include = {include} if isinstance(include, str) else set(include)
+
+        state = {**self._get_state(obj, include=include), **self._extra_state}
+        if include is not None:
+            # ensure that we only send the keys that were requested
+            # incase the state getter returned extra keys
             state = {k: v for k, v in state.items() if k in include}
 
         if not state:
@@ -454,7 +470,7 @@ def _anywidget_id(obj: object) -> str:
     return f"{type(obj).__module__}.{type(obj).__name__}"
 
 
-def determine_state_getter(obj: object) -> Callable[[Any], Serializable]:
+def determine_state_getter(obj: object) -> _GetState:
     """Autodetect how `obj` can be serialized to a dict.
 
     This looks for various special methods and patterns on the object (e.g. dataclass,
@@ -478,7 +494,7 @@ def determine_state_getter(obj: object) -> Callable[[Any], Serializable]:
     if is_dataclass(obj):
         # caveat: if the dict is not JSON serializeable... you still need to
         # provide an API for the user to customize serialization
-        return asdict
+        return lambda obj, include: asdict(obj)
 
     if _is_traitlets_object(obj):
         return _get_traitlets_state
@@ -596,7 +612,9 @@ _TRAITLETS_SYNC_FLAG = "sync"
 # state isn't being synced without opting in.
 
 
-def _get_traitlets_state(obj: traitlets.HasTraits) -> Serializable:
+def _get_traitlets_state(
+    obj: traitlets.HasTraits, include: set[str] | None
+) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
     return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
@@ -640,19 +658,23 @@ def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
     return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
-def _get_pydantic_state_v1(obj: pydantic.BaseModel) -> Serializable:
+def _get_pydantic_state_v1(
+    obj: pydantic.BaseModel, include: set[str] | None
+) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)
     we call obj.json() here, and then cast back to a dict (which is what
     the comm expects).
     """
-    return json.loads(obj.json())
+    return json.loads(obj.json(include=include))
 
 
-def _get_pydantic_state_v2(obj: pydantic.BaseModel) -> Serializable:
+def _get_pydantic_state_v2(
+    obj: pydantic.BaseModel, include: set[str] | None
+) -> Serializable:
     """Get the state of a pydantic (v2) BaseModel instance."""
-    return obj.model_dump(mode="json")
+    return obj.model_dump(mode="json", include=include)
 
 
 # ------------- msgspec support --------------
@@ -664,7 +686,7 @@ def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
     return isinstance(obj, msgspec.Struct) if msgspec is not None else False
 
 
-def _get_msgspec_state(obj: msgspec.Struct) -> dict:
+def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> dict:
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
