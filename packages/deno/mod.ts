@@ -1,25 +1,16 @@
 import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
 import mitt, { type Emitter } from "npm:mitt@3";
+import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 let DEFAULT_VERSION = "0.6.5";
 let ANYWIDGET_VERSION = await find_anywidget_version()
-	.catch(() => {
-		console.warn(
-			`Could not find anywidget version, using default version ${DEFAULT_VERSION}`,
-		);
-		return DEFAULT_VERSION;
-	});
+	.catch(() => DEFAULT_VERSION);
 
 async function find_anywidget_version(): Promise<string> {
-	let venv_path = Deno.env.get("VIRTUAL_ENV") ?? (() => {
-		throw new Error("No virtual environment found");
-	})();
+	let data_dir = await find_data_dir();
 	let contents = await Deno.readTextFile(
-		path.resolve(
-			venv_path,
-			"share/jupyter/labextensions/anywidget/package.json",
-		),
+		path.resolve(data_dir, "labextensions/anywidget/package.json"),
 	);
 	return JSON.parse(contents).version;
 }

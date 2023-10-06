@@ -5,8 +5,8 @@
 feat(experimental)!: Require `include` in `_get_anywidget_state` signature
 
 Allows implementors to avoid re-serializing fields which aren't needed to send
-to the front end. This is a **BREAKING** change because it requires implementors of
-`_get_anywidget_state` to account for `include` in the function signature.
+to the front end. This is a **BREAKING** change because it requires implementors
+of `_get_anywidget_state` to account for `include` in the function signature.
 
 ```python
 from dataclasses import dataclass, asdict
