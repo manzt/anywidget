@@ -57,7 +57,7 @@ export function system_data_dirs() {
 	return [
 		"/usr/local/share/jupyter",
 		"/usr/share/jupyter",
-	]
+	];
 }
 
 /**

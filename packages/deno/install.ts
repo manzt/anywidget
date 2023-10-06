@@ -3,7 +3,11 @@ import * as fs from "https://deno.land/std@0.203.0/fs/mod.ts";
 import * as flags from "https://deno.land/std@0.203.0/flags/mod.ts";
 import * as unzipit from "npm:unzipit@1.4";
 import * as z from "npm:zod@3.9";
-import { find_data_dir, user_data_dir, system_data_dirs } from "./jupyter_paths.ts";
+import {
+	find_data_dir,
+	system_data_dirs,
+	user_data_dir,
+} from "./jupyter_paths.ts";
 
 let ReleaseSchema = z.object({
 	packagetype: z.string(),
@@ -94,8 +98,7 @@ let out_dir = await find_data_dir();
 	console.log(`✅ Installed anywidget ${version} in ${out_dir}`);
 }
 
-
-if (!(await has_jupyter_widgets())){
+if (!(await has_jupyter_widgets())) {
 	/**
 	 * NB: The anywidget front-end code relies on @jupyter-widgets/base,
 	 * which is supplied by the _python_ `jupyterlab_widgets` package.
