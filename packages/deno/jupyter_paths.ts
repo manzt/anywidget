@@ -34,7 +34,7 @@ async function guess_sys_prefix(): Promise<string | undefined> {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-function user_data_dir() {
+export function user_data_dir() {
 	if (Deno.build.os === "windows") {
 		return path.resolve(Deno.env.get("APPDATA")!, "jupyter");
 	}
@@ -50,11 +50,14 @@ function user_data_dir() {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-function system_data_dir() {
+export function system_data_dirs() {
 	if (Deno.build.os === "windows") {
-		return path.resolve(Deno.env.get("PROGRAMDATA")!, "jupyter");
+		return [path.resolve(Deno.env.get("PROGRAMDATA")!, "jupyter")];
 	}
-	return "/usr/local/share/jupyter";
+	return [
+		"/usr/local/share/jupyter",
+		"/usr/share/jupyter",
+	]
 }
 
 /**
@@ -81,5 +84,5 @@ export async function find_data_dir(): Promise<string> {
 	} catch {
 		// Fine, we'll use the system data directory.
 	}
-	return system_data_dir();
+	return system_data_dirs()[0];
 }
