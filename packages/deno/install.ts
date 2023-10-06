@@ -49,7 +49,7 @@ async function fetch_wheel(
 function extract_data_files(
 	zip: unzipit.ZipInfo,
 ): Promise<[string, Uint8Array][]> {
-	let data_prefix = /^.*\.data\/data\/share\/jupyter\/labextensions\//;
+	let data_prefix = /^.*\.data\/data\/share\/jupyter\//;
 	return Promise.all(
 		Object
 			.entries(zip.entries)
