@@ -28,7 +28,7 @@
 		"@anywidget/react": "workspace:^",
 		"@anywidget/types": "workspace:^",
 		"@types/node": "^20.8.2",
-		"@types/react": "^18.2.23",
+		"@types/react": "^18.2.26",
 		"@types/react-dom": "^18.2.8",
 		"esbuild": "^0.19.4",
 		"react": "^18.2.0",
