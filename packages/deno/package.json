@@ -1,5 +1,5 @@
 {
 	"name": "@anywidget/deno",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A stub-package for making releases of the Deno anywidget mod.ts with changesets"
 }
