@@ -24,8 +24,8 @@ importers:
         specifier: ^12.9.1
         version: 12.9.1
       publint:
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.2.4
+        version: 0.2.4
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -6199,8 +6199,8 @@ packages:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
     dev: true
 
-  /publint@0.2.2:
-    resolution: {integrity: sha512-2t2IO6Y8Z+QBNLG89bpRhTQH7Ifn/83Kr0dVVdmOybq7GAT6+M4YGZd5AhtfMJbYPmbT7YD469pDKLCK94Q2+Q==}
+  /publint@0.2.4:
+    resolution: {integrity: sha512-5izPDOvD4F04nIraWEIttIc8V5mXMiM53xNxnFdwiGIOQJnsBE8DaYD7OaW85GcehlST3RohczKgn84VGdW9mA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
