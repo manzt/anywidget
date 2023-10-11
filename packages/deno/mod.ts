@@ -3,7 +3,7 @@ import mitt, { type Emitter } from "npm:mitt@3";
 import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
-let DEFAULT_VERSION = "0.6.5";
+let DEFAULT_VERSION = "0.7.0";
 let ANYWIDGET_VERSION = await find_anywidget_version()
 	.catch(() => DEFAULT_VERSION);
 
