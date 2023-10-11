@@ -7,5 +7,8 @@
 		"rules": {
 			"exclude": ["prefer-const"]
 		}
+	},
+	"compilerOptions": {
+		"lib": ["deno.window", "deno.unstable"]
 	}
 }

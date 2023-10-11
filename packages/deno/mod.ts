@@ -25,7 +25,6 @@ type Broadcast = (
 
 let jupyter_broadcast: Broadcast = (() => {
 	try {
-		// @ts-expect-error - Only available in Jupyter context
 		return Deno.jupyter.broadcast;
 	} catch (_) {
 		return async () => {};
