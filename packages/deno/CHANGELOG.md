@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.0.4
+
+### Patch Changes
+
+- Bump anywidget version to 0.7.0 ([`525e3c8`](https://github.com/manzt/anywidget/commit/525e3c8a6e9632bd7d4d1d4483d7381c32445428))
+
 ## 0.0.3
 
 ### Patch Changes
