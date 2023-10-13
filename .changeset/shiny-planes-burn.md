@@ -2,4 +2,4 @@
 "anywidget": patch
 ---
 
-feat: Rraise Python error when file is missing
+feat: Raise Python error when file is missing
