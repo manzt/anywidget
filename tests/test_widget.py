@@ -203,6 +203,19 @@ def test_missing_string_path_with_suffix_raises(tmp_path: pathlib.Path):
             _esm = str_path_with_suffix
 
 
+def test_remote_contents():
+    esm = "http://example.com/foo.js"
+    css = "https://example.com/bar.css"
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+        _css = css
+
+    widget = Widget()
+    assert widget._esm == esm
+    assert widget._css == css
+
+
 def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path):
     str_path_without_suffix = str(tmp_path / "foo")
 
