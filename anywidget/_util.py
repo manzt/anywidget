@@ -192,15 +192,17 @@ def _should_start_thread(path: pathlib.Path) -> bool:
 def try_file_path(x: Any) -> pathlib.Path | None:
     """If possible coerce x into a pathlib.Path object.
 
-    Returns None if x is not a file path.
+    If a string, we handle the following cases:
+
+    - If it's a URL, return None.
+    - If it's a multi-line string, return None.
+    - If it's a single-line string with a file extension, return a pathlib.Path object.
+    - Otherwise, return None.
 
     Parameters
     ----------
-    x : str | pathlib.Path
-        A string that could be:
-        - A URL
-        - Raw file contents
-        - A file path
+    x : Any
+        The object to try to coerce into a pathlib.Path object.
 
     Returns
     -------
@@ -248,4 +250,3 @@ def try_file_contents(x: Any) -> FileContents | None:
         path=path,
         start_thread=_should_start_thread(path),
     )
-
