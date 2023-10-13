@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import contextlib
 import pathlib
+import re
 import sys
 from functools import lru_cache
 from typing import Any
@@ -189,20 +189,37 @@ def _should_start_thread(path: pathlib.Path) -> bool:
     return True
 
 
+def is_url(x: str) -> bool:
+    """Returns True if x is a URL."""
+    return x.startswith("http://") or x.startswith("https://")
+
+
+def is_probably_raw_file_contents(x: str) -> bool:
+    """Returns True if x is probably raw file contents.
+
+    This is a heuristic to determine whether x is a raw file contents.
+    Right now we just check if x includes a file suffix.
+    """
+    includes_file_suffix = re.search(r"[a-zA-Z0-9]\.[a-zA-Z0-9]+$", x) is not None
+    return not is_url(x) and not includes_file_suffix
+
+
 def try_file_contents(x: Any) -> FileContents | None:
     """Try to coerce x into a FileContents object."""
     if not isinstance(x, (str, pathlib.Path)):
         return None
 
-    maybe_path = pathlib.Path(x)
+    # Don't touch if we have a URL or raw file contents
+    if isinstance(x, str) and (is_url(x) or is_probably_raw_file_contents(x)):
+        return None
 
-    # Could raise OSError if not a path and exceeds max path length
-    with contextlib.suppress(OSError):
-        maybe_path = pathlib.Path(maybe_path).resolve().absolute()
-        if maybe_path.is_file():
-            return FileContents(
-                path=maybe_path,
-                start_thread=_should_start_thread(maybe_path),
-            )
+    # Assume we have a path for a file now
+    path = pathlib.Path(x).resolve().absolute()
 
-    return None
+    if not path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+
+    return FileContents(
+        path=path,
+        start_thread=_should_start_thread(path),
+    )
