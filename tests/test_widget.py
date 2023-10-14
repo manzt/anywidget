@@ -185,23 +185,44 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
     Widget._esm.stop_thread()
 
 
-def test_missing_file_no_infer(tmp_path: pathlib.Path):
+def test_missing_pathlib_path_raises(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
-    css = str(tmp_path / "styles.css")
+
+    with pytest.raises(FileNotFoundError):
+
+        class Widget(anywidget.AnyWidget):
+            _esm = esm
+
+
+def test_missing_string_path_with_suffix_raises(tmp_path: pathlib.Path):
+    str_path_with_suffix = str(tmp_path / "foo.js")
+
+    with pytest.raises(FileNotFoundError):
+
+        class Widget(anywidget.AnyWidget):
+            _esm = str_path_with_suffix
+
+
+def test_remote_contents():
+    esm = "http://example.com/foo.js"
+    css = "https://example.com/bar.css"
 
     class Widget(anywidget.AnyWidget):
         _esm = esm
         _css = css
 
-    assert isinstance(Widget._esm, pathlib.Path)
-    assert Widget._esm == esm
-    assert isinstance(Widget._css, str)
-    assert Widget._css == css
+    widget = Widget()
+    assert widget._esm == esm
+    assert widget._css == css
 
-    w = Widget()
 
-    assert w._esm == str(tmp_path / "foo.js")
-    assert w._css == css
+def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path):
+    str_path_without_suffix = str(tmp_path / "foo")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = str_path_without_suffix
+
+    assert Widget()._esm == str_path_without_suffix
 
 
 def test_explicit_file_contents(tmp_path: pathlib.Path):

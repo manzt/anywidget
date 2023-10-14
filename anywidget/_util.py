@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import contextlib
 import pathlib
+import re
 import sys
 from functools import lru_cache
 from typing import Any
@@ -189,20 +189,64 @@ def _should_start_thread(path: pathlib.Path) -> bool:
     return True
 
 
-def try_file_contents(x: Any) -> FileContents | None:
-    """Try to coerce x into a FileContents object."""
-    if not isinstance(x, (str, pathlib.Path)):
+def try_file_path(x: Any) -> pathlib.Path | None:
+    """If possible coerce x into a pathlib.Path object.
+
+    If a string, we handle the following cases:
+
+    - If it's a URL, return None.
+    - If it's a multi-line string, return None.
+    - If it's a single-line string with a file extension, return a pathlib.Path object.
+    - Otherwise, return None.
+
+    Parameters
+    ----------
+    x : Any
+        The object to try to coerce into a pathlib.Path object.
+
+    Returns
+    -------
+    pathlib.Path | None
+        A pathlib.Path object if x is a file path, otherwise None.
+    """
+    # Already a pathlib.Path
+    if isinstance(x, pathlib.Path):
+        return x
+
+    if not isinstance(x, str):
         return None
 
-    maybe_path = pathlib.Path(x)
+    # Handle the string
 
-    # Could raise OSError if not a path and exceeds max path length
-    with contextlib.suppress(OSError):
-        maybe_path = pathlib.Path(maybe_path).resolve().absolute()
-        if maybe_path.is_file():
-            return FileContents(
-                path=maybe_path,
-                start_thread=_should_start_thread(maybe_path),
-            )
+    # Ignore URLs
+    if x.startswith("http://") or x.startswith("https://"):
+        return None
+
+    # Ignore multi-line strings (probably raw file contents)
+    is_multi_line = "\n" in x or "\r" in x
+    if is_multi_line:
+        return None
+
+    # Is a single line string, but we don't know if it's a file path or raw contents.
+
+    # Just check if it has a file extension for now.
+    includes_file_suffix = re.search(r"[a-zA-Z0-9]\.[a-zA-Z0-9]+$", x) is not None
+    if includes_file_suffix:
+        return pathlib.Path(x).resolve().absolute()
 
     return None
+
+
+def try_file_contents(x: Any) -> FileContents | None:
+    """Try to coerce x into a FileContents object."""
+    maybe_path = try_file_path(x)
+    if maybe_path is None:
+        return None
+
+    path = maybe_path
+    if not path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+    return FileContents(
+        path=path,
+        start_thread=_should_start_thread(path),
+    )

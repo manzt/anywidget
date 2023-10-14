@@ -103,7 +103,8 @@ def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
 def test_try_file_contents_development(tmp_path: pathlib.Path):
     foo = tmp_path / "foo.txt"
 
-    assert try_file_contents(foo) is None
+    with pytest.raises(FileNotFoundError):
+        try_file_contents(foo)
 
     foo.write_text("foo")
     file_contents = try_file_contents(foo)
