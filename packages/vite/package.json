@@ -19,7 +19,7 @@
 		}
 	},
 	"devDependencies": {
-		"vite": "^4.4.9"
+		"vite": "^4.4.11"
 	},
 	"peerDependencies": {
 		"vite": "^4.0.0"
