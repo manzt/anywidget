@@ -21,7 +21,6 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "black[jupyter]",
     "pydantic",
     "pytest",
     "pytest-cov",
@@ -80,10 +79,10 @@ features = ["test", "dev"]
 [tool.hatch.envs.default.scripts]
 lint = [
   "ruff {args:.}",
-  "black --check --diff {args:.}",
+  "ruff format --check --diff {args:.}",
 ]
 fmt = [
-  "black {args:.}",
+  "ruff format {args:.}",
   "ruff --fix {args:.}",
 ]
 test = "pytest . --cov anywidget --cov-report term-missing"
@@ -115,6 +114,9 @@ extend-ignore = [
     "D401", # Imperative mood
     "D413", # Missing blank line after last section
     "D416", # Section name should end with a colon
+
+    "D206", # Docstring should be indented with spaces (delegate to `ruff format`)
+    "E501", # Line too long (delegate to `ruff format`)
 ]
 
 [tool.ruff.per-file-ignores]
