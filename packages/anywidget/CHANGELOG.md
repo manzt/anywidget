@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.7.1
+
+### Patch Changes
+
+- feat: Raise Python error when file is missing ([#345](https://github.com/manzt/anywidget/pull/345))
+
 ## 0.7.0
 
 ### Minor Changes
