@@ -20,7 +20,7 @@
 		"dprint": "^0.41.0",
 		"esbuild": "^0.19.5",
 		"happy-dom": "^12.9.1",
-		"publint": "^0.2.4",
+		"publint": "^0.2.5",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.6"
 	},
