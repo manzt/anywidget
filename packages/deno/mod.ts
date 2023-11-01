@@ -4,8 +4,9 @@ import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 let DEFAULT_VERSION = "0.7.0";
-let ANYWIDGET_VERSION = await find_anywidget_version()
-	.catch(() => DEFAULT_VERSION);
+let ANYWIDGET_VERSION = await find_anywidget_version().catch(
+	() => DEFAULT_VERSION,
+);
 
 async function find_anywidget_version(): Promise<string> {
 	let data_dir = await find_data_dir();
@@ -63,23 +64,23 @@ class Comm {
 		await _internals.jupyter_broadcast(
 			"comm_open",
 			{
-				"comm_id": this.id,
-				"target_name": "jupyter.widget",
-				"data": {
-					"state": {
-						"_model_module": "anywidget",
-						"_model_name": "AnyModel",
-						"_model_module_version": this.#anywidget_version,
-						"_view_module": "anywidget",
-						"_view_name": "AnyView",
-						"_view_module_version": this.#anywidget_version,
-						"_view_count": null,
+				comm_id: this.id,
+				target_name: "jupyter.widget",
+				data: {
+					state: {
+						_model_module: "anywidget",
+						_model_name: "AnyModel",
+						_model_module_version: this.#anywidget_version,
+						_view_module: "anywidget",
+						_view_name: "AnyView",
+						_view_module_version: this.#anywidget_version,
+						_view_count: null,
 					},
 				},
 			},
 			{
-				"metadata": {
-					"version":
+				metadata: {
+					version:
 						`${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
 				},
 			},
@@ -88,24 +89,24 @@ class Comm {
 
 	async send_state(state: object) {
 		await _internals.jupyter_broadcast("comm_msg", {
-			"comm_id": this.id,
-			"data": { "method": "update", "state": state },
+			comm_id: this.id,
+			data: { method: "update", state: state },
 		});
 	}
 
 	mimebundle() {
 		return {
 			"application/vnd.jupyter.widget-view+json": {
-				"version_major": this.#protocol_version_major,
-				"version_minor": this.#protocol_version_minor,
-				"model_id": this.id,
+				version_major: this.#protocol_version_major,
+				version_minor: this.#protocol_version_minor,
+				model_id: this.id,
 			},
 		};
 	}
 }
 
 type ChangeEvents<State> = {
-	[K in (string & keyof State) as `change:${K}`]: State[K];
+	[K in string & keyof State as `change:${K}`]: State[K];
 };
 
 class Model<State> {
@@ -147,9 +148,10 @@ type WidgetProps<State> = {
 	/** The initial state of the widget. */
 	state: State;
 	/** A function that renders the widget. This function is serialized and sent to the front end. */
-	render: (
-		context: { model: FrontEndModel<State>; el: HTMLElement },
-	) => unknown;
+	render: (context: {
+		model: FrontEndModel<State>;
+		el: HTMLElement;
+	}) => unknown;
 	/** The imports required for the front-end function. */
 	imports?: string;
 	/** The version of anywidget to use. */
@@ -157,15 +159,19 @@ type WidgetProps<State> = {
 };
 
 // TODO: more robust serialization of render function (with context?)
-function to_esm<State>(
-	{ imports = "", render }: Pick<WidgetProps<State>, "imports" | "render">,
-) {
+function to_esm<State>({
+	imports = "",
+	render,
+}: Pick<WidgetProps<State>, "imports" | "render">) {
 	return `${imports}\nexport const render = ${render.toString()}`;
 }
 
-export async function widget<State>(
-	{ state, render, imports, version }: WidgetProps<State>,
-) {
+export async function widget<State>({
+	state,
+	render,
+	imports,
+	version,
+}: WidgetProps<State>) {
 	let model = new Model(state);
 	let comm = new Comm({ anywidget_version: version });
 	await comm.init();
@@ -181,6 +187,12 @@ export async function widget<State>(
 				return comm.mimebundle.bind(comm);
 			}
 			return Reflect.get(target, prop, receiver);
+		},
+		has(target, prop) {
+			if (prop === Symbol.for("Jupyter.display")) {
+				return true;
+			}
+			return Reflect.has(target, prop);
 		},
 	});
 	COMMS.set(obj, comm);
