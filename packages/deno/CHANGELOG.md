@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.0.5
+
+### Patch Changes
+
+- feat: Allow Deno to check if display `in` widget ([`603b9e1`](https://github.com/manzt/anywidget/commit/603b9e1ab1cb1fa0aebcce37e8944a65853f0679))
+
 ## 0.0.4
 
 ### Patch Changes
