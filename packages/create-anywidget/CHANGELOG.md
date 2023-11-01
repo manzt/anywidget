@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.4.2
+
+### Patch Changes
+
+- Upgrade dependencies ([`01a79f6`](https://github.com/manzt/anywidget/commit/01a79f68cee37747ff0d480ebbefcc9697837180))
+
 ## 0.4.1
 
 ### Patch Changes
