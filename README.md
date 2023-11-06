@@ -19,9 +19,6 @@ Learn more in the
 
 ## Installation
 
-> **Warning**: **anywidget** is new and under active development. It is not yet
-> ready for production as APIs are subject to change.
-
 **anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and
 may be installed with `pip`:
 
