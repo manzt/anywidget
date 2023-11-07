@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.4.3
+
+### Patch Changes
+
+- Update React dependency version ([#370](https://github.com/manzt/anywidget/pull/370))
+
 ## 0.4.2
 
 ### Patch Changes
