@@ -25,8 +25,7 @@ Learn more in the
 pip install "anywidget[dev]"
 ```
 
-It is also available on
-[conda-forge](https://anaconda.org/conda-forge/anywidget):
+and also on [conda-forge](https://anaconda.org/conda-forge/anywidget):
 
 ```bash
 conda install -c conda-forge anywidget
