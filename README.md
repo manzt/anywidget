@@ -19,18 +19,14 @@ Learn more in the
 
 ## Installation
 
-**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/) and
-may be installed with `pip`:
+**anywidget** is available on [PyPI](https://pypi.org/project/anywidget/):
 
 ```bash
 pip install "anywidget[dev]"
 ```
 
 It is also available on
-[conda-forge](https://anaconda.org/conda-forge/anywidget). If you have
-[Anaconda](https://www.anaconda.com/distribution/#download-section) or
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your
-computer, you can install **anywidget** with the following command:
+[conda-forge](https://anaconda.org/conda-forge/anywidget):
 
 ```bash
 conda install -c conda-forge anywidget
@@ -78,10 +74,18 @@ class CounterWidget(anywidget.AnyWidget):
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
 more.
 
+## Support
+
+Having trouble? Get help in our [Discord](https://discord.gg/hRx6YHdb) or open a
+[Discussion](https://github.com/manzt/anywidget/issues/new).
+
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to develop
-**anywidget** locally.
+**New contributors welcome!** Check out our
+[Contributors Guide](./CONTRIBUTING.md) for help getting started.
+
+Join us on [Discord](https://discord.gg/hRx6YHdb) to meet other maintainers.
+We'll help you get your first contribution in no time!
 
 ## License
 
