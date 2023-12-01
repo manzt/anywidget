@@ -13,7 +13,10 @@ type EventHandler = (...args: any[]) => void;
  */
 type LiteralUnion<T, U = string> = T | (U & {});
 
-export interface AnyModel<T extends ObjectHash = ObjectHash> {
+export interface AnyModel<
+	T extends ObjectHash = ObjectHash,
+	U extends ObjectHash = ObjectHash,
+> {
 	get<K extends keyof T>(key: K): T[K];
 	set<K extends keyof T>(key: K, value: T[K]): void;
 	off<K extends keyof T>(
@@ -41,13 +44,34 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
 	widget_manager: IWidgetManager;
+	_unstable_context: U;
 }
 
-export interface RenderContext<T extends ObjectHash = ObjectHash> {
-	model: AnyModel<T>;
+export interface RenderProps<
+	T extends ObjectHash = ObjectHash,
+	U extends ObjectHash = ObjectHash,
+> {
+	model: AnyModel<T, U>;
 	el: HTMLElement;
 }
 
-export interface Render<T extends ObjectHash = ObjectHash> {
-	(context: RenderContext<T>): Awaitable<void | (() => Awaitable<void>)>;
+export interface Render<
+	T extends ObjectHash = ObjectHash,
+	U extends ObjectHash = ObjectHash,
+> {
+	(props: RenderProps<T, U>): Awaitable<void | (() => Awaitable<void>)>;
+}
+
+export interface SetupProps<
+	T extends ObjectHash = ObjectHash,
+	U extends ObjectHash = ObjectHash,
+> {
+	model: AnyModel<T, U>;
+}
+
+export interface Setup<
+	T extends ObjectHash = ObjectHash,
+	U extends ObjectHash = ObjectHash,
+> {
+	(props: SetupProps<T, U>): Awaitable<void | (() => Awaitable<void>)>;
 }

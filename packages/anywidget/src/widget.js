@@ -2,7 +2,8 @@ import { name, version } from "../package.json";
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {import("@anywidget/types").Render}
+ *  @prop _unstable_setup {import("@anywidget/types").Setup=}
+ *  @prop render {import("@anywidget/types").Render=}
  */
 
 /**
@@ -96,31 +97,100 @@ async function load_esm(esm) {
 }
 
 /**
+ * This is a trick so that we can cleanup event listeners added
+ * by the user-defined setup function.
+ */
+let setup_marker = Symbol("anywidget.setup");
+
+/**
+ * @param {AnyWidgetModule} widget
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {Record<string, any>} context
+ * @returns {Promise<() => Promise<void>>}
+ */
+async function run_setup(widget, model, context) {
+	let cleanup = await widget._unstable_setup?.({
+		model: model_proxy(model, context, setup_marker),
+	});
+	return async () => {
+		// Call any cleanup logic defined by the previous module.
+		try {
+			await cleanup?.();
+		} catch (e) {
+			console.warn("[anywidget] error cleaning up setup.", e);
+		}
+
+		// Remove all event listeners added by the user-defined setup.
+		model.off(null, null, setup_marker);
+
+		// Clear the mutable context
+		for (let k of Object.keys(context)) {
+			delete context[k];
+		}
+	};
+}
+
+/**
+ * @param {AnyWidgetModule} widget
  * @param {import("@jupyter-widgets/base").DOMWidgetView} view
- * @returns {import("@anywidget/types").RenderContext}
+ * @param {Record<string, any>} context
+ * @returns {Promise<() => Promise<void>>}
+ */
+async function run_render(widget, view, context) {
+	let cleanup = await widget.render?.({
+		model: model_proxy(view.model, context, view),
+		el: view.el,
+	});
+
+	return async () => {
+		// call any cleanup logic defined by the previous module.
+		try {
+			await cleanup?.();
+		} catch (e) {
+			console.warn("[anywidget] error cleaning up render.", e);
+		}
+
+		// Remove all event listeners added by the user-defined render.
+		view.model.off(null, null, view);
+
+		// `view.$el` is a cached jQuery object for the view's element.
+		// This removes all child nodes but avoids deleting the root so
+		// we can rerender.
+		view.$el.empty();
+	};
+}
+
+/**
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {Record<string, any>} shared_mutable_model_context
+ * @param {unknown} backbone_context
+ * @return {import("@anywidget/types").AnyModel}
  *
  * Prunes the view down to the minimum context necessary for rendering.
  * Calls to `model.get` and `model.set` automatically add the view as
  * context to the model, so we can gracefully unsubscribe from events
  * added by the user-defined render.
+ *
+ * Also adds a mutable `context` property to the model so that
+ * user-defined setup and render functions can modify context
+ * to the model.
  */
-function extract_context(view) {
-	/** @type {import("@anywidget/types").AnyModel} */
-	let model = {
-		get: view.model.get.bind(view.model),
-		set: view.model.set.bind(view.model),
-		save_changes: view.model.save_changes.bind(view.model),
-		send: view.model.send.bind(view.model),
+function model_proxy(model, shared_mutable_model_context, backbone_context) {
+	return {
+		get: model.get.bind(model),
+		set: model.set.bind(model),
+		save_changes: model.save_changes.bind(model),
+		send: model.send.bind(model),
 		// @ts-expect-error
 		on(name, callback) {
-			view.model.on(name, callback, view);
+			model.on(name, callback, backbone_context);
 		},
 		off(name, callback) {
-			view.model.off(name, callback, view);
+			model.off(name, callback, backbone_context);
 		},
-		widget_manager: view.model.widget_manager,
+		widget_manager: model.widget_manager,
+		_unstable_context: shared_mutable_model_context,
 	};
-	return { model, el: view.el };
 }
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
@@ -133,6 +203,8 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		static view_name = "AnyView";
 		static view_module = name;
 		static view_module_version = version;
+
+		_shared_mutable_model_context = {};
 
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
@@ -156,35 +228,41 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
+				this._widget_promise = load_esm(this.get("_esm"));
+				let widget = await this._widget_promise;
+
+				await this._anywidget_setup_cleanup();
+				this._anywidget_setup_cleanup = await run_setup(
+					widget,
+					this,
+					this._shared_mutable_model_context,
+				);
+
 				let views = /** @type {unknown} */ (Object.values(this.views ?? {}));
 
 				for await (let view of /** @type {Promise<AnyView>[]} */ (views)) {
-					// load updated esm
-					let widget = await load_esm(this.get("_esm"));
-
-					// call any cleanup logic defined by the previous module.
-					try {
-						await view._anywidget_cached_cleanup();
-					} catch (e) {
-						console.warn("[anywidget] error cleaning up previous module.", e);
-						view._anywidget_cached_cleanup = () => {};
-					}
-
-					// Remove all event listeners added by the user-defined render.
-					this.off(null, null, view);
-
-					// `view.$el` is a cached jQuery object for the view's element.
-					// This removes all child nodes but avoids deleting the root so
-					// we can rerender.
-					view.$el.empty();
-
-					// render the view with the updated render
-					let cleanup = await widget.render(extract_context(view));
-
-					view._anywidget_cached_cleanup = cleanup ?? (() => {});
+					await view._anywidget_render_cleanup();
+					view._anywidget_render_cleanup = await run_render(
+						widget,
+						view,
+						this._shared_mutable_model_context,
+					);
 				}
 			});
+
+			this._widget_promise = load_esm(this.get("_esm"))
+				.then(async (widget) => {
+					this._anywidget_setup_cleanup = await run_setup(
+						widget,
+						this,
+						this._shared_mutable_model_context,
+					);
+					return widget;
+				});
 		}
+
+		/** @type {() => Promise<void>} */
+		async _anywidget_setup_cleanup() {}
 
 		/**
 		 * @param {Record<string, any>} state
@@ -239,17 +317,25 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	class AnyView extends DOMWidgetView {
 		async render() {
 			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
-			let widget = await load_esm(this.model.get("_esm"));
-			let cleanup = await widget.render(extract_context(this));
-			this._anywidget_cached_cleanup = cleanup ?? (() => {});
+			let model = /** @type {AnyModel} */ (this.model);
+			let widget = await model._widget_promise;
+			if (!widget) {
+				console.warn("[anywidget] widget not loaded.");
+				return;
+			}
+			this._anywidget_render_cleanup = await run_render(
+				widget,
+				this,
+				model._shared_mutable_model_context,
+			);
 		}
 
-		/** @type {() => Promise<void> | void} */
-		_anywidget_cached_cleanup() {}
+		/** @type {() => Promise<void>} */
+		async _anywidget_render_cleanup() {}
 
 		async remove() {
 			// call any user-defined cleanup logic before this view is completely removed.
-			await this._anywidget_cached_cleanup();
+			await this._anywidget_render_cleanup();
 			return super.remove();
 		}
 	}

@@ -31,16 +31,14 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     _view_module_version = t.Unicode(__version__).tag(sync=True)
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+        if in_colab():
+            enable_custom_widget_manager_once()
 
-        # Add anywidget JS/CSS source as traits if not registered
         anywidget_traits = {}
-
         for key in (_ESM_KEY, _CSS_KEY):
             if hasattr(self, key) and not self.has_trait(key):
                 value = getattr(self, key)
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
-
                 if isinstance(value, FileContents):
                     value.changed.connect(
                         lambda new_contents, key=key: setattr(self, key, new_contents)
@@ -58,9 +56,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         ).tag(sync=True)
 
         self.add_traits(**anywidget_traits)
-
-        if in_colab():
-            enable_custom_widget_manager_once()
+        super().__init__(*args, **kwargs)
 
     def __init_subclass__(cls, **kwargs: dict) -> None:
         """Coerces _esm and _css to FileContents if they are files."""
@@ -73,5 +69,8 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
         # ipywidgets v8
-        def _repr_mimebundle_(self, **kwargs: dict) -> tuple[None | dict, dict]:
-            return super()._repr_mimebundle_(**kwargs), get_repr_metadata()
+        def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
+            mimebundle = super()._repr_mimebundle_(**kwargs)
+            if mimebundle is None:
+                return None
+            return mimebundle, get_repr_metadata()
