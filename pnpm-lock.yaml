@@ -187,8 +187,8 @@ importers:
         version: link:../types
     devDependencies:
       svelte:
-        specifier: ^4.2.2
-        version: 4.2.2
+        specifier: ^4.2.8
+        version: 4.2.8
 
   packages/types:
     dependencies:
@@ -361,7 +361,7 @@ packages:
     hasBin: true
     dependencies:
       '@astrojs/compiler': 1.8.2
-      '@jridgewell/trace-mapping': 0.3.19
+      '@jridgewell/trace-mapping': 0.3.20
       '@vscode/emmet-helper': 2.9.2
       events: 3.3.0
       prettier: 2.8.8
@@ -540,7 +540,7 @@ packages:
     dependencies:
       '@babel/types': 7.22.19
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.19
+      '@jridgewell/trace-mapping': 0.3.20
       jsesc: 2.5.2
 
   /@babel/helper-annotate-as-pure@7.22.5:
@@ -1594,7 +1594,7 @@ packages:
     dependencies:
       '@jridgewell/set-array': 1.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@jridgewell/trace-mapping': 0.3.19
+      '@jridgewell/trace-mapping': 0.3.20
 
   /@jridgewell/resolve-uri@3.1.1:
     resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
@@ -1613,12 +1613,6 @@ packages:
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
-
-  /@jridgewell/trace-mapping@0.3.19:
-    resolution: {integrity: sha512-kf37QtfW+Hwx/buWGMPcR60iF9ziHa6r/CZJIHbmcm4+0qrXiVdxegAH0F6yddEVQ7zdkjcGCgCzUu+BcbhQxw==}
-    dependencies:
-      '@jridgewell/resolve-uri': 3.1.1
-      '@jridgewell/sourcemap-codec': 1.4.15
 
   /@jridgewell/trace-mapping@0.3.20:
     resolution: {integrity: sha512-R8LcPeWZol2zR8mmH3JeKQ6QRCFb7XgUhV9ZlGhHLGyg4wpPiPZNQOOWhFZhxKw8u//yTbNGI42Bx/3paXEQ+Q==}
@@ -2247,24 +2241,21 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.44.2
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
     dev: true
 
   /@types/eslint@8.44.2:
     resolution: {integrity: sha512-sdPRb9K6iL5XZOmBubg8yiFp5yS/JdUDQsq5e6h95km91MCYMuvp7mh1fjPEYUhvHepKpZOjnEaMBR4PxjWDzg==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
       '@types/json-schema': 7.0.13
     dev: true
 
   /@types/estree-jsx@1.0.0:
     resolution: {integrity: sha512-3qvGd0z8F2ENTGr/GG1yViqfiKmRfrXVx5sJyHGFu3z7m5g5utCQtGp/g29JnjflhtQJBv1WDQukHiT58xPcYQ==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
     dev: false
-
-  /@types/estree@1.0.1:
-    resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
 
   /@types/estree@1.0.3:
     resolution: {integrity: sha512-CS2rOaoQ/eAgAfcTfq6amKG7bsN+EMcgGY4FAFQdvSj2y1ixvOZTUA9mOtCai7E1SYu283XNw7urKK30nP3wkQ==}
@@ -3874,7 +3865,7 @@ packages:
   /estree-util-attach-comments@2.1.1:
     resolution: {integrity: sha512-+5Ba/xGGS6mnwFbXIuQiDPTbuTxuMCooq3arVv7gPZtYpjp+VXH/NkHAP35OOefPhNG/UGqU3vt/LTABwcHX0w==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
     dev: false
 
   /estree-util-build-jsx@2.2.2:
@@ -4389,7 +4380,7 @@ packages:
   /hast-util-to-estree@2.3.3:
     resolution: {integrity: sha512-ihhPIUPxN0v0w6M5+IiAZZrn0LH2uZomeWwhn7uP7avZC6TE7lIiEh2yBMPr5+zi1aUCXq6VoYRgs2Bw9xmycQ==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
       '@types/estree-jsx': 1.0.0
       '@types/hast': 2.3.6
       '@types/unist': 2.0.8
@@ -7160,8 +7151,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /svelte@4.2.2:
-    resolution: {integrity: sha512-My2tytF2e2NnHSpn2M7/3VdXT4JdTglYVUuSuK/mXL2XtulPYbeBfl8Dm1QiaKRn0zoULRnL+EtfZHHP0k4H3A==}
+  /svelte@4.2.8:
+    resolution: {integrity: sha512-hU6dh1MPl8gh6klQZwK/n73GiAHiR95IkFsesLPbMeEZi36ydaXL/ZAb4g9sayT0MXzpxyZjR28yderJHxcmYA==}
     engines: {node: '>=16'}
     dependencies:
       '@ampproject/remapping': 2.2.1
@@ -8016,7 +8007,7 @@ packages:
         optional: true
     dependencies:
       '@types/eslint-scope': 3.7.4
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.3
       '@webassemblyjs/ast': 1.11.6
       '@webassemblyjs/wasm-edit': 1.11.6
       '@webassemblyjs/wasm-parser': 1.11.6
