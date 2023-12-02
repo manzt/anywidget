@@ -2,7 +2,7 @@ import { name, version } from "../package.json";
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop unstable_setup {import("@anywidget/types").Setup=}
+ *  @prop unstable_initialize {import("@anywidget/types").Initialize=}
  *  @prop render {import("@anywidget/types").Render=}
  */
 
@@ -30,6 +30,7 @@ async function load_css_href(href, anywidget_id) {
 		let newLink = /** @type {HTMLLinkElement} */ (prev.cloneNode());
 		newLink.href = href;
 		newLink.addEventListener("load", () => prev?.remove());
+		newLink.addEventListener("error", () => prev?.remove());
 		prev.after(newLink);
 		return;
 	}
@@ -98,29 +99,29 @@ async function load_esm(esm) {
 
 /**
  * This is a trick so that we can cleanup event listeners added
- * by the user-defined setup function.
+ * by the user-defined function.
  */
-let setup_marker = Symbol("anywidget.setup");
+let initialize_marker = Symbol("anywidget.initialize");
 
 /**
  * @param {AnyWidgetModule} widget
  * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
  * @returns {Promise<() => Promise<void>>}
  */
-async function run_setup(widget, model) {
-	let cleanup = await widget.unstable_setup?.({
-		model: model_proxy(model, setup_marker),
+async function run_initialize(widget, model) {
+	let cleanup = await widget.unstable_initialize?.({
+		model: model_proxy(model, initialize_marker),
 	});
 	return async () => {
 		// Call any cleanup logic defined by the previous module.
 		try {
 			await cleanup?.();
 		} catch (e) {
-			console.warn("[anywidget] error cleaning up setup.", e);
+			console.warn("[anywidget] error cleaning up initialize.", e);
 		}
 
-		// Remove all event listeners added by the user-defined setup.
-		model.off(null, null, setup_marker);
+		// Remove all event listeners added by the user-defined initialize.
+		model.off(null, null, initialize_marker);
 	};
 }
 
@@ -158,14 +159,11 @@ async function run_render(widget, view) {
  * @param {unknown} context
  * @return {import("@anywidget/types").AnyModel}
  *
- * Prunes the view down to the minimum context necessary for rendering.
- * Calls to `model.get` and `model.set` automatically add the view as
- * context to the model, so we can gracefully unsubscribe from events
- * added by the user-defined render.
+ * Prunes the view down to the minimum context necessary.
  *
- * Also adds a mutable `context` property to the model so that
- * user-defined setup and render functions can modify context
- * to the model.
+ * Calls to `model.get` and `model.set` automatically add the
+ * `context`, so we can gracefully unsubscribe from events
+ * added by user-defined hooks.
  */
 function model_proxy(model, context) {
 	return {
@@ -195,8 +193,6 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		static view_module = name;
 		static view_module_version = version;
 
-		_shared_mutable_model_context = {};
-
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
 			super.initialize(...args);
@@ -222,8 +218,8 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				this._widget_promise = load_esm(this.get("_esm"));
 				let widget = await this._widget_promise;
 
-				await this._anywidget_setup_cleanup();
-				this._anywidget_setup_cleanup = await run_setup(widget, this);
+				await this._anywidget_initialize_cleanup();
+				this._anywidget_initialize_cleanup = await run_initialize(widget, this);
 
 				let views = /** @type {unknown} */ (Object.values(this.views ?? {}));
 
@@ -235,13 +231,13 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 			this._widget_promise = load_esm(this.get("_esm"))
 				.then(async (widget) => {
-					this._anywidget_setup_cleanup = await run_setup(widget, this);
+					this._anywidget_initialize_cleanup = await run_initialize(widget, this);
 					return widget;
 				});
 		}
 
 		/** @type {() => Promise<void>} */
-		async _anywidget_setup_cleanup() {}
+		async _anywidget_initialize_cleanup() {}
 
 		/**
 		 * @param {Record<string, any>} state

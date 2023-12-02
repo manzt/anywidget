@@ -52,10 +52,10 @@ export interface Render<T extends ObjectHash = ObjectHash> {
 	(props: RenderProps<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
 
-export interface SetupProps<T extends ObjectHash = ObjectHash> {
+export interface InitializeProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
 }
 
-export interface Setup<T extends ObjectHash = ObjectHash> {
-	(props: SetupProps<T>): Awaitable<void | (() => Awaitable<void>)>;
+export interface Initialize<T extends ObjectHash = ObjectHash> {
+	(props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
