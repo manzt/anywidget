@@ -101,7 +101,9 @@ export function render(view) {}
 `;
 
 describe("AnyModel", async () => {
-	it("loads", async () => {
+	// TODO: Node doesn't support importing blob URLs,
+	// which we rely on in the front end.
+	it.skip("loads", async () => {
 		let widget_manager = new DummyManager();
 
 		let model = await widget_manager.new_widget(
