@@ -2,7 +2,7 @@ import { name, version } from "../package.json";
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop _unstable_setup {import("@anywidget/types").Setup=}
+ *  @prop unstable_setup {import("@anywidget/types").Setup=}
  *  @prop render {import("@anywidget/types").Render=}
  */
 
@@ -108,7 +108,7 @@ let setup_marker = Symbol("anywidget.setup");
  * @returns {Promise<() => Promise<void>>}
  */
 async function run_setup(widget, model) {
-	let cleanup = await widget._unstable_setup?.({
+	let cleanup = await widget.unstable_setup?.({
 		model: model_proxy(model, setup_marker),
 	});
 	return async () => {
