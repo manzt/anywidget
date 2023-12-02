@@ -105,12 +105,11 @@ let setup_marker = Symbol("anywidget.setup");
 /**
  * @param {AnyWidgetModule} widget
  * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
- * @param {Record<string, any>} context
  * @returns {Promise<() => Promise<void>>}
  */
-async function run_setup(widget, model, context) {
+async function run_setup(widget, model) {
 	let cleanup = await widget._unstable_setup?.({
-		model: model_proxy(model, context, setup_marker),
+		model: model_proxy(model, setup_marker),
 	});
 	return async () => {
 		// Call any cleanup logic defined by the previous module.
@@ -122,23 +121,17 @@ async function run_setup(widget, model, context) {
 
 		// Remove all event listeners added by the user-defined setup.
 		model.off(null, null, setup_marker);
-
-		// Clear the mutable context
-		for (let k of Object.keys(context)) {
-			delete context[k];
-		}
 	};
 }
 
 /**
  * @param {AnyWidgetModule} widget
  * @param {import("@jupyter-widgets/base").DOMWidgetView} view
- * @param {Record<string, any>} context
  * @returns {Promise<() => Promise<void>>}
  */
-async function run_render(widget, view, context) {
+async function run_render(widget, view) {
 	let cleanup = await widget.render?.({
-		model: model_proxy(view.model, context, view),
+		model: model_proxy(view.model, view),
 		el: view.el,
 	});
 
@@ -162,8 +155,7 @@ async function run_render(widget, view, context) {
 
 /**
  * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
- * @param {Record<string, any>} shared_mutable_model_context
- * @param {unknown} backbone_context
+ * @param {unknown} context
  * @return {import("@anywidget/types").AnyModel}
  *
  * Prunes the view down to the minimum context necessary for rendering.
@@ -175,7 +167,7 @@ async function run_render(widget, view, context) {
  * user-defined setup and render functions can modify context
  * to the model.
  */
-function model_proxy(model, shared_mutable_model_context, backbone_context) {
+function model_proxy(model, context) {
 	return {
 		get: model.get.bind(model),
 		set: model.set.bind(model),
@@ -183,13 +175,12 @@ function model_proxy(model, shared_mutable_model_context, backbone_context) {
 		send: model.send.bind(model),
 		// @ts-expect-error
 		on(name, callback) {
-			model.on(name, callback, backbone_context);
+			model.on(name, callback, context);
 		},
 		off(name, callback) {
-			model.off(name, callback, backbone_context);
+			model.off(name, callback, context);
 		},
 		widget_manager: model.widget_manager,
-		_unstable_context: shared_mutable_model_context,
 	};
 }
 
@@ -232,31 +223,19 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				let widget = await this._widget_promise;
 
 				await this._anywidget_setup_cleanup();
-				this._anywidget_setup_cleanup = await run_setup(
-					widget,
-					this,
-					this._shared_mutable_model_context,
-				);
+				this._anywidget_setup_cleanup = await run_setup(widget, this);
 
 				let views = /** @type {unknown} */ (Object.values(this.views ?? {}));
 
 				for await (let view of /** @type {Promise<AnyView>[]} */ (views)) {
 					await view._anywidget_render_cleanup();
-					view._anywidget_render_cleanup = await run_render(
-						widget,
-						view,
-						this._shared_mutable_model_context,
-					);
+					view._anywidget_render_cleanup = await run_render(widget, view);
 				}
 			});
 
 			this._widget_promise = load_esm(this.get("_esm"))
 				.then(async (widget) => {
-					this._anywidget_setup_cleanup = await run_setup(
-						widget,
-						this,
-						this._shared_mutable_model_context,
-					);
+					this._anywidget_setup_cleanup = await run_setup(widget, this);
 					return widget;
 				});
 		}
@@ -323,11 +302,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				console.warn("[anywidget] widget not loaded.");
 				return;
 			}
-			this._anywidget_render_cleanup = await run_render(
-				widget,
-				this,
-				model._shared_mutable_model_context,
-			);
+			this._anywidget_render_cleanup = await run_render(widget, this);
 		}
 
 		/** @type {() => Promise<void>} */
