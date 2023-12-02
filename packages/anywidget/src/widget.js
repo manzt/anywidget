@@ -231,7 +231,10 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 			this._widget_promise = load_esm(this.get("_esm"))
 				.then(async (widget) => {
-					this._anywidget_initialize_cleanup = await run_initialize(widget, this);
+					this._anywidget_initialize_cleanup = await run_initialize(
+						widget,
+						this,
+					);
 					return widget;
 				});
 		}
