@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.4.4
+
+### Patch Changes
+
+- Bump `@types/react-dom` ([#390](https://github.com/manzt/anywidget/pull/390))
+
 ## 0.4.3
 
 ### Patch Changes
