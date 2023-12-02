@@ -384,6 +384,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
     foo = Foo()
     assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()
 
+
 def test_no_view():
     """Test that the descriptor works without a view."""
 
@@ -394,7 +395,9 @@ def test_no_view():
     """
 
     class Foo:
-        _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, no_view=True, autodetect_observer=False)
+        _repr_mimebundle_ = MimeBundleDescriptor(
+            _esm=esm, no_view=True, autodetect_observer=False
+        )
 
         def _get_anywidget_state(self, include: Union[Set[str], None]):
             return {}
