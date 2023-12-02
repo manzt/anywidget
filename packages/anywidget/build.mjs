@@ -17,16 +17,6 @@ await esbuild.build({
 	outfile: path.join(dist, "index.js"),
 });
 
-// re-export all exports from @anywidget/vite
-await fs.writeFile(
-	path.join(dist, "vite.mjs"),
-	`export * from "@anywidget/vite";`,
-);
-await fs.writeFile(
-	path.join(dist, "vite.cjs"),
-	`module.exports = require("@anywidget/vite");`,
-);
-
 // re-export all exports from @anywidget/types
 await fs.writeFile(
 	path.join(dist, "types.d.ts"),
