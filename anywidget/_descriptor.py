@@ -147,6 +147,11 @@ class MimeBundleDescriptor:
         use it to automatically send state changes to the javascript view.  If `False`,
         the javascript view will only be updated when the `send_state()` method is
         explicitly called.
+    no_view : bool, optional
+        If `True`, the callable will return `None` instead of a mimebundle. This is
+        useful for cases where you want to use the comm channel to send state updates
+        to the front end, but don't want to display anything in the notebook
+        (i.e., A DOM-less widget).  Defaults to `False`.
     **extra_state : Any, optional
         Any extra state that should be sent to the javascript view (for example,
         for the `_esm` anywidget field.)  By default, `{'_esm': _DEFAULT_ESM}` is added
@@ -278,6 +283,11 @@ class ReprMimeBundle:
         use it to automatically send state changes to the javascript view.  If `False`,
         the javascript view will only be updated when the `send_state()` method is
         explicitly called.
+    no_view : bool, optional
+        If `True`, the callable will return `None` instead of a mimebundle. This is
+        useful for cases where you want to use the comm channel to send state updates
+        to the front end, but don't want to display anything in the notebook
+        (i.e., A DOM-less widget).  Defaults to `False`.
     extra_state : dict, optional
         Any extra state that should be sent to the javascript view (for example,
         for the `_esm` anywidget field.)  By default, `{'_esm': DEFAULT_ESM}` is added
