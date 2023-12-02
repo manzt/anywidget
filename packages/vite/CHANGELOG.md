@@ -1,5 +1,11 @@
 # @anywidget/vite
 
+## 0.1.2
+
+### Patch Changes
+
+- Support Vite v5 ([#389](https://github.com/manzt/anywidget/pull/389))
+
 ## 0.1.1
 
 ### Patch Changes

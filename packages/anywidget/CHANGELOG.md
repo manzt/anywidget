@@ -1,5 +1,29 @@
 # anywidget
 
+## 0.8.0
+
+### Minor Changes
+
+- Remove re-export of `@anywidget/vite` from main package ([#398](https://github.com/manzt/anywidget/pull/398))
+
+  Breaking change. If using our Vite plugin, please make sure to install
+  `@anywidget/vite` (rather than importing from `anywidget` main package). This
+  change allows us to version the Vite plugin and anywidget's core separately.
+
+  ```diff
+  // vite.config.mjs
+  import { defineConfig } from "vite";
+  -- import anywidget from "anywidget/vite";
+  ++ import anywidget from "@anywidget/vite";
+  ```
+
+  If you are already using `@anywidget/vite`, there are no changes necessary.
+
+### Patch Changes
+
+- Updated dependencies [[`ea6d34d042e29c01ec8ce125a756dabf5c6823c0`](https://github.com/manzt/anywidget/commit/ea6d34d042e29c01ec8ce125a756dabf5c6823c0)]:
+  - @anywidget/vite@0.1.2
+
 ## 0.7.1
 
 ### Patch Changes
