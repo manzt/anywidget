@@ -75,7 +75,7 @@ more.
 
 ## Support
 
-Having trouble? Get help in our [Discord](https://discord.gg/hRx6YHdb) or open a
+Having trouble? Get help in our [Discord](https://discord.gg/W5h4vPMbDQ) or open a
 [Discussion](https://github.com/manzt/anywidget/issues/new).
 
 ## Contributing
@@ -83,7 +83,7 @@ Having trouble? Get help in our [Discord](https://discord.gg/hRx6YHdb) or open a
 **New contributors welcome!** Check out our
 [Contributors Guide](./CONTRIBUTING.md) for help getting started.
 
-Join us on [Discord](https://discord.gg/hRx6YHdb) to meet other maintainers.
+Join us on [Discord](https://discord.gg/W5h4vPMbDQ) to meet other maintainers.
 We'll help you get your first contribution in no time!
 
 ## License
