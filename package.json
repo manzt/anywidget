@@ -9,7 +9,7 @@
 		"version": "changeset version && pnpm install",
 		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
-		"typecheck": "tsc --build && vitest typecheck --run",
+		"typecheck": "tsc --build && vitest --typecheck.only --run",
 		"format": "dprint fmt",
 		"lint": "dprint check",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
