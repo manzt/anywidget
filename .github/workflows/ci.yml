@@ -33,7 +33,7 @@ jobs:
           node-version: "18.x"
       - run: pnpm install --frozen-lock
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
