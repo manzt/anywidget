@@ -26,52 +26,52 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
-	\\"dependencies\\": {
-		\\"@anywidget/react\\": \\"0.0.2\\",
-		\\"react\\": \\"^18.2.0\\",
-		\\"react-dom\\": \\"^18.2.0\\"
+	"dependencies": {
+		"@anywidget/react": "0.0.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
-	\\"devDependencies\\": {
-		\\"esbuild\\": \\"^0.19.11\\"
+	"devDependencies": {
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -83,28 +83,28 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import * as React from \\"react\\";
-import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./widget.css\\";
+    "content": "import * as React from "react";
+import { createRender, useModelState } from "@anywidget/react";
+import "./widget.css";
 
 export const render = createRender(() => {
-	const [value, setValue] = useModelState(\\"value\\");
+	const [value, setValue] = useModelState("value");
 	return (
 		<button
-			className=\\"undefined-counter-button\\"
+			className="undefined-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -128,7 +128,7 @@ export const render = createRender(() => {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -170,56 +170,56 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static\\",
-		\\"typecheck\\": \\"tsc --noEmit\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static",
+		"typecheck": "tsc --noEmit"
 	},
-	\\"dependencies\\": {
-		\\"@anywidget/react\\": \\"0.0.2\\",
-		\\"react\\": \\"^18.2.0\\",
-		\\"react-dom\\": \\"^18.2.0\\"
+	"dependencies": {
+		"@anywidget/react": "0.0.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
-	\\"devDependencies\\": {
-		\\"@types/react\\": \\"^18.2.36\\",
-		\\"@types/react-dom\\": \\"^18.2.18\\",
-		\\"typescript\\": \\"^5.3.3\\",
-		\\"esbuild\\": \\"^0.19.11\\"
+	"devDependencies": {
+		"@types/react": "^18.2.36",
+		"@types/react-dom": "^18.2.18",
+		"typescript": "^5.3.3",
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -231,28 +231,28 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import * as React from \\"react\\";
-import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./widget.css\\";
+    "content": "import * as React from "react";
+import { createRender, useModelState } from "@anywidget/react";
+import "./widget.css";
 
 export const render = createRender(() => {
-	const [value, setValue] = useModelState<number>(\\"value\\");
+	const [value, setValue] = useModelState<number>("value");
 	return (
 		<button
-			className=\\"undefined-counter-button\\"
+			className="undefined-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -276,7 +276,7 @@ export const render = createRender(() => {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -291,28 +291,28 @@ export const render = createRender(() => {
   },
   {
     "content": "{
-	\\"include\\": [
-		\\"js\\"
+	"include": [
+		"js"
 	],
-	\\"compilerOptions\\": {
-		\\"target\\": \\"ES2020\\",
-		\\"module\\": \\"ESNext\\",
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		],
-		\\"skipLibCheck\\": true,
-		\\"moduleResolution\\": \\"bundler\\",
-		\\"allowImportingTsExtensions\\": true,
-		\\"resolveJsonModule\\": true,
-		\\"isolatedModules\\": true,
-		\\"noEmit\\": true,
-		\\"jsx\\": \\"react\\",
-		\\"strict\\": true,
-		\\"noUnusedLocals\\": true,
-		\\"noUnusedParameters\\": true,
-		\\"noFallthroughCasesInSwitch\\": true
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
 	}
 }",
     "path": "tsconfig.json",
@@ -346,48 +346,48 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
-	\\"dependencies\\": {},
-	\\"devDependencies\\": {
-		\\"esbuild\\": \\"^0.19.11\\"
+	"dependencies": {},
+	"devDependencies": {
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -399,31 +399,31 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import \\"./widget.css\\";
+    "content": "import "./widget.css";
 
 export function render({ model, el }) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -444,7 +444,7 @@ export function render({ model, el }) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -473,42 +473,42 @@ pip install undefined
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 ",
     "path": "pyproject.toml",
   },
   {
     "content": "{
-	\\"lock\\": false,
-	\\"compilerOptions\\": {
-		\\"checkJs\\": true,
-		\\"allowJs\\": true,
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"lock": false,
+	"compilerOptions": {
+		"checkJs": true,
+		"allowJs": true,
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		]
 	},
-	\\"fmt\\": {
-		\\"useTabs\\": true
+	"fmt": {
+		"useTabs": true
 	},
-	\\"lint\\": {
-		\\"rules\\": {
-			\\"exclude\\": [
-				\\"prefer-const\\"
+	"lint": {
+		"rules": {
+			"exclude": [
+				"prefer-const"
 			]
 		}
 	}
@@ -536,35 +536,35 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
+    "content": "import confetti from "https://esm.sh/canvas-confetti@1";
 
 /** @typedef {{ value: number }} Model */
 
-/** @type {import(\\"npm:@anywidget/types\\").Render<Model>} */
+/** @type {import("npm:@anywidget/types").Render<Model>} */
 export function render({ model, el }) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
+	model.on("change:value", () => {
 		confetti();
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -585,7 +585,7 @@ export function render({ model, el }) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -627,51 +627,51 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static\\",
-		\\"typecheck\\": \\"tsc --noEmit\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static",
+		"typecheck": "tsc --noEmit"
 	},
-	\\"dependencies\\": {},
-	\\"devDependencies\\": {
-		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"typescript\\": \\"^5.3.3\\",
-		\\"esbuild\\": \\"^0.19.11\\"
+	"dependencies": {},
+	"devDependencies": {
+		"@anywidget/types": "0.1.4",
+		"typescript": "^5.3.3",
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -683,21 +683,21 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import type { RenderContext } from \\"@anywidget/types\\";
-import \\"./widget.css\\";
+    "content": "import type { RenderContext } from "@anywidget/types";
+import "./widget.css";
 
 /* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
 interface WidgetModel {
@@ -706,15 +706,15 @@ interface WidgetModel {
 }
 
 export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -735,7 +735,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -750,28 +750,28 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
   },
   {
     "content": "{
-	\\"include\\": [
-		\\"js\\"
+	"include": [
+		"js"
 	],
-	\\"compilerOptions\\": {
-		\\"target\\": \\"ES2020\\",
-		\\"module\\": \\"ESNext\\",
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		],
-		\\"skipLibCheck\\": true,
-		\\"moduleResolution\\": \\"bundler\\",
-		\\"allowImportingTsExtensions\\": true,
-		\\"resolveJsonModule\\": true,
-		\\"isolatedModules\\": true,
-		\\"noEmit\\": true,
-		\\"jsx\\": \\"react\\",
-		\\"strict\\": true,
-		\\"noUnusedLocals\\": true,
-		\\"noUnusedParameters\\": true,
-		\\"noFallthroughCasesInSwitch\\": true
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
 	}
 }",
     "path": "tsconfig.json",
@@ -805,52 +805,52 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
-	\\"dependencies\\": {
-		\\"@anywidget/react\\": \\"0.0.2\\",
-		\\"react\\": \\"^18.2.0\\",
-		\\"react-dom\\": \\"^18.2.0\\"
+	"dependencies": {
+		"@anywidget/react": "0.0.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
-	\\"devDependencies\\": {
-		\\"esbuild\\": \\"^0.19.11\\"
+	"devDependencies": {
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -862,28 +862,28 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import * as React from \\"react\\";
-import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./widget.css\\";
+    "content": "import * as React from "react";
+import { createRender, useModelState } from "@anywidget/react";
+import "./widget.css";
 
 export const render = createRender(() => {
-	const [value, setValue] = useModelState(\\"value\\");
+	const [value, setValue] = useModelState("value");
 	return (
 		<button
-			className=\\"undefined-counter-button\\"
+			className="undefined-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -907,7 +907,7 @@ export const render = createRender(() => {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -949,56 +949,56 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static\\",
-		\\"typecheck\\": \\"tsc --noEmit\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static",
+		"typecheck": "tsc --noEmit"
 	},
-	\\"dependencies\\": {
-		\\"@anywidget/react\\": \\"0.0.2\\",
-		\\"react\\": \\"^18.2.0\\",
-		\\"react-dom\\": \\"^18.2.0\\"
+	"dependencies": {
+		"@anywidget/react": "0.0.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
-	\\"devDependencies\\": {
-		\\"@types/react\\": \\"^18.2.36\\",
-		\\"@types/react-dom\\": \\"^18.2.18\\",
-		\\"typescript\\": \\"^5.3.3\\",
-		\\"esbuild\\": \\"^0.19.11\\"
+	"devDependencies": {
+		"@types/react": "^18.2.36",
+		"@types/react-dom": "^18.2.18",
+		"typescript": "^5.3.3",
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -1010,28 +1010,28 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import * as React from \\"react\\";
-import { createRender, useModelState } from \\"@anywidget/react\\";
-import \\"./widget.css\\";
+    "content": "import * as React from "react";
+import { createRender, useModelState } from "@anywidget/react";
+import "./widget.css";
 
 export const render = createRender(() => {
-	const [value, setValue] = useModelState<number>(\\"value\\");
+	const [value, setValue] = useModelState<number>("value");
 	return (
 		<button
-			className=\\"undefined-counter-button\\"
+			className="undefined-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -1055,7 +1055,7 @@ export const render = createRender(() => {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -1070,28 +1070,28 @@ export const render = createRender(() => {
   },
   {
     "content": "{
-	\\"include\\": [
-		\\"js\\"
+	"include": [
+		"js"
 	],
-	\\"compilerOptions\\": {
-		\\"target\\": \\"ES2020\\",
-		\\"module\\": \\"ESNext\\",
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		],
-		\\"skipLibCheck\\": true,
-		\\"moduleResolution\\": \\"bundler\\",
-		\\"allowImportingTsExtensions\\": true,
-		\\"resolveJsonModule\\": true,
-		\\"isolatedModules\\": true,
-		\\"noEmit\\": true,
-		\\"jsx\\": \\"react\\",
-		\\"strict\\": true,
-		\\"noUnusedLocals\\": true,
-		\\"noUnusedParameters\\": true,
-		\\"noFallthroughCasesInSwitch\\": true
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
 	}
 }",
     "path": "tsconfig.json",
@@ -1125,48 +1125,48 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
-	\\"dependencies\\": {},
-	\\"devDependencies\\": {
-		\\"esbuild\\": \\"^0.19.11\\"
+	"dependencies": {},
+	"devDependencies": {
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -1178,31 +1178,31 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import \\"./widget.css\\";
+    "content": "import "./widget.css";
 
 export function render({ model, el }) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -1223,7 +1223,7 @@ export function render({ model, el }) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -1252,42 +1252,42 @@ pip install undefined
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 ",
     "path": "pyproject.toml",
   },
   {
     "content": "{
-	\\"lock\\": false,
-	\\"compilerOptions\\": {
-		\\"checkJs\\": true,
-		\\"allowJs\\": true,
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"lock": false,
+	"compilerOptions": {
+		"checkJs": true,
+		"allowJs": true,
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		]
 	},
-	\\"fmt\\": {
-		\\"useTabs\\": true
+	"fmt": {
+		"useTabs": true
 	},
-	\\"lint\\": {
-		\\"rules\\": {
-			\\"exclude\\": [
-				\\"prefer-const\\"
+	"lint": {
+		"rules": {
+			"exclude": [
+				"prefer-const"
 			]
 		}
 	}
@@ -1315,35 +1315,35 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import confetti from \\"https://esm.sh/canvas-confetti@1\\";
+    "content": "import confetti from "https://esm.sh/canvas-confetti@1";
 
 /** @typedef {{ value: number }} Model */
 
-/** @type {import(\\"npm:@anywidget/types\\").Render<Model>} */
+/** @type {import("npm:@anywidget/types").Render<Model>} */
 export function render({ model, el }) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
+	model.on("change:value", () => {
 		confetti();
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -1364,7 +1364,7 @@ export function render({ model, el }) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -1406,51 +1406,51 @@ src/undefined/static
   },
   {
     "content": "{
-	\\"scripts\\": {
-		\\"dev\\": \\"npm run build -- --sourcemap=inline --watch\\",
-		\\"build\\": \\"esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static\\",
-		\\"typecheck\\": \\"tsc --noEmit\\"
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static",
+		"typecheck": "tsc --noEmit"
 	},
-	\\"dependencies\\": {},
-	\\"devDependencies\\": {
-		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"typescript\\": \\"^5.3.3\\",
-		\\"esbuild\\": \\"^0.19.11\\"
+	"dependencies": {},
+	"devDependencies": {
+		"@anywidget/types": "0.1.4",
+		"typescript": "^5.3.3",
+		"esbuild": "^0.19.11"
 	}
 }",
     "path": "package.json",
   },
   {
     "content": "[build-system]
-requires = [\\"hatchling\\"]
-build-backend = \\"hatchling.build\\"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = \\"undefined\\"
-version = \\"0.0.0\\"
-dependencies = [\\"anywidget\\"]
+name = "undefined"
+version = "0.0.0"
+dependencies = ["anywidget"]
 
 [project.optional-dependencies]
-dev = [\\"watchfiles\\", \\"jupyterlab\\"]
+dev = ["watchfiles", "jupyterlab"]
 
 # automatically add the dev feature to the default env (e.g., hatch shell)
 [tool.hatch.envs.default]
-features = [\\"dev\\"]
+features = ["dev"]
 
 
 [tool.hatch.build]
 only-packages = true
-artifacts = [\\"src/undefined/static/*\\"]
+artifacts = ["src/undefined/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
-build-function = \\"hatch_jupyter_builder.npm_builder\\"
-ensured-targets = [\\"src/undefined/static/widget.js\\"]
-skip-if-exists = [\\"src/undefined/static/widget.js\\"]
-dependencies = [\\"hatch-jupyter-builder>=0.5.0\\"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["src/undefined/static/widget.js"]
+skip-if-exists = ["src/undefined/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = \\"undefined\\"
-build_cmd = \\"build\\"
+npm = "undefined"
+build_cmd = "build"
 ",
     "path": "pyproject.toml",
   },
@@ -1462,21 +1462,21 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version(\\"undefined\\")
+    __version__ = importlib.metadata.version("undefined")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = \\"unknown\\"
+    __version__ = "unknown"
 
 
 class Counter(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.js\\"
-    _css = pathlib.Path(__file__).parent / \\"static\\" / \\"widget.css\\"
+    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
+    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
     "path": "src/undefined/__init__.py",
   },
   {
-    "content": "import type { RenderContext } from \\"@anywidget/types\\";
-import \\"./widget.css\\";
+    "content": "import type { RenderContext } from "@anywidget/types";
+import "./widget.css";
 
 /* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
 interface WidgetModel {
@@ -1485,15 +1485,15 @@ interface WidgetModel {
 }
 
 export function render({ model, el }: RenderContext<WidgetModel>) {
-	let btn = document.createElement(\\"button\\");
-	btn.classList.add(\\"undefined-counter-button\\");
-	btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
-	btn.addEventListener(\\"click\\", () => {
-		model.set(\\"value\\", model.get(\\"value\\") + 1);
+	let btn = document.createElement("button");
+	btn.classList.add("undefined-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
 		model.save_changes();
 	});
-	model.on(\\"change:value\\", () => {
-		btn.innerHTML = \`count is \${model.get(\\"value\\")}\`;
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
 	el.appendChild(btn);
 }
@@ -1514,7 +1514,7 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	border: 0;
 	color: white;
 	cursor: pointer;
-	font-family: \\"Roboto\\", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 2em;
 	margin: 10px;
 	padding: 10px 20px;
@@ -1529,28 +1529,28 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
   },
   {
     "content": "{
-	\\"include\\": [
-		\\"js\\"
+	"include": [
+		"js"
 	],
-	\\"compilerOptions\\": {
-		\\"target\\": \\"ES2020\\",
-		\\"module\\": \\"ESNext\\",
-		\\"lib\\": [
-			\\"ES2020\\",
-			\\"DOM\\",
-			\\"DOM.Iterable\\"
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
 		],
-		\\"skipLibCheck\\": true,
-		\\"moduleResolution\\": \\"bundler\\",
-		\\"allowImportingTsExtensions\\": true,
-		\\"resolveJsonModule\\": true,
-		\\"isolatedModules\\": true,
-		\\"noEmit\\": true,
-		\\"jsx\\": \\"react\\",
-		\\"strict\\": true,
-		\\"noUnusedLocals\\": true,
-		\\"noUnusedParameters\\": true,
-		\\"noFallthroughCasesInSwitch\\": true
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
 	}
 }",
     "path": "tsconfig.json",
