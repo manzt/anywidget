@@ -183,7 +183,7 @@ src/undefined/static
 	\\"devDependencies\\": {
 		\\"@types/react\\": \\"^18.2.36\\",
 		\\"@types/react-dom\\": \\"^18.2.18\\",
-		\\"typescript\\": \\"^5.2.2\\",
+		\\"typescript\\": \\"^5.3.3\\",
 		\\"esbuild\\": \\"^0.19.5\\"
 	}
 }",
@@ -635,7 +635,7 @@ src/undefined/static
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
 		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"typescript\\": \\"^5.2.2\\",
+		\\"typescript\\": \\"^5.3.3\\",
 		\\"esbuild\\": \\"^0.19.5\\"
 	}
 }",
@@ -962,7 +962,7 @@ src/undefined/static
 	\\"devDependencies\\": {
 		\\"@types/react\\": \\"^18.2.36\\",
 		\\"@types/react-dom\\": \\"^18.2.18\\",
-		\\"typescript\\": \\"^5.2.2\\",
+		\\"typescript\\": \\"^5.3.3\\",
 		\\"esbuild\\": \\"^0.19.5\\"
 	}
 }",
@@ -1414,7 +1414,7 @@ src/undefined/static
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
 		\\"@anywidget/types\\": \\"0.1.4\\",
-		\\"typescript\\": \\"^5.2.2\\",
+		\\"typescript\\": \\"^5.3.3\\",
 		\\"esbuild\\": \\"^0.19.5\\"
 	}
 }",
