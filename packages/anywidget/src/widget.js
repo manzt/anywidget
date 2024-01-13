@@ -189,8 +189,8 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		/**
 		 * @param {Record<string, any>} state
 		 *
-		 * We override to support binary trailets because JSON.parse(JSON.stringify()) doesnt
-		 * propeprty clone binary data (it just returns an empty object).
+		 * We override to support binary trailets because JSON.parse(JSON.stringify())
+		 * does not properly clone binary data (it just returns an empty object).
 		 *
 		 * https://github.com/jupyter-widgets/ipywidgets/blob/47058a373d2c2b3acf101677b2745e14b76dd74b/packages/base/src/widget.ts#L562-L583
 		 */
@@ -202,8 +202,26 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 					let serialize = serializers[k]?.serialize;
 					if (serialize) {
 						state[k] = serialize(state[k], this);
+					} else if (
+						(k === "layout" || k === "style") &&
+						state[k] instanceof Promise
+					) {
+						// We can't serialize a Promise, so just skip it.
+						//
+						// N.B. This handles a race condition from ipywidgets,
+						// where an initial promise for a WidgetModel is being
+						// serialized on initially.
+						//
+						// The default behavior of ipywidgets is to use JSON.stringify + JSON.parse,
+						// "trick", which silently returns an empty object for _all_ Promises.
+						//
+						// If we try to use `structuredClone` we'll get an error.
+						//
+						// We explicitly handle case (rather than falling back to JSON.stringify)
+						// so that users will see an error if they accidently try to serialize
+						// a Promise.
+						state[k] = undefined;
 					} else {
-						// the default serializer just deep-copies the object
 						state[k] = structuredClone(state[k]);
 					}
 					if (typeof state[k]?.toJSON === "function") {
