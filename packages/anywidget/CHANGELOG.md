@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.8.1
+
+### Patch Changes
+
+- fix: Skip `Promise` serialization for ipywidget's `layout`/`style` traits ([#412](https://github.com/manzt/anywidget/pull/412))
+
 ## 0.8.0
 
 ### Minor Changes
