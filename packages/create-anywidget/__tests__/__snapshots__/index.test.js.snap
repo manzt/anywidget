@@ -12,6 +12,30 @@ pip install undefined
     "path": "README.md",
   },
   {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
+  },
+  {
     "content": "node_modules
 .venv
 dist
@@ -154,6 +178,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "node_modules
@@ -332,6 +380,30 @@ pip install undefined
     "path": "README.md",
   },
   {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
+  },
+  {
     "content": "node_modules
 .venv
 dist
@@ -470,6 +542,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "[build-system]
@@ -611,6 +707,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "node_modules
@@ -791,6 +911,30 @@ pip install undefined
     "path": "README.md",
   },
   {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
+  },
+  {
     "content": "node_modules
 .venv
 dist
@@ -933,6 +1077,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "node_modules
@@ -1111,6 +1279,30 @@ pip install undefined
     "path": "README.md",
   },
   {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
+  },
+  {
     "content": "node_modules
 .venv
 dist
@@ -1249,6 +1441,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "[build-system]
@@ -1390,6 +1606,30 @@ pip install undefined
 \`\`\`
 ",
     "path": "README.md",
+  },
+  {
+    "content": "{
+	"cells": [
+		{
+			"cell_type": "code",
+			"execution_count": null,
+			"metadata": {},
+			"outputs": [],
+			"source": [
+				"from undefined import Counter\\n",
+				"Counter()"
+			]
+		}
+	],
+	"metadata": {
+		"language_info": {
+			"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+}",
+    "path": "example.ipynb",
   },
   {
     "content": "node_modules
