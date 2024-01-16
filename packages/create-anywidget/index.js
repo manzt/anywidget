@@ -115,7 +115,8 @@ let template = await p.select({
 			},
 			{
 				label: "JavaScript (minimal)",
-				hint: "No bundler, requires CDN-only imports. Supports TypeScript via JSDoc comments.",
+				hint:
+					"No bundler, requires CDN-only imports. Supports TypeScript via JSDoc comments.",
 				value: "template-vanilla-deno-jsdoc",
 			},
 		],
@@ -138,8 +139,7 @@ if (p.isCancel(template)) {
 	process.exit(1);
 }
 
-
-let writtenPaths = await create(cwd, {
+await create(cwd, {
 	name: path.basename(path.resolve(cwd)),
 	template: /** @type {import("./create.js").TemplateType} */ (template),
 	pkg_manager,
