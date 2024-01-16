@@ -155,31 +155,29 @@ pip install ${name}
 \`\`\`
 `;
 
-
 /** @param {string} name */
 let notebook = (name) =>
-	`{
-	"cells": [
-		{
-		"cell_type": "code",
-		"execution_count": null,
-		"metadata": {},
-		"outputs": [],
-		"source": [
-		"from ${name} import Counter\\n",
-		"Counter()"
-		]
-		}
-	],
-	"metadata": {
-		"language_info": {
-		"name": "python"
-		}
-	},
-	"nbformat": 4,
-	"nbformat_minor": 2
-	}`;
-
+	json_dumps({
+		"cells": [
+			{
+				"cell_type": "code",
+				"execution_count": null,
+				"metadata": {},
+				"outputs": [],
+				"source": [
+					`from ${name} import Counter\n`,
+					"Counter()",
+				],
+			},
+		],
+		"metadata": {
+			"language_info": {
+				"name": "python",
+			},
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+	});
 
 /** @param {string} name */
 let styles = (name) =>
