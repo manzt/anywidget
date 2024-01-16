@@ -95,6 +95,9 @@ if (p.isCancel(framework)) {
 	process.exit(1);
 }
 
+let pkg_manager = detect_package_manager() ?? "npm";
+let bundler = pkg_manager === "bun" ? "bun" : "esbuild";
+
 /** @type { string | symbol } */
 let template = await p.select({
 	message: "Which variant?",
@@ -102,26 +105,29 @@ let template = await p.select({
 		vanilla: [
 			{
 				label: "JavaScript",
+				hint: `Bundles dependencies with ${bundler}.`,
 				value: "template-vanilla",
 			},
 			{
 				label: "TypeScript",
+				hint: `Bundles dependencies with ${bundler}.`,
 				value: "template-vanilla-ts",
 			},
 			{
-				label: "JSDoc TypeScript",
-				hint:
-					"Deno project. No bundler, requires CDN-only imports. You probably don't want this.",
+				label: "JavaScript (minimal)",
+				hint: "No bundler, requires CDN-only imports. Supports TypeScript via JSDoc comments.",
 				value: "template-vanilla-deno-jsdoc",
 			},
 		],
 		react: [
 			{
 				label: "JavaScript",
+				hint: `Transforms JSX and bundles dependencies with ${bundler}.`,
 				value: "template-react",
 			},
 			{
 				label: "TypeScript",
+				hint: `Transforms JSX and bundles dependencies with ${bundler}.`,
 				value: "template-react-ts",
 			},
 		],
@@ -132,7 +138,6 @@ if (p.isCancel(template)) {
 	process.exit(1);
 }
 
-let pkg_manager = detect_package_manager() ?? "npm";
 
 let writtenPaths = await create(cwd, {
 	name: path.basename(path.resolve(cwd)),
