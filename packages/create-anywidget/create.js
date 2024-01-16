@@ -155,6 +155,32 @@ pip install ${name}
 \`\`\`
 `;
 
+
+/** @param {string} name */
+let notebook = (name) =>
+	`{
+	"cells": [
+		{
+		"cell_type": "code",
+		"execution_count": null,
+		"metadata": {},
+		"outputs": [],
+		"source": [
+		"from ${name} import Counter\\n",
+		"Counter()"
+		]
+		}
+	],
+	"metadata": {
+		"language_info": {
+		"name": "python"
+		}
+	},
+	"nbformat": 4,
+	"nbformat_minor": 2
+	}`;
+
+
 /** @param {string} name */
 let styles = (name) =>
 	`\
@@ -393,6 +419,8 @@ async function render_template(template, { name, pkg_manager }) {
 	}));
 	return [
 		{ path: `README.md`, content: readme(name) },
+		{ path: `example.ipynb`, content: notebook(name) },
+
 		{ path: `.gitignore`, content: gitignore([`src/${name}/static`]) },
 		{ path: `package.json`, content: json_dumps(package_json) },
 		{
@@ -453,6 +481,7 @@ export async function gather_files(type, { name, pkg_manager }) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
 			{ path: `README.md`, content: readme(name) },
+			{ path: `example.ipynb`, content: notebook(name) },
 			{ path: `pyproject.toml`, content: pyproject_toml(name) },
 			{ path: `deno.json`, content: json_dumps(deno_json) },
 			{ path: `.gitignore`, content: gitignore() },
