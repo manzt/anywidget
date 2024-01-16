@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.4.5
+
+### Patch Changes
+
+- feat: Add example.ipynb to all projects ([#414](https://github.com/manzt/anywidget/pull/414))
+
+- feat: Rename template options with additional hints ([#415](https://github.com/manzt/anywidget/pull/415))
+
 ## 0.4.4
 
 ### Patch Changes
