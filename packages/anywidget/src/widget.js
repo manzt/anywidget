@@ -1,9 +1,15 @@
 import { name, version } from "../package.json";
 
 /**
+ * @typedef AnyWidget
+ * @prop initialize {import("@anywidget/types").Initialize}
+ * @prop render {import("@anywidget/types").Render}
+ */
+
+/**
  *  @typedef AnyWidgetModule
- *  @prop unstable_initialize {import("@anywidget/types").Initialize=}
  *  @prop render {import("@anywidget/types").Render=}
+ *  @prop default {AnyWidget | (() => AnyWidget | Promise<AnyWidget>)=}
  */
 
 /**
@@ -98,18 +104,44 @@ async function load_esm(esm) {
 }
 
 /**
+ * @param {string} esm
+ * @returns {Promise<AnyWidget>}
+ */
+async function load_widget(esm) {
+	let mod = await load_esm(esm);
+	if (mod.render) {
+		console.warn(
+			"[anywidget] `render` will likely be deprecated in the future. Please use `default` instead.",
+		);
+		return {
+			async initialize() {},
+			render: mod.render,
+		};
+	}
+	if (!mod.default) {
+		throw new Error(
+			`[anywidget] module must export a default function or object.`,
+		);
+	}
+	let widget = typeof mod.default === "function"
+		? await mod.default()
+		: mod.default;
+	return widget;
+}
+
+/**
  * This is a trick so that we can cleanup event listeners added
  * by the user-defined function.
  */
 let initialize_marker = Symbol("anywidget.initialize");
 
 /**
- * @param {AnyWidgetModule} widget
+ * @param {AnyWidget} widget
  * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
  * @returns {Promise<() => Promise<void>>}
  */
 async function run_initialize(widget, model) {
-	let cleanup = await widget.unstable_initialize?.({
+	let cleanup = await widget.initialize?.({
 		model: model_proxy(model, initialize_marker),
 	});
 	return async () => {
@@ -135,7 +167,6 @@ async function run_render(widget, view) {
 		model: model_proxy(view.model, view),
 		el: view.el,
 	});
-
 	return async () => {
 		// call any cleanup logic defined by the previous module.
 		try {
@@ -215,7 +246,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				if (!id) return;
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 
-				this._widget_promise = load_esm(this.get("_esm"));
+				this._widget_promise = load_widget(this.get("_esm"));
 				let widget = await this._widget_promise;
 
 				await this._anywidget_initialize_cleanup();
@@ -229,7 +260,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				}
 			});
 
-			this._widget_promise = load_esm(this.get("_esm"))
+			this._widget_promise = load_widget(this.get("_esm"))
 				.then(async (widget) => {
 					this._anywidget_initialize_cleanup = await run_initialize(
 						widget,
