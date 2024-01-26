@@ -103,6 +103,28 @@ async function load_esm(esm) {
 	return widget;
 }
 
+function warn_render_deprecation() {
+	console.warn(`\
+[anywidget] Deprecation Warning. Direct export of a 'render' will likely be deprecated in the future. To migrate ...
+
+Remove the 'export' keyword from 'render'
+-----------------------------------------
+
+export function render({ model, el }) { ... }
+^^^^^^
+
+Create a default export that returns an object with 'render'
+------------------------------------------------------------
+
+function render({ model, el }) { ... }
+         ^^^^^^
+export default { render }
+                 ^^^^^^
+
+To learn more, please see: https://github.com/manzt/anywidget/pull/395
+`);
+}
+
 /**
  * @param {string} esm
  * @returns {Promise<AnyWidget>}
@@ -110,9 +132,7 @@ async function load_esm(esm) {
 async function load_widget(esm) {
 	let mod = await load_esm(esm);
 	if (mod.render) {
-		console.warn(
-			"[anywidget] `render` will likely be deprecated in the future. Please use `default` instead.",
-		);
+		warn_render_deprecation();
 		return {
 			async initialize() {},
 			render: mod.render,
