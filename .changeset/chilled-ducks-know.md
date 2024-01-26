@@ -1,5 +1,5 @@
 ---
-"@anywidget/types": minor
+"@anywidget/types": patch
 ---
 
 Add `Initialize` method types
