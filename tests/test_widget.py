@@ -10,6 +10,7 @@ import traitlets.traitlets as t
 import watchfiles
 from anywidget._file_contents import FileContents
 from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
+from traitlets import traitlets
 from watchfiles import Change
 
 here = pathlib.Path(__file__).parent
@@ -239,3 +240,15 @@ def test_explicit_file_contents(tmp_path: pathlib.Path):
 
     w = Widget()
     assert w._esm == path.read_text()
+
+
+def test_dom_less_widget():
+    class Widget(anywidget.AnyWidget):
+        _view_name = traitlets.Any(None).tag(sync=True)
+        _esm = """
+        export function render({ model, el }) {
+            el.innerText = "Hello, world";
+        }
+        """
+
+    assert Widget()._repr_mimebundle_() is None

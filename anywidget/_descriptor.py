@@ -147,6 +147,11 @@ class MimeBundleDescriptor:
         use it to automatically send state changes to the javascript view.  If `False`,
         the javascript view will only be updated when the `send_state()` method is
         explicitly called.
+    no_view : bool, optional
+        If `True`, the callable will return `None` instead of a mimebundle. This is
+        useful for cases where you want to use the comm channel to send state updates
+        to the front end, but don't want to display anything in the notebook
+        (i.e., A DOM-less widget).  Defaults to `False`.
     **extra_state : Any, optional
         Any extra state that should be sent to the javascript view (for example,
         for the `_esm` anywidget field.)  By default, `{'_esm': _DEFAULT_ESM}` is added
@@ -174,6 +179,7 @@ class MimeBundleDescriptor:
         *,
         follow_changes: bool = True,
         autodetect_observer: bool = True,
+        no_view: bool = False,
         **extra_state: Any,
     ) -> None:
         extra_state.setdefault(_ESM_KEY, _DEFAULT_ESM)
@@ -181,6 +187,7 @@ class MimeBundleDescriptor:
         self._name = _REPR_ATTR
         self._follow_changes = follow_changes
         self._autodetect_observer = autodetect_observer
+        self._no_view = no_view
 
         for k, v in self._extra_state.items():
             # TODO: use := when we drop python 3.7
@@ -230,6 +237,7 @@ class MimeBundleDescriptor:
                 instance,
                 autodetect_observer=self._autodetect_observer,
                 extra_state=self._extra_state,
+                no_view=self._no_view,
             )
             if self._follow_changes:
                 # set up two way data binding
@@ -275,6 +283,11 @@ class ReprMimeBundle:
         use it to automatically send state changes to the javascript view.  If `False`,
         the javascript view will only be updated when the `send_state()` method is
         explicitly called.
+    no_view : bool, optional
+        If `True`, the callable will return `None` instead of a mimebundle. This is
+        useful for cases where you want to use the comm channel to send state updates
+        to the front end, but don't want to display anything in the notebook
+        (i.e., A DOM-less widget).  Defaults to `False`.
     extra_state : dict, optional
         Any extra state that should be sent to the javascript view (for example,
         for the `_esm` anywidget field.)  By default, `{'_esm': DEFAULT_ESM}` is added
@@ -286,10 +299,12 @@ class ReprMimeBundle:
         obj: object,
         autodetect_observer: bool = True,
         extra_state: dict[str, Any] | None = None,
+        no_view: bool = False,
     ):
         self._autodetect_observer = autodetect_observer
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
+        self._no_view = no_view
 
         try:
             self._obj: Callable[[], Any] = weakref.ref(obj, self._on_obj_deleted)
@@ -393,7 +408,7 @@ class ReprMimeBundle:
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
 
-    def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict]:
+    def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
@@ -405,6 +420,8 @@ class ReprMimeBundle:
                 "model_id": self._comm.comm_id,
             },
         }
+        if self._no_view:
+            return None
         return data, get_repr_metadata()
 
     def sync_object_with_view(

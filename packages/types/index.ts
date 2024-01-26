@@ -43,11 +43,19 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	widget_manager: IWidgetManager;
 }
 
-export interface RenderContext<T extends ObjectHash = ObjectHash> {
+export interface RenderProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
 	el: HTMLElement;
 }
 
 export interface Render<T extends ObjectHash = ObjectHash> {
-	(context: RenderContext<T>): Awaitable<void | (() => Awaitable<void>)>;
+	(props: RenderProps<T>): Awaitable<void | (() => Awaitable<void>)>;
+}
+
+export interface InitializeProps<T extends ObjectHash = ObjectHash> {
+	model: AnyModel<T>;
+}
+
+export interface Initialize<T extends ObjectHash = ObjectHash> {
+	(props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
