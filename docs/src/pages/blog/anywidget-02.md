@@ -104,7 +104,7 @@ or try it our yourself.
 
 ### Embracing Type Safety in the Front End
 
-This release also introduces the type-only `anywidget/types` submodule on NPM,
+This release also introduces the type-only `@anywidget/types` package on NPM,
 enabling developers who use TypeScript to benefit from enhanced type safety in
 their front-end widget code. Widget authors can specify their model's types in
 front-end take advantage of autocomplete and IntelliSense features within their
@@ -132,7 +132,7 @@ the associated widget code may also define the expected types on the Model
  * @prop {number} value - the current count value
  */
 
-/** @type {import("anywidget/types").Render<Model>} */
+/** @type {import("@anywidget/types").Render<Model>} */
 export function render({ model, el }) {
 	let value = model.get("value");
 	//^? number
@@ -145,7 +145,7 @@ export function render({ model, el }) {
 }
 ```
 
-The `import("anywidget/widget").Render<Model>` utilty strictly types the
+The `import("@anywidget/types").Render<Model>` utilty strictly types the
 `render` function such that `model.get` and `model.set` are typed based on the
 user-defined `Model`.
 
