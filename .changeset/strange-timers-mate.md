@@ -10,7 +10,7 @@ a widget's front-end code is now with a `default` object export.
 
 ```js
 export default {
-	initiailze({ model }) {
+	initialize({ model }) {
 		/* ... */
 	},
 	render({ model, el }) {
