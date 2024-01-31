@@ -169,6 +169,29 @@ function render({ model, el }) {/* ... */}
 export default { render };
 ```
 
+### Enabling Live Development
+
+**anywidget**'s builtin file-watching and hot module replacement (HMR) is only
+meant to be used during "live" development, when local widgets are in imported
+and used in an active notebook. However, our heuristics for enabling this
+feature lead to many false positives, and caused issues issues in various
+non-development settings.
+
+**This experience was a bad for end users**
+
+We now require _developers_ to opt-in to this feature, using an environment
+variable. You can set this within a notebook:
+
+```python
+%env ANYWIDGET_HMR=1
+```
+
+or when launching a Jupyter session:
+
+```sh
+ANYWIDGET_HMR=1 jupyter lab
+```
+
 ## Community Highlights and Updates
 
 To wrap up this post, I wanted to share some project and community highlights
