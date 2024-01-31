@@ -309,25 +309,9 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 					let serialize = serializers[k]?.serialize;
 					if (serialize) {
 						state[k] = serialize(state[k], this);
-					} else if (
-						(k === "layout" || k === "style") &&
-						state[k] instanceof Promise
-					) {
-						// We can't serialize a Promise, so just skip it.
-						//
-						// N.B. This handles a race condition from ipywidgets,
-						// where an initial promise for a WidgetModel is being
-						// serialized on initially.
-						//
-						// The default behavior of ipywidgets is to use JSON.stringify + JSON.parse,
-						// "trick", which silently returns an empty object for _all_ Promises.
-						//
-						// If we try to use `structuredClone` we'll get an error.
-						//
-						// We explicitly handle case (rather than falling back to JSON.stringify)
-						// so that users will see an error if they accidently try to serialize
-						// a Promise.
-						state[k] = undefined;
+					} else if (k === "layout" || k === "style") {
+						// These keys come from ipywidgets, rely on JSON.stringify trick.
+						state[k] = JSON.parse(JSON.stringify(state[k]));
 					} else {
 						state[k] = structuredClone(state[k]);
 					}
