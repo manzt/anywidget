@@ -36,7 +36,7 @@ import traitlets
 
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
       let getCount = () => model.get("count");
       let button = document.createElement("button");
       button.classList.add("counter-button");
@@ -50,6 +50,7 @@ class CounterWidget(anywidget.AnyWidget):
       });
       el.appendChild(button);
     }
+	export default { render };
     """
     _css="""
     .counter-button { background-color: #ea580c; }
@@ -71,7 +72,7 @@ What's going on here:
   keyword argument.
 
 - `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
-  It _must_ export `render`, a function that defines rendering logic and initializes dynamic updates for the custom widget.
+  It defines and exports `render`, a function for rendering and initializes dynamic updates for the custom widget.
 
 - `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
   in the global scope if using this feature, so take care to avoid naming conflicts.
@@ -84,10 +85,11 @@ Therefore, dependencies can be imported directly via a fully qualified URL.
 import * as d3 from "https://esm.sh/d3@7";
 
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
-export function render({ model, el }) {
+function render({ model, el }) {
 	let selection = d3.select(el);
 	/* ... */
 }
+export default { render };
 ```
 
 The `render` function can also (optionally) return a callback that is executed any time the view is
@@ -96,12 +98,13 @@ or third-party libraries that require proper teardown.
 
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
-export function render({ model, el }) {
+function render({ model, el }) {
 	// Create DOM elements and set up subscribers
 	return () => {
 		// Optionally cleanup
 	};
 }
+export default { render }
 ```
 
 ## Progressive Development

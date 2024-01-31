@@ -97,7 +97,7 @@ class DummyManager extends baseManager.ManagerBase {
 }
 
 let _esm = `\
-export function render(view) {}
+export default { render() {} };
 `;
 
 describe("AnyModel", async () => {

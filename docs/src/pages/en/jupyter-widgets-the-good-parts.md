@@ -22,26 +22,37 @@ Jupyter Widgets that removes boilerplate and packaging details.
 **anywidget** simplifies creating your widget's front-end code. Its only
 requirement is that your widget front-end code is a valid
 [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-and exports a function called `render`. This `render` function is similar to the
-traditional
-[`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method).
+and exports `initialize` or `render` <u> _widget lifecycle hooks_</u>.
+
+Hooks are correspond to specific stages in the lifetime of a widget:
+
+- _Model Initialization_: On instantiation in Python, a matching front-end model
+  is created and synced with a model in the kernel.
+- _View Rendering_: Each notebook cell displaying the widget renders an
+  independent view based on the model's current state.
+
+![The main parts of the widget lifecyle, including model initialization and view rendering](/widget-lifecycle.png)
+
+The `initialize` hook is similar to
+[`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150),
+which used for the _model initialization_, and the `render` hook is similar to
+[`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method),
+which is used for _view rendering_.
 
 Concretely, custom widgets are traditionally defined like:
 
 ```javascript
 import { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 
-// All boilerplate, anywidget takes care of this ...
 class CustomModel extends DOMWidgetModel {
 	/* ... */
 }
 
 class CustomView extends DOMWidgetView {
 	render() {
-		let view = this;
 		let el = this.el;
 		let model = this.model;
-		/* ... */
+		/* view logic */
 	}
 }
 
@@ -55,27 +66,56 @@ In **anywidget**, the above code simplifies to:
 
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
-export function render(context) {
+function render(context) {
 	let el = context.el;
 	let model = context.model;
-	/* ... */
+	/* view logic */
 }
+
+export default { render };
 ```
 
-... which explicity defines the widget view via the `render` function, and
-(implicitly) **anywidget** defines the associated widget model (i.e.,
-`CustomModel`). **anywidget** front-end code is often so minimal that it can
-easily be inlined as a Python string:
+... which defines _view rendering_ logic in `render` functions.
+
+**anywidget** front-end code is often so minimal that it can easily be inlined
+as a Python string:
 
 ```python
 class CustomWidget(anywidget.AnyWidget):
     _esm = """
-    export function render(context) {
+    function render(context) {
       let el = context.el;
       let model = context.model;
       /* ... */
     }
+	export function { render };
     """
+```
+
+In **anywidget**, developers define _view rendering_ logic with `render`, but
+_model initialization_ is usually handled automatically by the framework.
+**Automatic _model initialization_ is sufficient for most widgets**, but
+sometimes it can be useful to run custom logic when the front-end most is first
+created. For example, a widget might need to register an event handlers just
+_once_ or create some state to share across views.
+
+In this case, you can also implement `initialize` to define _model
+initialization_ logic:
+
+```js
+/** @param {{ model: DOMWidgetModel }} context */
+function initialize({ model }) {
+	/* (optional) model initialization logic */
+}
+
+/** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
+function render(context) {
+	let el = context.el;
+	let model = context.model;
+	/* view logic */
+}
+
+export default { initialize, render };
 ```
 
 ### The `render` function
@@ -119,32 +159,35 @@ end. The `render` function now has the ability to:
 
 ```javascript
 // index.js
-export function render({ model, el }) {
+function render({ model, el }) {
 	let my_value = model.get("my_value");
 }
+export default { render };
 ```
 
 - **set** `my_value`
 
 ```javascript
 // index.js
-export function render({ model, el }) {
+function render({ model, el }) {
 	model.set("my_value", 42);
 	model.save_changes(); // required to send update to Python
 }
+export default { render };
 ```
 
 - **listen for changes to** `my_value` (and register event handlers)
 
 ```javascript
 // index.js
-export function render({ model, el }) {
+function render({ model, el }) {
 	function on_change() {
 		let new_my_value = model.get("my_value");
 		console.log(`The 'my_value' changed to: ${new_my_value}`);
 	}
 	model.on("change:my_value", on_change);
 }
+export default { render };
 ```
 
 > **Note**: In the snippet above, `on_change` is called an _**event handler**_
@@ -187,11 +230,12 @@ For example,
 ```python
 class CustomMessageWidget(anywidget.AnyWidget):
     _esm = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
       model.on("msg:custom", msg => {
          console.log(`new message: ${JSON.stringify(msg)}`);
        });
     }
+	export default { render };
     """
 
 widget = CustomMessageWidget()
