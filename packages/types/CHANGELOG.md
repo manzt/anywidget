@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.5
+
+### Patch Changes
+
+- Add `Initialize` method types ([#395](https://github.com/manzt/anywidget/pull/395))
+
 ## 0.1.4
 
 ### Patch Changes
