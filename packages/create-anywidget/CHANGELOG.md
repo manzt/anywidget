@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.0
+
+### Minor Changes
+
+- Migrate to widget lifecycle hooks ([#425](https://github.com/manzt/anywidget/pull/425))
+
 ## 0.4.5
 
 ### Patch Changes
