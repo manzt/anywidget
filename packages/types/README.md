@@ -32,8 +32,8 @@ export default {
 
 		model.set("value", "not a number");
 		//^? type error, must be a number
-	}
-}
+	},
+};
 ```
 
 ## License
