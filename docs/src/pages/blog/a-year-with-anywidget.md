@@ -149,9 +149,6 @@ export default () => {
 };
 ```
 
-> Similar to `render`, `initialize` can optionally return a callback that is
-> executed at the end of the widget's lifetime.
-
 ### Migration
 
 This new API comes with a deprecation notice for existing named `render`
@@ -169,7 +166,10 @@ function render({ model, el }) {/* ... */}
 export default { render };
 ```
 
-### Enabling Live Development
+> Similar to `render`, `initialize` can optionally return a callback that is
+> executed at the end of the widget's lifetime.
+
+### Other Changes
 
 **anywidget**'s builtin file-watching and hot module replacement (HMR) is only
 meant to be used during "live" development, when local widgets are in imported
