@@ -1,6 +1,6 @@
 import pathlib
 import sys
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from anywidget._file_contents import FileContents
@@ -10,6 +10,10 @@ from anywidget._util import (
     remove_buffers,
     try_file_contents,
 )
+
+
+def enable_hmr():
+    return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 
 def test_remove_and_put_buffers():
@@ -107,7 +111,8 @@ def test_try_file_contents_development(tmp_path: pathlib.Path):
         try_file_contents(foo)
 
     foo.write_text("foo")
-    file_contents = try_file_contents(foo)
+    with enable_hmr():
+        file_contents = try_file_contents(foo)
     assert isinstance(file_contents, FileContents)
     assert file_contents._background_thread is not None
     file_contents.stop_thread()  # stop the background thread for CI
@@ -139,12 +144,12 @@ def test_try_file_contents_warns(
     monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
 ):
     monkeypatch.setitem(sys.modules, "watchfiles", None)
-
     foo = tmp_path / "foo.txt"
     foo.write_text("foo")
 
-    with pytest.warns(UserWarning, match="anywidget:"):
-        file_contents = try_file_contents(foo)
+    with enable_hmr():
+        with pytest.warns(UserWarning, match="anywidget:"):
+            file_contents = try_file_contents(foo)
 
-    assert isinstance(file_contents, FileContents)
-    assert file_contents._background_thread is None
+        assert isinstance(file_contents, FileContents)
+        assert file_contents._background_thread is None

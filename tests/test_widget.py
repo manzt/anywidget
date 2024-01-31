@@ -2,7 +2,9 @@ import json
 import pathlib
 import sys
 import time
+
 from unittest.mock import MagicMock, patch
+from unittest import mock
 
 import anywidget
 import pytest
@@ -144,9 +146,10 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
     css = site_packages / "styles.css"
     css.write_text(".foo { background-color: black; }")
 
-    class Widget(anywidget.AnyWidget):
-        _esm = esm
-        _css = str(css)
+    with mock.patch.dict('os.environ', {'ANYWIDGET_HMR': '1'}, clear=True):
+        class Widget(anywidget.AnyWidget):
+            _esm = esm
+            _css = str(css)
 
     assert isinstance(Widget._esm, FileContents)
     assert Widget._esm._background_thread is not None
