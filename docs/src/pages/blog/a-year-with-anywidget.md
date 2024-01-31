@@ -87,9 +87,9 @@ lifecycle:
 In **anywidget**, developers define _view rendering_ logic with `render`, but
 _model initialization_ has been handled automatically by the framework. While
 **automatic _model initialization_ is sufficient for most widgets** in the wild,
-it can be useful _hook_ into this step and run custom logic when the front-end
-most is first created. For example, a widget might need to register an event
-handlers just _once_ or create some state to share across views.
+it can be useful to _hook_ into this step and run custom logic when the
+front-end most is first created. For example, a widget might need to register an
+event handlers just _once_ or create some state to share across views.
 
 Recognizing the absence of dedicated API in **anywidget** for _model
 initialization_, we surveyed existing custom Jupyter Widgets implementations to
