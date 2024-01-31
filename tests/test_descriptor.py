@@ -193,7 +193,7 @@ def test_descriptor_on_slots() -> None:
     class Foo:
         __slots__ = ()
 
-        _repr_mimebundle_ = MimeBundleDescriptor()
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = 1
 
         def _get_anywidget_state(self, include: Union[Set[str], None]):
