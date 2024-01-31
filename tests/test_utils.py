@@ -111,6 +111,16 @@ def test_try_file_contents_development(tmp_path: pathlib.Path):
         try_file_contents(foo)
 
     foo.write_text("foo")
+    assert try_file_contents(foo) is not None
+
+
+def test_try_file_contents_development_enable_hmr(tmp_path: pathlib.Path):
+    foo = tmp_path / "foo.txt"
+
+    with pytest.raises(FileNotFoundError):
+        try_file_contents(foo)
+
+    foo.write_text("foo")
     with enable_hmr():
         file_contents = try_file_contents(foo)
     assert isinstance(file_contents, FileContents)
