@@ -102,6 +102,12 @@ You can watch [this video](https://www.youtube.com/watch?v=600PU6E4Srw) to see
 this modern development workflow in action **entirely from within JupyterLab**,
 or try it our yourself.
 
+> **Note**: Since v0.9, **anywidget** requires developers to opt-in to this behavior
+> using an environment variable:
+> ```py
+> %env ANYWIDGET_HMR=1
+> ```
+
 ### Embracing Type Safety in the Front End
 
 This release also introduces the type-only `@anywidget/types` package on NPM,

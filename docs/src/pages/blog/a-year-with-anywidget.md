@@ -13,11 +13,9 @@ image:
 > The **anywidget** community is growing! Join us on
 > [Discord](https://discord.gg/W5h4vPMbDQ) 🐣
 
-_TL;DR: **anywidget** v0.9 introduces a more flexible API for defining widget
-front-end code with `initialize` and `render` lifecycle methods._
-<a href="#introducing-widget-lifecycle-hooks">Skip ahead.</a>
-
-_The preferred way to define widgets is now with a `default` object export:_
+_TL;DR: **anywidget** v0.9 introduces `initialize` and `render` <u>lifecycle
+hooks</u> to allow greater control of front-end widget behavior_. _The
+preferred way to define widgets is now with a `default` object export:_
 
 ```js
 export default {
@@ -31,17 +29,15 @@ export default {
 ```
 
 _Exporting a `render` function directly will still work in v0.9 but trigger a
-deprecation notice in the browser console going forward._
+deprecation notice in the browser console going forward. <a href="#introducing-widget-lifecycle-hooks">Skip ahead.</a>_
 
 ## anywidget v0.9
 
-It's been an exciting year! We are excited to announce the release of
-**anywidget** v0.9, a significant step forward in the project's evolution. This
-version introduces a revamped front-end API, allowing more customization over
-the widget lifecycle and an expanded range of use cases.
-
-In the following sections, we explore the reasons for these changes and provide
-examples to illustrate the capabilities of the new API.
+We are excited to announce the release of **anywidget** v0.9. This version
+introduces a redesigned API that offers increased control and customization of
+widgets in the front end, catering to a broader spectrum of use cases. This
+update also shifts to requiring developers to explicitly opt-in to [live
+development features](/blog/anywidget-02#native-hot-module-replacement-hmr).
 
 ### Mimimizing Friction in Jupyter Front Ends
 
