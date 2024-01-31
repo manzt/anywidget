@@ -15,8 +15,10 @@ from watchfiles import Change
 
 here = pathlib.Path(__file__).parent
 
+
 def enable_hmr():
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
+
 
 def test_version():
     with open(here / "../packages/anywidget/package.json") as f:
@@ -147,6 +149,7 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
     css.write_text(".foo { background-color: black; }")
 
     with enable_hmr():
+
         class Widget(anywidget.AnyWidget):
             _esm = esm
             _css = str(css)
