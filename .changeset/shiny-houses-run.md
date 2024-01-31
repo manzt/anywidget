@@ -2,4 +2,4 @@
 "anywidget": minor
 ---
 
-feat: Require explicit opt-in to HMR during development
+feat: Require `ANYWIDGET_HMR` to opt-in to HMR during development

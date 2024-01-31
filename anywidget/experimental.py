@@ -37,7 +37,7 @@ def widget(
         kwargs["_css"] = css
 
     def _decorator(cls: ModelT) -> ModelT:
-        setattr(cls, "_repr_mimebundle_", MimeBundleDescriptor(**kwargs))
+        cls._repr_mimebundle_ = MimeBundleDescriptor(**kwargs)
         return cls
 
     return _decorator

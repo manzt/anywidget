@@ -2,9 +2,7 @@ import json
 import pathlib
 import sys
 import time
-
 from unittest.mock import MagicMock, patch
-from unittest import mock
 
 import anywidget
 import pytest
@@ -17,6 +15,8 @@ from watchfiles import Change
 
 here = pathlib.Path(__file__).parent
 
+def enable_hmr():
+    return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 def test_version():
     with open(here / "../packages/anywidget/package.json") as f:
@@ -146,7 +146,7 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
     css = site_packages / "styles.css"
     css.write_text(".foo { background-color: black; }")
 
-    with mock.patch.dict('os.environ', {'ANYWIDGET_HMR': '1'}, clear=True):
+    with enable_hmr():
         class Widget(anywidget.AnyWidget):
             _esm = esm
             _css = str(css)

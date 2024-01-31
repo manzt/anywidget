@@ -75,6 +75,7 @@ pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
 features = ["test", "dev"]
+python = "3.11"
 
 [tool.hatch.envs.default.scripts]
 lint = [
