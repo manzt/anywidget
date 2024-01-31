@@ -16,16 +16,23 @@ npm install @anywidget/types
  * @prop {number} value - the current count
  */
 
-/** @type {import("@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
-	let value = model.get("value");
-	//^? number
+export default {
+	/** @type {import("@anywidget/types").Initialize<Model>} */
+	initialize({ model }) {
+		let value = model.get("value");
+		//^? number
+	},
+	/** @type {import("@anywidget/types").Render<Model>} */
+	render({ model, el }) {
+		let value = model.get("value");
+		//^? number
 
-	model.get("nope");
-	// type error, `nope` is not defined on Model
+		model.get("nope");
+		// type error, `nope` is not defined on Model
 
-	model.set("value", "not a number");
-	//^? type error, must be a number
+		model.set("value", "not a number");
+		//^? type error, must be a number
+	}
 }
 ```
 
