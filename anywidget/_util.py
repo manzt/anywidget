@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import pathlib
 import re
 import sys
@@ -164,6 +165,10 @@ def get_repr_metadata() -> dict:
     return {_WIDGET_MIME_TYPE: {"colab": {"custom_widget_manager": {"url": url}}}}
 
 
+def _is_hmr_enabled() -> bool:
+    return os.getenv("ANYWIDGET_HMR") == "1"
+
+
 def _should_start_thread(path: pathlib.Path) -> bool:
     if "site-packages" in path.parts:
         # File is inside site-packages, likely not a local development install
@@ -171,6 +176,10 @@ def _should_start_thread(path: pathlib.Path) -> bool:
 
     if "dist-packages" in path.parts:
         # Debian-specific directory, where python packages are installed in Colab.
+        return False
+
+    # If we're in dev mode, we should start a thread to watch the file for changes.
+    if not _is_hmr_enabled():
         return False
 
     try:
