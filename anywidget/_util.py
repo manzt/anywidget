@@ -14,7 +14,7 @@ _ANYWIDGET_ID_KEY = "_anywidget_id"
 _ESM_KEY = "_esm"
 _CSS_KEY = "_css"
 _DEFAULT_ESM = """
-export function render(view) {
+function render(view) {
   console.log("Dev note: No _esm defined for this widget:", view);
   let url = "https://anywidget.dev/en/getting-started/";
   view.el.innerHTML = `<p>
@@ -24,6 +24,7 @@ export function render(view) {
     to customize this widget.
   </p>`;
 }
+export default { render };
 """
 
 # next 3 functions vendored with modifications from ipywidgets

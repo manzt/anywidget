@@ -40,7 +40,7 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     # Widget front-end JavaScript code
     _esm = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
       let button = document.createElement("button");
       button.innerHTML = `count is ${model.get("value")}`;
       button.addEventListener("click", () => {
@@ -52,6 +52,7 @@ class CounterWidget(anywidget.AnyWidget):
       });
       el.appendChild(button);
     }
+    export default { render };
     """
     # Stateful property that can be accessed by JavaScript & Python
     value = traitlets.Int(0).tag(sync=True)

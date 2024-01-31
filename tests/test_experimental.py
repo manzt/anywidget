@@ -6,7 +6,7 @@ from anywidget.experimental import MimeBundleDescriptor, widget
 
 
 def test_decorator():
-    esm = "export function render({ model , el }) {}"
+    esm = "export default { render({ model , el }) {} }"
     css = ".foo { color: red;}"
 
     @widget(esm=esm, css=css)

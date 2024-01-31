@@ -25,9 +25,10 @@ def test_version():
 
 def test_basic():
     ESM = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
         el.innerText = "Hello, world";
     }
+    export default { render };
     """
 
     class Widget(anywidget.AnyWidget):
@@ -51,9 +52,10 @@ def test_default_esm():
 
 def test_creates_fully_qualified_identifier():
     ESM = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
         el.innerText = "Hello, world";
     }
+    export default { render };
     """
 
     class Widget(anywidget.AnyWidget):
@@ -71,9 +73,10 @@ def test_infer_traitlets():
     """
 
     ESM = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
         el.innerText = "Hello, world";
     }
+    export default { render };
     """
 
     class Widget(anywidget.AnyWidget):
@@ -95,9 +98,10 @@ def test_infer_traitlets_partial():
     """
 
     ESM = """
-    export function render({ model, el }) {
+    function render({ model, el }) {
         el.innerText = "Hello, world";
     }
+    export default { render };
     """
 
     class Widget(anywidget.AnyWidget):
@@ -136,7 +140,7 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
 def test_infer_file_contents(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
     esm.write_text(
-        "export function render({ model, el }) { el.innerText = 'Hello, world'; }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
     )
 
     site_packages = tmp_path / "site-packages"
@@ -229,7 +233,7 @@ def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path
 def test_explicit_file_contents(tmp_path: pathlib.Path):
     path = tmp_path / "foo.js"
     path.write_text(
-        "export function render({ model, el }) { el.innerText = 'Hello, world'; }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
     )
     esm = FileContents(path, start_thread=False)
 
@@ -246,9 +250,10 @@ def test_dom_less_widget():
     class Widget(anywidget.AnyWidget):
         _view_name = traitlets.Any(None).tag(sync=True)
         _esm = """
-        export function render({ model, el }) {
+        function render({ model, el }) {
             el.innerText = "Hello, world";
         }
+        export default { render };
         """
 
     assert Widget()._repr_mimebundle_() is None
