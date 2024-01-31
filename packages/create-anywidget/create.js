@@ -214,7 +214,7 @@ import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
 import "./widget.css";
 
-export const render = createRender(() => {
+const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
 	return (
 		<button
@@ -225,6 +225,8 @@ export const render = createRender(() => {
 		</button>
 	);
 });
+
+export default { render };
 `;
 
 /** @param {string} name */
@@ -234,7 +236,7 @@ import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
 import "./widget.css";
 
-export const render = createRender(() => {
+const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
 	return (
 		<button
@@ -245,6 +247,8 @@ export const render = createRender(() => {
 		</button>
 	);
 });
+
+export default { render };
 `;
 
 /** @param {string} name */
@@ -252,7 +256,7 @@ let widget_vanilla = (name) =>
 	`\
 import "./widget.css";
 
-export function render({ model, el }) {
+function render({ model, el }) {
 	let btn = document.createElement("button");
 	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
@@ -265,6 +269,8 @@ export function render({ model, el }) {
 	});
 	el.appendChild(btn);
 }
+
+export default { render };
 `;
 
 /** @param {string} name */
@@ -279,7 +285,7 @@ interface WidgetModel {
 	/* Add your own */
 }
 
-export function render({ model, el }: RenderContext<WidgetModel>) {
+function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
 	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
@@ -292,6 +298,8 @@ export function render({ model, el }: RenderContext<WidgetModel>) {
 	});
 	el.appendChild(btn);
 }
+
+export default { render };
 `;
 
 function get_tsconfig() {
@@ -455,7 +463,7 @@ import confetti from "https://esm.sh/canvas-confetti@1";
 /** @typedef {{ value: number }} Model */
 
 /** @type {import("npm:@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
+function render({ model, el }) {
 	let btn = document.createElement("button");
 	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
@@ -469,6 +477,8 @@ export function render({ model, el }) {
 	});
 	el.appendChild(btn);
 }
+
+export default { render };
 `;
 
 /**
