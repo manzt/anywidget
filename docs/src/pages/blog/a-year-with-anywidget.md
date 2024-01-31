@@ -13,9 +13,10 @@ image:
 > The **anywidget** community is growing! Join us on
 > [Discord](https://discord.gg/W5h4vPMbDQ) 🐣
 
-_TL;DR: **anywidget** v0.9 introduces `initialize` and `render` <u>lifecycle
-hooks</u> to allow greater control of front-end widget behavior_. _The
-preferred way to define widgets is now with a `default` object export:_
+_TL;DR: **anywidget** v0.9 introduces `initialize` and `render`
+<a class="underline" href="#introducing-widget-lifecycle-hooks">lifecyle
+hooks</a> to allow greater control of front-end widget behavior_. _The preferred
+way to define widgets is now with a `default` object export:_
 
 ```js
 export default {
@@ -28,47 +29,53 @@ export default {
 };
 ```
 
-_Exporting a `render` function directly will still work in v0.9 but trigger a
-deprecation notice in the browser console going forward. <a href="#introducing-widget-lifecycle-hooks">Skip ahead.</a>_
+_Exporting a `render` function directly will trigger a deprecation notice in the
+browser console going forward._
 
 ## anywidget v0.9
 
-We are excited to announce the release of **anywidget** v0.9. This version
-introduces a redesigned API that offers increased control and customization of
-widgets in the front end, catering to a broader spectrum of use cases. This
-update also shifts to requiring developers to explicitly opt-in to [live
-development features](/blog/anywidget-02#native-hot-module-replacement-hmr).
+One year later, we are excited to announce the release of **anywidget** v0.9!
+This version introduces a redesigned API that offers increased control and
+customization of widgets in the front end, catering to a broader spectrum of use
+cases. This update also shifts to requiring developers to explicitly opt-in to
+[live development features](/blog/anywidget-02#native-hot-module-replacement-hmr),
+reducing some hiccups for widgets in production.
 
 ### Mimimizing Friction in Jupyter Front Ends
 
 **anywidget** aims to make creating and sharing Jupyter Widgets as simple as
 possible. Our solution internalizes the complexities of traditional Jupyter
-Widgets by providing alternative, more streamlined APIs.
+Widgets, providing a narrower and more web-standard set of APIs to developers.
 
 Historically, one major issue for widget developers has been the reliance on
 APIs exposed by traditional Jupyter Widgets in the front end. Since each
-notebook environment is responsible for supplying this _runtime_, variations in
+notebook environment is responsible for supplying this runtime, variations in
 implementations can lead to inconsistenct widget behavior across environments
-and perplexing bugs.
+(and perplexing bugs).
 
-In **anywidget**, we minimize the _runtime_ APIs available to widget developers
-to reduce this friction, exposing a smaller, focused set for communicating with
-the Jupyter kernel and interacting with the DOM. This strategy sometimes
-requires widget developers to write more code, but with the benefit of better
-code introspection and, crucially, the ability ship to end users consistently.
-It's worth noting this design allows **anywidget** to implement adapters for
-other platforms beyond those currently supporting Jupyter Widgets.
+In **anywidget**, we minimize the number of runtime APIs made available to
+widget developers to reduce this friction, opting instead for only a small
+subset necessary for communicating with the Jupyter kernel and interacting with
+the DOM. This strategy sometimes requires widget developers to write extra code,
+but it ensures better introspection and, crucially, consistent delivery to end
+users. It is worth noting this design also allows **anywidget** to implement
+adapters for other platforms beyond those currently supporting Jupyter Widgets.
 
-Although the `render` function has generally met the needs of most applications,
-community feedback ([#266](https://github.com/manzt/anywidget/issues/266),
-[#388](https://github.com/manzt/anywidget/issues/388)) revealed gaps in our
-existing implementation for certain real-world widget patterns, prompting us to
-refine our front-end API.
+However, several community members highlighted
+([#266](https://github.com/manzt/anywidget/issues/266),
+[#388](https://github.com/manzt/anywidget/issues/388)) specific patterns and use
+cases where **anywidget**'s current API is restrictive, prompting us to
+reevaulate and revise our design. We began by examining the 'lifetime' of
+Jupyter Widgets to guide this process.
 
 ### The Widget Lifecycle
 
-Jupyter Widgets adhere to a Model View Controller (MVC) pattern in the
-front-end. Briefly, a widget's lifecyle entails:
+The
+[widget documentation](https://ipywidgets.readthedocs.io/en/8.1.2/examples/Widget%20Low%20Level.html#models-and-views)
+states that widgets adhere to a Model View Controller (MVC) pattern in the front
+end. Tracing the lifetime of a widget to understand how each part of the MVC
+pattern interconnects, we find that there are two distinct steps in a widget's
+lifecycle:
 
 - _Model Initialization_: On instantiation in Python, a matching front-end model
   is created and synced with a model in the kernel.
@@ -77,24 +84,25 @@ front-end. Briefly, a widget's lifecyle entails:
 
 ![The main parts of the widget lifecyle, including model initialization and view rendering](/widget-lifecycle.png)
 
-**anywidget** handles _model initialization_ automatically using Python model
-definition. However, sometimes it's useful to run some custom front-end code
-when the front-end model is first created. For example, a widget might need to
-register event handlers or fetch initial data just once, or create some state to
-share across views. The existing **anywidget** `render` function defines the
-logic for _view rendering_.
+In **anywidget**, developers define _view rendering_ logic with `render`, but
+_model initialization_ has been handled automatically by the framework. While
+**automatic _model initialization_ is sufficient for most widgets** in the wild,
+it can be useful _hook_ into this step and run custom logic when the front-end
+most is first created. For example, a widget might need to register an event
+handlers just _once_ or create some state to share across views.
 
-Recognizing the absence of an API in **anywidget** for _model initialization_
-logic, we surveyed existing custom Jupyter Widgets implementations to find
-_where_ such behavior typically is defined. We found that widgets typically
+Recognizing the absence of dedicated API in **anywidget** for _model
+initialization_, we surveyed existing custom Jupyter Widgets implementations to
+find where such behavior typically is defined. We found developers typically
 extend
 [`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150)
-for this purpose, and have adopted this naming in our new API.
+to extend _model initialization_, and have adopted this naming in our new API.
 
 ### Introducing Widget Lifecycle Hooks
 
-The preferred way to define a widget's front-end code is now with a `default`
-object export specifying one or more _widget lifecycle hooks_:
+In **anywidget** v0.9, the preferred way to define a widget's front-end code is
+now with a `default` object export specifying one or more <u> _widget lifecycle
+hooks_</u>:
 
 ```js
 export default {
@@ -107,7 +115,7 @@ export default {
 };
 ```
 
-Combined, these methods introduce finer control for widget developers.
+Combined, these hooks introduce finer control for widget developers.
 
 - `initialize`: is executed **once** in the lifetime of a widget, during _model
   initialization_. It has access to the only the `model` to setup non-view event
@@ -117,13 +125,9 @@ Combined, these methods introduce finer control for widget developers.
   familiar and is used to setup event handlers or access state specific to that
   view.
 
-> Similar to `render`, `initialize` can optionally return a callback that is
-> executed at the end of the widget's lifetime.
-
-The `default` export may also be a _function_ which returns (a
-[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-for) this interface: This can be useful to setup some front-end specific state
-for the lifecycle of the widget.
+The `default` export may also be a _function_ that returns this interface. This
+can be useful to setup some front-end specific state for the lifecycle of the
+widget.
 
 ```js
 export default () => {
@@ -145,42 +149,49 @@ export default () => {
 };
 ```
 
+> Similar to `render`, `initialize` can optionally return a callback that is
+> executed at the end of the widget's lifetime.
+
 ### Migration
 
-**anywidget** v0.9 adds a deprecation notice for existing named `render`
+This new API comes with a deprecation notice for existing named `render`
 exports. To migrate, please replace:
 
 ```js
-export function render({ model, el }) { ... }
+export function render({ model, el }) {/* ... */}
 ```
 
 with:
 
 ```js
-function render({ model, el }) { ... }
+function render({ model, el }) {/* ... */}
 
-export default { render }
+export default { render };
 ```
 
-## Looking Back
+## Community Highlights and Updates
 
-It's been exciting to see the warm reception and growth of **anywidget** since
-its release. Some project highlights from last year:
+To wrap up this post, I wanted to share some project and community highlights
+since releasing **anywidget** v0.1. It's been exciting to see the warm reception
+and growth of the project in the past year. (I'm guessing I likely owe thanks to
+many of you still reading this.)
+
+Some highlights:
 
 - We launched a [Discord](https://discord.gg/W5h4vPMbDQ) for the **anywidget**
   community – _Join us!_
-- I shared
+- I contributed a
   [post](https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102)
-  about **anywidget** the [Jupyter blog](https://blog.jupyter.org/)
+  about **anywidget** for the [Jupyter blog](https://blog.jupyter.org/)
 - The JavaScript Jupyter Widget cookiecutter is now
   [deprecated](https://github.com/jupyter-widgets/widget-cookiecutter) and
   recommends **anywidget** to beginners!
 - VS Code has some
   [special logic](https://github.com/microsoft/vscode-jupyter/pulls?q=is%3Apr+sort%3Aupdated-desc+anywidget)
-  to ensure **anywidget** "just works" (Thanks!)
+  to ensure **anywidget** _just works_ 🫠
 
 I've also enjoyed following projects that have incorporated **anywidget**. To
-many to list, but a few:
+many to list in total, but to spotlight as few:
 
 - [Vega-Altair](https://github.com/altair-viz/altair): declarative (interactive)
   statistical visualization in Python
@@ -188,14 +199,12 @@ many to list, but a few:
   2D scatter plots that scale to millions of points and support view linking
 - [Mosaic](https://github.com/uwdata/mosaic): extensible framework for linking
   interactive views to databases for scalable data processing
-- [pyobsplot](https://github.com/juba/pyobsplot): Python interface for
+- [pyobsplot](https://github.com/juba/pyobsplot): a Python interface for
   [Observable Plot](https://observablehq.com/plot/) that supports Pandas and
   Polars dataframes
 - [lonboard](https://github.com/developmentseed/lonboard): fast, interactive
   geospatial vector data visualization
 
-I've also stumbled upon an array of creative demos showcasing "widget ideas" on
-social media that I'm keen to compile. If you have suggestions on how best to
-collect these, I'd love to hear it! In the year to come, I plan to focus on
-improving **anywidget**'s documentation and record video tutorials to help
-beginners get started with creating their own widgets.
+In the year to come, I plan to focus on improving **anywidget**'s documentation
+and record video tutorials to help beginners get started with creating their own
+widgets. Happy coding!

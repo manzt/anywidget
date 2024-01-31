@@ -10,6 +10,11 @@ image:
   }
 ---
 
+> **EDIT**(2024-01-31): Since v0.9, it is preferred to use
+> <a href="/blog/a-year-with-anywidget#introducing-widget-lifecycle-hooks">anywidget
+> lifecycle hooks</a> to define custom widgets. The JavaScript in the code
+> snippets below have been updated to reflect this usage.
+
 _TL;DR: **anywidget** v0.2 brings modern web development to Jupyter. You can now
 use a **file path** to enable **anywidget**'s integrated Hot Module Replacement
 (HMR):_
@@ -102,8 +107,9 @@ You can watch [this video](https://www.youtube.com/watch?v=600PU6E4Srw) to see
 this modern development workflow in action **entirely from within JupyterLab**,
 or try it our yourself.
 
-> **Note**: Since v0.9, **anywidget** requires developers to opt-in to this behavior
-> using an environment variable:
+> **Note**: Since v0.9, **anywidget** requires developers to opt-in to this
+> behavior using an environment variable:
+>
 > ```py
 > %env ANYWIDGET_HMR=1
 > ```
@@ -139,7 +145,7 @@ the associated widget code may also define the expected types on the Model
  */
 
 /** @type {import("@anywidget/types").Render<Model>} */
-export function render({ model, el }) {
+function render({ model, el }) {
 	let value = model.get("value");
 	//^? number
 
@@ -149,6 +155,8 @@ export function render({ model, el }) {
 	model.set("value", "not a number");
 	//^? type error, must be a number
 }
+
+export default { render };
 ```
 
 The `import("@anywidget/types").Render<Model>` utilty strictly types the
@@ -173,12 +181,14 @@ Although this feature might not be essential for all use cases, it provides a
 flexible and more declarative way to ensure proper cleanup when needed:
 
 ```javascript
-export function render({ model, el }) {
+function render({ model, el }) {
 	// Create DOM elements and set up subscribers
 	return () => {
 		// Optionally cleanup
 	};
 }
+
+export default { render };
 ```
 
 This new API is particularly useful when working with third-party libraries like
@@ -193,11 +203,13 @@ function App(props) {
 	return <h1>Hello, world</h1>;
 }
 
-export function render({ model, el }) {
+function render({ model, el }) {
 	let root = ReactDOM.createRoot(el);
 	root.render(<App />);
 	return () => root.unmount();
 }
+
+export default { render };
 ```
 
 > Note: The above front-end code requires transformation with tool like
