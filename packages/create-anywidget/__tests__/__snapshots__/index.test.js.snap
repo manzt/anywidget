@@ -60,7 +60,7 @@ src/undefined/static
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -234,7 +234,7 @@ src/undefined/static
 		"@types/react": "^18.2.36",
 		"@types/react-dom": "^18.2.18",
 		"typescript": "^5.3.3",
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -428,7 +428,7 @@ src/undefined/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -764,7 +764,7 @@ src/undefined/static
 	"devDependencies": {
 		"@anywidget/types": "0.1.5",
 		"typescript": "^5.3.3",
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -969,7 +969,7 @@ src/undefined/static
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -1143,7 +1143,7 @@ src/undefined/static
 		"@types/react": "^18.2.36",
 		"@types/react-dom": "^18.2.18",
 		"typescript": "^5.3.3",
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -1337,7 +1337,7 @@ src/undefined/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
@@ -1673,7 +1673,7 @@ src/undefined/static
 	"devDependencies": {
 		"@anywidget/types": "0.1.5",
 		"typescript": "^5.3.3",
-		"esbuild": "^0.19.11"
+		"esbuild": "^0.20.0"
 	}
 }",
     "path": "package.json",
