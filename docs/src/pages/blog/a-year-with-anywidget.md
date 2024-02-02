@@ -213,8 +213,8 @@ Some highlights:
   [special logic](https://github.com/microsoft/vscode-jupyter/pulls?q=is%3Apr+sort%3Aupdated-desc+anywidget)
   to ensure **anywidget** _just works_ 🫠
 
-I've also enjoyed following projects that have incorporated **anywidget**. To
-many to list in total, but to spotlight as few:
+I've also enjoyed following projects that have incorporated **anywidget**. Too
+many to list in total, but to spotlight a few:
 
 - [Vega-Altair](https://github.com/altair-viz/altair): declarative (interactive)
   statistical visualization in Python
