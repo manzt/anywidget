@@ -18,6 +18,10 @@ _TL;DR: **anywidget** v0.9 introduces `initialize` and `render`
 hooks</a> to allow greater control of front-end widget behavior_. _The preferred
 way to define widgets is now with a `default` object export:_
 
+```sh
+pip install --upgrade "anywidget[dev]"
+```
+
 ```js
 export default {
 	initialize({ model }) {
@@ -154,8 +158,14 @@ export default () => {
 
 ### Migration
 
-This new API comes with a deprecation notice for existing named `render`
-exports. To migrate, please replace:
+To start using **anywidget** v0.9, first upgrade your package using pip:
+
+```sh
+pip install --upgrade "anywidget[dev]"
+```
+
+The new API comes with a deprecation notice for existing named `render` exports.
+To migrate, please replace:
 
 ```js
 export function render({ model, el }) {/* ... */}
