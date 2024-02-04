@@ -18,6 +18,10 @@ _TL;DR: **anywidget** v0.9 introduces `initialize` and `render`
 hooks</a> to allow greater control of front-end widget behavior_. _The preferred
 way to define widgets is now with a `default` object export:_
 
+```sh
+pip install --upgrade "anywidget[dev]"
+```
+
 ```js
 export default {
 	initialize({ model }) {
