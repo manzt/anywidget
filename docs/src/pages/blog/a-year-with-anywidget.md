@@ -164,8 +164,8 @@ To start using **anywidget** v0.9, first upgrade your package using pip:
 pip install --upgrade "anywidget[dev]"
 ```
 
-The new API comes with a deprecation notice for existing named `render`
-exports. To migrate, please replace:
+The new API comes with a deprecation notice for existing named `render` exports.
+To migrate, please replace:
 
 ```js
 export function render({ model, el }) {/* ... */}
