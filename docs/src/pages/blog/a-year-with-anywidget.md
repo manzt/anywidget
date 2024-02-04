@@ -158,7 +158,13 @@ export default () => {
 
 ### Migration
 
-This new API comes with a deprecation notice for existing named `render`
+To start using **anywidget** v0.9, first upgrade your package using pip:
+
+```sh
+pip install --upgrade "anywidget[dev]"
+```
+
+The new API comes with a deprecation notice for existing named `render`
 exports. To migrate, please replace:
 
 ```js
