@@ -33,9 +33,6 @@ export default {
 };
 ```
 
-_Exporting a `render` function directly will trigger a deprecation notice in the
-browser console going forward._
-
 ## anywidget v0.9
 
 We are excited to announce the release of **anywidget** v0.9! This version
