@@ -79,6 +79,7 @@ build-backend = "hatchling.build"
 name = "${name}"
 version = "0.0.0"
 dependencies = ["anywidget"]
+readme = "README.md"
 
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
