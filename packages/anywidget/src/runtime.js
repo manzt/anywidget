@@ -134,7 +134,7 @@ async function load_widget(esm) {
 	if (mod.render) {
 		warn_render_deprecation();
 		return {
-			async initialize() {},
+			async initialize() { },
 			render: mod.render,
 		};
 	}
@@ -185,7 +185,7 @@ function model_proxy(model, context) {
 
 export class Runtime {
 	/** @type {() => void} */
-	#disposer = () => {};
+	#disposer = () => { };
 	/** @type {Array<() => void>} */
 	#view_disposers = [];
 	/** @type {import('solid-js').Accessor<AnyWidget["render"] | null>} */
@@ -195,10 +195,13 @@ export class Runtime {
 	constructor(model) {
 		this.#disposer = createRoot((dispose) => {
 			let [css, set_css] = createSignal(model.get("_css"));
-			model.on("change:_css", () => set_css(model.get("_css")));
-			createEffect(() => {
+			model.on("change:_css", () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] css hot updated: ${id}`);
+				set_css(model.get("_css"))
+			});
+			createEffect(() => {
+				let id = model.get("_anywidget_id");
 				load_css(css(), id);
 			});
 
@@ -210,7 +213,7 @@ export class Runtime {
 				setEsm(model.get("_esm"));
 			});
 			let [render, set_render] = createSignal(
-				/** @type {AnyWidget["render"] | null} */ (null),
+				/** @type {AnyWidget["render"] | null} */(null),
 			);
 			/** @type {Array<() => Promise<void>>} */
 			let stack = [];
