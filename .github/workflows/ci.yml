@@ -14,8 +14,10 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      # this could be replaced with pre-commit.ci
-      - run: pipx run pre-commit run --all-files
+      - uses: actions/setup-python@v3
+      - uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files
 
   TestPython:
     name: Python / Test
