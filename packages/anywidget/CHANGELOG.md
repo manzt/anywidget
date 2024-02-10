@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.1
+
+### Patch Changes
+
+- refactor: Use signals for HMR runtime ([#438](https://github.com/manzt/anywidget/pull/438))
+
 ## 0.9.0
 
 ### Minor Changes

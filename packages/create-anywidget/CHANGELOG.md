@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.1
+
+### Patch Changes
+
+- Add README.md to pyproject.toml ([#437](https://github.com/manzt/anywidget/pull/437))
+
 ## 0.5.0
 
 ### Minor Changes
