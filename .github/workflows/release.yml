@@ -5,12 +5,18 @@ on:
     branches:
       - main
 
-jobs:
+jobk:
   Release:
     # prevents this action from running on forks
     if: github.repository == 'manzt/anywidget'
 
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+      pull-requests: write
+      issues: read
     steps:
       - uses: actions/checkout@v4
 
