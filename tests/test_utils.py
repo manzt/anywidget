@@ -80,7 +80,7 @@ def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
     get_repr_metadata()
     get_repr_metadata()
-    assert mock.enable_custom_widget_manager.assert_called_once
+    mock.enable_custom_widget_manager.assert_called_once()
 
 
 def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
