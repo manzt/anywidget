@@ -1,3 +1,4 @@
+import { createEffect, createRoot, createSignal } from "solid-js";
 import { name, version } from "../package.json";
 
 /**
@@ -11,6 +12,15 @@ import { name, version } from "../package.json";
  *  @prop render {import("@anywidget/types").Render=}
  *  @prop default {AnyWidget | (() => AnyWidget | Promise<AnyWidget>)=}
  */
+
+/**
+ * @param {any} condition
+ * @param {string} message
+ * @returns {asserts condition}
+ */
+function assert(condition, message) {
+	if (!condition) throw new Error(message);
+}
 
 /**
  * @param {string} str
@@ -78,7 +88,7 @@ function load_css_text(css_text, anywidget_id) {
  * @returns {Promise<void>}
  */
 async function load_css(css, anywidget_id) {
-	if (!css) return;
+	if (!css || !anywidget_id) return;
 	if (is_href(css)) return load_css_href(css, anywidget_id);
 	return load_css_text(css, anywidget_id);
 }
@@ -96,8 +106,7 @@ async function load_esm(esm) {
 	try {
 		widget = await import(/* webpackIgnore: true */ url);
 	} catch (e) {
-		console.log(e);
-		throw e;
+		console.error(e);
 	}
 	URL.revokeObjectURL(url);
 	return widget;
@@ -138,11 +147,10 @@ async function load_widget(esm) {
 			render: mod.render,
 		};
 	}
-	if (!mod.default) {
-		throw new Error(
-			`[anywidget] module must export a default function or object.`,
-		);
-	}
+	assert(
+		mod.default,
+		`[anywidget] module must export a default function or object.`,
+	);
 	let widget = typeof mod.default === "function"
 		? await mod.default()
 		: mod.default;
@@ -153,57 +161,7 @@ async function load_widget(esm) {
  * This is a trick so that we can cleanup event listeners added
  * by the user-defined function.
  */
-let initialize_marker = Symbol("anywidget.initialize");
-
-/**
- * @param {AnyWidget} widget
- * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
- * @returns {Promise<() => Promise<void>>}
- */
-async function run_initialize(widget, model) {
-	let cleanup = await widget.initialize?.({
-		model: model_proxy(model, initialize_marker),
-	});
-	return async () => {
-		// Call any cleanup logic defined by the previous module.
-		try {
-			await cleanup?.();
-		} catch (e) {
-			console.warn("[anywidget] error cleaning up initialize.", e);
-		}
-
-		// Remove all event listeners added by the user-defined initialize.
-		model.off(null, null, initialize_marker);
-	};
-}
-
-/**
- * @param {AnyWidgetModule} widget
- * @param {import("@jupyter-widgets/base").DOMWidgetView} view
- * @returns {Promise<() => Promise<void>>}
- */
-async function run_render(widget, view) {
-	let cleanup = await widget.render?.({
-		model: model_proxy(view.model, view),
-		el: view.el,
-	});
-	return async () => {
-		// call any cleanup logic defined by the previous module.
-		try {
-			await cleanup?.();
-		} catch (e) {
-			console.warn("[anywidget] error cleaning up render.", e);
-		}
-
-		// Remove all event listeners added by the user-defined render.
-		view.model.off(null, null, view);
-
-		// `view.$el` is a cached jQuery object for the view's element.
-		// This removes all child nodes but avoids deleting the root so
-		// we can rerender.
-		view.$el.empty();
-	};
-}
+let INITIALIZE_MARKER = Symbol("anywidget.initialize");
 
 /**
  * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
@@ -233,8 +191,137 @@ function model_proxy(model, context) {
 	};
 }
 
+/**
+ * @param {undefined | (() => Promise<void>)} fn
+ * @param {string} kind
+ */
+async function safe_cleanup(fn, kind) {
+	return Promise.resolve()
+		.then(() => fn?.())
+		.catch((e) => console.warn(`[anywidget] error cleaning up ${kind}.`, e));
+}
+
+class Runtime {
+	/** @type {() => void} */
+	#disposer = () => {};
+	/** @type {Set<() => void>} */
+	#view_disposers = new Set();
+	/** @type {import('solid-js').Accessor<AnyWidget["render"] | null>} */
+	#render = () => null;
+
+	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
+	constructor(model) {
+		this.#disposer = createRoot((dispose) => {
+			let [css, set_css] = createSignal(model.get("_css"));
+			model.on("change:_css", () => {
+				let id = model.get("_anywidget_id");
+				console.debug(`[anywidget] css hot updated: ${id}`);
+				set_css(model.get("_css"));
+			});
+			createEffect(() => {
+				let id = model.get("_anywidget_id");
+				load_css(css(), id);
+			});
+
+			/** @type {import("solid-js").Signal<string>} */
+			let [esm, setEsm] = createSignal(model.get("_esm"));
+			model.on("change:_esm", async () => {
+				let id = model.get("_anywidget_id");
+				console.debug(`[anywidget] esm hot updated: ${id}`);
+				setEsm(model.get("_esm"));
+			});
+
+			let [render, set_render] = createSignal(
+				/** @type {AnyWidget["render"] | null} */ (null),
+			);
+			this.#render = render;
+
+			/** @type {Array<() => Promise<void>>} */
+			let stack = [];
+			createEffect(() => {
+				// Make sure we track the signal in this effect.
+				let new_esm = esm();
+				// Cleanup the previous widget and load the new one.
+				safe_cleanup(stack.pop(), "initialize")
+					.then(async () => {
+						// Load the new widget.
+						let widget = await load_widget(new_esm);
+						// Clear all previous event listeners from this hook.
+						model.off(null, null, INITIALIZE_MARKER);
+						// Run the initialize hook.
+						let next = await widget.initialize?.({
+							model: model_proxy(model, INITIALIZE_MARKER),
+						});
+						// Set the render signal, triggering render effects.
+						set_render(() => widget.render);
+						// Push the next cleanup onto the stack.
+						stack.push(async () => next?.());
+					});
+			});
+			return () => {
+				stack.forEach((cleanup) => cleanup());
+				stack.length = 0;
+				model.off("change:_css");
+				model.off("change:_esm");
+				dispose();
+			};
+		});
+	}
+
+	/**
+	 * @param {import("@jupyter-widgets/base").DOMWidgetView} view
+	 * @returns {Promise<() => void>}
+	 */
+	async create_view(view) {
+		let model = view.model;
+		let disposer = createRoot((dispose) => {
+			/** @type {Array<() => Promise<void>>} */
+			let stack = [];
+
+			// Register an effect for any time render changes.
+			createEffect(() => {
+				let render = this.#render();
+				// Cleanup the previous render and load the new one.
+				safe_cleanup(stack.pop(), "render")
+					.then(async () => {
+						// Clear all previous event listeners from this hook.
+						model.off(null, null, view);
+						view.$el.empty();
+						// Run the render hook.
+						let next = await render?.({
+							model: model_proxy(model, view),
+							el: view.el,
+						});
+						// Push the next cleanup onto the stack.
+						stack.push(async () => next?.());
+					});
+			});
+			return () => {
+				dispose();
+				stack.forEach((cleanup) => cleanup());
+				stack.length = 0;
+			};
+		});
+		// Have the runtime keep track but allow the view to dispose itself.
+		this.#view_disposers.add(disposer);
+		return () => {
+			let deleted = this.#view_disposers.delete(disposer);
+			if (deleted) disposer();
+		};
+	}
+
+	dispose() {
+		this.#view_disposers.forEach((dispose) => dispose());
+		this.#view_disposers.clear();
+		this.#disposer();
+	}
+}
+
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
+	/** @type {WeakMap<AnyModel, Runtime>} */
+	let RUNTIMES = new WeakMap();
+
 	class AnyModel extends DOMWidgetModel {
 		static model_name = "AnyModel";
 		static model_module = name;
@@ -247,51 +334,16 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
 			super.initialize(...args);
-
-			// Handles CSS updates from anywidget during development.
-			this.on("change:_css", () => {
-				let id = this.get("_anywidget_id");
-				// _esm/_css/_anywidget_id traits are set dynamically within `anywidget.AnyWidget.__init__`,
-				// and due to the implementation of ipywidgets fire separate change messages to the front end.
-				// This can cause an issue where we have CSS but we don't have an ID. This early return
-				// make sure we only apply styles that we can replace.
-				if (!id) return;
-				console.debug(`[anywidget] css hot updated: ${id}`);
-				load_css(this.get("_css"), id);
-			});
-
-			// Handles ESM updates from anywidget during development.
-			this.on("change:_esm", async () => {
-				let id = this.get("_anywidget_id");
-				if (!id) return;
-				console.debug(`[anywidget] esm hot updated: ${id}`);
-
-				this._widget_promise = load_widget(this.get("_esm"));
-				let widget = await this._widget_promise;
-
-				await this._anywidget_initialize_cleanup();
-				this._anywidget_initialize_cleanup = await run_initialize(widget, this);
-
-				let views = /** @type {unknown} */ (Object.values(this.views ?? {}));
-
-				for await (let view of /** @type {Promise<AnyView>[]} */ (views)) {
-					await view._anywidget_render_cleanup();
-					view._anywidget_render_cleanup = await run_render(widget, view);
+			let runtime = new Runtime(this);
+			this.once("destroy", () => {
+				try {
+					runtime.dispose();
+				} finally {
+					RUNTIMES.delete(this);
 				}
 			});
-
-			this._widget_promise = load_widget(this.get("_esm"))
-				.then(async (widget) => {
-					this._anywidget_initialize_cleanup = await run_initialize(
-						widget,
-						this,
-					);
-					return widget;
-				});
+			RUNTIMES.set(this, runtime);
 		}
-
-		/** @type {() => Promise<void>} */
-		async _anywidget_initialize_cleanup() {}
 
 		/**
 		 * @param {Record<string, any>} state
@@ -328,24 +380,17 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	}
 
 	class AnyView extends DOMWidgetView {
+		/** @type {undefined | (() => void)} */
+		#dispose = undefined;
 		async render() {
-			await load_css(this.model.get("_css"), this.model.get("_anywidget_id"));
-			let model = /** @type {AnyModel} */ (this.model);
-			let widget = await model._widget_promise;
-			if (!widget) {
-				console.warn("[anywidget] widget not loaded.");
-				return;
-			}
-			this._anywidget_render_cleanup = await run_render(widget, this);
+			let runtime = RUNTIMES.get(this.model);
+			assert(runtime, "[anywidget] runtime not found.");
+			assert(!this.#dispose, "[anywidget] dispose already set.");
+			this.#dispose = await runtime.create_view(this);
 		}
-
-		/** @type {() => Promise<void>} */
-		async _anywidget_render_cleanup() {}
-
-		async remove() {
-			// call any user-defined cleanup logic before this view is completely removed.
-			await this._anywidget_render_cleanup();
-			return super.remove();
+		remove() {
+			this.#dispose?.();
+			super.remove();
 		}
 	}
 
