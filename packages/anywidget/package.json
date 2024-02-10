@@ -26,8 +26,8 @@
 		"solid-js": "^1.8.14"
 	},
 	"devDependencies": {
-		"@jupyter-widgets/base-manager": "^1.0.6",
-		"@jupyterlab/builder": "^3.6.5"
+		"@jupyter-widgets/base-manager": "^1.0.8",
+		"@jupyterlab/builder": "^4.1.0"
 	},
 	"jupyterlab": {
 		"extension": "src/plugin",
