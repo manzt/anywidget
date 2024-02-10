@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.10.0
+
+### Minor Changes
+
+- Drop support for Python 3.7 and add Python 3.12 ([#441](https://github.com/manzt/anywidget/pull/441))
+
 ## 0.9.1
 
 ### Patch Changes
