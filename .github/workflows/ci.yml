@@ -11,7 +11,7 @@ on:
 jobs:
   LintPython:
     name: Python / Lint
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       # this could be replaced with pre-commit.ci
@@ -19,7 +19,7 @@ jobs:
 
   TestPython:
     name: Python / Test
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
@@ -47,7 +47,7 @@ jobs:
 
   LintJavaScript:
     name: JavaScript / Lint
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -60,7 +60,7 @@ jobs:
 
   TypecheckJavaScript:
     name: JavaScript / Typecheck
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -73,7 +73,7 @@ jobs:
 
   TestJavaScript:
     name: JavaScript / Test
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.4.0
