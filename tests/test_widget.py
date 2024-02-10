@@ -134,7 +134,7 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
 
     w = anywidget.AnyWidget()
-    assert mock.enable_custom_widget_manager.called_once
+    assert mock.enable_custom_widget_manager.assert_called_once
 
     bundle = w._repr_mimebundle_()
     assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
