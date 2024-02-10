@@ -14,6 +14,15 @@ import { name, version } from "../package.json";
  */
 
 /**
+ * @param {any} condition
+ * @param {string} message
+ * @returns {asserts condition}
+ */
+function assert(condition, message) {
+	if (!condition) throw new Error(message);
+}
+
+/**
  * @param {string} str
  * @returns {str is "https://${string}" | "http://${string}"}
  */
@@ -97,8 +106,7 @@ async function load_esm(esm) {
 	try {
 		widget = await import(/* webpackIgnore: true */ url);
 	} catch (e) {
-		console.log(e);
-		throw e;
+		console.error(e);
 	}
 	URL.revokeObjectURL(url);
 	return widget;
@@ -139,11 +147,10 @@ async function load_widget(esm) {
 			render: mod.render,
 		};
 	}
-	if (!mod.default) {
-		throw new Error(
-			`[anywidget] module must export a default function or object.`,
-		);
-	}
+	assert(
+		mod.default,
+		`[anywidget] module must export a default function or object.`,
+	);
 	let widget = typeof mod.default === "function"
 		? await mod.default()
 		: mod.default;
@@ -188,7 +195,7 @@ function model_proxy(model, context) {
  * @param {undefined | (() => Promise<void>)} fn
  * @param {string} kind
  */
-function safe_cleanup(fn, kind) {
+async function safe_cleanup(fn, kind) {
 	return Promise.resolve()
 		.then(() => fn?.())
 		.catch((e) => console.warn(`[anywidget] error cleaning up ${kind}.`, e));
@@ -197,8 +204,8 @@ function safe_cleanup(fn, kind) {
 class Runtime {
 	/** @type {() => void} */
 	#disposer = () => {};
-	/** @type {Array<() => void>} */
-	#view_disposers = [];
+	/** @type {Set<() => void>} */
+	#view_disposers = new Set();
 	/** @type {import('solid-js').Accessor<AnyWidget["render"] | null>} */
 	#render = () => null;
 
@@ -249,16 +256,14 @@ class Runtime {
 						set_render(() => widget.render);
 						// Push the next cleanup onto the stack.
 						stack.push(async () => next?.());
-					})
-					.catch((e) => {
-						console.error("[anywidget] error initializing", e);
 					});
 			});
 			return () => {
-				dispose();
 				stack.forEach((cleanup) => cleanup());
+				stack.length = 0;
 				model.off("change:_css");
 				model.off("change:_esm");
+				dispose();
 			};
 		});
 	}
@@ -267,7 +272,7 @@ class Runtime {
 	 * @param {import("@jupyter-widgets/base").DOMWidgetView} view
 	 * @returns {Promise<() => void>}
 	 */
-	async add_view(view) {
+	async create_view(view) {
 		let model = view.model;
 		let disposer = createRoot((dispose) => {
 			/** @type {Array<() => Promise<void>>} */
@@ -289,26 +294,25 @@ class Runtime {
 						});
 						// Push the next cleanup onto the stack.
 						stack.push(async () => next?.());
-					})
-					.catch((e) => {
-						console.error("[anywidget] error rendering", e);
 					});
 			});
 			return () => {
 				dispose();
 				stack.forEach((cleanup) => cleanup());
+				stack.length = 0;
 			};
 		});
 		// Have the runtime keep track but allow the view to dispose itself.
-		this.#view_disposers.push(disposer);
+		this.#view_disposers.add(disposer);
 		return () => {
-			disposer();
-			this.#view_disposers = this.#view_disposers.filter((x) => x !== disposer);
+			let deleted = this.#view_disposers.delete(disposer);
+			if (deleted) disposer();
 		};
 	}
 
 	dispose() {
 		this.#view_disposers.forEach((dispose) => dispose());
+		this.#view_disposers.clear();
 		this.#disposer();
 	}
 }
@@ -330,13 +334,15 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
 			super.initialize(...args);
-			RUNTIMES.set(this, new Runtime(this));
-		}
-
-		/** @type {import('@jupyter-widgets/base').DOMWidgetModel["destroy"]} */
-		destroy(options) {
-			RUNTIMES.get(this)?.dispose();
-			return super.destroy(options);
+			let runtime = new Runtime(this);
+			this.once("destroy", () => {
+				try {
+					runtime.dispose();
+				} finally {
+					RUNTIMES.delete(this);
+				}
+			});
+			RUNTIMES.set(this, runtime);
 		}
 
 		/**
@@ -374,14 +380,16 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	}
 
 	class AnyView extends DOMWidgetView {
-		#disposer = () => {};
+		/** @type {undefined | (() => void)} */
+		#dispose = undefined;
 		async render() {
-			this.#disposer();
-			this.#disposer = await RUNTIMES.get(this.model)?.add_view(this) ??
-				(() => {});
+			let runtime = RUNTIMES.get(this.model);
+			assert(runtime, "[anywidget] runtime not found.");
+			assert(!this.#dispose, "[anywidget] dispose already set.");
+			this.#dispose = await runtime.create_view(this);
 		}
 		remove() {
-			this.#disposer();
+			this.#dispose?.();
 			super.remove();
 		}
 	}
