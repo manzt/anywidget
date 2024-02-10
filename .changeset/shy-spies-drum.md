@@ -2,7 +2,7 @@
 "anywidget": patch
 ---
 
-feat(experimental): add `@dataclass` decorator
+feat(experimental): Add `@dataclass` decorator
 
 ```python
 from anywidget.experimental import dataclass
