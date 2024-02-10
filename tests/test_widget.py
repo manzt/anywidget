@@ -129,16 +129,20 @@ def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
     assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
     assert bundle[1] == {}
 
+
+def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch):
     mock = MagicMock()
-    mock._installed_url = "foo"
+    mock._widgets._installed_url = "foo"
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
 
     w = anywidget.AnyWidget()
-    assert mock.enable_custom_widget_manager.assert_called_once
-
     bundle = w._repr_mimebundle_()
     assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
-    assert _WIDGET_MIME_TYPE in bundle[1]
+    assert bundle[1] == {
+        _WIDGET_MIME_TYPE: {
+            "colab": {"custom_widget_manager": {"url": mock._widgets._installed_url}},
+        }
+    }
 
 
 def test_infer_file_contents(tmp_path: pathlib.Path):
