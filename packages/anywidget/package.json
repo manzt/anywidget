@@ -18,7 +18,7 @@
 	},
 	"scripts": {
 		"build": "node scripts/build.cjs",
-		"build-lab": "rspack build -c ./scripts/rspack.config.cjs"
+		"build-lab": "rspack build -c ./scripts/jlab.config.cjs"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:~",

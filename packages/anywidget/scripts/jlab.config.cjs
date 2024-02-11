@@ -41,39 +41,42 @@ module.exports = {
 		}),
 		{
 			apply(/** @type {rspack.Compiler} */ compiler) {
-				compiler.hooks.afterEmit.tap("CreateJupyterLabDataPlugin", (compilation) => {
-					let entry = Object
-						.keys(compilation.assets)
-						.find((f) => f.startsWith("remoteEntry."));
-					if (!entry) {
-						throw new Error("remoteEntry not found");
-					}
-					let data = {
-						name: pkg.name,
-						version: pkg.version,
-						author: pkg.author,
-						lisence: pkg.license,
-						jupyterlab: {
-							_build: {
-								load: `./static/${entry}`,
-								extension: "./extension",
+				compiler.hooks.afterEmit.tap(
+					"CreateJupyterLabDataPlugin",
+					(compilation) => {
+						let entry = Object
+							.keys(compilation.assets)
+							.find((f) => f.startsWith("remoteEntry."));
+						if (!entry) {
+							throw new Error("remoteEntry not found");
+						}
+						let data = {
+							name: pkg.name,
+							version: pkg.version,
+							author: pkg.author,
+							lisence: pkg.license,
+							jupyterlab: {
+								_build: {
+									load: `./static/${entry}`,
+									extension: "./extension",
+								},
 							},
-						},
-					};
-					fs.writeFileSync(
-						path.resolve(out, "package.json"),
-						JSON.stringify(data, null, 2),
-					);
-				});
+						};
+						fs.writeFileSync(
+							path.resolve(out, "package.json"),
+							JSON.stringify(data, null, 2),
+						);
+					},
+				);
 			},
 		},
 		{
 			apply(/** @type {rspack.Compiler} */ compiler) {
 				compiler.hooks.afterEmit.tap("BundleNotebookPlugin", () => {
-					let bundle = require('./build.cjs');
+					let bundle = require("./build.cjs");
 					bundle();
-				})
-			}
-		}
+				});
+			},
+		},
 	],
 };

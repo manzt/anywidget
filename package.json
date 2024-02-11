@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build": "rspack build -c ./packages/anywidget/scripts/rspack.config.cjs",
+		"build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
 		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
