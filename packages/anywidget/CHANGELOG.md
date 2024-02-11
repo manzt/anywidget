@@ -1,5 +1,25 @@
 # anywidget
 
+## 0.9.2
+
+### Patch Changes
+
+- Add Python 3.12 Support ([#441](https://github.com/manzt/anywidget/pull/441))
+
+- feat(experimental): Add `@dataclass` decorator ([#222](https://github.com/manzt/anywidget/pull/222))
+
+  ```python
+  from anywidget.experimental import dataclass
+
+  @dataclass(esm="index.js")
+  class Counter:
+      value: int = 0
+
+  Counter()
+  ```
+
+- Add error boundaries with nicer stack traces ([#445](https://github.com/manzt/anywidget/pull/445))
+
 ## 0.9.1
 
 ### Patch Changes
