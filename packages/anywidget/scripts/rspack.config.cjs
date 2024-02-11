@@ -41,7 +41,7 @@ module.exports = {
 		}),
 		{
 			apply(/** @type {rspack.Compiler} */ compiler) {
-				compiler.hooks.afterEmit.tap("AfterEmitPlugin", (compilation) => {
+				compiler.hooks.afterEmit.tap("CreateJupyterLabDataPlugin", (compilation) => {
 					let entry = Object
 						.keys(compilation.assets)
 						.find((f) => f.startsWith("remoteEntry."));
@@ -67,5 +67,13 @@ module.exports = {
 				});
 			},
 		},
+		{
+			apply(/** @type {rspack.Compiler} */ compiler) {
+				compiler.hooks.afterEmit.tap("BundleNotebookPlugin", () => {
+					let bundle = require('./build.cjs');
+					bundle();
+				})
+			}
+		}
 	],
 };
