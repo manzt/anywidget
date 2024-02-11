@@ -4,7 +4,7 @@
 	"version": "0.9.1",
 	"author": "Trevor Manz",
 	"license": "MIT",
-	"main": "src/index.js",
+	"main": "dist/index.js",
 	"files": [
 		"dist"
 	],
@@ -17,29 +17,20 @@
 		}
 	},
 	"scripts": {
-		"build": "node build.mjs"
+		"build": "node scripts/build.mjs",
+		"build-lab": "node scripts/build-lab.cjs"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:~",
 		"@anywidget/vite": "workspace:~",
-		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6",
+		"@jupyter-widgets/base": "^6.0.7",
 		"solid-js": "^1.8.14"
 	},
 	"devDependencies": {
-		"@jupyter-widgets/base-manager": "^1.0.8",
-		"@jupyterlab/builder": "^4.1.0"
+		"@jupyter-widgets/base-manager": "^1.0.8"
 	},
 	"jupyterlab": {
-		"extension": "src/plugin",
-		"outputDir": "../../anywidget/labextension",
-		"sharedPackages": {
-			"@jupyter-widgets/base": {
-				"bundled": false,
-				"singleton": true
-			}
-		}
-	},
-	"publishConfig": {
-		"main": "dist/index.js"
+		"extension": "./src/plugin.js",
+		"outputDir": "../../anywidget/labextension"
 	}
 }

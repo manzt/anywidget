@@ -1,5 +1,4 @@
 import { createEffect, createRoot, createSignal } from "solid-js";
-import { name, version } from "../package.json";
 
 /**
  * @typedef AnyWidget
@@ -317,6 +316,9 @@ class Runtime {
 	}
 }
 
+// @ts-expect-error - injected by bundler
+let version = globalThis.VERSION;
+
 /** @param {typeof import("@jupyter-widgets/base")} base */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
@@ -324,11 +326,11 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 
 	class AnyModel extends DOMWidgetModel {
 		static model_name = "AnyModel";
-		static model_module = name;
+		static model_module = "anywidget";
 		static model_module_version = version;
 
 		static view_name = "AnyView";
-		static view_module = name;
+		static view_module = "anywidget";
 		static view_module_version = version;
 
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
