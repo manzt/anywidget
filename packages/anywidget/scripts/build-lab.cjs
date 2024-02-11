@@ -10,6 +10,7 @@ fs.rmSync(out, { recursive: true, force: true });
 /** @type {webpack.Configuration} */
 let config = {
 	mode: "production",
+	optimization: { minimize: false },
 	devtool: "source-map",
 	output: {
 		filename: "[name].[contenthash:8].js",
