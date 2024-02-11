@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-jobk:
+jobs:
   Release:
     # prevents this action from running on forks
     if: github.repository == 'manzt/anywidget'
