@@ -1,5 +1,5 @@
 ---
-"anywidget": minor
+"anywidget": patch
 ---
 
-Drop support for Python 3.7 and add Python 3.12
+Add Python 3.12 Support
