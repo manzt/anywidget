@@ -1,4 +1,9 @@
-import { createEffect, createRoot, createSignal } from "solid-js";
+import {
+	createEffect,
+	createResource,
+	createRoot,
+	createSignal,
+} from "solid-js";
 
 /**
  * @typedef AnyWidget
@@ -94,21 +99,19 @@ async function load_css(css, anywidget_id) {
 
 /**
  * @param {string} esm
- * @returns {Promise<AnyWidgetModule>}
+ * @returns {Promise<{ mod: AnyWidgetModule, url: string }>}
  */
 async function load_esm(esm) {
 	if (is_href(esm)) {
-		return import(/* webpackIgnore: true */ esm);
+		return {
+			mod: await import(/* webpackIgnore: true */ esm),
+			url: esm,
+		};
 	}
 	let url = URL.createObjectURL(new Blob([esm], { type: "text/javascript" }));
-	let widget;
-	try {
-		widget = await import(/* webpackIgnore: true */ url);
-	} catch (e) {
-		console.error(e);
-	}
+	let mod = await import(/* webpackIgnore: true */ url);
 	URL.revokeObjectURL(url);
-	return widget;
+	return { mod, url };
 }
 
 function warn_render_deprecation() {
@@ -135,13 +138,14 @@ To learn more, please see: https://github.com/manzt/anywidget/pull/395
 
 /**
  * @param {string} esm
- * @returns {Promise<AnyWidget>}
+ * @returns {Promise<AnyWidget & { url: string }>}
  */
 async function load_widget(esm) {
-	let mod = await load_esm(esm);
+	let { mod, url } = await load_esm(esm);
 	if (mod.render) {
 		warn_render_deprecation();
 		return {
+			url,
 			async initialize() {},
 			render: mod.render,
 		};
@@ -153,7 +157,7 @@ async function load_widget(esm) {
 	let widget = typeof mod.default === "function"
 		? await mod.default()
 		: mod.default;
-	return widget;
+	return { url, ...widget };
 }
 
 /**
@@ -191,7 +195,7 @@ function model_proxy(model, context) {
 }
 
 /**
- * @param {undefined | (() => Promise<void>)} fn
+ * @param {void | (() => import('vitest').Awaitable<void>)} fn
  * @param {string} kind
  */
 async function safe_cleanup(fn, kind) {
@@ -200,13 +204,52 @@ async function safe_cleanup(fn, kind) {
 		.catch((e) => console.warn(`[anywidget] error cleaning up ${kind}.`, e));
 }
 
+/**
+ * @template T
+ * @typedef {{ data: T, state: "ok" } | { error: any, state: "error" }} Result
+ */
+
+/** @type {<T>(data: T) => Result<T>} */
+function ok(data) {
+	return { data, state: "ok" };
+}
+
+/** @type {(e: any) => Result<any>} */
+function error(e) {
+	return { error: e, state: "error" };
+}
+
+/**
+ * Cleans up the stack trace at anywidget boundary.
+ * You can fully inspect the entire stack trace in the console interactively,
+ * but the initial error message is cleaned up to be more user-friendly.
+ *
+ * @param {unknown} source
+ * @returns {never}
+ */
+function throw_anywidget_error(source) {
+	if (!(source instanceof Error)) {
+		// Don't know what to do with this.
+		throw source;
+	}
+	let lines = source.stack?.split("\n") ?? [];
+	let anywidget_index = lines.findIndex((line) => line.includes("anywidget"));
+	let clean_stack = anywidget_index === -1
+		? lines
+		: lines.slice(0, anywidget_index + 1);
+	source.stack = clean_stack.join("\n");
+	console.error(source);
+	throw source;
+}
+
 class Runtime {
 	/** @type {() => void} */
 	#disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
-	/** @type {import('solid-js').Accessor<AnyWidget["render"] | null>} */
-	#render = () => null;
+	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
+	// @ts-expect-error - Set synchronously in constructor.
+	#widget_result;
 
 	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
 	constructor(model) {
@@ -229,37 +272,23 @@ class Runtime {
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 				setEsm(model.get("_esm"));
 			});
-
-			let [render, set_render] = createSignal(
-				/** @type {AnyWidget["render"] | null} */ (null),
-			);
-			this.#render = render;
-
-			/** @type {Array<() => Promise<void>>} */
-			let stack = [];
-			createEffect(() => {
-				// Make sure we track the signal in this effect.
-				let new_esm = esm();
-				// Cleanup the previous widget and load the new one.
-				safe_cleanup(stack.pop(), "initialize")
-					.then(async () => {
-						// Load the new widget.
-						let widget = await load_widget(new_esm);
-						// Clear all previous event listeners from this hook.
-						model.off(null, null, INITIALIZE_MARKER);
-						// Run the initialize hook.
-						let next = await widget.initialize?.({
-							model: model_proxy(model, INITIALIZE_MARKER),
-						});
-						// Set the render signal, triggering render effects.
-						set_render(() => widget.render);
-						// Push the next cleanup onto the stack.
-						stack.push(async () => next?.());
+			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			let cleanup;
+			this.#widget_result = createResource(esm, async (update) => {
+				await safe_cleanup(cleanup, "initialize");
+				try {
+					model.off(null, null, INITIALIZE_MARKER);
+					let widget = await load_widget(update);
+					cleanup = await widget.initialize?.({
+						model: model_proxy(model, INITIALIZE_MARKER),
 					});
-			});
+					return ok(widget);
+				} catch (e) {
+					return error(e);
+				}
+			})[0];
 			return () => {
-				stack.forEach((cleanup) => cleanup());
-				stack.length = 0;
+				cleanup?.();
 				model.off("change:_css");
 				model.off("change:_esm");
 				dispose();
@@ -274,31 +303,35 @@ class Runtime {
 	async create_view(view) {
 		let model = view.model;
 		let disposer = createRoot((dispose) => {
-			/** @type {Array<() => Promise<void>>} */
-			let stack = [];
-
-			// Register an effect for any time render changes.
-			createEffect(() => {
-				let render = this.#render();
-				// Cleanup the previous render and load the new one.
-				safe_cleanup(stack.pop(), "render")
-					.then(async () => {
-						// Clear all previous event listeners from this hook.
-						model.off(null, null, view);
-						view.$el.empty();
-						// Run the render hook.
-						let next = await render?.({
+			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			let cleanup;
+			let resource =
+				createResource(this.#widget_result, async (widget_result) => {
+					cleanup?.();
+					// Clear all previous event listeners from this hook.
+					model.off(null, null, view);
+					view.$el.empty();
+					if (widget_result.state === "error") {
+						throw_anywidget_error(widget_result.error);
+					}
+					let widget = widget_result.data;
+					try {
+						cleanup = await widget.render?.({
 							model: model_proxy(model, view),
 							el: view.el,
 						});
-						// Push the next cleanup onto the stack.
-						stack.push(async () => next?.());
-					});
+					} catch (e) {
+						throw_anywidget_error(e);
+					}
+				})[0];
+			createEffect(() => {
+				if (resource.error) {
+					// TODO: Show error in the view?
+				}
 			});
 			return () => {
 				dispose();
-				stack.forEach((cleanup) => cleanup());
-				stack.length = 0;
+				cleanup?.();
 			};
 		});
 		// Have the runtime keep track but allow the view to dispose itself.
