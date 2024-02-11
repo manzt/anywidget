@@ -2,8 +2,8 @@
 	"name": "@anywidget/monorepo",
 	"scripts": {
 		"build": "pnpm build:nb && pnpm build:lab",
-		"build:nb": "pnpm --filter=\"./packages/anywidget\" build && cp packages/anywidget/dist/index.js anywidget/nbextension/index.js",
-		"build:lab": "jupyter labextension build packages/anywidget",
+		"build:nb": "pnpm --filter=anywidget build",
+		"build:lab": "pnpm --filter=anywidget build-lab",
 		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
@@ -22,7 +22,8 @@
 		"happy-dom": "^12.10.3",
 		"publint": "^0.2.5",
 		"typescript": "^5.3.3",
-		"vitest": "^1.1.1"
+		"vitest": "^1.1.1",
+		"webpack": "^5.90.1"
 	},
 	"packageManager": "pnpm@8.6.1"
 }

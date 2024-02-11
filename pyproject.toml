@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "jupyterlab"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]

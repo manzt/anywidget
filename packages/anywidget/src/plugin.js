@@ -1,7 +1,5 @@
-// This file is bundled by `jupyterlab extension build`
 import * as base from "@jupyter-widgets/base";
 import create from "./widget.js";
-import { name, version } from "../package.json";
 
 /**
  * @typedef JupyterLabRegistry
@@ -9,14 +7,19 @@ import { name, version } from "../package.json";
  */
 
 export default {
-	id: `${name}:plugin`,
+	id: "anywidget:plugin",
 	requires: [base.IJupyterWidgetRegistry],
 	activate: (
 		/** @type {unknown} */ _app,
 		/** @type {JupyterLabRegistry} */ registry,
 	) => {
 		let exports = create(base);
-		registry.registerWidget({ name, version, exports });
+		registry.registerWidget({
+			name: "anywidget",
+			// @ts-expect-error Added by bundler
+			version: globalThis.VERSION,
+			exports,
+		});
 	},
 	autoStart: true,
 };
