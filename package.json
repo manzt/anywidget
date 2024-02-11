@@ -1,9 +1,7 @@
 {
 	"name": "@anywidget/monorepo",
 	"scripts": {
-		"build": "pnpm build:nb && pnpm build:lab",
-		"build:nb": "pnpm --filter=anywidget build",
-		"build:lab": "pnpm --filter=anywidget build-lab",
+		"build": "rspack build -c ./packages/anywidget/scripts/rspack.config.cjs",
 		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version && pnpm install",
@@ -16,6 +14,7 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.1",
+		"@rspack/cli": "^0.5.4",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"dprint": "^0.45.0",
 		"esbuild": "^0.20.0",

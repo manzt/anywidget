@@ -1,26 +1,28 @@
 // @ts-check
 let fs = require("node:fs");
 let path = require("node:path");
-let webpack = require("webpack");
+let rspack = require("@rspack/core");
 let pkg = require("../package.json");
 
-let out = path.resolve(__dirname, "..", pkg.jupyterlab.outputDir);
+let root = path.resolve(__dirname, "..");
+let out = path.resolve(root, pkg.jupyterlab.outputDir);
 fs.rmSync(out, { recursive: true, force: true });
 
-/** @type {webpack.Configuration} */
-let config = {
+/** @type {rspack.Configuration} */
+module.exports = {
 	mode: "production",
 	optimization: { minimize: false },
 	devtool: "source-map",
+	entry: path.resolve(root, "src/index.js"),
 	output: {
 		filename: "[name].[contenthash:8].js",
 		path: path.resolve(out, "static"),
 	},
 	plugins: [
-		new webpack.DefinePlugin({
+		new rspack.DefinePlugin({
 			"globalThis.VERSION": JSON.stringify(pkg.version),
 		}),
-		new webpack.container.ModuleFederationPlugin({
+		new rspack.container.ModuleFederationPluginV1({
 			name: pkg.name,
 			filename: "remoteEntry.[contenthash:8].js",
 			library: {
@@ -28,7 +30,7 @@ let config = {
 				name: ["_JUPYTERLAB", pkg.name],
 			},
 			exposes: {
-				"./extension": path.resolve(__dirname, "..", pkg.jupyterlab.extension),
+				"./extension": path.resolve(root, pkg.jupyterlab.extension),
 			},
 			shared: {
 				"@jupyter-widgets/base": {
@@ -38,7 +40,7 @@ let config = {
 			},
 		}),
 		{
-			apply(/** @type {webpack.Compiler} */ compiler) {
+			apply(/** @type {rspack.Compiler} */ compiler) {
 				compiler.hooks.afterEmit.tap("AfterEmitPlugin", (compilation) => {
 					let entry = Object
 						.keys(compilation.assets)
@@ -67,7 +69,3 @@ let config = {
 		},
 	],
 };
-
-webpack(config, (_, stats) => {
-	console.log(stats?.toString({ colors: true, errors: true }));
-});
