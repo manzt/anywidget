@@ -3,6 +3,7 @@ import {
 	createResource,
 	createRoot,
 	createSignal,
+	onCleanup,
 } from "solid-js";
 
 /**
@@ -242,39 +243,78 @@ function throw_anywidget_error(source) {
 	throw source;
 }
 
+/**
+ * @template {"_esm" | "_css"} T
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {T} asset_name
+ */
+function resolve_asset_model(model, asset_name) {
+	let value = model.get(asset_name);
+	if (is_model(value)) {
+		return {
+			/** @param {T} _name */
+			get(_name) {
+				return value.get(asset_name);
+			},
+			/**
+			 * @param {`change:${T}`} event
+			 * @param {() => void} callback
+			 */
+			on(event, callback) {
+				value.on(event, callback);
+			},
+			/**
+			 * @param {`change:${T}`} event
+			 */
+			off(event) {
+				return value.off(event);
+			},
+		};
+	}
+	return model;
+}
+
+/**
+ * @template {"_esm" | "_css"} T
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} base_model
+ * @param {T} asset_name
+ * @param {() => void} cb
+ */
+function create_asset_signal(base_model, asset_name, cb) {
+	let model = resolve_asset_model(base_model, asset_name);
+	/** @type {import("solid-js").Signal<string>} */
+	let [asset, set_asset] = createSignal(model.get(asset_name));
+	model.on(`change:${asset_name}`, () => {
+		cb();
+		set_asset(model.get(asset_name));
+	});
+	onCleanup(() => model.off(`change:${asset_name}`));
+	return asset;
+}
+
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => {};
+	#root_disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
-	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 
 	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
 	constructor(model) {
-		this.#disposer = createRoot((dispose) => {
-			let [css, set_css] = createSignal(model.get("_css"));
-			model.on("change:_css", () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] css hot updated: ${id}`);
-				set_css(model.get("_css"));
+		let id = () => model.get("_anywidget_id");
+		let root = createRoot((dispose) => {
+			let css = create_asset_signal(model, "_css", () => {
+				console.debug(`[anywidget] css hot updated: ${id()}`);
 			});
-			createEffect(() => {
-				let id = model.get("_anywidget_id");
-				load_css(css(), id);
-			});
+			createEffect(() => load_css(css(), id()));
 
-			/** @type {import("solid-js").Signal<string>} */
-			let [esm, setEsm] = createSignal(model.get("_esm"));
-			model.on("change:_esm", async () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] esm hot updated: ${id}`);
-				setEsm(model.get("_esm"));
+			let esm = create_asset_signal(model, "_esm", () => {
+				console.debug(`[anywidget] esm hot updated: ${id()}`);
 			});
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			this.#widget_result = createResource(esm, async (update) => {
+			let [resource] = createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
@@ -286,14 +326,17 @@ class Runtime {
 				} catch (e) {
 					return error(e);
 				}
-			})[0];
-			return () => {
-				cleanup?.();
-				model.off("change:_css");
-				model.off("change:_esm");
-				dispose();
+			});
+			return {
+				widget_result: resource,
+				dispose() {
+					cleanup?.();
+					dispose();
+				},
 			};
 		});
+		this.#widget_result = root.widget_result;
+		this.#root_disposer = root.dispose;
 	}
 
 	/**
@@ -305,8 +348,9 @@ class Runtime {
 		let disposer = createRoot((dispose) => {
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			let resource =
-				createResource(this.#widget_result, async (widget_result) => {
+			let [resource] = createResource(
+				this.#widget_result,
+				async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
 					model.off(null, null, view);
@@ -323,7 +367,8 @@ class Runtime {
 					} catch (e) {
 						throw_anywidget_error(e);
 					}
-				})[0];
+				},
+			);
 			createEffect(() => {
 				if (resource.error) {
 					// TODO: Show error in the view?
@@ -345,9 +390,44 @@ class Runtime {
 	dispose() {
 		this.#view_disposers.forEach((dispose) => dispose());
 		this.#view_disposers.clear();
-		this.#disposer();
+		this.#root_disposer();
 	}
 }
+
+/**
+ * @param {unknown} v
+ * @return {v is {}}
+ */
+function is_object(v) {
+	return typeof v === "object" && v !== null;
+}
+
+/**
+ * @param {unknown} v
+ * @return {v is import("@jupyter-widgets/base").DOMWidgetModel}
+ */
+function is_model(v) {
+	return is_object(v) && "on" in v && typeof v.on === "function";
+}
+
+/** @type {import("@jupyter-widgets/base").ISerializers[string]} */
+let asset_serializer = {
+	async deserialize(value, widget_manager) {
+		if (value?.startsWith?.("anywidget-asset:")) {
+			assert(
+				widget_manager,
+				"[anywidget] Loading anywidget-asset requires a widget_manager.",
+			);
+			let model_id = value.slice("anywidget-asset:".length);
+			let model = await widget_manager.get_model(model_id);
+			return model;
+		}
+		return value;
+	},
+	serialize(value) {
+		return is_model(value) ? `anywidget-asset:${value.model_id}` : value;
+	},
+};
 
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
@@ -365,6 +445,13 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		static view_name = "AnyView";
 		static view_module = "anywidget";
 		static view_module_version = version;
+
+		/** @type {DOMWidgetModel["serializers"]} */
+		static serializers = {
+			...DOMWidgetModel.serializers,
+			_esm: asset_serializer,
+			_css: asset_serializer,
+		};
 
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
