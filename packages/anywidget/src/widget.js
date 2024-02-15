@@ -1,3 +1,4 @@
+import { AnyModel as _AnyModel } from "./model.js";
 import {
 	createEffect,
 	createResource,
@@ -251,7 +252,7 @@ class Runtime {
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 
-	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
+	/** @param {_AnyModel<{ _esm: string, _css?: string, _anywidget_id: string }>} model */
 	constructor(model) {
 		this.#disposer = createRoot((dispose) => {
 			let [css, set_css] = createSignal(model.get("_css"));
@@ -277,11 +278,9 @@ class Runtime {
 			this.#widget_result = createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
 				try {
-					model.off(null, null, INITIALIZE_MARKER);
+					await model._ready_promise;
 					let widget = await load_widget(update);
-					cleanup = await widget.initialize?.({
-						model: model_proxy(model, INITIALIZE_MARKER),
-					});
+					cleanup = await widget.initialize?.({ model });
 					return ok(widget);
 				} catch (e) {
 					return error(e);
@@ -353,22 +352,18 @@ class Runtime {
 let version = globalThis.VERSION;
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
-export default function ({ DOMWidgetModel, DOMWidgetView }) {
-	/** @type {WeakMap<AnyModel, Runtime>} */
+export default function ({ DOMWidgetView }) {
+	/** @type {WeakMap<AnyModel<any>, Runtime>} */
 	let RUNTIMES = new WeakMap();
 
-	class AnyModel extends DOMWidgetModel {
-		static model_name = "AnyModel";
-		static model_module = "anywidget";
-		static model_module_version = version;
-
-		static view_name = "AnyView";
-		static view_module = "anywidget";
-		static view_module_version = version;
-
-		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
-		initialize(...args) {
-			super.initialize(...args);
+	/**
+	 * @template {{ _esm: string, _css?: string, _anywidget_id: string }} T
+	 * @extends {_AnyModel<T>}
+	 */
+	class AnyModel extends _AnyModel {
+		/** @param {ConstructorParameters<typeof _AnyModel<T>>} args */
+		constructor(...args) {
+			super(...args);
 			let runtime = new Runtime(this);
 			this.once("destroy", () => {
 				try {
@@ -379,46 +374,13 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 			});
 			RUNTIMES.set(this, runtime);
 		}
-
-		/**
-		 * @param {Record<string, any>} state
-		 *
-		 * We override to support binary trailets because JSON.parse(JSON.stringify())
-		 * does not properly clone binary data (it just returns an empty object).
-		 *
-		 * https://github.com/jupyter-widgets/ipywidgets/blob/47058a373d2c2b3acf101677b2745e14b76dd74b/packages/base/src/widget.ts#L562-L583
-		 */
-		serialize(state) {
-			let serializers =
-				/** @type {DOMWidgetModel} */ (this.constructor).serializers || {};
-			for (let k of Object.keys(state)) {
-				try {
-					let serialize = serializers[k]?.serialize;
-					if (serialize) {
-						state[k] = serialize(state[k], this);
-					} else if (k === "layout" || k === "style") {
-						// These keys come from ipywidgets, rely on JSON.stringify trick.
-						state[k] = JSON.parse(JSON.stringify(state[k]));
-					} else {
-						state[k] = structuredClone(state[k]);
-					}
-					if (typeof state[k]?.toJSON === "function") {
-						state[k] = state[k].toJSON();
-					}
-				} catch (e) {
-					console.error("Error serializing widget state attribute: ", k);
-					throw e;
-				}
-			}
-			return state;
-		}
 	}
 
 	class AnyView extends DOMWidgetView {
 		/** @type {undefined | (() => void)} */
 		#dispose = undefined;
 		async render() {
-			let runtime = RUNTIMES.get(this.model);
+			let runtime = RUNTIMES.get(/** @type {any} */ (this.model));
 			assert(runtime, "[anywidget] runtime not found.");
 			assert(!this.#dispose, "[anywidget] dispose already set.");
 			this.#dispose = await runtime.create_view(this);
