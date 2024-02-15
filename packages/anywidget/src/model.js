@@ -1,8 +1,6 @@
-import { extract_buffers, put_buffers } from "./util.js";
+import * as utils from "./util.js";
 
-/**
- * @template {Record<string, unknown>} State
- */
+/** @template {Record<string, unknown>} State */
 export class AnyModel {
 	/** @type {Omit<import("./types.js").ModelOptions, "comm">} */
 	#opts;
@@ -38,9 +36,6 @@ export class AnyModel {
 	constructor(state, options) {
 		this.#state = state;
 		this.#opts = options;
-		this.#comm = options.comm;
-		this.#comm?.on_msg(this.#handle_comm_msg.bind(this));
-		this.#comm?.on_close(this.#handle_comm_close.bind(this));
 		this.#field_serializers = {
 			layout: {
 				/** @param {string} layout */
@@ -53,6 +48,9 @@ export class AnyModel {
 				},
 			},
 		};
+		this.#comm = options.comm;
+		this.#comm?.on_msg(this.#handle_comm_msg.bind(this));
+		this.#comm?.on_close(this.#handle_comm_close.bind(this));
 		this.state_change = this.#deserialize(state).then((de) => {
 			this.#state = de;
 		});
@@ -60,6 +58,10 @@ export class AnyModel {
 
 	get widget_manager() {
 		return this.#opts.widget_manager;
+	}
+
+	get comm_live() {
+		return !!this.#comm;
 	}
 
 	get #msg_buffer() {
@@ -109,13 +111,13 @@ export class AnyModel {
 	 * @param {T} de
 	 * @returns {Promise<T>}
 	 */
-	async #serialize(de) {
+	async serialize(de) {
 		/** @type {any} */
 		let state = {};
 		for (let key in de) {
 			let serializer = this.#field_serializers[key];
 			if (!serializer) {
-				state[key] = de[key];
+				state[key] = structuredClone(de[key]);
 				continue;
 			}
 			state[key] = await serializer.serialize(de[key]);
@@ -128,15 +130,21 @@ export class AnyModel {
 	 * @param {import("./types.js").CommMessage} msg - the comm message.
 	 */
 	async #handle_comm_msg(msg) {
-		switch (msg.method) {
-			case "update":
-			case "echo_update":
-				return this.#handle_update(msg);
-			case "custom":
-				return this.#handle_custom(msg);
-			default:
-				throw new Error("Unhandled comm msg method: " + msg);
+		if (utils.is_update_msg(msg)) {
+			return this.#handle_update(msg);
 		}
+		if (utils.is_custom_msg(msg)) {
+			this.#emit("msg:custom", [msg.content.data.content, msg.buffers]);
+		}
+		throw new Error(`unhandled comm message: ${JSON.stringify(msg)}`);
+	}
+
+	/**
+	 * @param {string} name
+	 * @param {unknown} [value]
+	 */
+	#emit(name, value) {
+		this.#events.dispatchEvent(new CustomEvent(name, { detail: value }));
 	}
 
 	/**
@@ -148,7 +156,7 @@ export class AnyModel {
 	async #handle_comm_close() {
 		// can only be closed once.
 		if (!this.#comm) return;
-		this.#events.dispatchEvent(new CustomEvent("comm:close"));
+		this.#emit("comm:close");
 		this.#comm.close();
 		for (let [event, map] of Object.entries(this.#listeners)) {
 			for (let listener of map.values()) {
@@ -177,8 +185,8 @@ export class AnyModel {
 	 */
 	set(key, value) {
 		this.#state[key] = value;
-		this.#events.dispatchEvent(new CustomEvent(`change`));
-		this.#events.dispatchEvent(new CustomEvent(`change:${key}`));
+		this.#emit(`change:${key}`);
+		this.#emit("change");
 		this.#need_sync.add(key);
 	}
 
@@ -190,9 +198,9 @@ export class AnyModel {
 			// @ts-expect-error - we know this is a valid key
 			to_send[key] = this.#state[key];
 		}
-		let serialized = await this.#serialize(to_send);
+		let serialized = await this.serialize(to_send);
 		this.#need_sync.clear();
-		let split = extract_buffers(serialized);
+		let split = utils.extract_buffers(serialized);
 		this.#comm.send(
 			{
 				method: "update",
@@ -235,10 +243,6 @@ export class AnyModel {
 		this.#events.addEventListener(event, handler);
 	}
 
-	get get_state() {
-		throw new Error("Not implemented");
-	}
-
 	/**
 	 * @param {Partial<State>} state
 	 */
@@ -246,7 +250,13 @@ export class AnyModel {
 		for (let key in state) {
 			// @ts-expect-error - we know this is a valid key
 			this.#state[key] = state[key];
+			this.#emit(`change:${key}`);
 		}
+		this.#emit("change");
+	}
+
+	get_state() {
+		return this.#state;
 	}
 
 	/**
@@ -279,11 +289,11 @@ export class AnyModel {
 	/**
 	 * @param {import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage} msg
 	 */
-	async #handle_update(msg) {
-		let state = msg.data.state;
-		put_buffers(state, msg.data.buffer_paths, msg.buffers);
-		if (msg.method === "echo_update" && msg.parent_header) {
-			this.#resolve_echo(state, msg.parent_header.msg_id);
+	async #handle_update({ content, buffers, parent_header }) {
+		let state = content.data.state;
+		utils.put_buffers(state, content.data.buffer_paths, buffers);
+		if (content.data.method === "echo_update" && parent_header?.msg_id) {
+			this.#resolve_echo(state, parent_header.msg_id);
 		}
 		// @ts-expect-error - we don't validate this
 		let deserialized = await this.#deserialize(state);
@@ -316,17 +326,6 @@ export class AnyModel {
 	}
 
 	/**
-	 * @param {import("./types.js").CustomMessage} msg
-	 */
-	async #handle_custom(msg) {
-		this.#events.dispatchEvent(
-			new CustomEvent("msg:custom", {
-				detail: [msg.data.content, msg.buffers],
-			}),
-		);
-	}
-
-	/**
 	 * Send a custom msg over the comm.
 	 * @param {import("./types.js").JSONValue} content - The content of the message.
 	 * @param {unknown} [callbacks] - The callbacks for the message.
@@ -339,7 +338,8 @@ export class AnyModel {
 
 	/** @param {string} event */
 	trigger(event) {
-		this.#events.dispatchEvent(new CustomEvent(event));
+		utils.assert(event === "destroy", "Only 'destroy' event is supported");
+		this.#emit(event);
 	}
 
 	/**

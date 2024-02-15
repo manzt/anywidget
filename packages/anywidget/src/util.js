@@ -107,3 +107,20 @@ export function extract_buffers(state) {
 	let json_state = state;
 	return { state: json_state, buffer_paths, buffers };
 }
+
+/**
+ * @param {import("./types.js").CommMessage} msg
+ * @returns {msg is import("./types.js").CustomMessage}
+ */
+export function is_custom_msg(msg) {
+	return msg.content.data.method === "custom";
+}
+
+/**
+ * @param {import("./types.js").CommMessage} msg
+ * @returns {msg is import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage}
+ */
+export function is_update_msg(msg) {
+	return msg.content.data.method === "update" ||
+		msg.content.data.method === "echo_update";
+}

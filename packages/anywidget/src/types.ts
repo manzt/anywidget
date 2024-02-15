@@ -52,26 +52,35 @@ export interface Comm {
 
 export type CommMessage = UpdateMessage | EchoUpdateMessage | CustomMessage;
 export type UpdateMessage = {
-	method: "update";
+	parent_header?: { msg_id: string };
 	buffers?: ReadonlyArray<ArrayBuffer | DataView>;
-	data: {
-		state: Record<string, unknown>;
-		buffer_paths?: ReadonlyArray<ReadonlyArray<string | number>>;
+	content: {
+		data: {
+			method: "update";
+			state: Record<string, unknown>;
+			buffer_paths?: ReadonlyArray<ReadonlyArray<string | number>>;
+		};
 	};
 };
 export type EchoUpdateMessage = {
-	method: "echo_update";
 	parent_header?: { msg_id: string };
 	buffers?: ReadonlyArray<ArrayBuffer | DataView>;
-	data: {
-		state: Record<string, unknown>;
-		buffer_paths?: ReadonlyArray<ReadonlyArray<string | number>>;
+	content: {
+		data: {
+			method: "echo_update";
+			state: Record<string, unknown>;
+			buffer_paths?: ReadonlyArray<ReadonlyArray<string | number>>;
+		};
 	};
 };
 export type CustomMessage = {
-	method: "custom";
 	buffers?: ReadonlyArray<ArrayBuffer | DataView>;
-	data: { content: unknown };
+	content: {
+		data: {
+			method: "custom";
+			content: unknown;
+		};
+	};
 };
 
 export type WidgetManager = { get_model: (model_id: string) => unknown };
