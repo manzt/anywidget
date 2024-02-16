@@ -179,7 +179,7 @@ export default { render };
 ### Other Changes
 
 In v0.9, developers need to _opt-in_ to **anywidget**'s live development
-features, using an envrionment variable. You can set this within a notebook:
+features, using an environment variable. You can set this within a notebook:
 
 ```python
 %env ANYWIDGET_HMR=1

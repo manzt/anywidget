@@ -110,7 +110,7 @@ export default { render }
 ## Progressive Development
 
 As your widgets grow in complexity, it is recommended to separate your
-front-end code from your Python code. Just move the `_esm` and `_css` 
+front-end code from your Python code. Just move the `_esm` and `_css`
 definitions to separate files and reference them via path.
 
 ```python
@@ -127,5 +127,17 @@ class CounterWidget(anywidget.AnyWidget):
 This is both easier to read and allows you to use your favorite editor/IDE for your front-end code.
 Using file paths also enables **anywidget**'s [built-in HMR](/blog/anywidget-02/#native-hot-module-replacement-hmr),
 allowing real-time updates to your widget during development (below).
+
+> **Note**: Since v0.9, **anywidget** requires developers to opt-in to HMR
+> using an environment variable:
+>
+> ```py
+> %env ANYWIDGET_HMR=1
+> ```
+> or when launching a Jupyter session:
+>
+> ```sh
+> ANYWIDGET_HMR=1 jupyter lab
+> ```
 
 ![Real-time widget development entirely from within JupyterLab](https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif)
