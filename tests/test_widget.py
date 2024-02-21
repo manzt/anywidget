@@ -51,7 +51,7 @@ def test_default_esm():
     w = Widget()
 
     assert w.has_trait("_esm")
-    assert w._esm == _DEFAULT_ESM
+    assert w._esm.data == _DEFAULT_ESM
 
 
 def test_creates_fully_qualified_identifier():
@@ -119,7 +119,7 @@ def test_infer_traitlets_partial():
     assert w.trait_metadata("_esm", "foo") == "bar"
 
     assert w.has_trait("_css")
-    assert w._css == CSS
+    assert w._css.data == CSS
     assert w.trait_metadata("_css", "sync")
 
 
@@ -162,19 +162,19 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
             _esm = esm
             _css = str(css)
 
-    assert isinstance(Widget._esm, FileContents)
-    assert Widget._esm._background_thread is not None
+    assert isinstance(Widget._esm._file_contents, FileContents)
+    assert Widget._esm._file_contents._background_thread is not None
 
-    assert isinstance(Widget._css, FileContents)
-    assert Widget._css._background_thread is None
+    assert isinstance(Widget._css._file_contents, FileContents)
+    assert Widget._css._file_contents._background_thread is None
 
     w = Widget()
 
     assert w.has_trait("_esm")
-    assert w._esm == esm.read_text()
+    assert w._esm.data == esm.read_text()
 
     assert w.has_trait("_css")
-    assert w._css == css.read_text()
+    assert w._css.data == css.read_text()
 
     def mock_file_events():
         css.write_text("blah")
@@ -189,15 +189,18 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
 
     with patch.object(watchfiles, "watch") as mock_watch:
         mock_watch.return_value = mock_file_events()
-        Widget._css.watch_in_thread()
+        Widget._css._file_contents.watch_in_thread()
 
-    while Widget._css._background_thread and Widget._css._background_thread.is_alive():
+    while (
+        Widget._css._file_contents._background_thread
+        and Widget._css._file_contents._background_thread.is_alive()
+    ):
         time.sleep(0.01)
 
-    assert w._css == css.read_text()
+    assert w._css.data == css.read_text()
 
     # need to teardown the thread for CI
-    Widget._esm.stop_thread()
+    Widget._esm._file_contents.stop_thread()
 
 
 def test_missing_pathlib_path_raises(tmp_path: pathlib.Path):
@@ -227,8 +230,8 @@ def test_remote_contents():
         _css = css
 
     widget = Widget()
-    assert widget._esm == esm
-    assert widget._css == css
+    assert widget._esm.data == esm
+    assert widget._css.data == css
 
 
 def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path):
@@ -237,23 +240,7 @@ def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path
     class Widget(anywidget.AnyWidget):
         _esm = str_path_without_suffix
 
-    assert Widget()._esm == str_path_without_suffix
-
-
-def test_explicit_file_contents(tmp_path: pathlib.Path):
-    path = tmp_path / "foo.js"
-    path.write_text(
-        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
-    )
-    esm = FileContents(path, start_thread=False)
-
-    class Widget(anywidget.AnyWidget):
-        _esm = esm
-
-    assert Widget._esm == esm
-
-    w = Widget()
-    assert w._esm == path.read_text()
+    assert Widget()._esm.data == str_path_without_suffix
 
 
 def test_dom_less_widget():
