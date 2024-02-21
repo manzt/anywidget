@@ -254,20 +254,20 @@ function resolve_asset_model(model, asset_name) {
 		return {
 			/** @param {T} _name */
 			get(_name) {
-				return value.get(asset_name);
+				return value.get("data");
 			},
 			/**
-			 * @param {`change:${T}`} event
+			 * @param {`change:${T}`} _event
 			 * @param {() => void} callback
 			 */
-			on(event, callback) {
-				value.on(event, callback);
+			on(_event, callback) {
+				value.on("change:data", callback);
 			},
 			/**
-			 * @param {`change:${T}`} event
+			 * @param {`change:${T}`} _event
 			 */
-			off(event) {
-				return value.off(event);
+			off(_event) {
+				return value.off("change:data");
 			},
 		};
 	}
