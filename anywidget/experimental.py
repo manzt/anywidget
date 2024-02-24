@@ -124,7 +124,7 @@ class _Broadcaster(typing.Protocol):
 
 
 def _register_experimental_custom_message_reducer(widget: _Broadcaster):
-    prop_name = "_anywidget_experimental_reducer"
+    prop_name = "_experimental_anywidget_reducer"
 
     # Only add the reducer if it doesn't already exist
     if not hasattr(widget, prop_name):
