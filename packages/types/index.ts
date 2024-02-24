@@ -43,9 +43,14 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	widget_manager: IWidgetManager;
 }
 
+type Experimental = {
+	dispatch: <T>(action: any) => Promise<T>;
+};
+
 export interface RenderProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
 	el: HTMLElement;
+	experimental: Experimental;
 }
 
 export interface Render<T extends ObjectHash = ObjectHash> {
@@ -54,6 +59,7 @@ export interface Render<T extends ObjectHash = ObjectHash> {
 
 export interface InitializeProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
+	experimental: Experimental;
 }
 
 export interface Initialize<T extends ObjectHash = ObjectHash> {

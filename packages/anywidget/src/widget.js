@@ -242,6 +242,35 @@ function throw_anywidget_error(source) {
 	throw source;
 }
 
+/**
+ * @template T
+ * @param {import("@anywidget/types").AnyModel} model
+ * @param {any} [action]
+ * @param {{ timeout?: number }} [options]
+ */
+export function dispatch(model, action, { timeout = 3000 } = {}) {
+	let id = Date.now().toString(36);
+	return new Promise((resolve, reject) => {
+		let timer = setTimeout(() => {
+			reject(new Error(`Promise timed out after ${timeout} ms`));
+			model.off("msg:custom", handler);
+		}, timeout);
+
+		/**
+		 * @param {{ id: string, kind: "anywidget-dispatch-response", response: T }} msg
+		 * @param {DataView[]} buffers
+		 */
+		function handler(msg, buffers) {
+			if (!(msg.id === id)) return;
+			clearTimeout(timer);
+			resolve([msg.response, buffers]);
+			model.off("msg:custom", handler);
+		}
+		model.on("msg:custom", handler);
+		model.send({ id, kind: "anywidget-dispatch", action });
+	});
+}
+
 class Runtime {
 	/** @type {() => void} */
 	#disposer = () => {};
@@ -281,6 +310,9 @@ class Runtime {
 					let widget = await load_widget(update);
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
+						experimental: {
+							dispatch: dispatch.bind(null, model),
+						},
 					});
 					return ok(widget);
 				} catch (e) {
@@ -319,6 +351,9 @@ class Runtime {
 						cleanup = await widget.render?.({
 							model: model_proxy(model, view),
 							el: view.el,
+							experimental: {
+								dispatch: dispatch.bind(null, model),
+							},
 						});
 					} catch (e) {
 						throw_anywidget_error(e);

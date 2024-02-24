@@ -103,3 +103,44 @@ def dataclass(
         return cls
 
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
+
+
+class _Broadcaster(typing.Protocol):
+    def send(self, msg: dict[str, typing.Any], buffers: list[bytes]) -> None:
+        ...
+
+    def on_msg(
+        self,
+        callback: typing.Callable[
+            [typing.Any, dict[str, typing.Any], list[bytes]], None
+        ],
+    ) -> None:
+        ...
+
+    def _anywidget_experimental_reducer(
+        self, action: dict[str, typing.Any], buffers: list[bytes]
+    ) -> dict[str, typing.Any]:
+        ...
+
+
+def _register_experimental_custom_message_reducer(widget: _Broadcaster):
+    prop_name = "_anywidget_experimental_reducer"
+
+    # Only add the reducer if it doesn't already exist
+    if not hasattr(widget, prop_name):
+        return
+
+    def handle_anywidget_dispatch(self, msg, buffers):
+        if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
+            return
+        response, buffers = getattr(widget, prop_name)(msg["action"], buffers)
+        self.send(
+            {
+                "id": msg["id"],
+                "kind": "anywidget-dispatch-response",
+                "response": response,
+            },
+            buffers,
+        )
+
+    widget.on_msg(handle_anywidget_dispatch)
