@@ -117,7 +117,7 @@ def _register_experimental_custom_message_reducer(
         return
 
     def handle_anywidget_dispatch(
-        self, msg: str | list | dict, buffers: list[bytes]
+        self: AnywidgetReducerProtocol, msg: str | list | dict, buffers: list[bytes]
     ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
             return
