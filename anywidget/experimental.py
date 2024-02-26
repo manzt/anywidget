@@ -8,6 +8,9 @@ import psygnal
 
 from ._descriptor import MimeBundleDescriptor
 
+if typing.TYPE_CHECKING:  # pragma: no cover
+    from ._protocols import AnywidgetReducerProtocol
+
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
@@ -105,35 +108,16 @@ def dataclass(
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
 
 
-class _Broadcaster(typing.Protocol):
-    def send(self, msg: dict[str, typing.Any], buffers: list[bytes]) -> None:
-        ...
-
-    def on_msg(
-        self,
-        callback: typing.Callable[
-            [typing.Any, dict[str, typing.Any], list[bytes]], None
-        ],
-    ) -> None:
-        ...
-
-    def _anywidget_experimental_reducer(
-        self, action: dict[str, typing.Any], buffers: list[bytes]
-    ) -> dict[str, typing.Any]:
-        ...
-
-
-def _register_experimental_custom_message_reducer(widget: _Broadcaster):
-    prop_name = "_experimental_anywidget_reducer"
-
+def _register_experimental_custom_message_reducer(widget: AnywidgetReducerProtocol):
+    """Register a custom message reducer for a widget if it implements the protocol."""
     # Only add the reducer if it doesn't already exist
-    if not hasattr(widget, prop_name):
+    if not hasattr(widget, "_experimental_anywidget_reducer"):
         return
 
     def handle_anywidget_dispatch(self, msg, buffers):
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
             return
-        response, buffers = getattr(widget, prop_name)(msg["action"], buffers)
+        response, buffers = widget._experimental_anywidget_reducer(msg["action"], buffers)
         self.send(
             {
                 "id": msg["id"],
