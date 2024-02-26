@@ -69,11 +69,11 @@ class AnywidgetReducerProtocol(Protocol):
         ...
 
     def on_msg(
-        self, callback: Callable[[Any, str | dict | list, list[bytes]], None]
+        self, callback: Callable[[Any, str | list | dict, list[bytes]], None]
     ) -> None:
         ...
 
     def _experimental_anywidget_reducer(
         self, action: str | dict | list, buffers: list[bytes]
-    ) -> dict[str, Any]:
+    ) -> tuple[str | dict | list, list[bytes]]:
         ...

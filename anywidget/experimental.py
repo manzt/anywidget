@@ -116,7 +116,9 @@ def _register_experimental_custom_message_reducer(
     if not hasattr(widget, "_experimental_anywidget_reducer"):
         return
 
-    def handle_anywidget_dispatch(self, msg, buffers) -> None:
+    def handle_anywidget_dispatch(
+        self, msg: str | list | dict, buffers: list[bytes]
+    ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
             return
         response, buffers = widget._experimental_anywidget_reducer(
