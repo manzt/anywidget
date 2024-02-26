@@ -269,7 +269,15 @@ def test_dom_less_widget():
     assert Widget()._repr_mimebundle_() is None
 
 
-def test_anywidget_reducer():
+def test_anywidget_reducer_not_registered_by_default():
+    class Widget(anywidget.AnyWidget):
+        _esm = "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+
+    w = Widget()
+    assert len(w._msg_callbacks.callbacks) == 0
+
+
+def test_anywidget_reducer_registers_callback():
     class Widget(anywidget.AnyWidget):
         _esm = """
         export default {
@@ -284,4 +292,5 @@ def test_anywidget_reducer():
             assert action == "ping"
             return "pong", []
 
-    assert True # TODO: figure out how to mock the front-end
+    w = Widget()
+    assert len(w._msg_callbacks.callbacks) == 1
