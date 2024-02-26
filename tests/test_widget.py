@@ -267,3 +267,21 @@ def test_dom_less_widget():
         """
 
     assert Widget()._repr_mimebundle_() is None
+
+
+def test_anywidget_reducer():
+    class Widget(anywidget.AnyWidget):
+        _esm = """
+        export default {
+            async render({ model, el, experimental }) {
+                let response = await experimental.dispatch("ping");
+                console.log(response); // pong
+            }
+        }
+        """
+
+        def _experimental_anywidget_reducer(self, action, buffers):
+            assert action == "ping"
+            return "pong", []
+
+    assert True # TODO: figure out how to mock the front-end
