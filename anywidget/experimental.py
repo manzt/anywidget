@@ -108,7 +108,9 @@ def dataclass(
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
 
 
-def _register_experimental_custom_message_reducer(widget: AnywidgetReducerProtocol) -> None:
+def _register_experimental_custom_message_reducer(
+    widget: AnywidgetReducerProtocol,
+) -> None:
     """Register a custom message reducer for a widget if it implements the protocol."""
     # Only add the reducer if it doesn't already exist
     if not hasattr(widget, "_experimental_anywidget_reducer"):
@@ -117,7 +119,9 @@ def _register_experimental_custom_message_reducer(widget: AnywidgetReducerProtoc
     def handle_anywidget_dispatch(self, msg, buffers) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
             return
-        response, buffers = widget._experimental_anywidget_reducer(msg["action"], buffers)
+        response, buffers = widget._experimental_anywidget_reducer(
+            msg["action"], buffers
+        )
         self.send(
             {
                 "id": msg["id"],
