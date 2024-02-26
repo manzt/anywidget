@@ -59,3 +59,12 @@ export interface InitializeProps<T extends ObjectHash = ObjectHash> {
 export interface Initialize<T extends ObjectHash = ObjectHash> {
 	(props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
+
+interface WidgetDef<T extends ObjectHash = ObjectHash> {
+	initialize?: Initialize<T>;
+	render?: Render<T>;
+}
+
+export type AnyWidget<T extends ObjectHash = ObjectHash> =
+	| WidgetDef<T>
+	| (() => Awaitable<WidgetDef<T>>);
