@@ -4,7 +4,7 @@
 
 ## Installation
 
-> **Warning** This API is currently experimental an subject to change.
+> **Warning** This API is currently experimental an subject to change. Our plan is to migrate to [Svelte 5 with runes](https://svelte.dev/blog/runes) once released.
 
 ```sh
 npm install @anywidget/svelte
