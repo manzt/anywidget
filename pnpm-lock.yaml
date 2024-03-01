@@ -12,8 +12,8 @@ importers:
         specifier: ^2.27.1
         version: 2.27.1
       '@rspack/cli':
-        specifier: ^0.5.4
-        version: 0.5.4(@rspack/core@0.5.5)(webpack@5.90.1)
+        specifier: ^0.5.5
+        version: 0.5.5(@rspack/core@0.5.5)(webpack@5.90.1)
       '@svitejs/changesets-changelog-github-compact':
         specifier: ^1.1.0
         version: 1.1.0
@@ -2363,15 +2363,15 @@ packages:
       '@rspack/binding-win32-x64-msvc': 0.5.5
     dev: true
 
-  /@rspack/cli@0.5.4(@rspack/core@0.5.5)(webpack@5.90.1):
-    resolution: {integrity: sha512-POMmEkp+lBS/0acFnMUAqgiOF8/5SIJbuRsBaP7WO204wbes5Wnw8yA1umc3zfyHOSLk/U47fRHlWhyIoAWIbA==}
+  /@rspack/cli@0.5.5(@rspack/core@0.5.5)(webpack@5.90.1):
+    resolution: {integrity: sha512-3+OxCfxSSMgaJsUt4rZ7cXe14U7/Hhg/5hE/OOKO1WVybcS+psw8MsxoXRuYesEl4wOHL0armzIK2osbbUsjkA==}
     hasBin: true
     peerDependencies:
       '@rspack/core': '>=0.4.0'
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 0.5.5
-      '@rspack/dev-server': 0.5.4(@rspack/core@0.5.5)(webpack@5.90.1)
+      '@rspack/dev-server': 0.5.5(@rspack/core@0.5.5)(webpack@5.90.1)
       colorette: 2.0.19
       exit-hook: 3.2.0
       interpret: 3.1.1
@@ -2414,8 +2414,8 @@ packages:
       zod-validation-error: 1.3.1(zod@3.22.2)
     dev: true
 
-  /@rspack/dev-server@0.5.4(@rspack/core@0.5.5)(webpack@5.90.1):
-    resolution: {integrity: sha512-fwJGXCgv38paLkY7yIp3+nTxC/DQ3G2c7qh7UPyr4m3Jrb2X1YdATKE+JOIDd8++P8w/ug4d0Zj0xuwY89zFIA==}
+  /@rspack/dev-server@0.5.5(@rspack/core@0.5.5)(webpack@5.90.1):
+    resolution: {integrity: sha512-dPi3icKaJ8kmdB3p1gYD2rVm9QCb9h9ZPHD/Jsqy+alGuNnBnZf5U4DhNBI6pKfmar8WXrHVPrMTd2QR6ntpng==}
     peerDependencies:
       '@rspack/core': '*'
     dependencies:
