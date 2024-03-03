@@ -1,5 +1,12 @@
 # @anywidget/react
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`9aa8dcc8558e00e33fbe4506b68ae30113df3728`](https://github.com/manzt/anywidget/commit/9aa8dcc8558e00e33fbe4506b68ae30113df3728)]:
+  - @anywidget/types@0.1.6
+
 ## 0.0.3
 
 ### Patch Changes
