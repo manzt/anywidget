@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/types",
 	"type": "module",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "utility types for anywidget",
 	"main": "./index.ts",
 	"types": "./index.ts",

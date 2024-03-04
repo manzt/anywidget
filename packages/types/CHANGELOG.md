@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.6
+
+### Patch Changes
+
+- Add `AnyWidget` definition ([`9aa8dcc8558e00e33fbe4506b68ae30113df3728`](https://github.com/manzt/anywidget/commit/9aa8dcc8558e00e33fbe4506b68ae30113df3728))
+
 ## 0.1.5
 
 ### Patch Changes
