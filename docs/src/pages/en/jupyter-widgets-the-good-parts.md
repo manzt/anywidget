@@ -35,7 +35,8 @@ Hooks correspond to specific stages in the lifetime of a widget:
 
 The `initialize` hook is similar to
 [`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150),
-which is used for the _model initialization_, and the `render` hook is similar to
+which is used for the _model initialization_, and the `render` hook is similar
+to
 [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method),
 which is used for _view rendering_.
 
@@ -194,8 +195,9 @@ export default { render };
 > because it executes any time `my_value` is updated from either Python or the
 > front-end code (i.e., a _change_ event).
 
-An important aspect of traitlets, and their first-class support in Jupyter Widgets,
-is that it is easy to compose Jupyter Widgets together in Python. For example,
+An important aspect of traitlets, and their first-class support in Jupyter
+Widgets, is that it is easy to compose Jupyter Widgets together in Python. For
+example,
 
 ```python
 import ipywidgets
