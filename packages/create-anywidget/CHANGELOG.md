@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.2
+
+### Patch Changes
+
+- Set `ANYWIDGET_HMR=1` in demo notebook ([#470](https://github.com/manzt/anywidget/pull/470))
+
 ## 0.5.1
 
 ### Patch Changes
