@@ -165,6 +165,13 @@ let notebook = (name) =>
 				"execution_count": null,
 				"metadata": {},
 				"outputs": [],
+				"source": ["%env ANYWIDGET_HMR=1"],
+			},
+			{
+				"cell_type": "code",
+				"execution_count": null,
+				"metadata": {},
+				"outputs": [],
 				"source": [
 					`from ${name} import Counter\n`,
 					"Counter()",
