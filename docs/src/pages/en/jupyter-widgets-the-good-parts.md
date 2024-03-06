@@ -13,7 +13,7 @@ concepts for **anywidget** authors._
 
 ## The Widget Front End
 
-This section frames the Juptyer Widgets documentation in the context of
+This section frames the Jupyter Widgets documentation in the context of
 **anywidget**. Remember that **anywidget** is just abstraction over traditional
 Jupyter Widgets that removes boilerplate and packaging details.
 
@@ -24,7 +24,7 @@ requirement is that your widget front-end code is a valid
 [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 and exports `initialize` or `render` <u> _widget lifecycle hooks_</u>.
 
-Hooks are correspond to specific stages in the lifetime of a widget:
+Hooks correspond to specific stages in the lifetime of a widget:
 
 - _Model Initialization_: On instantiation in Python, a matching front-end model
   is created and synced with a model in the kernel.
@@ -35,7 +35,8 @@ Hooks are correspond to specific stages in the lifetime of a widget:
 
 The `initialize` hook is similar to
 [`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150),
-which used for the _model initialization_, and the `render` hook is similar to
+which is used for the _model initialization_, and the `render` hook is similar
+to
 [`DOMWidgetView.render`](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html#Render-method),
 which is used for _view rendering_.
 
@@ -121,7 +122,7 @@ export default { initialize, render };
 ### The `render` function
 
 Just like `DOMWidgetView.render`, your widget's `render` function is executed
-exactly **one per output cell** that displays the widget instance. Therefore,
+exactly **once per output cell** that displays the widget instance. Therefore,
 `render` primarily serves two purposes:
 
 1. Initializing content to display (i.e., create and append element(s) to
@@ -194,8 +195,9 @@ export default { render };
 > because it executes any time `my_value` is updated from either Python or the
 > front-end code (i.e., a _change_ event).
 
-An important aspect traitlets, and their first-class support in Juptyer Widgets,
-is that it is easy to compose Jupyter Widgets together in Python. For example,
+An important aspect of traitlets, and their first-class support in Jupyter
+Widgets, is that it is easy to compose Jupyter Widgets together in Python. For
+example,
 
 ```python
 import ipywidgets
@@ -274,8 +276,8 @@ widget
 
 **anywidget** is a minimal layer on top of Jupyter Widgets and explicitly avoids
 inventing new concepts or widget APIs. Its design allows widget authors to have
-nearly same low-level control over their Jupyter integrations, but this
-flexibility can be intimidating and confusing new widget authors.
+nearly the same low-level control over their Jupyter integrations, but this
+flexibility can be intimidating and confusing to new widget authors.
 
 Here are some general recommendations for being productive with **anywidget**:
 
