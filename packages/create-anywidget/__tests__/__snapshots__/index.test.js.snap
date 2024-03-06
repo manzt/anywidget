@@ -55,7 +55,7 @@ src/undefined/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.3",
+		"@anywidget/react": "0.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -227,7 +227,7 @@ src/undefined/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.3",
+		"@anywidget/react": "0.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -766,7 +766,7 @@ src/undefined/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.5",
+		"@anywidget/types": "0.1.6",
 		"typescript": "^5.3.3",
 		"esbuild": "^0.20.0"
 	}
@@ -969,7 +969,7 @@ src/undefined/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.3",
+		"@anywidget/react": "0.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -1141,7 +1141,7 @@ src/undefined/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.3",
+		"@anywidget/react": "0.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -1680,7 +1680,7 @@ src/undefined/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.5",
+		"@anywidget/types": "0.1.6",
 		"typescript": "^5.3.3",
 		"esbuild": "^0.20.0"
 	}
