@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.3
+
+### Patch Changes
+
+- Add development installation instructions in the generated READMEs ([`08762a52f88b567942b44710320da65d0cb8ac06`](https://github.com/manzt/anywidget/commit/08762a52f88b567942b44710320da65d0cb8ac06))
+
 ## 0.5.2
 
 ### Patch Changes
