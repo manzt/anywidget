@@ -146,15 +146,54 @@ __pycache__
 ${extras.join("\n")}
 `;
 
-/** @param {string} name */
-let readme = (name) =>
-	`\
+/**
+ * @param {string} name
+ * @param {TemplateType} type
+ */
+let readme = (name, type="bundled") => {
+	let body = `\
 # ${name}
+
+## Installation
 
 \`\`\`sh
 pip install ${name}
 \`\`\`
+
+## Development installation
+
+Create a virtual environment and and install ${name} in *editable* mode with the
+optional development dependencies:
+
+\`\`\`sh
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+\`\`\`
+
 `;
+
+	if (type === "bundled") {
+		body = body.concat(`\
+You then need to install the JavaScript dependencies and run the development server.
+
+\`\`\`sh
+npm install
+npm run dev
+\`\`\`
+
+`);
+
+	};
+
+	body = body.concat(`\
+All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Any change made in the \`js\` folder will be directly reflected
+in the notebook.
+`);
+	return body;
+};
+	
 
 /** @param {string} name */
 let notebook = (name) =>
@@ -496,7 +535,7 @@ export default { render };
 export async function gather_files(type, { name, pkg_manager }) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
-			{ path: `README.md`, content: readme(name) },
+			{ path: `README.md`, content: readme(name, type) },
 			{ path: `example.ipynb`, content: notebook(name) },
 			{ path: `pyproject.toml`, content: pyproject_toml(name) },
 			{ path: `deno.json`, content: json_dumps(deno_json) },
