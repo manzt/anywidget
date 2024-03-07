@@ -40,7 +40,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           pip install --upgrade uv
-          uv pip install --system .[dev]
+          uv pip install --system "anywidget[dev] @ ."
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
