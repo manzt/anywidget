@@ -163,18 +163,18 @@ if (relative !== "") {
 	console.log(`  ${i++}: ${bold(cyan(`cd ${relative}`))}`);
 }
 
+if (template !== "template-vanilla-deno-jsdoc") {
+	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
+	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} run dev`))}`);
+	console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
+}
+
 // dprint-ignore
 console.log(
 	`  ${i++}: ${
 		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
 	} (optional)`,
 );
-
-if (template !== "template-vanilla-deno-jsdoc") {
-	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
-	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} run dev`))}`);
-	console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
-}
 
 console.log(
 	`\nStuck? Visit us at ${cyan("https://github.com/manzt/anywidget")}`,
