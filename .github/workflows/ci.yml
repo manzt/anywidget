@@ -52,13 +52,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - run: |
-          pnpm install
-          pnpm lint
+      - uses: dprint/check@v2.2
 
   TypecheckJavaScript:
     name: JavaScript / Typecheck
