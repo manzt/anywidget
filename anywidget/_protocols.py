@@ -52,8 +52,7 @@ class MimeReprCallable(Protocol):
 
     def __call__(
         self, include: Sequence[str], exclude: Sequence[str]
-    ) -> dict | tuple[dict, dict]:
-        ...
+    ) -> dict | tuple[dict, dict]: ...
 
 
 class AnywidgetProtocol(Protocol):
@@ -62,18 +61,11 @@ class AnywidgetProtocol(Protocol):
     _repr_mimebundle_: MimeBundleDescriptor
 
 
-class AnywidgetReducerProtocol(Protocol):
+class WidgetBase(Protocol):
     """Widget subclasses with a custom message reducer."""
 
-    def send(self, msg: str | dict | list, buffers: list[bytes]) -> None:
-        ...
+    def send(self, msg: str | dict | list, buffers: list[bytes]) -> None: ...
 
     def on_msg(
         self, callback: Callable[[Any, str | list | dict, list[bytes]], None]
-    ) -> None:
-        ...
-
-    def _experimental_anywidget_reducer(
-        self, action: str | dict | list, buffers: list[bytes]
-    ) -> tuple[str | dict | list, list[bytes]]:
-        ...
+    ) -> None: ...
