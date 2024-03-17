@@ -1,10 +1,6 @@
-import { AnyModel as _AnyModel } from "./model.js";
-import {
-	createEffect,
-	createResource,
-	createRoot,
-	createSignal,
-} from "solid-js";
+import * as solid from "solid-js";
+import { Model } from "./model.js";
+import { View } from "./view.js";
 
 /**
  * @typedef AnyWidget
@@ -147,7 +143,7 @@ async function load_widget(esm) {
 		warn_render_deprecation();
 		return {
 			url,
-			async initialize() {},
+			async initialize() { },
 			render: mod.render,
 		};
 	}
@@ -168,7 +164,9 @@ async function load_widget(esm) {
 let INITIALIZE_MARKER = Symbol("anywidget.initialize");
 
 /**
- * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @template {Record<string, any>} T
+ *
+ * @param {Model<T>} model
  * @param {unknown} context
  * @return {import("@anywidget/types").AnyModel}
  *
@@ -186,10 +184,10 @@ function model_proxy(model, context) {
 		send: model.send.bind(model),
 		// @ts-expect-error
 		on(name, callback) {
-			model.on(name, callback, context);
+			model.on(name, callback);
 		},
 		off(name, callback) {
-			model.off(name, callback, context);
+			model.off(name, callback);
 		},
 		widget_manager: model.widget_manager,
 	};
@@ -243,31 +241,38 @@ function throw_anywidget_error(source) {
 	throw source;
 }
 
+/** @param {HTMLElement} el */
+function empty_element(el) {
+	while (el.firstChild) {
+		el.removeChild(el.firstChild);
+	}
+}
+
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => {};
+	#disposer = () => { };
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 
-	/** @param {_AnyModel<{ _esm: string, _css?: string, _anywidget_id: string }>} model */
+	/** @param {Model<{ _esm: string, _css?: string, _anywidget_id: string }>} model */
 	constructor(model) {
-		this.#disposer = createRoot((dispose) => {
-			let [css, set_css] = createSignal(model.get("_css"));
+		this.#disposer = solid.createRoot((dispose) => {
+			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] css hot updated: ${id}`);
 				set_css(model.get("_css"));
 			});
-			createEffect(() => {
+			solid.createEffect(() => {
 				let id = model.get("_anywidget_id");
 				load_css(css(), id);
 			});
 
 			/** @type {import("solid-js").Signal<string>} */
-			let [esm, setEsm] = createSignal(model.get("_esm"));
+			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
 			model.on("change:_esm", async () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] esm hot updated: ${id}`);
@@ -275,10 +280,10 @@ class Runtime {
 			});
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			this.#widget_result = createResource(esm, async (update) => {
+			this.#widget_result = solid.createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
 				try {
-					await model._ready_promise;
+					await model.state_change;
 					let widget = await load_widget(update);
 					cleanup = await widget.initialize?.({ model });
 					return ok(widget);
@@ -296,20 +301,20 @@ class Runtime {
 	}
 
 	/**
-	 * @param {import("@jupyter-widgets/base").DOMWidgetView} view
+	 * @param {View<any>} view
 	 * @returns {Promise<() => void>}
 	 */
 	async create_view(view) {
 		let model = view.model;
-		let disposer = createRoot((dispose) => {
+		let disposer = solid.createRoot((dispose) => {
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
 			let resource =
-				createResource(this.#widget_result, async (widget_result) => {
+				solid.createResource(this.#widget_result, async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
-					model.off(null, null, view);
-					view.$el.empty();
+					// model.off(null, null, view);
+					empty_element(view.el);
 					if (widget_result.state === "error") {
 						throw_anywidget_error(widget_result.error);
 					}
@@ -323,7 +328,7 @@ class Runtime {
 						throw_anywidget_error(e);
 					}
 				})[0];
-			createEffect(() => {
+			solid.createEffect(() => {
 				if (resource.error) {
 					// TODO: Show error in the view?
 				}
@@ -351,17 +356,16 @@ class Runtime {
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
-/** @param {typeof import("@jupyter-widgets/base")} base */
-export default function ({ DOMWidgetView }) {
+export default function() {
 	/** @type {WeakMap<AnyModel<any>, Runtime>} */
 	let RUNTIMES = new WeakMap();
 
 	/**
 	 * @template {{ _esm: string, _css?: string, _anywidget_id: string }} T
-	 * @extends {_AnyModel<T>}
+	 * @extends {Model<T>}
 	 */
-	class AnyModel extends _AnyModel {
-		/** @param {ConstructorParameters<typeof _AnyModel<T>>} args */
+	class AnyModel extends Model {
+		/** @param {ConstructorParameters<typeof Model<T>>} args */
 		constructor(...args) {
 			super(...args);
 			let runtime = new Runtime(this);
@@ -376,11 +380,12 @@ export default function ({ DOMWidgetView }) {
 		}
 	}
 
-	class AnyView extends DOMWidgetView {
+	/** @extends {View<any>} */
+	class AnyView extends View {
 		/** @type {undefined | (() => void)} */
 		#dispose = undefined;
 		async render() {
-			let runtime = RUNTIMES.get(/** @type {any} */ (this.model));
+			let runtime = RUNTIMES.get(/** @type {any} */(this.model));
 			assert(runtime, "[anywidget] runtime not found.");
 			assert(!this.#dispose, "[anywidget] dispose already set.");
 			this.#dispose = await runtime.create_view(this);

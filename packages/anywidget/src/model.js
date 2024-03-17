@@ -1,13 +1,11 @@
 import * as utils from "./util.js";
 
 /** @template {Record<string, unknown>} State */
-export class AnyModel {
-	/** @type {Omit<import("./types.js").ModelOptions, "comm">} */
-	#opts;
+export class Model {
 	/** @type {import("./types.js").Comm=} */
 	#comm;
-	/** @type {Map<string, Promise<unknown>>} */
-	#views = new Map();
+	/** @type {Omit<import("./types.js").ModelOptions, "comm">} */
+	#options;
 	/** @type {{ [evt_name: string]: Map<() => void, (event: Event) => void> }} */
 	#listeners = {};
 	/** @type {State} */
@@ -19,15 +17,19 @@ export class AnyModel {
 	/** @type {EventTarget} */
 	#events = new EventTarget();
 
-	// TODO(Trevor): I don't fully understand the purpose of this map
-	//
-	// From Jupyter Team: keep track of the msg id for each attr for updates
+
+	// NOTE: (from Jupyter Team): keep track of the msg id for each attr for updates
 	// we send out so that we can ignore old messages that we send in
 	// order to avoid 'drunken' sliders going back and forward
 	/** @type {Map<string, string>} */
 	#expected_echo_msg_ids = new Map();
+
+	// NOTE: Required for the WidgetManager to know when the model is ready
 	/** @type {Promise<void>} */
 	state_change;
+
+	/** @type {Record<string, Promise<unknown>>} */
+	views = {}
 
 	/**
 	 * @param {State} state
@@ -35,7 +37,7 @@ export class AnyModel {
 	 */
 	constructor(state, options) {
 		this.#state = state;
-		this.#opts = options;
+		this.#options = options;
 		this.#field_serializers = {
 			layout: {
 				/** @param {string} layout */
@@ -57,7 +59,7 @@ export class AnyModel {
 	}
 
 	get widget_manager() {
-		return this.#opts.widget_manager;
+		return this.#options.widget_manager;
 	}
 
 	get comm_live() {
@@ -99,7 +101,7 @@ export class AnyModel {
 			}
 			state[key] = await serializer.deserialize(
 				ser[key],
-				this.#opts.widget_manager,
+				this.#options.widget_manager,
 			);
 		}
 		return state;
@@ -140,6 +142,46 @@ export class AnyModel {
 	}
 
 	/**
+	 * @param {import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage} msg
+	 */
+	async #handle_update({ content, buffers, parent_header }) {
+		let state = content.data.state;
+		utils.put_buffers(state, content.data.buffer_paths, buffers);
+		if (content.data.method === "echo_update" && parent_header?.msg_id) {
+			this.#resolve_echo(state, parent_header.msg_id);
+		}
+		// @ts-expect-error - we don't validate this
+		let deserialized = await this.#deserialize(state);
+		this.set_state(deserialized);
+	}
+
+	/**
+	 * @param {Record<string, unknown>} state
+	 * @param {string} msg_id
+	 */
+	#resolve_echo(state, msg_id) {
+		// we may have echos coming from other clients, we only care about
+		// dropping echos for which we expected a reply
+		for (let name of Object.keys(state)) {
+			if (this.#expected_echo_msg_ids.has(name)) {
+				continue;
+			}
+			let stale = this.#expected_echo_msg_ids.get(name) !== msg_id;
+			if (stale) {
+				delete state[name];
+				continue;
+			}
+			// we got our echo confirmation, so stop looking for it
+			this.#expected_echo_msg_ids.delete(name);
+			// Start accepting echo updates unless we plan to send out a new state soon
+			if (this.#msg_buffer?.hasOwnProperty(name)) {
+				delete state[name];
+			}
+		}
+	}
+
+
+	/**
 	 * @param {string} name
 	 * @param {unknown} [value]
 	 */
@@ -165,8 +207,8 @@ export class AnyModel {
 		}
 		this.#listeners = {};
 		this.#comm = undefined;
-		for await (let view of Object.values(this.#views)) view.remove();
-		this.#views.clear();
+		for await (let view of Object.values(this.views)) view.remove();
+		this.views.clear();
 	}
 
 	/**
@@ -261,7 +303,7 @@ export class AnyModel {
 
 	/**
 	 * @param {string} event
-	 * @param {() => void=} callback
+	 * @param {() => void} [callback]
 	 */
 	off(event, callback) {
 		let listeners = this.#listeners[event];
@@ -279,50 +321,6 @@ export class AnyModel {
 		if (!handler) return;
 		this.#events.removeEventListener(event, handler);
 		listeners.delete(callback);
-	}
-
-	/** @param {Partial<State>} [diff] */
-	changedAttributes(diff = {}) {
-		return false;
-	}
-
-	/**
-	 * @param {import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage} msg
-	 */
-	async #handle_update({ content, buffers, parent_header }) {
-		let state = content.data.state;
-		utils.put_buffers(state, content.data.buffer_paths, buffers);
-		if (content.data.method === "echo_update" && parent_header?.msg_id) {
-			this.#resolve_echo(state, parent_header.msg_id);
-		}
-		// @ts-expect-error - we don't validate this
-		let deserialized = await this.#deserialize(state);
-		this.set_state(deserialized);
-	}
-
-	/**
-	 * @param {Record<string, unknown>} state
-	 * @param {string} msg_id
-	 */
-	#resolve_echo(state, msg_id) {
-		// we may have echos coming from other clients, we only care about
-		// dropping echos for which we expected a reply
-		for (let name of Object.keys(state)) {
-			if (this.#expected_echo_msg_ids.has(name)) {
-				continue;
-			}
-			let stale = this.#expected_echo_msg_ids.get(name) !== msg_id;
-			if (stale) {
-				delete state[name];
-				continue;
-			}
-			// we got our echo confirmation, so stop looking for it
-			this.#expected_echo_msg_ids.delete(name);
-			// Start accepting echo updates unless we plan to send out a new state soon
-			if (this.#msg_buffer?.hasOwnProperty(name)) {
-				delete state[name];
-			}
-		}
 	}
 
 	/**
