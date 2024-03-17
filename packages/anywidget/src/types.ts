@@ -63,7 +63,7 @@ export type UpdateMessage = {
 	};
 };
 export type EchoUpdateMessage = {
-	parent_header?: { msg_id: string };
+	parent_header: { msg_id: string };
 	buffers?: ReadonlyArray<ArrayBuffer | DataView>;
 	content: {
 		data: {
@@ -83,7 +83,7 @@ export type CustomMessage = {
 	};
 };
 
-export type WidgetManager = { get_model: (model_id: string) => unknown };
+export type WidgetManager = { get_model: (model_id: string) => any };
 export type FieldSerializer<A, B> = {
 	serialize: (value: A) => B | Promise<B>;
 	deserialize: (value: B, widget_manager: WidgetManager) => A | Promise<A>;

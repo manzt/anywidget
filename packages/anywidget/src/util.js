@@ -124,3 +124,12 @@ export function is_update_msg(msg) {
 	return msg.content.data.method === "update" ||
 		msg.content.data.method === "echo_update";
 }
+
+/**
+ * @param {import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage} msg
+ * @return {msg is import("./types.js").EchoUpdateMessage}
+ */
+export function is_echo_update_msg(msg) {
+	return msg.content.data.method === "echo_update" &&
+		!!msg.parent_header?.msg_id;
+}

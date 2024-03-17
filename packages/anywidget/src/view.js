@@ -1,4 +1,4 @@
-import { assert } from "./util.js";
+import * as utils from "./util.js";
 import { Widget } from "@lumino/widgets";
 
 /**
@@ -32,12 +32,12 @@ export class View {
 	/** @type {Record<string, unknown>} */
 	options;
 	/** @type {() => void} */
-	#remove_callback = () => { };
+	#remove_callback = () => {};
 
 	/** @param {ViewOptions<T>} options */
-	constructor(options) {
-		this.el = options.el ?? document.createElement("div");
-		this.model = options.model;
+	constructor({ el, model, ...options }) {
+		this.el = el ?? document.createElement("div");
+		this.model = model;
 		this.options = options;
 		this.luminoWidget = new Widget({ node: this.el });
 	}
@@ -48,8 +48,11 @@ export class View {
 	 * @param {() => void} callback
 	 */
 	listenTo(model, name, callback) {
-		assert(name === "destroy", "Only 'destroy' event is supported in `listenTo`.");
-		model.on(name, callback);
+		utils.assert(
+			name === "destroy",
+			"[anywidget]: Only 'destroy' event is supported in `listenTo`.",
+		);
+		model.once("destroy", callback);
 	}
 
 	/**
@@ -57,7 +60,10 @@ export class View {
 	 * @param {() => void} callback
 	 */
 	once(name, callback) {
-		assert(name === "remove", "Only 'remove' event is supported in `once`.");
+		utils.assert(
+			name === "remove",
+			"[anywidget]: Only 'remove' event is supported in `once`.",
+		);
 		this.#remove_callback = callback;
 	}
 
@@ -67,29 +73,7 @@ export class View {
 	}
 
 	/**
-	 * @param {LuminoMessage} msg
-	 */
-	processLuminoMessage(msg) {
-		switch (msg.type) {
-			case 'after-attach':
-				this.trigger('displayed');
-				break;
-			case 'show':
-				this.trigger('shown');
-				break;
-		}
-	}
-
-	/**
-	 * @param {"displayed" | "shown"} name
-	 */
-	trigger(name) {
-		console.log(name)
-	}
-
-	/**
 	 * Render the view.
 	 */
-	async render() { }
-
+	async render() {}
 }

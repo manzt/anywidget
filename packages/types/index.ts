@@ -40,7 +40,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 		callbacks?: any,
 		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
-	widget_manager: IWidgetManager;
+	widget_manager: Pick<IWidgetManager, "get_model">;
 }
 
 export interface RenderProps<T extends ObjectHash = ObjectHash> {

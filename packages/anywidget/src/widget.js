@@ -143,7 +143,7 @@ async function load_widget(esm) {
 		warn_render_deprecation();
 		return {
 			url,
-			async initialize() { },
+			async initialize() {},
 			render: mod.render,
 		};
 	}
@@ -184,10 +184,10 @@ function model_proxy(model, context) {
 		send: model.send.bind(model),
 		// @ts-expect-error
 		on(name, callback) {
-			model.on(name, callback);
+			model.on(name, callback, context);
 		},
 		off(name, callback) {
-			model.off(name, callback);
+			model.off(name, callback, context);
 		},
 		widget_manager: model.widget_manager,
 	};
@@ -250,7 +250,7 @@ function empty_element(el) {
 
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => { };
+	#disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
@@ -285,7 +285,9 @@ class Runtime {
 				try {
 					await model.state_change;
 					let widget = await load_widget(update);
-					cleanup = await widget.initialize?.({ model });
+					cleanup = await widget.initialize?.({
+						model: model_proxy(model, INITIALIZE_MARKER),
+					});
 					return ok(widget);
 				} catch (e) {
 					return error(e);
@@ -313,7 +315,7 @@ class Runtime {
 				solid.createResource(this.#widget_result, async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
-					// model.off(null, null, view);
+					model.off(null, null, view);
 					empty_element(view.el);
 					if (widget_result.state === "error") {
 						throw_anywidget_error(widget_result.error);
@@ -356,7 +358,7 @@ class Runtime {
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
-export default function() {
+export default function () {
 	/** @type {WeakMap<AnyModel<any>, Runtime>} */
 	let RUNTIMES = new WeakMap();
 
@@ -385,7 +387,7 @@ export default function() {
 		/** @type {undefined | (() => void)} */
 		#dispose = undefined;
 		async render() {
-			let runtime = RUNTIMES.get(/** @type {any} */(this.model));
+			let runtime = RUNTIMES.get(/** @type {any} */ (this.model));
 			assert(runtime, "[anywidget] runtime not found.");
 			assert(!this.#dispose, "[anywidget] dispose already set.");
 			this.#dispose = await runtime.create_view(this);

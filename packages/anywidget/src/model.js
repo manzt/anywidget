@@ -1,14 +1,19 @@
 import * as utils from "./util.js";
 
-/** @template {Record<string, unknown>} State */
+/**
+ * @template {Record<string, unknown>} T
+ * @typedef {import('./view.js').View<T>} View
+ */
+
+/** @template {Record<string, unknown>} T */
 export class Model {
 	/** @type {import("./types.js").Comm=} */
 	#comm;
 	/** @type {Omit<import("./types.js").ModelOptions, "comm">} */
 	#options;
-	/** @type {{ [evt_name: string]: Map<() => void, (event: Event) => void> }} */
-	#listeners = {};
-	/** @type {State} */
+	/** @type {Map<any, { [evt_name: string]: Map<() => void, (event: Event) => void> }>} */
+	#listeners = new Map();
+	/** @type {T} */
 	#state;
 	/** @type {Set<string>} */
 	#need_sync = new Set();
@@ -16,7 +21,6 @@ export class Model {
 	#field_serializers;
 	/** @type {EventTarget} */
 	#events = new EventTarget();
-
 
 	// NOTE: (from Jupyter Team): keep track of the msg id for each attr for updates
 	// we send out so that we can ignore old messages that we send in
@@ -28,11 +32,11 @@ export class Model {
 	/** @type {Promise<void>} */
 	state_change;
 
-	/** @type {Record<string, Promise<unknown>>} */
-	views = {}
+	/** @type {Record<string, Promise<View<T>>>} */
+	views = {};
 
 	/**
-	 * @param {State} state
+	 * @param {T} state
 	 * @param {import("./types.js").ModelOptions} options
 	 */
 	constructor(state, options) {
@@ -86,7 +90,7 @@ export class Model {
 
 	/**
 	 * Serialize the model state.
-	 * @template {Partial<State>} T
+	 * @template {Partial<T>} T
 	 * @param {T} ser
 	 * @returns {Promise<T>}
 	 */
@@ -109,7 +113,7 @@ export class Model {
 
 	/**
 	 * Deserialize the model state.
-	 * @template {Partial<State>} T
+	 * @template {Partial<T>} T
 	 * @param {T} de
 	 * @returns {Promise<T>}
 	 */
@@ -133,10 +137,12 @@ export class Model {
 	 */
 	async #handle_comm_msg(msg) {
 		if (utils.is_update_msg(msg)) {
-			return this.#handle_update(msg);
+			await this.#handle_update(msg);
+			return;
 		}
 		if (utils.is_custom_msg(msg)) {
 			this.#emit("msg:custom", [msg.content.data.content, msg.buffers]);
+			return;
 		}
 		throw new Error(`unhandled comm message: ${JSON.stringify(msg)}`);
 	}
@@ -144,11 +150,11 @@ export class Model {
 	/**
 	 * @param {import("./types.js").UpdateMessage | import("./types.js").EchoUpdateMessage} msg
 	 */
-	async #handle_update({ content, buffers, parent_header }) {
-		let state = content.data.state;
-		utils.put_buffers(state, content.data.buffer_paths, buffers);
-		if (content.data.method === "echo_update" && parent_header?.msg_id) {
-			this.#resolve_echo(state, parent_header.msg_id);
+	async #handle_update(msg) {
+		let state = msg.content.data.state;
+		utils.put_buffers(state, msg.content.data.buffer_paths, msg.buffers);
+		if (utils.is_echo_update_msg(msg)) {
+			this.#handle_echo_update(state, msg.parent_header.msg_id);
 		}
 		// @ts-expect-error - we don't validate this
 		let deserialized = await this.#deserialize(state);
@@ -159,7 +165,7 @@ export class Model {
 	 * @param {Record<string, unknown>} state
 	 * @param {string} msg_id
 	 */
-	#resolve_echo(state, msg_id) {
+	#handle_echo_update(state, msg_id) {
 		// we may have echos coming from other clients, we only care about
 		// dropping echos for which we expected a reply
 		for (let name of Object.keys(state)) {
@@ -180,7 +186,6 @@ export class Model {
 		}
 	}
 
-
 	/**
 	 * @param {string} name
 	 * @param {unknown} [value]
@@ -198,32 +203,30 @@ export class Model {
 	async #handle_comm_close() {
 		// can only be closed once.
 		if (!this.#comm) return;
-		this.#emit("comm:close");
 		this.#comm.close();
-		for (let [event, map] of Object.entries(this.#listeners)) {
-			for (let listener of map.values()) {
-				this.#events.removeEventListener(event, listener);
-			}
-		}
-		this.#listeners = {};
 		this.#comm = undefined;
-		for await (let view of Object.values(this.views)) view.remove();
-		this.views.clear();
+		this.#emit("comm:close");
+		this.off();
+		this.#listeners.clear();
+		for await (let view of Object.values(this.views)) {
+			view.remove();
+		}
+		this.views = {};
 	}
 
 	/**
-	 * @template {keyof State} K
+	 * @template {keyof T} K
 	 * @param {K} key
-	 * @returns {State[K]}
+	 * @returns {T[K]}
 	 */
 	get(key) {
 		return this.#state[key];
 	}
 
 	/**
-	 * @template {keyof State & string} K
+	 * @template {keyof T & string} K
 	 * @param {K} key
-	 * @param {State[K]} value
+	 * @param {T[K]} value
 	 */
 	set(key, value) {
 		this.#state[key] = value;
@@ -234,7 +237,7 @@ export class Model {
 
 	async save_changes() {
 		if (!this.#comm) return;
-		/** @type {Partial<State>} */
+		/** @type {Partial<T>} */
 		let to_send = {};
 		for (let key of this.#need_sync) {
 			// @ts-expect-error - we know this is a valid key
@@ -242,16 +245,12 @@ export class Model {
 		}
 		let serialized = await this.serialize(to_send);
 		this.#need_sync.clear();
-		let split = utils.extract_buffers(serialized);
+		let { state, buffer_paths, buffers } = utils.extract_buffers(serialized);
 		this.#comm.send(
-			{
-				method: "update",
-				state: split.state,
-				buffer_paths: split.buffer_paths,
-			},
+			{ method: "update", state, buffer_paths },
 			undefined,
 			{},
-			split.buffers,
+			buffers,
 		);
 	}
 
@@ -259,19 +258,22 @@ export class Model {
 	 * @overload
 	 * @param {string} event
 	 * @param {() => void} callback
+	 * @param {unknown} [scope]
 	 * @returns {void}
 	 */
 	/**
 	 * @overload
 	 * @param {"msg:custom"} event
 	 * @param {(content: unknown, buffers: ArrayBuffer[]) => void} callback
+	 * @param {unknown} scope
 	 * @returns {void}
 	 */
 	/**
 	 * @param {string} event
 	 * @param {(...args: any[]) => void} callback
+	 * @param {unknown} [scope]
 	 */
-	on(event, callback) {
+	on(event, callback, scope = this) {
 		/** @type {(event?: unknown) => void} */
 		let handler;
 		if (event === "msg:custom") {
@@ -280,13 +282,15 @@ export class Model {
 		} else {
 			handler = () => callback();
 		}
-		this.#listeners[event] = this.#listeners[event] ?? new Map();
-		this.#listeners[event].set(callback, handler);
+		let scope_listeners = this.#listeners.get(scope) ?? {};
+		this.#listeners.set(scope, scope_listeners);
+		scope_listeners[event] = scope_listeners[event] ?? new Map();
+		scope_listeners[event].set(callback, handler);
 		this.#events.addEventListener(event, handler);
 	}
 
 	/**
-	 * @param {Partial<State>} state
+	 * @param {Partial<T>} state
 	 */
 	set_state(state) {
 		for (let key in state) {
@@ -302,25 +306,38 @@ export class Model {
 	}
 
 	/**
-	 * @param {string} event
-	 * @param {() => void} [callback]
+	 * @param {string | null} [event]
+	 * @param {null | (() => void)} [callback]
+	 * @param {unknown} [scope]
 	 */
-	off(event, callback) {
-		let listeners = this.#listeners[event];
-		if (!listeners) {
-			return;
-		}
-		if (!callback) {
-			for (let handler of listeners.values()) {
-				this.#events.removeEventListener(event, handler);
+	off(event, callback, scope) {
+		let callbacks = [];
+		for (let [s, scope_listeners] of this.#listeners.entries()) {
+			if (scope && scope !== s) {
+				continue;
 			}
-			listeners.clear();
-			return;
+			for (let [e, listeners] of Object.entries(scope_listeners)) {
+				if (event && event !== e) {
+					continue;
+				}
+				for (let [cb, handler] of listeners.entries()) {
+					if (callback && callback !== cb) {
+						continue;
+					}
+					callbacks.push({ event: e, handler });
+					listeners.delete(cb);
+				}
+				if (!listeners.size) {
+					delete scope_listeners[e];
+				}
+			}
+			if (Object.keys(scope_listeners).length == 0) {
+				this.#listeners.delete(s);
+			}
 		}
-		let handler = listeners.get(callback);
-		if (!handler) return;
-		this.#events.removeEventListener(event, handler);
-		listeners.delete(callback);
+		for (let { event, handler } of callbacks) {
+			this.#events.removeEventListener(event, handler);
+		}
 	}
 
 	/**
