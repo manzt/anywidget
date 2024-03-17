@@ -94,3 +94,13 @@ export type ModelOptions = {
 	comm?: Comm;
 	widget_manager: WidgetManager;
 };
+
+export type AnyWidget = {
+	initialize: import("@anywidget/types").Initialize;
+	render: import("@anywidget/types").Render;
+};
+
+export type AnyWidgetModule = {
+	render?: import("@anywidget/types").Render;
+	default?: AnyWidget | (() => AnyWidget | Promise<AnyWidget>);
+};
