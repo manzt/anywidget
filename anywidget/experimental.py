@@ -8,16 +8,9 @@ import psygnal
 
 from ._descriptor import MimeBundleDescriptor
 
-<<<<<<< HEAD
-if typing.TYPE_CHECKING:  # pragma: no cover
-    from ._protocols import AnywidgetReducerProtocol
-
-||||||| 7d335c0
-=======
 if typing.TYPE_CHECKING:  # pragma: no cover
     from ._protocols import WidgetBase
 
->>>>>>> manzt/command
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
@@ -113,6 +106,7 @@ def dataclass(
         return cls
 
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
+
 
 AnyWidgetCommand = typing.Callable[
     [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
