@@ -67,6 +67,7 @@ export class View {
 	}
 
 	remove() {
+		this.luminoWidget?.dispose();
 		this.#remove_callback();
 		util.empty(this.el);
 		this.el.remove();
