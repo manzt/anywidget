@@ -38,9 +38,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - run: |
-          pip install --upgrade uv
-          uv pip install --system "anywidget[dev] @ ."
+          pip install uv
+          uv pip install --system -e '.[dev]'
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
