@@ -75,7 +75,7 @@ export class Runtime {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
 					model.off(null, null, view);
-					util.empty_element(view.el);
+					util.empty(view.el);
 					if (widget_result.state === "error") {
 						util.throw_anywidget_error(widget_result.error);
 					}

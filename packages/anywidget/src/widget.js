@@ -16,6 +16,7 @@ export default function () {
 		constructor(...args) {
 			super(...args);
 			let runtime = new Runtime(this);
+			window.model = this;
 			this.once("destroy", () => {
 				try {
 					runtime.dispose();
@@ -29,16 +30,15 @@ export default function () {
 
 	/** @extends {View<any>} */
 	class AnyView extends View {
-		/** @type {undefined | (() => void)} */
-		#dispose = undefined;
+		/** @type {() => void} */
+		#dispose = () => {};
 		async render() {
 			let runtime = RUNTIMES.get(/** @type {any} */ (this.model));
 			util.assert(runtime, "[anywidget] runtime not found.");
-			util.assert(!this.#dispose, "[anywidget] dispose already set.");
 			this.#dispose = await runtime.create_view(this);
 		}
 		remove() {
-			this.#dispose?.();
+			this.#dispose();
 			super.remove();
 		}
 	}

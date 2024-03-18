@@ -1,16 +1,16 @@
-import * as utils from "./util.js";
+import * as util from "./util.js";
 import { Widget } from "@lumino/widgets";
-
-/**
- * @template {Record<string, unknown>} T
- * @typedef {import("./model.js").Model<T>} Model
- */
 
 /**
  * @typedef LuminoMessage
  * @property {string} type
  * @property {boolean} isConflatable
  * @property {(msg: LuminoMessage) => boolean} conflate
+ */
+
+/**
+ * @template {Record<string, unknown>} T
+ * @typedef {import("./model.js").Model<T>} Model
  */
 
 /**
@@ -31,7 +31,6 @@ export class View {
 	model;
 	/** @type {Record<string, unknown>} */
 	options;
-	/** @type {() => void} */
 	#remove_callback = () => {};
 
 	/** @param {ViewOptions<T>} options */
@@ -39,6 +38,7 @@ export class View {
 		this.el = el ?? document.createElement("div");
 		this.model = model;
 		this.options = options;
+		// TODO: We should try to drop the Lumino dependency. However, this seems required for all widgets.
 		this.luminoWidget = new Widget({ node: this.el });
 	}
 
@@ -48,11 +48,10 @@ export class View {
 	 * @param {() => void} callback
 	 */
 	listenTo(model, name, callback) {
-		utils.assert(
+		util.assert(
 			name === "destroy",
-			"[anywidget]: Only 'destroy' event is supported in `listenTo`.",
+			"[anywidget] Only 'destroy' event is supported in `View.listenTo`",
 		);
-		model.once("destroy", callback);
 	}
 
 	/**
@@ -60,20 +59,26 @@ export class View {
 	 * @param {() => void} callback
 	 */
 	once(name, callback) {
-		utils.assert(
+		util.assert(
 			name === "remove",
-			"[anywidget]: Only 'remove' event is supported in `once`.",
+			"[anywidget] Only 'remove' event is supported in `View.once`",
 		);
 		this.#remove_callback = callback;
 	}
 
 	remove() {
 		this.#remove_callback();
+		util.empty(this.el);
 		this.el.remove();
+		this.model.off(null, null, this);
 	}
 
 	/**
 	 * Render the view.
+	 *
+	 * Should be overridden by subclasses.
+	 *
+	 * @returns {Promise<void>}
 	 */
 	async render() {}
 }

@@ -8,11 +8,9 @@ import * as utils from "./util.js";
 /** @template {Record<string, unknown>} T */
 export class Model {
 	/** @type {import("./types.js").Comm=} */
-	#comm;
+	comm;
 	/** @type {Omit<import("./types.js").ModelOptions, "comm">} */
 	#options;
-	/** @type {Map<any, { [evt_name: string]: Map<() => void, (event: Event) => void> }>} */
-	#listeners = new Map();
 	/** @type {T} */
 	#state;
 	/** @type {Set<string>} */
@@ -21,12 +19,16 @@ export class Model {
 	#field_serializers;
 	/** @type {EventTarget} */
 	#events = new EventTarget();
+	/** @type {Map<any, { [evt_name: string]: Map<() => void, (event: Event) => void> }>} */
+	#listeners = new Map();
 
 	// NOTE: (from Jupyter Team): keep track of the msg id for each attr for updates
 	// we send out so that we can ignore old messages that we send in
 	// order to avoid 'drunken' sliders going back and forward
 	/** @type {Map<string, string>} */
 	#expected_echo_msg_ids = new Map();
+
+	#closed = false;
 
 	// NOTE: Required for the WidgetManager to know when the model is ready
 	/** @type {Promise<void>} */
@@ -48,15 +50,18 @@ export class Model {
 				serialize(layout) {
 					return JSON.parse(JSON.stringify(layout));
 				},
-				/** @param {string} layout */
+				/**
+				 * @param {string} layout
+				 * @param {import("./types.js").WidgetManager} widget_manager
+				 */
 				deserialize(layout, widget_manager) {
 					return widget_manager.get_model(layout.slice("IPY_MODEL_".length));
 				},
 			},
 		};
-		this.#comm = options.comm;
-		this.#comm?.on_msg(this.#handle_comm_msg.bind(this));
-		this.#comm?.on_close(this.#handle_comm_close.bind(this));
+		this.comm = options.comm;
+		this.comm?.on_msg(this.#handle_comm_msg.bind(this));
+		this.comm?.on_close(this.#handle_comm_close.bind(this));
 		this.state_change = this.#deserialize(state).then((de) => {
 			this.#state = de;
 		});
@@ -66,8 +71,17 @@ export class Model {
 		return this.#options.widget_manager;
 	}
 
+	/** @param {boolean} update */
+	set comm_live(update) {
+		// NOTE: JupyterLab seems to try to set this. The only sensible behavior I can think of
+		// is to set the comm to undefined if the update is false, and do nothing otherwise.
+		if (update === false) {
+			this.comm = undefined;
+		}
+	}
+
 	get comm_live() {
-		return !!this.#comm;
+		return !!this.comm;
 	}
 
 	get #msg_buffer() {
@@ -136,6 +150,9 @@ export class Model {
 	 * @param {import("./types.js").CommMessage} msg - the comm message.
 	 */
 	async #handle_comm_msg(msg) {
+		if (!this.comm) {
+			return;
+		}
 		if (utils.is_update_msg(msg)) {
 			await this.#handle_update(msg);
 			return;
@@ -201,17 +218,17 @@ export class Model {
 	 * @returns - a promise that is fulfilled when all the associated views have been removed.
 	 */
 	async #handle_comm_close() {
-		// can only be closed once.
-		if (!this.#comm) return;
-		this.#comm.close();
-		this.#comm = undefined;
-		this.#emit("comm:close");
-		this.off();
-		this.#listeners.clear();
+		this.trigger("comm:close");
+		if (this.#closed) {
+			return;
+		}
+		this.#closed = true;
+		this.comm?.close();
+		this.comm = undefined;
 		for await (let view of Object.values(this.views)) {
 			view.remove();
 		}
-		this.views = {};
+		this.trigger("destroy");
 	}
 
 	/**
@@ -236,7 +253,7 @@ export class Model {
 	}
 
 	async save_changes() {
-		if (!this.#comm) return;
+		if (!this.comm) return;
 		/** @type {Partial<T>} */
 		let to_send = {};
 		for (let key of this.#need_sync) {
@@ -246,7 +263,7 @@ export class Model {
 		let serialized = await this.serialize(to_send);
 		this.#need_sync.clear();
 		let { state, buffer_paths, buffers } = utils.extract_buffers(serialized);
-		this.#comm.send(
+		this.comm.send(
 			{ method: "update", state, buffer_paths },
 			undefined,
 			{},
@@ -311,7 +328,6 @@ export class Model {
 	 * @param {unknown} [scope]
 	 */
 	off(event, callback, scope) {
-		let callbacks = [];
 		for (let [s, scope_listeners] of this.#listeners.entries()) {
 			if (scope && scope !== s) {
 				continue;
@@ -324,19 +340,10 @@ export class Model {
 					if (callback && callback !== cb) {
 						continue;
 					}
-					callbacks.push({ event: e, handler });
+					this.#events.removeEventListener(e, handler);
 					listeners.delete(cb);
 				}
-				if (!listeners.size) {
-					delete scope_listeners[e];
-				}
 			}
-			if (Object.keys(scope_listeners).length == 0) {
-				this.#listeners.delete(s);
-			}
-		}
-		for (let { event, handler } of callbacks) {
-			this.#events.removeEventListener(event, handler);
 		}
 	}
 
@@ -347,13 +354,16 @@ export class Model {
 	 * @param {ArrayBuffer[]} [buffers] - An array of ArrayBuffers to send as part of the message.
 	 */
 	send(content, callbacks, buffers) {
-		if (!this.#comm) return;
-		this.#comm.send({ method: "custom", content }, callbacks, {}, buffers);
+		if (!this.comm) return;
+		this.comm.send({ method: "custom", content }, callbacks, {}, buffers);
 	}
 
 	/** @param {string} event */
 	trigger(event) {
-		utils.assert(event === "destroy", "Only 'destroy' event is supported");
+		utils.assert(
+			event === "destroy" || event === "comm:close",
+			"[anywidget] Only 'destroy' or 'comm:close' event is supported `Model.trigger`",
+		);
 		this.#emit(event);
 	}
 

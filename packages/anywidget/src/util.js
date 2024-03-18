@@ -347,7 +347,7 @@ export function throw_anywidget_error(source) {
 }
 
 /** @param {HTMLElement} el */
-export function empty_element(el) {
+export function empty(el) {
 	while (el.firstChild) {
 		el.removeChild(el.firstChild);
 	}
