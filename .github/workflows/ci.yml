@@ -41,7 +41,7 @@ jobs:
 
       - run: |
           pip install uv
-          uv pip install --system -e '.[dev]'
+          uv pip install --system -e '.[test,dev]'
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
