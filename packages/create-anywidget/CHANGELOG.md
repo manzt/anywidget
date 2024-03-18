@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.4
+
+### Patch Changes
+
+- Change order of "Next steps" (npm install before git commands) ([#476](https://github.com/manzt/anywidget/pull/476))
+
 ## 0.5.3
 
 ### Patch Changes
