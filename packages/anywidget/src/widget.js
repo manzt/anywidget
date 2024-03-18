@@ -146,7 +146,7 @@ async function load_widget(esm) {
 		warn_render_deprecation();
 		return {
 			url,
-			async initialize() {},
+			async initialize() { },
 			render: mod.render,
 		};
 	}
@@ -245,10 +245,13 @@ function throw_anywidget_error(source) {
 /**
  * @template T
  * @param {import("@anywidget/types").AnyModel} model
- * @param {any} [action]
+ * @param {string} name
+ * @param {any} [msg]
+ * @param {DataView[]} [buffers]
  * @param {{ timeout?: number }} [options]
+* @return {Promise<[T, DataView[]]>}
  */
-export function dispatch(model, action, { timeout = 3000 } = {}) {
+export function invoke(model, name, msg, buffers = [], { timeout = 3000 } = {}) {
 	let id = Date.now().toString(36);
 	return new Promise((resolve, reject) => {
 		let timer = setTimeout(() => {
@@ -257,7 +260,7 @@ export function dispatch(model, action, { timeout = 3000 } = {}) {
 		}, timeout);
 
 		/**
-		 * @param {{ id: string, kind: "anywidget-dispatch-response", response: T }} msg
+		 * @param {{ id: string, kind: "anywidget-command-response", response: T }} msg
 		 * @param {DataView[]} buffers
 		 */
 		function handler(msg, buffers) {
@@ -267,13 +270,14 @@ export function dispatch(model, action, { timeout = 3000 } = {}) {
 			model.off("msg:custom", handler);
 		}
 		model.on("msg:custom", handler);
-		model.send({ id, kind: "anywidget-dispatch", action });
+		model.send({ id, kind: "anywidget-command", name, msg }, undefined, buffers);
 	});
 }
 
+
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => {};
+	#disposer = () => { };
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
@@ -311,7 +315,8 @@ class Runtime {
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
 						experimental: {
-							dispatch: dispatch.bind(null, model),
+							// @ts-expect-error - bind isn't working
+							invoke: invoke.bind(null, model),
 						},
 					});
 					return ok(widget);
@@ -352,7 +357,8 @@ class Runtime {
 							model: model_proxy(model, view),
 							el: view.el,
 							experimental: {
-								dispatch: dispatch.bind(null, model),
+								// @ts-expect-error - bind isn't working
+								invoke: invoke.bind(null, model),
 							},
 						});
 					} catch (e) {
@@ -388,7 +394,7 @@ class Runtime {
 let version = globalThis.VERSION;
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
-export default function ({ DOMWidgetModel, DOMWidgetView }) {
+export default function({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();
 

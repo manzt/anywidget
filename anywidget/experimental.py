@@ -8,9 +8,16 @@ import psygnal
 
 from ._descriptor import MimeBundleDescriptor
 
+<<<<<<< HEAD
 if typing.TYPE_CHECKING:  # pragma: no cover
     from ._protocols import AnywidgetReducerProtocol
 
+||||||| 7d335c0
+=======
+if typing.TYPE_CHECKING:  # pragma: no cover
+    from ._protocols import WidgetBase
+
+>>>>>>> manzt/command
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
 _T = typing.TypeVar("_T")
@@ -107,30 +114,51 @@ def dataclass(
 
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
 
+AnyWidgetCommand = typing.Callable[
+    [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
+]
 
-def _register_experimental_custom_message_reducer(
-    widget: AnywidgetReducerProtocol,
+_ANYWIDGET_COMMAND = "_anywidget_command"
+
+
+def command(cmd: AnyWidgetCommand) -> AnyWidgetCommand:
+    """Mark a function as a command for anywidget."""
+    setattr(cmd, _ANYWIDGET_COMMAND, True)
+    return cmd
+
+
+def _collect_commands(widget: WidgetBase) -> dict[str, AnyWidgetCommand]:
+    cmds: dict[str, AnyWidgetCommand] = {}
+    for attr_name in dir(widget):
+        attr = getattr(widget, attr_name)
+        if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
+            cmds[attr_name] = attr
+    return cmds
+
+
+def _register_anywidget_commands(
+    widget: WidgetBase,
 ) -> None:
     """Register a custom message reducer for a widget if it implements the protocol."""
-    # Only add the reducer if it doesn't already exist
-    if not hasattr(widget, "_experimental_anywidget_reducer"):
-        return
+    # Only add the callback if the widget has any commands.
+    cmds = _collect_commands(widget)
+    if len(cmds) == 0:
+        return None
 
-    def handle_anywidget_dispatch(
-        self: AnywidgetReducerProtocol, msg: str | list | dict, buffers: list[bytes]
+    def handle_anywidget_command(
+        self: WidgetBase, msg: str | list | dict, buffers: list[bytes]
     ) -> None:
-        if not isinstance(msg, dict) or msg.get("kind") != "anywidget-dispatch":
+        if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return
-        response, buffers = widget._experimental_anywidget_reducer(
-            msg["action"], buffers
-        )
+        cmd = cmds[msg["name"]]
+        response, buffers = cmd(msg["msg"], buffers)
         self.send(
             {
                 "id": msg["id"],
-                "kind": "anywidget-dispatch-response",
+                "kind": "anywidget-command-response",
                 "response": response,
             },
             buffers,
         )
 
-    widget.on_msg(handle_anywidget_dispatch)
+    widget.on_msg(handle_anywidget_command)

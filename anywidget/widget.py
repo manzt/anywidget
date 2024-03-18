@@ -17,7 +17,7 @@ from ._util import (
     try_file_contents,
 )
 from ._version import __version__
-from .experimental import _register_experimental_custom_message_reducer
+from .experimental import _register_anywidget_commands
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -58,7 +58,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
         super().__init__(*args, **kwargs)
-        _register_experimental_custom_message_reducer(self)
+        _register_anywidget_commands(self)
 
     def __init_subclass__(cls, **kwargs: dict) -> None:
         """Coerces _esm and _css to FileContents if they are files."""
