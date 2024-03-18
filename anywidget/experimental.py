@@ -108,21 +108,27 @@ def dataclass(
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
 
 
-AnyWidgetCommand = typing.Callable[
-    [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
-]
-
 _ANYWIDGET_COMMAND = "_anywidget_command"
 
+_AnyWidgetCommand = typing.Callable[
+    [typing.Any, typing.Any, typing.List[bytes]],
+    typing.Tuple[typing.Any, typing.List[bytes]],
+]
 
-def command(cmd: AnyWidgetCommand) -> AnyWidgetCommand:
+
+def command(cmd: _AnyWidgetCommand) -> _AnyWidgetCommand:
     """Mark a function as a command for anywidget."""
     setattr(cmd, _ANYWIDGET_COMMAND, True)
     return cmd
 
 
-def _collect_commands(widget: WidgetBase) -> dict[str, AnyWidgetCommand]:
-    cmds: dict[str, AnyWidgetCommand] = {}
+_AnyWidgetCommandBound = typing.Callable[
+    [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
+]
+
+
+def _collect_commands(widget: WidgetBase) -> dict[str, _AnyWidgetCommandBound]:
+    cmds: dict[str, _AnyWidgetCommandBound] = {}
     for attr_name in dir(widget):
         attr = getattr(widget, attr_name)
         if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
