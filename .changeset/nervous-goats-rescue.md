@@ -3,25 +3,23 @@
 "@anywidget/types": patch
 ---
 
-Add experimental reducer API for sending/await-ing custom messages
+Add experimental `invoke` API to call Python functions from the front end and
+await the response.
 
-Introduces a unified API for dispatching messages from the front end, and
-await-ing response from Python. This removes a lot of boilerplate required for
-this kind of pattern previously. This API is experimental and opt-in, only if
-`_experimental_anywidget_reducer` is implemented on the anywidget subclass.
+This removes a lot of boilerplate required for this pattern. The API is
+experimental and opt-in only. Subclasses must use the `command` to register
+functions.
 
 ```py
 class Widget(anywidget.AnyWidget):
     _esm = """
     async function render({ model, el, experimental }) {
-      let [response, buffers] = await experimental.dispatch("ping");
-      // Handle the response
-      console.log(response) // pong
+      let [msg, _buffers] = await experimental.invoke("_echo", "Hello, world");
     }
     export default { render };
     """
 
-    def _experimental_anywidget_reducer(self, action, buffers):
-        assert action == "ping"
-        return "pong", []
+    @anywidget.experimental.command
+    def _echo(self, msg, buffers):
+        return msg, buffers
 ```
