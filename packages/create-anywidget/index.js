@@ -163,6 +163,10 @@ if (relative !== "") {
 	console.log(`  ${i++}: ${bold(cyan(`cd ${relative}`))}`);
 }
 
+if (template !== "template-vanilla-deno-jsdoc") {
+	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
+}
+
 // dprint-ignore
 console.log(
 	`  ${i++}: ${
@@ -171,7 +175,6 @@ console.log(
 );
 
 if (template !== "template-vanilla-deno-jsdoc") {
-	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
 	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} run dev`))}`);
 	console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
 }
