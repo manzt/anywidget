@@ -78,12 +78,12 @@ features = ["test", "dev"]
 
 [tool.hatch.envs.default.scripts]
 lint = [
-  "ruff {args:.}",
+  "ruff check {args:.}",
   "ruff format --check --diff {args:.}",
 ]
 fmt = [
   "ruff format {args:.}",
-  "ruff --fix {args:.}",
+  "ruff check --fix {args:.}",
 ]
 test = "pytest . --cov anywidget --cov-report term-missing"
 

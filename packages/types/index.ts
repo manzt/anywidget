@@ -44,7 +44,11 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 }
 
 type Experimental = {
-	invoke: <T>(name: string, msg?: any, buffers?: DataView[]) => Promise<[T, DataView[]]>;
+	invoke: <T>(
+		name: string,
+		msg?: any,
+		buffers?: DataView[],
+	) => Promise<[T, DataView[]]>;
 };
 
 export interface RenderProps<T extends ObjectHash = ObjectHash> {

@@ -146,7 +146,7 @@ async function load_widget(esm) {
 		warn_render_deprecation();
 		return {
 			url,
-			async initialize() { },
+			async initialize() {},
 			render: mod.render,
 		};
 	}
@@ -249,9 +249,15 @@ function throw_anywidget_error(source) {
  * @param {any} [msg]
  * @param {DataView[]} [buffers]
  * @param {{ timeout?: number }} [options]
-* @return {Promise<[T, DataView[]]>}
+ * @return {Promise<[T, DataView[]]>}
  */
-export function invoke(model, name, msg, buffers = [], { timeout = 3000 } = {}) {
+export function invoke(
+	model,
+	name,
+	msg,
+	buffers = [],
+	{ timeout = 3000 } = {},
+) {
 	let id = Date.now().toString(36);
 	return new Promise((resolve, reject) => {
 		let timer = setTimeout(() => {
@@ -270,14 +276,17 @@ export function invoke(model, name, msg, buffers = [], { timeout = 3000 } = {}) 
 			model.off("msg:custom", handler);
 		}
 		model.on("msg:custom", handler);
-		model.send({ id, kind: "anywidget-command", name, msg }, undefined, buffers);
+		model.send(
+			{ id, kind: "anywidget-command", name, msg },
+			undefined,
+			buffers,
+		);
 	});
 }
 
-
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => { };
+	#disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
@@ -394,7 +403,7 @@ class Runtime {
 let version = globalThis.VERSION;
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
-export default function({ DOMWidgetModel, DOMWidgetView }) {
+export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();
 
