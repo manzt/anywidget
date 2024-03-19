@@ -44,6 +44,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -248,6 +250,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -484,6 +488,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -677,6 +683,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -878,6 +886,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -1116,6 +1126,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -1320,6 +1332,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -1556,6 +1570,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -1749,6 +1765,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},
@@ -1950,6 +1968,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
+				"%load_ext autoreload\\n",
+				"%autoreload 2\\n",
 				"%env ANYWIDGET_HMR=1"
 			]
 		},

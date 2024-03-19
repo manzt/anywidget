@@ -202,7 +202,11 @@ let notebook = (name) =>
 				"execution_count": null,
 				"metadata": {},
 				"outputs": [],
-				"source": ["%env ANYWIDGET_HMR=1"],
+				"source": [
+					"%load_ext autoreload\n",
+					"%autoreload 2\n",
+					"%env ANYWIDGET_HMR=1",
+				],
 			},
 			{
 				"cell_type": "code",
