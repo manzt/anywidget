@@ -9,7 +9,7 @@ Jupyter Widgets for Jupyter JavaScript Kernels (experimental).
 ```typescript
 import { widget } from "https://deno.land/x/anywidget/mod.ts";
 
-const model = await widget({
+const model = widget({
 	state: { letters: "abcd" },
 	imports: `\
 import * as d3 from "https://esm.sh/d3";

@@ -1,5 +1,4 @@
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
-import mitt, { type Emitter } from "npm:mitt@3";
+import * as path from "jsr:@std/path@0.220.1";
 import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
@@ -110,29 +109,30 @@ type ChangeEvents<State> = {
 };
 
 class Model<State> {
-	_state: State;
-	_emitter: Emitter<ChangeEvents<State>>;
+	private _state: State;
+	private _target: EventTarget;
 
 	constructor(state: State) {
 		this._state = state;
-		// types are messed up for mitt.
-		this._emitter = (mitt as unknown as typeof mitt.default)<
-			ChangeEvents<State>
-		>();
+		this._target = new EventTarget();
 	}
 	get<K extends keyof State>(key: K): State[K] {
 		return this._state[key];
 	}
 	set<K extends keyof State>(key: K, value: State[K]): void {
 		// @ts-expect-error can't convince TS that K is a key of State
-		this._emitter.emit(`change:${key}`, value);
+		this._emit(`change:${key}`, value);
 		this._state[key] = value;
 	}
 	on<Event extends keyof ChangeEvents<State>>(
 		name: Event,
-		callback: (data: ChangeEvents<State>[Event]) => void,
+		callback: () => void,
 	): void {
-		this._emitter.on(name, callback);
+		this._target.addEventListener(name, callback);
+	}
+
+	private _emit(name: string, data: unknown) {
+		this._target.dispatchEvent(new CustomEvent(name, { detail: data }));
 	}
 }
 
@@ -166,7 +166,7 @@ function to_esm<State>({
 	return `${imports}\nexport const render = ${render.toString()}`;
 }
 
-export async function widget<State>({
+export function widget<State>({
 	state,
 	render,
 	imports,
@@ -174,17 +174,23 @@ export async function widget<State>({
 }: WidgetProps<State>) {
 	let model = new Model(state);
 	let comm = new Comm({ anywidget_version: version });
-	await comm.init();
-	await comm.send_state({ ...state, _esm: to_esm({ imports, render }) });
+	let init_promise = comm
+		.init()
+		.then(() =>
+			comm.send_state({ ...state, _esm: to_esm({ imports, render }) })
+		);
 	for (let key in state) {
-		model.on(`change:${key}`, (data) => {
-			comm.send_state({ [key]: data });
+		model.on(`change:${key}`, () => {
+			comm.send_state({ [key]: model.get(key) });
 		});
 	}
 	let obj = new Proxy(model, {
 		get(target, prop, receiver) {
 			if (prop === Symbol.for("Jupyter.display")) {
-				return comm.mimebundle.bind(comm);
+				return async () => {
+					await init_promise;
+					return comm.mimebundle();
+				};
 			}
 			return Reflect.get(target, prop, receiver);
 		},
