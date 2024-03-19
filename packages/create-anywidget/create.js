@@ -205,7 +205,7 @@ let notebook = (name) =>
 				"source": [
 					"%load_ext autoreload\n",
 					"%autoreload 2\n",
-					"%env ANYWIDGET_HMR=1"
+					"%env ANYWIDGET_HMR=1",
 				],
 			},
 			{
