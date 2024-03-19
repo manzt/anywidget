@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -39,9 +39,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: |
+      - if: ${{ matrix.python }} != "3.7" # uv doesn't support Python 3.7
+        run: |
           pip install uv
           uv pip install --system -e '.[test,dev]'
+
+      - if: ${{ matrix.python }} == "3.7"
+        run: |
+          pip install -e '.[test,dev]'
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml
