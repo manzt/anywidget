@@ -9,7 +9,7 @@ Deno.test("widget() initializes the front end", async () => {
 			imports: "BLAH",
 			render: async ({ model, el }) => {},
 		});
-		await _internals.get_init_promise(widget)
+		await _internals.get_init_promise(widget);
 		mock.assertSpyCalls(jupyter_broadcast, 2);
 		mock.assertSpyCall(jupyter_broadcast, 0, {
 			args: [
