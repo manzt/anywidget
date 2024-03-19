@@ -1,10 +1,13 @@
-import * as path from "jsr:@std/path@0.220.1";
+import * as path from "jsr:@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 let DEFAULT_VERSION = "0.7.0";
 let ANYWIDGET_VERSION = await find_anywidget_version().catch(
-	() => DEFAULT_VERSION,
+	(err) => {
+		console.warn(`Failed to find anywidget frontend version: ${err}`);
+		return DEFAULT_VERSION;
+	}
 );
 
 async function find_anywidget_version(): Promise<string> {
@@ -42,10 +45,13 @@ export const _internals = {
 		}
 		return comm;
 	},
-	get_init_promise(model: object): Promise<void> | undefined {
-		// @ts-expect-error - Symbol is not in the type definition
+	get_init_promise(model: Model<unknown>): Promise<void> | undefined {
+		// @ts-expect-error - we hide the symbol from the user
 		return model[init_promise_symbol];
 	},
+	get version() {
+		return ANYWIDGET_VERSION;
+	}
 };
 
 class Comm {
