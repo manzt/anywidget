@@ -31,6 +31,8 @@ let jupyter_broadcast: Broadcast = (() => {
 	}
 })();
 
+let init_promise_symbol = Symbol("init_promise");
+
 export const _internals = {
 	jupyter_broadcast,
 	get_comm(model: object): Comm {
@@ -39,6 +41,10 @@ export const _internals = {
 			throw new Error("No comm found for model");
 		}
 		return comm;
+	},
+	get_init_promise(model: object): Promise<void> | undefined {
+		// @ts-expect-error - Symbol is not in the type definition
+		return model[init_promise_symbol];
 	},
 };
 
@@ -186,6 +192,9 @@ export function widget<State>({
 	}
 	let obj = new Proxy(model, {
 		get(target, prop, receiver) {
+			if (prop === init_promise_symbol) {
+				return init_promise;
+			}
 			if (prop === Symbol.for("Jupyter.display")) {
 				return async () => {
 					await init_promise;

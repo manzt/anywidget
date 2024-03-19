@@ -1,4 +1,11 @@
 {
+	"name": "@anywidget/kernel",
+	"version": "0.0.5",
+	"exports": {
+		".": "./mod.ts",
+		"./install": "./install.ts",
+		"./uninstall": "./uninstall.ts"
+	},
 	"lock": false,
 	"fmt": {
 		"useTabs": true
@@ -17,9 +24,9 @@
 		]
 	},
 	"imports": {
-		"@std/path": "jsr:@std/path@0.203.0",
-		"@std/fs": "jsr:@std/fs@0.203.0",
-		"@std/flags": "jsr:@std/flags@0.203.0",
-		"@std/testing": "jsr:@std/testing@0.202.0"
+		"@std/path": "jsr:@std/path@0.220.1",
+		"@std/fs": "jsr:@std/fs@0.220.1",
+		"@std/flags": "jsr:@std/flags@0.220.1",
+		"@std/testing": "jsr:@std/testing@0.220.1"
 	}
 }

@@ -4,11 +4,12 @@ import { _internals, widget } from "./mod.ts";
 Deno.test("widget() initializes the front end", async () => {
 	let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
 	try {
-		let model = await widget({
+		let model = widget({
 			state: { value: 0 },
 			imports: "BLAH",
 			render: async ({ model, el }) => {},
 		});
+		await _internals.get_init_promise(widget)
 		mock.assertSpyCalls(jupyter_broadcast, 2);
 		mock.assertSpyCall(jupyter_broadcast, 0, {
 			args: [
@@ -53,10 +54,10 @@ Deno.test("widget() initializes the front end", async () => {
 	}
 });
 
-Deno.test("model.set() sends change events to the front end", async () => {
+Deno.test("model.set() sends change events to the front end", () => {
 	let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
 	try {
-		let model = await widget({
+		let model = widget({
 			state: { value: 0 },
 			render: async () => {},
 		});
@@ -72,10 +73,10 @@ Deno.test("model.set() sends change events to the front end", async () => {
 	}
 });
 
-Deno.test("Explicit anywidget version overrides the default", async () => {
+Deno.test("Explicit anywidget version overrides the default", () => {
 	let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
 	let version = "VERSION";
-	let model = await widget({
+	let model = widget({
 		state: { value: 0 },
 		render: async () => {},
 		version: version,

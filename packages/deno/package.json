@@ -1,10 +1,5 @@
 {
 	"name": "@anywidget/deno",
 	"version": "0.0.5",
-	"description": "A stub-package for making releases of the Deno anywidget mod.ts with changesets",
-	"exports": {
-		".": "./mod.ts",
-		"./install": "./install.ts",
-		"./uninstall": "./uninstall.ts"
-	}
+	"description": "A stub-package for making releases of the Deno anywidget mod.ts with changesets"
 }
