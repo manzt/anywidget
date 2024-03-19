@@ -5,10 +5,21 @@
 	},
 	"lint": {
 		"rules": {
-			"exclude": ["prefer-const"]
+			"exclude": [
+				"prefer-const"
+			]
 		}
 	},
 	"compilerOptions": {
-		"lib": ["deno.window", "deno.unstable"]
+		"lib": [
+			"deno.window",
+			"deno.unstable"
+		]
+	},
+	"imports": {
+		"@std/path": "jsr:@std/path@0.203.0",
+		"@std/fs": "jsr:@std/fs@0.203.0",
+		"@std/flags": "jsr:@std/flags@0.203.0",
+		"@std/testing": "jsr:@std/testing@0.202.0"
 	}
 }

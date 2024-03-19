@@ -1,5 +1,5 @@
 // Adapted from https://github.com/nteract/jupyter-paths/blob/main/index.js#L175
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
+import * as path from "@std/path";
 
 /**
  * Guesses the sys.prefix for the current Python installation.

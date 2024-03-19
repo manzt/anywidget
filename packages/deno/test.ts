@@ -1,4 +1,4 @@
-import * as mock from "https://deno.land/std@0.202.0/testing/mock.ts";
+import * as mock from "@std/testing/mock";
 import { _internals, widget } from "./mod.ts";
 
 Deno.test("widget() initializes the front end", async () => {

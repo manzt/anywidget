@@ -1,6 +1,6 @@
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
-import * as fs from "https://deno.land/std@0.203.0/fs/mod.ts";
-import * as flags from "https://deno.land/std@0.203.0/flags/mod.ts";
+import * as path from "@std/path";
+import * as fs from "@std/fs";
+import * as flags from "@std/flags";
 import * as unzipit from "npm:unzipit@1.4";
 import * as z from "npm:zod@3.9";
 import {

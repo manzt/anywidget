@@ -1,4 +1,4 @@
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
+import * as path from "@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
 
 let data_dir = await find_data_dir();
