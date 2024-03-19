@@ -163,7 +163,8 @@ if (template !== "template-vanilla-deno-jsdoc") {
 
 // dprint-ignore
 console.log(
-	`  ${i++}: ${bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
+	`  ${i++}: ${
+		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
 	} (optional)`,
 );
 
