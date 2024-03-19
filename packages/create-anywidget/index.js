@@ -98,11 +98,16 @@ if (p.isCancel(framework)) {
 let pkg_manager = detect_package_manager() ?? "npm";
 let bundler = pkg_manager === "bun" ? "bun" : "esbuild";
 
-/** @type { string | symbol } */
+/** @type {string | symbol} */
 let template = await p.select({
 	message: "Which variant?",
 	options: {
 		vanilla: [
+			{
+				label: "JavaScript (minimal)",
+				hint: "No front-end tooling. Requires CDN-only imports.",
+				value: "template-vanilla-deno-jsdoc",
+			},
 			{
 				label: "JavaScript",
 				hint: `Bundles dependencies with ${bundler}.`,
@@ -112,12 +117,6 @@ let template = await p.select({
 				label: "TypeScript",
 				hint: `Bundles dependencies with ${bundler}.`,
 				value: "template-vanilla-ts",
-			},
-			{
-				label: "JavaScript (minimal)",
-				hint:
-					"No bundler, requires CDN-only imports. Supports TypeScript via JSDoc comments.",
-				value: "template-vanilla-deno-jsdoc",
 			},
 		],
 		react: [
@@ -149,11 +148,6 @@ await create(cwd, {
 });
 
 p.outro("Your project is ready!");
-
-// TODO: should we print the files?
-// for (const path of writtenPaths) {
-//   console.log(`  ${bold(path)}`);
-// }
 
 console.log("\nNext steps:");
 let i = 1;
