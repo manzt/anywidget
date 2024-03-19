@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.5.5
+
+### Patch Changes
+
+- Switch default option to Vanilla (minimal) ([#484](https://github.com/manzt/anywidget/pull/484))
+
+- Add `autoreload` extension to demo notebook ([#486](https://github.com/manzt/anywidget/pull/486))
+
 ## 0.5.4
 
 ### Patch Changes
