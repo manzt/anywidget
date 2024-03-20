@@ -1,14 +1,3 @@
-import * as path from "@std/path";
-import * as fs from "@std/fs";
-import * as cli from "@std/cli";
-import * as unzipit from "unzipit";
-import * as z from "zod";
-import {
-	find_data_dir,
-	system_data_dirs,
-	user_data_dir,
-} from "./jupyter_paths.ts";
-
 /**
  * @module
  * Install the front-end anywidget assets for JupyterLab.
@@ -19,6 +8,17 @@ import {
  * deno run -A jsr:@anywidget/deno/install
  * ```
  */
+
+import * as path from "@std/path";
+import * as fs from "@std/fs";
+import * as cli from "@std/cli";
+import * as unzipit from "unzipit";
+import * as z from "zod";
+import {
+	find_data_dir,
+	system_data_dirs,
+	user_data_dir,
+} from "./jupyter_paths.ts";
 
 let ReleaseSchema = z.object({
 	packagetype: z.string(),

@@ -1,10 +1,10 @@
-import * as path from "@std/path";
-import { find_data_dir } from "./jupyter_paths.ts";
-
 /**
  * Jupyter widgets for the Deno Jupyter kernel.
  * @module
  */
+
+import * as path from "@std/path";
+import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
@@ -187,6 +187,9 @@ export type FrontEndModel<State> = _Model<State> & {
 type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
 	: unknown;
 
+/**
+ * 
+ */
 export type WidgetProps<State> = {
 	/** The initial state of the widget. */
 	state: State;

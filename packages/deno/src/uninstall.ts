@@ -1,6 +1,3 @@
-import * as path from "@std/path";
-import { find_data_dir } from "./jupyter_paths.ts";
-
 /**
  * @module
  *
@@ -10,6 +7,9 @@ import { find_data_dir } from "./jupyter_paths.ts";
  * deno run -A jsr:@anywidget/deno/uninstall
  * ```
  */
+
+import * as path from "@std/path";
+import { find_data_dir } from "./jupyter_paths.ts";
 
 let data_dir = await find_data_dir();
 
