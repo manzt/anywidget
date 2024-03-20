@@ -1,5 +1,5 @@
 {
-	"name": "@anywidget/kernel",
+	"name": "@anywidget/deno",
 	"version": "0.0.5",
 	"exports": {
 		".": "./mod.ts",
