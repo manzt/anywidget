@@ -18,4 +18,5 @@ jobs:
       - name: Publish package
         run: |
           cd packages/deno
+          rm package.json
           npx jsr publish
