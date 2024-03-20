@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.1.0
+
+### Minor Changes
+
+- Switch to sync API to define widget ([#487](https://github.com/manzt/anywidget/pull/487))
+
 ## 0.0.5
 
 ### Patch Changes
