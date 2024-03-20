@@ -1,5 +1,14 @@
 # @anywidget/deno
 
+## 0.1.1
+
+### Patch Changes
+
+- Publish package to [`jsr:@anywidget/deno`](https://jsr.io/@anywidget/deno) ([#491](https://github.com/manzt/anywidget/pull/491))
+
+  Deprecates https://deno.land/x/anywidget distribution for the preferred
+  [JSR](https://jsr.io).
+
 ## 0.1.0
 
 ### Minor Changes
