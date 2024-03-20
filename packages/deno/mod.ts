@@ -7,7 +7,7 @@ let ANYWIDGET_VERSION = await find_anywidget_version().catch(
 	(err) => {
 		console.warn(`Failed to find anywidget frontend version: ${err}`);
 		return DEFAULT_VERSION;
-	}
+	},
 );
 
 async function find_anywidget_version(): Promise<string> {
@@ -51,7 +51,7 @@ export const _internals = {
 	},
 	get version() {
 		return ANYWIDGET_VERSION;
-	}
+	},
 };
 
 class Comm {
