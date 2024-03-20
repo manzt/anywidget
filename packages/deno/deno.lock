@@ -1,0 +1,46 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@std/assert@^0.220.1": "jsr:@std/assert@0.220.1",
+      "jsr:@std/fmt@^0.220.1": "jsr:@std/fmt@0.220.1",
+      "jsr:@std/path": "jsr:@std/path@0.220.1",
+      "jsr:@std/path@0.220.1": "jsr:@std/path@0.220.1",
+      "jsr:@std/testing@0.220.1": "jsr:@std/testing@0.220.1"
+    },
+    "jsr": {
+      "@std/assert@0.220.1": {
+        "integrity": "88710d54f3afdd7a5761e7805abba1f56cd14e4b212feffeb3e73a9f77482425",
+        "dependencies": [
+          "jsr:@std/fmt@^0.220.1"
+        ]
+      },
+      "@std/fmt@0.220.1": {
+        "integrity": "3b1a698477a26b1dacbbee26db1a65030a005c6d71db3b3a0e59f8a638f04d7a"
+      },
+      "@std/path@0.220.1": {
+        "integrity": "cc63c1b5e5192e2f718dc2f365a3514fffb26cc0380959bab0f8fb5988a52f0c",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1"
+        ]
+      },
+      "@std/testing@0.220.1": {
+        "integrity": "be77cc1df543f70217d450612637f9f6fcc6887f19fca89665ce08456ee1f290",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1"
+        ]
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/flags@0.220.1",
+      "jsr:@std/fs@0.220.1",
+      "jsr:@std/path@0.220.1",
+      "jsr:@std/testing@0.220.1",
+      "npm:unzipit@1.4",
+      "npm:zod@3.9"
+    ]
+  }
+}

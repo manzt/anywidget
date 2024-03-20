@@ -1,8 +1,8 @@
 import * as path from "@std/path";
 import * as fs from "@std/fs";
 import * as flags from "@std/flags";
-import * as unzipit from "npm:unzipit@1.4";
-import * as z from "npm:zod@3.9";
+import * as unzipit from "unzipit";
+import * as z from "zod";
 import {
 	find_data_dir,
 	system_data_dirs,
