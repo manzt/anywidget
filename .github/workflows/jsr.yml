@@ -7,12 +7,10 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-
+    runs-on: macos-14
     permissions:
       contents: read
       id-token: write
-
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
@@ -20,4 +18,6 @@ jobs:
           deno-version: v1.x
       - run: |
           cd packages/deno
-          deno publish
+          # sync deno version with package.json
+          sed -i '' 's/\"version\": \"[^\"]*\"/\"version\": \"'$(jq -r '.version' package.json)'\"/' deno.json
+          deno publish --allow-dirty

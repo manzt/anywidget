@@ -1,7 +1,6 @@
 {
 	"name": "@anywidget/deno",
-	"//": "DO NOT EDIT THIS VERSION. Update package.json and run pnpm sync-version.",
-	"version": "0.1.0",
+	"version": "DO NOT EDIT DIRECTLY. Set by changesets in package.json",
 	"exports": {
 		".": "./src/mod.ts",
 		"./install": "./src/install.ts",
