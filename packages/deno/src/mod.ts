@@ -1,6 +1,11 @@
 import * as path from "@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
 
+/**
+ * Jupyter widgets for the Deno Jupyter kernel.
+ * @module
+ */
+
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
 let DEFAULT_VERSION: string = "0.9.3";

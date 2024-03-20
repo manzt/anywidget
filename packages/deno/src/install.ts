@@ -9,6 +9,17 @@ import {
 	user_data_dir,
 } from "./jupyter_paths.ts";
 
+/**
+ * @module
+ * Install the front-end anywidget assets for JupyterLab.
+ *
+ * Requires read and write privileges to the Jupyter data directories.
+ *
+ * ```sh
+ * deno run -A jsr:@anywidget/deno/install
+ * ```
+ */
+
 let ReleaseSchema = z.object({
 	packagetype: z.string(),
 	url: z.string(),

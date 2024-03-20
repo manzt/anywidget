@@ -1,6 +1,16 @@
 import * as path from "@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
 
+/**
+ * @module
+ *
+ * Uninstall the front-end anywidget assets for JupyterLab.
+ *
+ * ```sh
+ * deno run -A jsr:@anywidget/deno/uninstall
+ * ```
+ */
+
 let data_dir = await find_data_dir();
 
 await Deno.readTextFile(
