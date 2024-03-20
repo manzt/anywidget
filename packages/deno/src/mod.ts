@@ -224,7 +224,7 @@ function to_esm<State>({
 
 /** The options bag to pass to the {@link widget} method. */
 export type WidgetOptions<State> = {
-	/** The initial state of the widget. */
+	/** The initial widget state. */
 	state: State;
 	/** A function that renders the widget. This function is serialized and sent to the front end. */
 	render: (context: {
@@ -233,7 +233,7 @@ export type WidgetOptions<State> = {
 	}) => unknown;
 	/** The imports required for the front-end function. */
 	imports?: string;
-	/** The version of anywidget to use. */
+	/** The version of the anywidget front end to use. */
 	version?: string;
 };
 
@@ -262,11 +262,7 @@ export type WidgetOptions<State> = {
  * counter; // displays the widget
  * ```
  *
- * @param options - The properties of the widget.
- * @param props.state - The initial state of the widget (must be an object)
- * @param props.render - A function that renders the widget in the front end. This function is serialized and sent to the front end.
- * @param props.imports - The CDN ESM imports required for the front-end function.
- * @param props.version - The version of anywidget to use.
+ * @param options - The options for the widget {@link WidgetOptions}.
  */
 export function widget<State>(options: WidgetOptions<State>): Model<State> {
 	let { state, render, imports, version } = options;
