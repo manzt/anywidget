@@ -1,13 +1,24 @@
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
-import * as fs from "https://deno.land/std@0.203.0/fs/mod.ts";
-import * as flags from "https://deno.land/std@0.203.0/flags/mod.ts";
-import * as unzipit from "npm:unzipit@1.4";
-import * as z from "npm:zod@3.9";
+import * as path from "@std/path";
+import * as fs from "@std/fs";
+import * as cli from "@std/cli";
+import * as unzipit from "unzipit";
+import * as z from "zod";
 import {
 	find_data_dir,
 	system_data_dirs,
 	user_data_dir,
 } from "./jupyter_paths.ts";
+
+/**
+ * @module
+ * Install the front-end anywidget assets for JupyterLab.
+ *
+ * Requires read and write privileges to the Jupyter data directories.
+ *
+ * ```sh
+ * deno run -A jsr:@anywidget/deno/install
+ * ```
+ */
 
 let ReleaseSchema = z.object({
 	packagetype: z.string(),
@@ -87,7 +98,7 @@ async function has_jupyter_widgets() {
 	return false;
 }
 
-let args = flags.parse(Deno.args, { string: ["version"] });
+let args = cli.parseArgs(Deno.args);
 let out_dir = await find_data_dir();
 
 {

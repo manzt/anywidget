@@ -1,14 +1,34 @@
 {
-	"lock": false,
+	"name": "@anywidget/deno",
+	"//": "DO NOT EDIT THIS VERSION. Update package.json and run pnpm sync-version.",
+	"version": "0.1.0",
+	"exports": {
+		".": "./src/mod.ts",
+		"./install": "./src/install.ts",
+		"./uninstall": "./src/uninstall.ts"
+	},
 	"fmt": {
 		"useTabs": true
 	},
 	"lint": {
 		"rules": {
-			"exclude": ["prefer-const"]
+			"exclude": [
+				"prefer-const"
+			]
 		}
 	},
 	"compilerOptions": {
-		"lib": ["deno.window", "deno.unstable"]
+		"lib": [
+			"deno.window",
+			"deno.unstable"
+		]
+	},
+	"imports": {
+		"@std/cli": "jsr:@std/cli@^0.220.1",
+		"@std/fs": "jsr:@std/fs@0.220.1",
+		"@std/path": "jsr:@std/path@0.220.1",
+		"@std/testing": "jsr:@std/testing@0.220.1",
+		"unzipit": "npm:unzipit@1.4",
+		"zod": "npm:zod@3.9"
 	}
 }

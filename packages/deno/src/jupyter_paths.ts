@@ -1,5 +1,6 @@
+import * as path from "@std/path";
+
 // Adapted from https://github.com/nteract/jupyter-paths/blob/main/index.js#L175
-import * as path from "https://deno.land/std@0.203.0/path/mod.ts";
 
 /**
  * Guesses the sys.prefix for the current Python installation.
@@ -34,7 +35,7 @@ async function guess_sys_prefix(): Promise<string | undefined> {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-export function user_data_dir() {
+export function user_data_dir(): string {
 	if (Deno.build.os === "windows") {
 		return path.resolve(Deno.env.get("APPDATA")!, "jupyter");
 	}
@@ -50,7 +51,7 @@ export function user_data_dir() {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-export function system_data_dirs() {
+export function system_data_dirs(): Array<string> {
 	if (Deno.build.os === "windows") {
 		return [path.resolve(Deno.env.get("PROGRAMDATA")!, "jupyter")];
 	}
