@@ -2,9 +2,9 @@
 	"name": "@anywidget/deno",
 	"version": "0.0.5",
 	"exports": {
-		".": "./mod.ts",
-		"./install": "./install.ts",
-		"./uninstall": "./uninstall.ts"
+		".": "./src/mod.ts",
+		"./install": "./src/install.ts",
+		"./uninstall": "./src/uninstall.ts"
 	},
 	"lock": false,
 	"fmt": {

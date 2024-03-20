@@ -1,5 +1,5 @@
 import * as mock from "@std/testing/mock";
-import { _internals, widget } from "./mod.ts";
+import { _internals, widget } from "./src/mod.ts";
 
 Deno.test("widget() initializes the front end", async () => {
 	let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
