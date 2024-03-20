@@ -1,10 +1,10 @@
-import * as path from "@std/path";
-import { find_data_dir } from "./jupyter_paths.ts";
-
 /**
  * Jupyter widgets for the Deno Jupyter kernel.
  * @module
  */
+
+import * as path from "@std/path";
+import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
@@ -62,7 +62,7 @@ interface TestingInternals {
 	/** Get the comm for a model */
 	get_comm(model: object): Comm;
 	/** Get the init promise for a model */
-	get_init_promise(model: _Model<unknown>): Promise<void> | undefined;
+	get_init_promise(model: Model<unknown>): Promise<void> | undefined;
 	/** The version of anywidget used. */
 	version: string;
 }
@@ -77,8 +77,8 @@ export const _internals: TestingInternals = {
 		}
 		return comm;
 	},
-	get_init_promise(model: _Model<unknown>): Promise<void> | undefined {
-		// @ts-expect-error - we hide the symbol from the user
+	get_init_promise(model: Model<unknown>): Promise<void> | undefined {
+		// @ts-expect-error - We have tagged this symbol onto the model privately
 		return model[init_promise_symbol];
 	},
 	get version() {
@@ -99,10 +99,12 @@ class Comm {
 		this.#protocol_version_minor = 1;
 	}
 
+	/** The id of the comm. */
 	get id(): string {
 		return this.#id;
 	}
 
+	/** Send a message to the front end to initialize the widget. */
 	init(): Promise<void> {
 		return _internals.jupyter_broadcast(
 			"comm_open",
@@ -130,6 +132,7 @@ class Comm {
 		);
 	}
 
+	/** Send a state update to the front end. */
 	send_state(state: object): Promise<void> {
 		return _internals.jupyter_broadcast("comm_msg", {
 			comm_id: this.id,
@@ -137,6 +140,7 @@ class Comm {
 		});
 	}
 
+	/** The Jupyter "mimebundle" for displaying the underlying widget. */
 	mimebundle(): Mimebundle {
 		return {
 			"application/vnd.jupyter.widget-view+json": {
@@ -152,7 +156,8 @@ type ChangeEvents<State> = {
 	[K in string & keyof State as `change:${K}`]: State[K];
 };
 
-class _Model<State> {
+/** A BackboneJS-like model for the anywidget. */
+export class Model<State> {
 	private _state: State;
 	private _target: EventTarget;
 
@@ -160,15 +165,37 @@ class _Model<State> {
 		this._state = state;
 		this._target = new EventTarget();
 	}
+
+	/**
+	 * Get a property of the state object.
+	 *
+	 * @param key - The property to get.
+	 */
 	get<K extends keyof State>(key: K): State[K] {
 		return this._state[key];
 	}
+
+	/**
+	 * Set a property of the state object.
+	 *
+	 * @param key - The property to set.
+	 * @param value - The new value.
+	 */
 	set<K extends keyof State>(key: K, value: State[K]): void {
 		this._state[key] = value;
 		this._target.dispatchEvent(
 			new CustomEvent(`change:${key as string}`, { detail: value }),
 		);
 	}
+
+	/**
+	 * Subscribe to changes in the state object.
+	 *
+	 * Note: Only `change:${key}` events are supported.
+	 *
+	 * @param name - The event name to subscribe to.
+	 * @param callback - The callback to call when the event is dispatched.
+	 */
 	on<Event extends keyof ChangeEvents<State>>(
 		name: Event,
 		callback: () => void,
@@ -177,9 +204,9 @@ class _Model<State> {
 	}
 }
 
-export type Model = typeof _Model;
-
-export type FrontEndModel<State> = _Model<State> & {
+/** The front end variant of the model. */
+export type FrontEndModel<State> = Model<State> & {
+	/** Sync changes with the Deno kernel. */
 	save_changes(): void;
 };
 
@@ -187,8 +214,17 @@ export type FrontEndModel<State> = _Model<State> & {
 type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
 	: unknown;
 
-export type WidgetProps<State> = {
-	/** The initial state of the widget. */
+// TODO: more robust serialization of render function (with context?)
+function to_esm<State>({
+	imports = "",
+	render,
+}: Pick<WidgetOptions<State>, "imports" | "render">) {
+	return `${imports}\nexport default { render: ${render.toString()} }`;
+}
+
+/** The options bag to pass to the {@link widget} method. */
+export type WidgetOptions<State> = {
+	/** The initial widget state. */
 	state: State;
 	/** A function that renders the widget. This function is serialized and sent to the front end. */
 	render: (context: {
@@ -197,17 +233,9 @@ export type WidgetProps<State> = {
 	}) => unknown;
 	/** The imports required for the front-end function. */
 	imports?: string;
-	/** The version of anywidget to use. */
+	/** The version of the anywidget front end to use. */
 	version?: string;
 };
-
-// TODO: more robust serialization of render function (with context?)
-function to_esm<State>({
-	imports = "",
-	render,
-}: Pick<WidgetProps<State>, "imports" | "render">) {
-	return `${imports}\nexport default { render: ${render.toString()} }`;
-}
 
 /**
  * Creates an anywidget for the Deno Jupyter kernel.
@@ -234,21 +262,17 @@ function to_esm<State>({
  * counter; // displays the widget
  * ```
  *
- * @param props - The properties of the widget.
- * @param props.state - The initial state of the widget (must be an object)
- * @param props.render - A function that renders the widget in the front end. This function is serialized and sent to the front end.
- * @param props.imports - The CDN ESM imports required for the front-end function.
- * @param props.version - The version of anywidget to use.
+ * @param options - The options for the widget {@link WidgetOptions}.
  */
-export function widget<State>(props: WidgetProps<State>): _Model<State> {
-	let { state, render, imports, version } = props;
+export function widget<State>(options: WidgetOptions<State>): Model<State> {
+	let { state, render, imports, version } = options;
 	let comm = new Comm({ anywidget_version: version });
 	let init_promise = comm
 		.init()
 		.then(() =>
 			comm.send_state({ ...state, _esm: to_esm({ imports, render }) })
 		);
-	let model = new _Model(state);
+	let model = new Model(state);
 	for (let key in state) {
 		model.on(`change:${key}`, () => {
 			comm.send_state({ [key]: model.get(key) });

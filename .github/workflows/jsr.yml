@@ -1,0 +1,21 @@
+name: Publish @anywidget/deno to jsr
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish package
+        run: |
+          cd packages/deno
+          npx jsr publish
