@@ -44,7 +44,8 @@ Deno.test("widget() initializes the front end", async () => {
 						"method": "update",
 						"state": {
 							"value": 0,
-							"_esm": "BLAH\nexport default { render: async ({ model, el })=>{} }",
+							"_esm":
+								"BLAH\nexport default { render: async ({ model, el })=>{} }",
 						},
 					},
 				},

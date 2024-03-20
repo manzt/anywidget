@@ -3,8 +3,8 @@ import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
-let DEFAULT_VERSION = "0.9.3";
-let DEFAULT_ANYWIDGET_VERSION = await find_anywidget_version().catch(
+let DEFAULT_VERSION: string = "0.9.3";
+let DEFAULT_ANYWIDGET_VERSION: string = await find_anywidget_version().catch(
 	(err) => {
 		console.warn(`Failed to find anywidget frontend version: ${err}`);
 		return DEFAULT_VERSION;
@@ -19,14 +19,6 @@ async function find_anywidget_version(): Promise<string> {
 	return JSON.parse(contents).version;
 }
 
-type Broadcast = (
-	type: string,
-	content: Record<string, unknown>,
-	extra?: {
-		metadata?: Record<string, unknown>;
-	},
-) => Promise<void>;
-
 let jupyter_broadcast: Broadcast = (() => {
 	try {
 		return Deno.jupyter.broadcast;
@@ -37,8 +29,41 @@ let jupyter_broadcast: Broadcast = (() => {
 
 let init_promise_symbol = Symbol("init_promise");
 
+type Broadcast = (
+	type: string,
+	content: Record<string, unknown>,
+	extra?: {
+		metadata?: Record<string, unknown>;
+	},
+) => Promise<void>;
+
+/** The Jupyter "mimebundle" for displaying the underlying widget. */
+type Mimebundle = {
+	"application/vnd.jupyter.widget-view+json": {
+		version_major: number;
+		version_minor: number;
+		model_id: string;
+	};
+};
+
+/**
+ * @private
+ *
+ * These are internals used for testing/inspecting anywidget in Deno. DO NOT USE IN PRODUCTION.
+ */
+interface TestingInternals {
+	/** Broadcast a message to the front end. Stubbed in testing. */
+	jupyter_broadcast: Broadcast;
+	/** Get the comm for a model */
+	get_comm(model: object): Comm;
+	/** Get the init promise for a model */
+	get_init_promise(model: Model<unknown>): Promise<void> | undefined;
+	/** The version of anywidget used. */
+	version: string;
+}
+
 /** @private */
-export const _internals = {
+export const _internals: TestingInternals = {
 	jupyter_broadcast,
 	get_comm(model: object): Comm {
 		let comm = COMMS.get(model);
@@ -69,7 +94,7 @@ class Comm {
 		this.#protocol_version_minor = 1;
 	}
 
-	get id() {
+	get id(): string {
 		return this.#id;
 	}
 
@@ -107,7 +132,7 @@ class Comm {
 		});
 	}
 
-	mimebundle() {
+	mimebundle(): Mimebundle {
 		return {
 			"application/vnd.jupyter.widget-view+json": {
 				version_major: this.#protocol_version_major,
