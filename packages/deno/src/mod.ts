@@ -62,7 +62,7 @@ interface TestingInternals {
 	/** Get the comm for a model */
 	get_comm(model: object): Comm;
 	/** Get the init promise for a model */
-	get_init_promise(model: Model<unknown>): Promise<void> | undefined;
+	get_init_promise(model: _Model<unknown>): Promise<void> | undefined;
 	/** The version of anywidget used. */
 	version: string;
 }
@@ -77,7 +77,7 @@ export const _internals: TestingInternals = {
 		}
 		return comm;
 	},
-	get_init_promise(model: Model<unknown>): Promise<void> | undefined {
+	get_init_promise(model: _Model<unknown>): Promise<void> | undefined {
 		// @ts-expect-error - we hide the symbol from the user
 		return model[init_promise_symbol];
 	},
@@ -152,7 +152,7 @@ type ChangeEvents<State> = {
 	[K in string & keyof State as `change:${K}`]: State[K];
 };
 
-class Model<State> {
+class _Model<State> {
 	private _state: State;
 	private _target: EventTarget;
 
@@ -177,7 +177,9 @@ class Model<State> {
 	}
 }
 
-type FrontEndModel<State> = Model<State> & {
+export type Model = typeof _Model;
+
+export type FrontEndModel<State> = _Model<State> & {
 	save_changes(): void;
 };
 
@@ -185,7 +187,7 @@ type FrontEndModel<State> = Model<State> & {
 type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
 	: unknown;
 
-type WidgetProps<State> = {
+export type WidgetProps<State> = {
 	/** The initial state of the widget. */
 	state: State;
 	/** A function that renders the widget. This function is serialized and sent to the front end. */
@@ -238,7 +240,7 @@ function to_esm<State>({
  * @param props.imports - The CDN ESM imports required for the front-end function.
  * @param props.version - The version of anywidget to use.
  */
-export function widget<State>(props: WidgetProps<State>): Model<State> {
+export function widget<State>(props: WidgetProps<State>): _Model<State> {
 	let { state, render, imports, version } = props;
 	let comm = new Comm({ anywidget_version: version });
 	let init_promise = comm
@@ -246,7 +248,7 @@ export function widget<State>(props: WidgetProps<State>): Model<State> {
 		.then(() =>
 			comm.send_state({ ...state, _esm: to_esm({ imports, render }) })
 		);
-	let model = new Model(state);
+	let model = new _Model(state);
 	for (let key in state) {
 		model.on(`change:${key}`, () => {
 			comm.send_state({ [key]: model.get(key) });
