@@ -2,8 +2,9 @@ import * as path from "jsr:@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
-let DEFAULT_VERSION = "0.7.0";
-let ANYWIDGET_VERSION = await find_anywidget_version().catch(
+// TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
+let DEFAULT_VERSION = "0.9.3";
+let DEFAULT_ANYWIDGET_VERSION = await find_anywidget_version().catch(
 	(err) => {
 		console.warn(`Failed to find anywidget frontend version: ${err}`);
 		return DEFAULT_VERSION;
@@ -36,6 +37,7 @@ let jupyter_broadcast: Broadcast = (() => {
 
 let init_promise_symbol = Symbol("init_promise");
 
+/** @private */
 export const _internals = {
 	jupyter_broadcast,
 	get_comm(model: object): Comm {
@@ -50,7 +52,7 @@ export const _internals = {
 		return model[init_promise_symbol];
 	},
 	get version() {
-		return ANYWIDGET_VERSION;
+		return DEFAULT_ANYWIDGET_VERSION;
 	},
 };
 
@@ -62,7 +64,7 @@ class Comm {
 
 	constructor({ anywidget_version }: { anywidget_version?: string }) {
 		this.#id = crypto.randomUUID();
-		this.#anywidget_version = anywidget_version ?? ANYWIDGET_VERSION;
+		this.#anywidget_version = anywidget_version ?? DEFAULT_ANYWIDGET_VERSION;
 		this.#protocol_version_major = 2;
 		this.#protocol_version_minor = 1;
 	}
@@ -71,8 +73,8 @@ class Comm {
 		return this.#id;
 	}
 
-	async init() {
-		await _internals.jupyter_broadcast(
+	init(): Promise<void> {
+		return _internals.jupyter_broadcast(
 			"comm_open",
 			{
 				comm_id: this.id,
@@ -98,10 +100,10 @@ class Comm {
 		);
 	}
 
-	async send_state(state: object) {
-		await _internals.jupyter_broadcast("comm_msg", {
+	send_state(state: object): Promise<void> {
+		return _internals.jupyter_broadcast("comm_msg", {
 			comm_id: this.id,
-			data: { method: "update", state: state },
+			data: { method: "update", state },
 		});
 	}
 
@@ -132,19 +134,16 @@ class Model<State> {
 		return this._state[key];
 	}
 	set<K extends keyof State>(key: K, value: State[K]): void {
-		// @ts-expect-error can't convince TS that K is a key of State
-		this._emit(`change:${key}`, value);
 		this._state[key] = value;
+		this._target.dispatchEvent(
+			new CustomEvent(`change:${key as string}`, { detail: value }),
+		);
 	}
 	on<Event extends keyof ChangeEvents<State>>(
 		name: Event,
 		callback: () => void,
 	): void {
 		this._target.addEventListener(name, callback);
-	}
-
-	private _emit(name: string, data: unknown) {
-		this._target.dispatchEvent(new CustomEvent(name, { detail: data }));
 	}
 }
 
@@ -175,22 +174,49 @@ function to_esm<State>({
 	imports = "",
 	render,
 }: Pick<WidgetProps<State>, "imports" | "render">) {
-	return `${imports}\nexport const render = ${render.toString()}`;
+	return `${imports}\nexport default { render: ${render.toString()} }`;
 }
 
-export function widget<State>({
-	state,
-	render,
-	imports,
-	version,
-}: WidgetProps<State>) {
-	let model = new Model(state);
+/**
+ * Creates an anywidget for the Deno Jupyter kernel.
+ *
+ * ```ts
+ * import { widget } from "jsr:@anywidget/deno";
+ *
+ * let counter = widget({
+ *   state: { value: 0 },
+ *   render: ({ model, el }) => {
+ *     let button = document.createElement("button");
+ *     button.innerHTML = `count is ${model.get("value")}`;
+ *     button.addEventListener("click", () => {
+ *       model.set("value", model.get("value") + 1);
+ *       model.save_changes();
+ *     });
+ *     model.on("change:value", () => {
+ *       button.innerHTML = `count is ${model.get("value")}`;
+ *     });
+ *     el.appendChild(button);
+ *   }
+ * });
+ * counter.value = 10;
+ * counter; // displays the widget
+ * ```
+ *
+ * @param props - The properties of the widget.
+ * @param props.state - The initial state of the widget (must be an object)
+ * @param props.render - A function that renders the widget in the front end. This function is serialized and sent to the front end.
+ * @param props.imports - The CDN ESM imports required for the front-end function.
+ * @param props.version - The version of anywidget to use.
+ */
+export function widget<State>(props: WidgetProps<State>): Model<State> {
+	let { state, render, imports, version } = props;
 	let comm = new Comm({ anywidget_version: version });
 	let init_promise = comm
 		.init()
 		.then(() =>
 			comm.send_state({ ...state, _esm: to_esm({ imports, render }) })
 		);
+	let model = new Model(state);
 	for (let key in state) {
 		model.on(`change:${key}`, () => {
 			comm.send_state({ [key]: model.get(key) });
