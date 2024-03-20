@@ -23,9 +23,9 @@
 		]
 	},
 	"imports": {
-		"@std/path": "jsr:@std/path@0.220.1",
+		"@std/cli": "jsr:@std/cli@^0.220.1",
 		"@std/fs": "jsr:@std/fs@0.220.1",
-		"@std/flags": "jsr:@std/flags@0.220.1",
+		"@std/path": "jsr:@std/path@0.220.1",
 		"@std/testing": "jsr:@std/testing@0.220.1",
 		"unzipit": "npm:unzipit@1.4",
 		"zod": "npm:zod@3.9"

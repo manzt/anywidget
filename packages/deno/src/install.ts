@@ -1,6 +1,6 @@
 import * as path from "@std/path";
 import * as fs from "@std/fs";
-import * as flags from "@std/flags";
+import * as cli from "@std/cli";
 import * as unzipit from "unzipit";
 import * as z from "zod";
 import {
@@ -98,7 +98,7 @@ async function has_jupyter_widgets() {
 	return false;
 }
 
-let args = flags.parse(Deno.args, { string: ["version"] });
+let args = cli.parseArgs(Deno.args);
 let out_dir = await find_data_dir();
 
 {
