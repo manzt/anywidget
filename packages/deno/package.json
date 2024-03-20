@@ -3,7 +3,6 @@
 	"version": "0.1.0",
 	"description": "A stub-package for making releases of the Deno anywidget mod.ts with changesets",
 	"scripts": {
-		"sync-version": "sed -i '' 's/\"version\": \"[^\"]*\"/\"version\": \"'$(jq -r '.version' package.json)'\"/' deno.json",
 		"prepublish": "mv README.md tmp.md && mv npm.README.md README.md",
 		"postpublish": "mv README.md npm.README.md && mv tmp.md README.md"
 	}

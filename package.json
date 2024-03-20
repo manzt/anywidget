@@ -4,7 +4,7 @@
 		"build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
 		"build:packages": "tsc --build && pnpm -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
-		"version": "changeset version && pnpm install && pnpm --filter=@anywidget/deno sync-version",
+		"version": "changeset version && pnpm install",
 		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
 		"typecheck": "tsc --build && vitest --typecheck.only --run",
