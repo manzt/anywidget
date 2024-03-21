@@ -498,10 +498,10 @@ let deno_json = {
 		lib: ["ES2020", "DOM", "DOM.Iterable"],
 	},
 	fmt: {
-		exclude: [".venv"]
+		exclude: [".venv"],
 	},
 	lint: {
-		exclude: [".venv"]
+		exclude: [".venv"],
 	},
 };
 
