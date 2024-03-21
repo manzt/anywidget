@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.5.6
+
+### Patch Changes
+
+- Fix README.md to point to static folder for un-bundled ([#496](https://github.com/manzt/anywidget/pull/496))
+
+- Ignore `.venv` for Deno config and use defaults (rather than Trevor's preferences 🙃) ([#496](https://github.com/manzt/anywidget/pull/496))
+
 ## 0.5.5
 
 ### Patch Changes
