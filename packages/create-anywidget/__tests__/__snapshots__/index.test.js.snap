@@ -3,17 +3,17 @@
 exports[`create-anywidget (Bun) > template-react 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -29,8 +29,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -55,7 +55,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -74,12 +74,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -87,16 +88,14 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
+		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
-	"devDependencies": {
-		"esbuild": "^0.20.0"
-	}
+	"devDependencies": {}
 }",
     "path": "package.json",
   },
@@ -106,7 +105,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -121,16 +120,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "bun"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -143,7 +142,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -153,7 +152,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import * as React from "react";
@@ -164,7 +163,7 @@ const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
 	return (
 		<button
-			className="undefined-counter-button"
+			className="ipyfoo-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -177,7 +176,7 @@ export default { render };
     "path": "js/widget.jsx",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -197,7 +196,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -209,17 +208,17 @@ export default { render };
 exports[`create-anywidget (Bun) > template-react-ts 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -235,8 +234,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -261,7 +260,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -280,12 +279,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -293,7 +293,7 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static",
+		"build": "bun build js/widget.tsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -304,8 +304,7 @@ src/undefined/static
 	"devDependencies": {
 		"@types/react": "^18.2.61",
 		"@types/react-dom": "^18.2.19",
-		"typescript": "^5.3.3",
-		"esbuild": "^0.20.0"
+		"typescript": "^5.3.3"
 	}
 }",
     "path": "package.json",
@@ -316,7 +315,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -331,16 +330,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "bun"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -353,7 +352,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -363,7 +362,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import * as React from "react";
@@ -374,7 +373,7 @@ const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
 	return (
 		<button
-			className="undefined-counter-button"
+			className="ipyfoo-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -387,7 +386,7 @@ export default { render };
     "path": "js/widget.tsx",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -407,7 +406,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -447,17 +446,17 @@ export default { render };
 exports[`create-anywidget (Bun) > template-vanilla 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -473,8 +472,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -499,7 +498,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -518,12 +517,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -531,12 +531,10 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static"
+		"build": "bun build js/widget.js --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {},
-	"devDependencies": {
-		"esbuild": "^0.20.0"
-	}
+	"devDependencies": {}
 }",
     "path": "package.json",
   },
@@ -546,7 +544,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -561,16 +559,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "bun"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -583,7 +581,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -593,14 +591,14 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import "./widget.css";
 
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -617,7 +615,7 @@ export default { render };
     "path": "js/widget.js",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -637,7 +635,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -649,17 +647,17 @@ export default { render };
 exports[`create-anywidget (Bun) > template-vanilla-deno-jsdoc 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -668,8 +666,8 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`src/ipyfoo/static/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -694,7 +692,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -715,7 +713,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -742,14 +740,14 @@ features = ["dev"]
 		]
 	},
 	"fmt": {
-		"useTabs": true
+		"exclude": [
+			".venv"
+		]
 	},
 	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
+		"exclude": [
+			".venv"
+		]
 	}
 }",
     "path": "deno.json",
@@ -758,6 +756,7 @@ features = ["dev"]
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -775,7 +774,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -785,7 +784,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import confetti from "https://esm.sh/canvas-confetti@1";
@@ -795,7 +794,7 @@ class Counter(anywidget.AnyWidget):
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -810,10 +809,10 @@ function render({ model, el }) {
 
 export default { render };
 ",
-    "path": "src/undefined/static/widget.js",
+    "path": "src/ipyfoo/static/widget.js",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -833,11 +832,11 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
-    "path": "src/undefined/static/widget.css",
+    "path": "src/ipyfoo/static/widget.css",
   },
 ]
 `;
@@ -845,17 +844,17 @@ export default { render };
 exports[`create-anywidget (Bun) > template-vanilla-ts 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -871,8 +870,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -897,7 +896,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -916,12 +915,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -929,14 +929,13 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static",
+		"build": "bun build js/widget.ts --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {},
 	"devDependencies": {
 		"@anywidget/types": "0.1.6",
-		"typescript": "^5.3.3",
-		"esbuild": "^0.20.0"
+		"typescript": "^5.3.3"
 	}
 }",
     "path": "package.json",
@@ -947,7 +946,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -962,16 +961,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "bun"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -984,7 +983,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -994,13 +993,13 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import type { RenderContext } from "@anywidget/types";
 import "./widget.css";
 
-/* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
+/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
 interface WidgetModel {
 	value: number;
 	/* Add your own */
@@ -1008,7 +1007,7 @@ interface WidgetModel {
 
 function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -1025,7 +1024,7 @@ export default { render };
     "path": "js/widget.ts",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1045,7 +1044,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1085,17 +1084,17 @@ export default { render };
 exports[`create-anywidget > template-react 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -1111,8 +1110,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1137,7 +1136,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -1156,12 +1155,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -1169,7 +1169,7 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/undefined/static"
+		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.4",
@@ -1188,7 +1188,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -1203,16 +1203,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "npm"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -1225,7 +1225,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -1235,7 +1235,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import * as React from "react";
@@ -1246,7 +1246,7 @@ const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
 	return (
 		<button
-			className="undefined-counter-button"
+			className="ipyfoo-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -1259,7 +1259,7 @@ export default { render };
     "path": "js/widget.jsx",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1279,7 +1279,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1291,17 +1291,17 @@ export default { render };
 exports[`create-anywidget > template-react-ts 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -1317,8 +1317,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1343,7 +1343,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -1362,12 +1362,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -1375,7 +1376,7 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/undefined/static",
+		"build": "esbuild js/widget.tsx --minify --format=esm --bundle --outdir=src/ipyfoo/static",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -1398,7 +1399,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -1413,16 +1414,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "npm"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -1435,7 +1436,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -1445,7 +1446,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import * as React from "react";
@@ -1456,7 +1457,7 @@ const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
 	return (
 		<button
-			className="undefined-counter-button"
+			className="ipyfoo-counter-button"
 			onClick={() => setValue(value + 1)}
 		>
 			count is {value}
@@ -1469,7 +1470,7 @@ export default { render };
     "path": "js/widget.tsx",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1489,7 +1490,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1529,17 +1530,17 @@ export default { render };
 exports[`create-anywidget > template-vanilla 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -1555,8 +1556,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1581,7 +1582,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -1600,12 +1601,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -1613,7 +1615,7 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/undefined/static"
+		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {},
 	"devDependencies": {
@@ -1628,7 +1630,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -1643,16 +1645,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "npm"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -1665,7 +1667,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -1675,14 +1677,14 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import "./widget.css";
 
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -1699,7 +1701,7 @@ export default { render };
     "path": "js/widget.js",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1719,7 +1721,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
@@ -1731,17 +1733,17 @@ export default { render };
 exports[`create-anywidget > template-vanilla-deno-jsdoc 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -1750,8 +1752,8 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`src/ipyfoo/static/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1776,7 +1778,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -1797,7 +1799,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -1824,14 +1826,14 @@ features = ["dev"]
 		]
 	},
 	"fmt": {
-		"useTabs": true
+		"exclude": [
+			".venv"
+		]
 	},
 	"lint": {
-		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
-		}
+		"exclude": [
+			".venv"
+		]
 	}
 }",
     "path": "deno.json",
@@ -1840,6 +1842,7 @@ features = ["dev"]
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1857,7 +1860,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -1867,7 +1870,7 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import confetti from "https://esm.sh/canvas-confetti@1";
@@ -1877,7 +1880,7 @@ class Counter(anywidget.AnyWidget):
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -1892,10 +1895,10 @@ function render({ model, el }) {
 
 export default { render };
 ",
-    "path": "src/undefined/static/widget.js",
+    "path": "src/ipyfoo/static/widget.js",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -1915,11 +1918,11 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",
-    "path": "src/undefined/static/widget.css",
+    "path": "src/ipyfoo/static/widget.css",
   },
 ]
 `;
@@ -1927,17 +1930,17 @@ export default { render };
 exports[`create-anywidget > template-vanilla-ts 1`] = `
 [
   {
-    "content": "# undefined
+    "content": "# ipyfoo
 
 ## Installation
 
 \`\`\`sh
-pip install undefined
+pip install ipyfoo
 \`\`\`
 
 ## Development installation
 
-Create a virtual environment and and install undefined in *editable* mode with the
+Create a virtual environment and and install ipyfoo in *editable* mode with the
 optional development dependencies:
 
 \`\`\`sh
@@ -1953,8 +1956,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1979,7 +1982,7 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from undefined import Counter\\n",
+				"from ipyfoo import Counter\\n",
 				"Counter()"
 			]
 		}
@@ -1998,12 +2001,13 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
 .ipynb_checkpoints
 
-src/undefined/static
+src/ipyfoo/static
 ",
     "path": ".gitignore",
   },
@@ -2011,7 +2015,7 @@ src/undefined/static
     "content": "{
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/undefined/static",
+		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=src/ipyfoo/static",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {},
@@ -2029,7 +2033,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "undefined"
+name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
@@ -2044,16 +2048,16 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["src/undefined/static/*"]
+artifacts = ["src/ipyfoo/static/*"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/undefined/static/widget.js"]
-skip-if-exists = ["src/undefined/static/widget.js"]
+ensured-targets = ["src/ipyfoo/static/widget.js"]
+skip-if-exists = ["src/ipyfoo/static/widget.js"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-npm = "undefined"
+npm = "npm"
 build_cmd = "build"
 ",
     "path": "pyproject.toml",
@@ -2066,7 +2070,7 @@ import anywidget
 import traitlets
 
 try:
-    __version__ = importlib.metadata.version("undefined")
+    __version__ = importlib.metadata.version("ipyfoo")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
@@ -2076,13 +2080,13 @@ class Counter(anywidget.AnyWidget):
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
 ",
-    "path": "src/undefined/__init__.py",
+    "path": "src/ipyfoo/__init__.py",
   },
   {
     "content": "import type { RenderContext } from "@anywidget/types";
 import "./widget.css";
 
-/* Specifies attributes defined with traitlets in ../src/undefined/__init__.py */
+/* Specifies attributes defined with traitlets in ../src/ipyfoo/__init__.py */
 interface WidgetModel {
 	value: number;
 	/* Add your own */
@@ -2090,7 +2094,7 @@ interface WidgetModel {
 
 function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
-	btn.classList.add("undefined-counter-button");
+	btn.classList.add("ipyfoo-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -2107,7 +2111,7 @@ export default { render };
     "path": "js/widget.ts",
   },
   {
-    "content": ".undefined-counter-button {
+    "content": ".ipyfoo-counter-button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -2127,7 +2131,7 @@ export default { render };
 	transition: transform 0.25s ease-in-out;
 }
 
-.undefined-counter-button:hover {
+.ipyfoo-counter-button:hover {
 	transform: scale(1.05);
 }
 ",

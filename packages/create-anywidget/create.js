@@ -138,6 +138,7 @@ let gitignore = (extras = []) =>
 node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -185,9 +186,11 @@ npm run dev
 `);
 	}
 
+	let jsdir = type === "bundled" ? "js/" : `src/${name}/static/`;
+
 	body = body.concat(`\
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`${jsdir}\` will be reflected
 in the notebook.
 `);
 	return body;
@@ -495,12 +498,10 @@ let deno_json = {
 		lib: ["ES2020", "DOM", "DOM.Iterable"],
 	},
 	fmt: {
-		useTabs: true,
+		exclude: [".venv"],
 	},
 	lint: {
-		rules: {
-			exclude: ["prefer-const"],
-		},
+		exclude: [".venv"],
 	},
 };
 

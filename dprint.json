@@ -14,7 +14,8 @@
 		"**/node_modules",
 		"**/*-lock.yaml",
 		"**/CHANGELOG.md",
-		".venv/**/*"
+		".venv/**/*",
+		".changeset/**/*"
 	],
 	"plugins": [
 		"https://plugins.dprint.dev/typescript-0.89.3.wasm",
