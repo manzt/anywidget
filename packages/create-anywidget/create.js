@@ -185,12 +185,10 @@ npm run dev
 `);
 	}
 
-	let js_dir = type === "bundled" ? "js" : `src/${name}/static`;
-
 	body = body.concat(`\
-Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in \`${js_dir}/\` will
-be reflected automatically.
+All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Any change made in the \`js\` folder will be directly reflected
+in the notebook.
 `);
 	return body;
 };
@@ -228,33 +226,33 @@ let notebook = (name) =>
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
-});
+	});
 
 /** @param {string} name */
 let styles = (name) =>
 	`\
 .${name}-counter-button {
-background: linear-gradient(
-300deg,
-#9933ff 33.26%,
-#ff6666 46.51%,
-#faca30 59.77%,
-#00cd99 73.03%,
-#00ccff 86.29%
-);
-border-radius: 10px;
-border: 0;
-color: white;
-cursor: pointer;
-font-family: "Roboto", sans-serif;
-font-size: 2em;
-margin: 10px;
-padding: 10px 20px;
-transition: transform 0.25s ease-in-out;
+	background: linear-gradient(
+		300deg,
+		#9933ff 33.26%,
+		#ff6666 46.51%,
+		#faca30 59.77%,
+		#00cd99 73.03%,
+		#00ccff 86.29%
+	);
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-size: 2em;
+	margin: 10px;
+	padding: 10px 20px;
+	transition: transform 0.25s ease-in-out;
 }
 
 .${name}-counter-button:hover {
-transform: scale(1.05);
+	transform: scale(1.05);
 }
 `;
 
@@ -266,15 +264,15 @@ import { createRender, useModelState } from "@anywidget/react";
 import "./widget.css";
 
 const render = createRender(() => {
-const [value, setValue] = useModelState<number>("value");
-return (
-<button
-className="${name}-counter-button"
-onClick={() => setValue(value + 1)}
->
-count is {value}
-</button>
-);
+	const [value, setValue] = useModelState<number>("value");
+	return (
+		<button
+			className="${name}-counter-button"
+			onClick={() => setValue(value + 1)}
+		>
+			count is {value}
+		</button>
+	);
 });
 
 export default { render };
@@ -288,15 +286,15 @@ import { createRender, useModelState } from "@anywidget/react";
 import "./widget.css";
 
 const render = createRender(() => {
-const [value, setValue] = useModelState("value");
-return (
-<button
-className="${name}-counter-button"
-onClick={() => setValue(value + 1)}
->
-count is {value}
-</button>
-);
+	const [value, setValue] = useModelState("value");
+	return (
+		<button
+			className="${name}-counter-button"
+			onClick={() => setValue(value + 1)}
+		>
+			count is {value}
+		</button>
+	);
 });
 
 export default { render };
@@ -308,17 +306,17 @@ let widget_vanilla = (name) =>
 import "./widget.css";
 
 function render({ model, el }) {
-let btn = document.createElement("button");
-btn.classList.add("${name}-counter-button");
-btn.innerHTML = \`count is \${model.get("value")}\`;
-btn.addEventListener("click", () => {
-model.set("value", model.get("value") + 1);
-model.save_changes();
-});
-model.on("change:value", () => {
-btn.innerHTML = \`count is \${model.get("value")}\`;
-});
-el.appendChild(btn);
+	let btn = document.createElement("button");
+	btn.classList.add("${name}-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
+		model.save_changes();
+	});
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
+	});
+	el.appendChild(btn);
 }
 
 export default { render };
@@ -332,22 +330,22 @@ import "./widget.css";
 
 /* Specifies attributes defined with traitlets in ../src/${name}/__init__.py */
 interface WidgetModel {
-value: number;
-/* Add your own */
+	value: number;
+	/* Add your own */
 }
 
 function render({ model, el }: RenderContext<WidgetModel>) {
-let btn = document.createElement("button");
-btn.classList.add("${name}-counter-button");
-btn.innerHTML = \`count is \${model.get("value")}\`;
-btn.addEventListener("click", () => {
-model.set("value", model.get("value") + 1);
-model.save_changes();
-});
-model.on("change:value", () => {
-btn.innerHTML = \`count is \${model.get("value")}\`;
-});
-el.appendChild(btn);
+	let btn = document.createElement("button");
+	btn.classList.add("${name}-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
+		model.save_changes();
+	});
+	model.on("change:value", () => {
+		btn.innerHTML = \`count is \${model.get("value")}\`;
+	});
+	el.appendChild(btn);
 }
 
 export default { render };
@@ -355,7 +353,7 @@ export default { render };
 
 function get_tsconfig() {
 	return json_dumps({
-	include: ["js"],
+		include: ["js"],
 		compilerOptions: {
 			target: "ES2020",
 			module: "ESNext",
@@ -439,7 +437,7 @@ async function generate_package_json(
 	if (pkg_manager === "bun") {
 		scripts.build =
 			`bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
-} else {
+	} else {
 		scripts.build =
 			`esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
 		dev_extra.push("esbuild");
@@ -497,10 +495,10 @@ let deno_json = {
 		lib: ["ES2020", "DOM", "DOM.Iterable"],
 	},
 	fmt: {
-		exclude: [".venv"],
+		exclude: [".venv"]
 	},
 	lint: {
-		exclude: [".venv"],
+		exclude: [".venv"]
 	},
 };
 
@@ -513,18 +511,18 @@ import confetti from "https://esm.sh/canvas-confetti@1";
 
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
-let btn = document.createElement("button");
-btn.classList.add("${name}-counter-button");
-btn.innerHTML = \`count is \${model.get("value")}\`;
-btn.addEventListener("click", () => {
-model.set("value", model.get("value") + 1);
-model.save_changes();
-});
-model.on("change:value", () => {
-confetti();
-btn.innerHTML = \`count is \${model.get("value")}\`;
-});
-el.appendChild(btn);
+	let btn = document.createElement("button");
+	btn.classList.add("${name}-counter-button");
+	btn.innerHTML = \`count is \${model.get("value")}\`;
+	btn.addEventListener("click", () => {
+		model.set("value", model.get("value") + 1);
+		model.save_changes();
+	});
+	model.on("change:value", () => {
+		confetti();
+		btn.innerHTML = \`count is \${model.get("value")}\`;
+	});
+	el.appendChild(btn);
 }
 
 export default { render };
