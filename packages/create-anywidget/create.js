@@ -185,9 +185,11 @@ npm run dev
 `);
 	}
 
+	let jsdir = type === "bundled" ? "js/" : `src/${name}/static/`;
+
 	body = body.concat(`\
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`${jsdir}\` will be reflected
 in the notebook.
 `);
 	return body;
