@@ -138,6 +138,7 @@ let gitignore = (extras = []) =>
 node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__

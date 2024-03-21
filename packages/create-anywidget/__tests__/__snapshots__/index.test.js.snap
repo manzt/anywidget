@@ -29,8 +29,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -74,6 +74,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -235,8 +236,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -280,6 +281,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -473,8 +475,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -518,6 +520,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -668,8 +671,8 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`src/undefined/static/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -758,6 +761,7 @@ features = ["dev"]
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -871,8 +875,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -916,6 +920,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1111,8 +1116,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1156,6 +1161,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1317,8 +1323,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1362,6 +1368,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1555,8 +1562,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1600,6 +1607,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1750,8 +1758,8 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`src/undefined/static/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1840,6 +1848,7 @@ features = ["dev"]
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -1953,8 +1962,8 @@ npm install
 npm run dev
 \`\`\`
 
-All is set to open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
-to start developing. Any change made in the \`js\` folder will be directly reflected
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`js/\` will be reflected
 in the notebook.
 ",
     "path": "README.md",
@@ -1998,6 +2007,7 @@ in the notebook.
     "content": "node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
