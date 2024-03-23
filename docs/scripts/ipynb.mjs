@@ -4,7 +4,7 @@ import * as child_process from "node:child_process";
 import * as crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-import { renderMarkdown } from "@astrojs/markdown-remark";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import {
 	createAstroComponentString,
 	getFileInfo,
@@ -139,11 +139,10 @@ function widgetClientHtml(widgetState) {
 	return `\
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 	<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
-	<script type="application/vnd.jupyter.widget-state+json">${
-		JSON.stringify(
-			widgetState,
-		)
-	}</script>\n`;
+	<script type="application/vnd.jupyter.widget-state+json">${JSON.stringify(
+		widgetState,
+	)
+		}</script>\n`;
 }
 
 /**
@@ -151,13 +150,12 @@ function widgetClientHtml(widgetState) {
  * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any>, widgetState?: WidgetStateData }} options
  */
 async function renderCellsMarkdown(nb, options) {
+	let processor = await createMarkdownProcessor(options.config.markdown);
 	/** @param {string} content */
 	function _renderMarkdown(content) {
-		return renderMarkdown(content, {
-			...options.config.markdown,
-			fileURL: new URL(`file://${options.fileId}`),
-			// @ts-expect-error
-			contentDir: new URL("./content/", options.config.srcDir),
+		return processor.render(content, {
+			// fileURL: new URL(`file://${options.fileId}`),
+			// contentDir: new URL("./content/", options.config.srcDir),
 			frontmatter: options.frontmatter,
 		});
 	}
@@ -252,9 +250,7 @@ export default function ipynb({ execute } = {}) {
 			"astro:config:setup": async (options) => {
 				// @ts-ignore
 				options.addPageExtension(".ipynb");
-				options.updateConfig({
-					vite: { plugins: [vitePlugin({ execute, ...options })] },
-				});
+				options.updateConfig({ vite: { plugins: [vitePlugin({ execute, ...options })] } });
 			},
 		},
 	};
