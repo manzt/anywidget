@@ -15,7 +15,8 @@
 		"**/*-lock.yaml",
 		"**/CHANGELOG.md",
 		".venv/**/*",
-		".changeset/**/*"
+		".changeset/**/*",
+		".mypy_cache/**/*"
 	],
 	"plugins": [
 		"https://plugins.dprint.dev/typescript-0.89.3.wasm",
