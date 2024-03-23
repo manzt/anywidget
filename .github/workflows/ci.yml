@@ -28,12 +28,10 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      # TODO: We shouldn't need to build the JS to do Python TypeChecking
-      - uses: pnpm/action-setup@v3
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - run: pnpm install --frozen-lock
+
+      # disable hatch-jupyter-builder because it's not needed for typechecking
+      - run: |
+          sed -i '' 's/\[tool.hatch.build.hooks.jupyter-builder\]/\[_tool.hatch.build.hooks.jupyter-builder\]/' pyproject.toml
 
       - uses: actions/setup-python@v5
         with:
