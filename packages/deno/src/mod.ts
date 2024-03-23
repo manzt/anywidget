@@ -222,20 +222,22 @@ function to_esm<State>({
 	return `${imports}\nexport default { render: ${render.toString()} }`;
 }
 
+type Awaitable<T> = T | Promise<T>;
+
 /** The options bag to pass to the {@link widget} method. */
-export type WidgetOptions<State> = {
+export interface WidgetOptions<State> {
 	/** The initial widget state. */
 	state: State;
 	/** A function that renders the widget. This function is serialized and sent to the front end. */
 	render: (context: {
 		model: FrontEndModel<State>;
 		el: HTMLElement;
-	}) => unknown;
+	}) => Awaitable<(() => Awaitable<void>) | undefined>;
 	/** The imports required for the front-end function. */
 	imports?: string;
 	/** The version of the anywidget front end to use. */
 	version?: string;
-};
+}
 
 /**
  * Creates an anywidget for the Deno Jupyter kernel.

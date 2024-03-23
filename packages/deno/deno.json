@@ -29,5 +29,8 @@
 		"@std/testing": "jsr:@std/testing@0.220.1",
 		"unzipit": "npm:unzipit@1.4",
 		"zod": "npm:zod@3.9"
+	},
+	"publish": {
+		"exclude": ["npm.README.md"]
 	}
 }
