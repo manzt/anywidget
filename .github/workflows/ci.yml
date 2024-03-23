@@ -29,10 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # disable hatch-jupyter-builder because it's not needed for typechecking
+      # Disable jupyter-builder build hook because not needed for typechecking, and requires npm
       - run: |
-          sed -i '' 's/\[tool.hatch.build.hooks.jupyter-builder\]/\[_tool.hatch.build.hooks.jupyter-builder\]/' pyproject.toml
-          sed -i '' 's/\[tool.hatch.build.hooks.jupyter-builder.build-kwargs\]/\[_tool.hatch.build.hooks.jupyter-builder.build-kwargs\]/' pyproject.toml
+          sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
           cat pyproject.toml
 
       - uses: actions/setup-python@v5
