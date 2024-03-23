@@ -89,7 +89,7 @@ _ANYWIDGET_STATE = {
 
 def open_comm(
     target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
-) -> comm.DummyComm:
+) -> comm.base_comm.BaseComm:
     import comm
 
     return comm.create_comm(
@@ -102,10 +102,10 @@ def open_comm(
 # cache of comms: mapp of id(obj) -> Comm.
 # we use id(obj) rather than WeakKeyDictionary because we can't assume that the
 # object has a __hash__ method
-_COMMS: dict[int, comm.DummyComm] = {}
+_COMMS: dict[int, comm.base_comm.BaseComm] = {}
 
 
-def _comm_for(obj: object) -> comm.DummyComm:
+def _comm_for(obj: object) -> comm.base_comm.BaseComm:
     """Get or create a communcation channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple
@@ -371,7 +371,7 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers)
+            self._comm.send(data=msg, buffers=buffers) # type: ignore
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -440,7 +440,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg)
+            self._comm.on_msg(self._handle_msg) # type: ignore
             self.send_state()
 
         if py_to_js and self._autodetect_observer:
@@ -634,7 +634,7 @@ def _get_traitlets_state(
 ) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
-    return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
+    return obj.trait_values(**kwargs)
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
@@ -654,14 +654,14 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
     def _on_trait_change(change: dict) -> None:
         send_state({change["name"]})
 
-    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))  # type: ignore
+    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))
 
     obj_ref = weakref.ref(obj)
 
     def _disconnect() -> None:
         obj = obj_ref()
         if obj is not None:
-            obj.unobserve(_on_trait_change)  # type: ignore
+            obj.unobserve(_on_trait_change)
 
     return _disconnect
 
