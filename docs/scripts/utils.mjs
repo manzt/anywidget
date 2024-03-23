@@ -2,6 +2,14 @@
 import matter from "gray-matter";
 
 /**
+ * @param {any} err
+ * @returns {err is import('astro').SSRError}
+ */
+function isAstroSsrError(err) {
+	return err?.name === "YAMLException";
+}
+
+/**
  * @param {string} code
  * @param {string} id
  * @see https://github.com/withastro/astro/blob/c53b1fca073136e1e1a6f5d0b32d7c023e98c675/packages/integrations/mdx/src/utils.ts#L45-L63
@@ -9,16 +17,18 @@ import matter from "gray-matter";
 export function parseFrontmatter(code, id) {
 	try {
 		return matter(code);
-	} catch (e) {
-		if (e.name === "YAMLException") {
-			/** @type {import('astro').SSRError} */
-			const err = e;
+	} catch (err) {
+		if (isAstroSsrError(err)) {
 			err.id = id;
-			err.loc = { file: e.id, line: e.mark.line + 1, column: e.mark.column };
-			err.message = e.reason;
+			err.loc = {
+				file: err.id,
+				line: err.mark.line + 1,
+				column: err.mark.column,
+			};
+			err.message = err.reason;
 			throw err;
 		} else {
-			throw e;
+			throw err;
 		}
 	}
 }
@@ -111,9 +121,8 @@ export function createAstroComponentString({
 		content.url = url;
 		content.astro = {};
 		const contentFragment = h(Fragment, { 'set:html': html });
-		return ${
-			layout
-				? `h(Layout, {
+		return ${layout
+			? `h(Layout, {
 			file,
 			url,
 			content,
@@ -124,7 +133,7 @@ export function createAstroComponentString({
 			'server:root': true,
 			children: contentFragment
 		})`
-				: `contentFragment`
+			: `contentFragment`
 		};
 	}
 	Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};

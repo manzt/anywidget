@@ -1,11 +1,10 @@
 ---
 import type { ShikiConfig } from "astro";
 import { Code } from "astro/components";
-import type { Props as CodeProps } from "astro/components/Code.astro";
 export interface Props {
-	code: CodeProps["code"];
+	code: string;
 	filename?: string;
-	lang?: CodeProps["lang"];
+	lang?: "astro" | "js" | "python" | "css" | "ts";
 	url?: string;
 	theme?: ShikiConfig["theme"];
 	showGrid?: boolean;

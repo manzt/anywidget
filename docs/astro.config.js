@@ -9,6 +9,7 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
+	site: `https://anywidget.dev/`,
 	markdown: {
 		shikiConfig: {
 			theme: "poimandres",
@@ -16,9 +17,13 @@ export default defineConfig({
 	},
 	integrations: [
 		// Enable Preact to support Preact JSX components.
-		preact(),
+		preact({
+			exclude: ["./src/components/Header/Search.tsx"],
+		}),
 		// Enable React for the Algolia search component.
-		react(),
+		react({
+			include: ["./src/components/Header/Search.tsx"],
+		}),
 		// Support .ipynb pages
 		ipynb({ execute: false }),
 		// Added for custom landing page
@@ -26,5 +31,4 @@ export default defineConfig({
 		// Suports components in markdown
 		mdx(),
 	],
-	site: `https://anywidget.dev/`,
 });
