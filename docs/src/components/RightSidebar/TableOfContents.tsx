@@ -83,9 +83,14 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 								currentID === heading.slug ? "current-header-link" : ""
 							}`.trim()}
 						>
-							<a href={`#${heading.slug}`} onClick={(e) => {
-								setCurrentID(e.currentTarget.getAttribute("href")!.replace("#", ""));
-							}}>
+							<a
+								href={`#${heading.slug}`}
+								onClick={(e) => {
+									setCurrentID(
+										e.currentTarget.getAttribute("href")!.replace("#", ""),
+									);
+								}}
+							>
 								{unescape(heading.text)}
 							</a>
 						</li>

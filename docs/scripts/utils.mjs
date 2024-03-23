@@ -20,7 +20,11 @@ export function parseFrontmatter(code, id) {
 	} catch (err) {
 		if (isAstroSsrError(err)) {
 			err.id = id;
-			err.loc = { file: err.id, line: err.mark.line + 1, column: err.mark.column };
+			err.loc = {
+				file: err.id,
+				line: err.mark.line + 1,
+				column: err.mark.column,
+			};
 			err.message = err.reason;
 			throw err;
 		} else {
@@ -49,7 +53,7 @@ export function getFileInfo(id, config) {
 	let url = undefined;
 	try {
 		url = new URL(`file://${id}`);
-	} catch { }
+	} catch {}
 
 	const fileId = id.split("?")[0];
 	/** @type {string} */
