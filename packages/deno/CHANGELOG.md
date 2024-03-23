@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.1.2
+
+### Patch Changes
+
+- Prefer interface over type for WidgetOptions ([#498](https://github.com/manzt/anywidget/pull/498))
+
 ## 0.1.1
 
 ### Patch Changes
