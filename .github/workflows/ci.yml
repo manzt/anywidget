@@ -41,7 +41,7 @@ jobs:
 
       - run: echo "Python version is ${{ matrix.python-version }}"
 
-      - if: ${{ matrix.python-version != "3.7" }} != "3.7"
+      - if: ${{ matrix.python-version != "3.7" }}
         run: |
           pip install uv
           uv pip install --system -e '.[test,dev]'
