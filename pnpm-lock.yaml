@@ -62,6 +62,9 @@ importers:
       '@docsearch/react':
         specifier: ^3.1.0
         version: 3.5.2(@algolia/client-search@4.20.0)(@types/react@18.2.69)(react-dom@18.2.0)(react@18.2.0)(search-insights@2.9.0)
+      '@tailwindcss/line-clamp':
+        specifier: ^0.4.4
+        version: 0.4.4(tailwindcss@3.3.3)
       '@types/html-escaper':
         specifier: ^3.0.0
         version: 3.0.0
@@ -2648,6 +2651,14 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: true
+
+  /@tailwindcss/line-clamp@0.4.4(tailwindcss@3.3.3):
+    resolution: {integrity: sha512-5U6SY5z8N42VtrCrKlsTAA35gy2VSyYtHWCsg1H87NU1SXnEfekTVlrga9fzUDrrHcGi2Lb5KenUWb4lRQT5/g==}
+    peerDependencies:
+      tailwindcss: '>=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1'
+    dependencies:
+      tailwindcss: 3.3.3
+    dev: false
 
   /@types/acorn@4.0.6:
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}

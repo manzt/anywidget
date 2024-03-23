@@ -55,6 +55,13 @@ export const SIDEBAR: Sidebar = {
 				text: "Jupyter Widgets: The Good Parts",
 				link: "en/jupyter-widgets-the-good-parts",
 			},
+			{
+				text: "Gallery",
+				link: "en/gallery",
+			},
+		],
+		Projects: [
+			{ text: "Widgets", link: "en/gallery" },
 		],
 		Advanced: [
 			{ text: "Bundling", link: "en/bundling" },
