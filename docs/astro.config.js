@@ -9,6 +9,7 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
+	site: `https://anywidget.dev/`,
 	markdown: {
 		shikiConfig: {
 			theme: "poimandres",
@@ -26,5 +27,4 @@ export default defineConfig({
 		// Suports components in markdown
 		mdx(),
 	],
-	site: `https://anywidget.dev/`,
 });

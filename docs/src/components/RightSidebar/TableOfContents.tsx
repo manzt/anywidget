@@ -1,5 +1,4 @@
 /** @jsxImportSource preact */
-
 import { unescape } from "html-escaper";
 import type { MarkdownHeading } from "astro";
 import type { FunctionalComponent } from "preact";
@@ -79,9 +78,8 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 					.filter(({ depth }) => depth > 1 && depth < 4)
 					.map((heading) => (
 						<li
-							className={`header-link depth-${heading.depth} ${
-								currentID === heading.slug ? "current-header-link" : ""
-							}`.trim()}
+							className={`header-link depth-${heading.depth} ${currentID === heading.slug ? "current-header-link" : ""
+								}`.trim()}
 						>
 							<a
 								href={`#${heading.slug}`}
