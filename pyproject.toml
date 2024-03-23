@@ -21,6 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
+    "mypy==0.991",
     "pydantic",
     "pytest",
     "pytest-cov",
@@ -85,6 +86,7 @@ fmt = [
   "ruff format {args:.}",
   "ruff --fix {args:.}",
 ]
+typecheck = "mypy anywidget"
 test = "pytest . --cov anywidget --cov-report term-missing"
 
 # https://github.com/charliermarsh/ruff
