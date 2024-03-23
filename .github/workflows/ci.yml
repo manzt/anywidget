@@ -32,6 +32,7 @@ jobs:
       # disable hatch-jupyter-builder because it's not needed for typechecking
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.jupyter-builder\]/\[_tool.hatch.build.hooks.jupyter-builder\]/' pyproject.toml
+          sed -i '' 's/\[tool.hatch.build.hooks.jupyter-builder.build-kwargs\]/\[_tool.hatch.build.hooks.jupyter-builder.build-kwargs\]/' pyproject.toml
           cat pyproject.toml
 
       - uses: actions/setup-python@v5
