@@ -78,16 +78,13 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 					.filter(({ depth }) => depth > 1 && depth < 4)
 					.map((heading) => (
 						<li
-							className={`header-link depth-${heading.depth} ${
-								currentID === heading.slug ? "current-header-link" : ""
-							}`.trim()}
+							className={`header-link depth-${heading.depth} ${currentID === heading.slug ? "current-header-link" : ""
+								}`.trim()}
 						>
 							<a
 								href={`#${heading.slug}`}
 								onClick={(e) => {
-									setCurrentID(
-										e.currentTarget.getAttribute("href")!.replace("#", ""),
-									);
+									setCurrentID(e.currentTarget.getAttribute("href")!.replace("#", ""));
 								}}
 							>
 								{unescape(heading.text)}
