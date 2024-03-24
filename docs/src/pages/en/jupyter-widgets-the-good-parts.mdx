@@ -3,6 +3,8 @@ title: "Jupyter Widgets: The Good Parts"
 description: "Distilling core Jupyter Widgets concepts for anywidget authors"
 layout: ../../layouts/MainLayout.astro
 ---
+import { Image } from "astro:assets";
+import widgetLifeCycleImg from "../../../public/widget-lifecycle.png";
 
 _This page is largely adapted from
 ["Building a Custom Widget"](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html)
@@ -49,7 +51,9 @@ Hooks correspond to specific stages in the lifetime of a widget:
 - _View Rendering_: Each notebook cell displaying the widget renders an
   independent view based on the model's current state.
 
-![The main parts of the widget lifecyle, including model initialization and view rendering](/widget-lifecycle.png)
+
+<Image src={widgetLifeCycleImg} alt="The main parts of the widget lifecyle, including model initialization and view rendering" />
+
 
 The `initialize` hook is similar to
 [`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150),
@@ -357,9 +361,10 @@ Here are some general recommendations for being productive with **anywidget**:
       <span>localhost:8080/notebooks/Example.ipynb</span>
     </div>
   </div>
-  <img
+  <Image
     class="rounded"
     alt="Jupyter notebook with the browser console open, logging 'Hello from anywidget' from the custom widget"
+    inferSize
     src="https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png"
   />
   </div>
