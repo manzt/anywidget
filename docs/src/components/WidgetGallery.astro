@@ -5,11 +5,11 @@ import { z } from "astro:content";
 let base = new URL("https://manzt.github.io/built-with-anywidget/manifest-complete.json");
 
 let RepoSchema = z.object({
-  repo: z.string(),
-  description: z.string(),
-  stars: z.number(),
-  image: z.string().optional(),
-  gif: z.string().optional(),
+	repo: z.string(),
+	description: z.string(),
+	stars: z.number(),
+	image: z.string().optional(),
+	gif: z.string().optional(),
 });
 
 let response = await fetch(base);
@@ -18,15 +18,14 @@ let repos = z.array(RepoSchema).parse(raw);
 repos.sort((a, b) => b.stars - a.stars);
 
 let reposWithImages = repos
-  .filter(repo => repo.image)
-  .map((repo) => ({
-    ...repo,
-    image: repo.image ? new URL(repo.image, base).href : undefined,
-    gif: repo.gif ? new URL(repo.gif, base).href : undefined,
-  }));
+	.filter(repo => repo.image)
+	.map((repo) => ({
+		...repo,
+		image: repo.image ? new URL(repo.image, base).href : undefined,
+		gif: repo.gif ? new URL(repo.gif, base).href : undefined,
+	}));
 
-let reposWithoutImages = repos
-  .filter(repo => !repo.image);
+let reposWithoutImages = repos.filter(repo => !repo.image);
 ---
 
 
@@ -41,36 +40,36 @@ let reposWithoutImages = repos
 </div>
 
 <script is:inline>
-  let gallery = document.getElementById("gallery");
-  let observer = new IntersectionObserver(entries => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        let image = entry.target.querySelector(".image-preview");
-        let gifUrl = image?.dataset.gif;
-        if (!gifUrl) return;
-        let gif = new Image();
-        gif.src = gifUrl;
-        gif.onload = () => {
-          image.src = gifUrl;
-        }
-      }
-    });
-  }, {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
-  });
+	let observer = new IntersectionObserver((entries) => {
+		for (let entry of entries) {
+			if (!entry.isIntersecting) {
+				continue;
+			}
+			let image = entry.target.querySelector(".image-preview");
+			let gifUrl = image?.dataset.gif;
+			if (!gifUrl) {
+				continue;
+			}
+			Object.assign(new Image, {
+				src: gifUrl,
+				onload: () => { image.src = gifUrl; },
+			});
+		}
+	}, {
+		root: null,
+		rootMargin: "0px",
+		threshold: 0.1,
+	});
 
-  const items = gallery.children;
-  for (let i = 0; i < items.length; i++) {
-    observer.observe(items[i]);
-  }
+	for (let item of document.querySelector("#gallery").children) {
+		observer.observe(item);
+	}
 </script>
 
 <style>
-  .gallery {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
+	.gallery {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	}
 </style>

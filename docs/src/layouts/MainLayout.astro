@@ -32,7 +32,7 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
 		<title>{getTitle(frontmatter)}</title>
-		<style>
+		<style is:global>
 			body {
 				width: 100%;
 				display: grid;
