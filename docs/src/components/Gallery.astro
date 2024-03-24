@@ -15,24 +15,54 @@ let RepoSchema = z.object({
 let response = await fetch(base);
 let raw = await response.json();
 let repos = z.array(RepoSchema).parse(raw);
-repos.sort((a, b) => {
-  // First, sort by the presence of imageUrl
-  if (a.image && !b.image) {
-    return -1;
-  } else if (!a.image && b.image) {
-    return 1;
-  }
-  // Then, sort by the highest number of stars.
-  return b.stars - a.stars;
-});
+repos.sort((a, b) => b.stars - a.stars);
 
-let widgets = repos.map((repo) => ({
-  ...repo,
-  image: repo.image ? new URL(repo.image, base).href : undefined,
-  gif: repo.gif ? new URL(repo.gif, base).href : undefined,
-}));
+let reposWithImages = repos
+  .filter(repo => repo.image)
+  .map((repo) => ({
+    ...repo,
+    image: repo.image ? new URL(repo.image, base).href : undefined,
+    gif: repo.gif ? new URL(repo.gif, base).href : undefined,
+  }));
+
+let reposWithoutImages = repos
+  .filter(repo => !repo.image);
 ---
 
-<div class="grid grid-cols-2 gap-2">
-  {widgets.map((d) => <GitHubCard {...d} />)}
+
+<div id="gallery" class="grid grid-cols-2 gap-2">
+  {reposWithImages.map((d) => <GitHubCard {...d} />)}
 </div>
+
+<br />
+
+<div class="grid grid-cols-2 gap-2">
+  {reposWithoutImages.map((d) => <GitHubCard {...d} />)}
+</div>
+
+<script is:inline>
+  let gallery = document.getElementById("gallery");
+  let observer = new IntersectionObserver(entries => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        let image = entry.target.querySelector(".image-preview");
+        let gifUrl = image?.dataset.gif;
+        if (!gifUrl) return;
+        let gif = new Image();
+        gif.src = gifUrl;
+        gif.onload = () => {
+          image.src = gifUrl;
+        }
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  });
+
+  const items = gallery.children;
+  for (let i = 0; i < items.length; i++) {
+    observer.observe(items[i]);
+  }
+</script>

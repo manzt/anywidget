@@ -47,7 +47,7 @@ let username = repo.split('/')[0];
 		<p class="text-sm text-gray-600 line-clamp-2 group-hover:line-clamp-none">{description}</p>
 	</div>
 	{Astro.props.image ?
-		<img class="w-full" src={Astro.props.image} alt={username} /> :
+		<img class="image-preview w-full" src={Astro.props.image} alt={username} data-gif={Astro.props.gif} /> :
 		null
 	}
 </div>
