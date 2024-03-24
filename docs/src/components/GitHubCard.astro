@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 function formatNumber(num: number) {
 	if (num < 1000) {
 		return num.toString();
@@ -28,7 +29,7 @@ let username = repo.split('/')[0];
 	<div class="px-3 py-2">
 		<div class="flex justify-between">
 			<div class="flex items-center space-x-2 truncate">
-				<img class="h-6 w-6 rounded border" src={`https://www.github.com/${username}.png`} alt={username} />
+				<Image class="h-6 w-6 rounded border" inferSize src={`https://www.github.com/${username}.png`} alt={username} />
 				<div class="text-sm font-semibold">
 					<a href={url} class="text-gray-600 hover:text-gray-700">{repo}</a>
 				</div>
@@ -47,7 +48,7 @@ let username = repo.split('/')[0];
 		<p class="text-sm text-gray-600 line-clamp-2 group-hover:line-clamp-none">{description}</p>
 	</div>
 	{Astro.props.image ?
-		<img class="image-preview w-full" src={Astro.props.image} alt={username} data-gif={Astro.props.gif} /> :
+		<Image class="image-preview w-full" inferSize src={Astro.props.image} alt={username} data-gif={Astro.props.gif} /> :
 		null
 	}
 </div>
