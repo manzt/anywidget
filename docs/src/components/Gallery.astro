@@ -2,32 +2,37 @@
 import GitHubCard from "./GitHubCard.astro"
 import { z } from "astro:content";
 
+let base = new URL("https://manzt.github.io/build-with-anywidget/manifest-complete.json");
+
 let RepoSchema = z.object({
   repo: z.string(),
   description: z.string(),
   stars: z.number(),
-  imageUrl: z.string().optional(),
+  image: z.string().optional(),
+  gif: z.string().optional(),
 });
 
-let response = await fetch("https://manzt.github.io/build-with-anywidget/repos-complete.json");
+let response = await fetch(base);
 let raw = await response.json();
-let widgets = z.array(RepoSchema).parse(raw);
-widgets.sort((a, b) => {
+let repos = z.array(RepoSchema).parse(raw);
+repos.sort((a, b) => {
   // First, sort by the presence of imageUrl
-  if (a.imageUrl && !b.imageUrl) {
+  if (a.image && !b.image) {
     return -1;
-  } else if (!a.imageUrl && b.imageUrl) {
+  } else if (!a.image && b.image) {
     return 1;
   }
   // Then, sort by the highest number of stars.
   return b.stars - a.stars;
 });
+
+let widgets = repos.map((repo) => ({
+  ...repo,
+  image: repo.image ? new URL(repo.image, base).href : undefined,
+  gif: repo.gif ? new URL(repo.gif, base).href : undefined,
+}));
 ---
 
-Many tools have been built with AnyWidget. Here are some of them:
-
-<img class="max-w-md m-auto" src="/teaser.png" />
-
 <div class="grid grid-cols-2 gap-2">
-  {widgets.map((d: any) => <GitHubCard {...d} />)}
+  {widgets.map((d) => <GitHubCard {...d} />)}
 </div>

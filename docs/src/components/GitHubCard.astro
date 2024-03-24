@@ -1,7 +1,4 @@
 ---
-import { Image } from 'astro:assets';
-import defaultImage from "../../public/banner-minimal.png";
-
 function formatNumber(num: number) {
 	if (num < 1000) {
 		return num.toString();
@@ -17,12 +14,12 @@ type Props = {
 	description: string;
 	url?: string;
 	stars: number;
-	imageUrl?: string;
+	image?: string;
+	gif?: string;
 }
 
 let { repo, description, stars } = Astro.props;
 let url = Astro.props.url ?? `https://github.com/${repo}`;
-let imageUrl = Astro.props.imageUrl;
 let username = repo.split('/')[0];
 ---
 
@@ -31,7 +28,7 @@ let username = repo.split('/')[0];
 	<div class="px-3 py-2">
 		<div class="flex justify-between">
 			<div class="flex items-center space-x-2">
-				<Image class="h-6 w-6 rounded border" inferSize={true} src={`https://www.github.com/${username}.png`} alt={username} />
+				<img class="h-6 w-6 rounded border" src={`https://www.github.com/${username}.png`} alt={username} />
 				<div class="text-sm font-semibold">
 					<a href={url} class="text-primary-500 hover:text-primary-600">{repo}</a>
 				</div>
@@ -47,10 +44,10 @@ let username = repo.split('/')[0];
 				</div>
 				: null}
 		</div>
-		<p class="text-sm text-gray-600 line-clamp-2widgets group-hover:line-clamp-none">{description}</p>
+		<p class="text-sm text-gray-600 line-clamp-2 group-hover:line-clamp-none">{description}</p>
 	</div>
-	{imageUrl ?
-		<Image class="w-full" src={imageUrl} inferSize alt={username} /> :
-		<Image class="w-full" src={defaultImage} alt={username} />
+	{Astro.props.image ?
+		<img class="w-full" src={Astro.props.image} alt={username} /> :
+		null
 	}
 </div>
