@@ -10,6 +10,10 @@ image: {
 
 import CounterButton from "../../components/CounterButton.astro";
 import ConfettiButton from "../../components/ConfettiButton.astro";
+import widgetOverviewImg from "../../../public/widget-overview.png";
+import clientJsDiagramImg from "../../../public/client-js-diagram.png";
+import anywidgetOverviewImg from "../../../public/anywidget-overview.png";
+import { Image } from "astro:assets";
 
 > **EDIT**(2024-01-31): Since v0.9, it is preferred to use
 > <a href="/blog/a-year-with-anywidget#introducing-widget-lifecycle-hooks">anywidget lifecycle hooks</a>
@@ -76,7 +80,7 @@ A custom widget is composed of two separate programs:
 2. JavaScript code that renders the widget in the browser and communicates with
    Python
 
-![two components of a Jupyter widget, the JS front end and Python backend](/widget-overview.png)
+<Image src={widgetOverviewImg} alt="two components of a Jupyter widget, the JS front end and Python backend" />
 
 ### The Multi-Platform Problem
 
@@ -91,7 +95,7 @@ JavaScript. This process is not standardized, in contrast to loading the associa
 in the application kernel, and widget authors are thus tasked with packaging their JavaScript
 code for multiple notebook environments, each with its own requirements and quirks.
 
-![Widget front-end source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code](/client-js-diagram.png)
+<Image src={clientJsDiagramImg} alt="Widget front-end source code (JavaScript) requires is transformed and packaged into separate files for JupyterLab, Jupyter notebooks, Google Colab, VS Code" />
 
 To a seasoned front-end engineer, this problem likely appears well suited for a
 JavaScript
@@ -374,7 +378,7 @@ is a traditional custom widget whose sole purpose is to both:
 - solve the multi-platform problem
 - load and execute ESM sent from the Python kernel
 
-![overview of anywidget implementation. anywidget loads and executes widget JavaScript code sent from the Python kernel](/anywidget-overview.png)
+<Image src={anywidgetOverviewImg} alt="overview of anywidget implementation. anywidget loads and executes widget JavaScript code sent from the Python kernel" />
 
 In this sense, **anywidget** is really a "meta" framework for creating new widgets. You – the widget developer –
 define ESM and an associated Python class (i.e., a Jupyter Widget), and **anywidget** takes care of the rest.

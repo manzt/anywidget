@@ -3,11 +3,12 @@ title: Getting Started
 description: Docs getting started
 layout: ../../layouts/MainLayout.astro
 ---
-import { Image } from "astro:assets";
 import CounterButton from "../../components/CounterButton.astro";
-import imageUrl from "/teaser.png?url";
 
-<img class="max-w-md m-auto" src="/teaser.png" />
+import { Image } from "astro:assets";
+import img from "../../../public/teaser.png";
+
+<Image class="rounded-lg max-w-md m-auto" src={img} alt="anywidget visualizations inside a JupyterLab notebook" />
 
 ## What is anywidget?
 
@@ -144,7 +145,7 @@ allowing real-time updates to your widget during development (below).
 > ```
 
 <img
-  class="rounded-md max-w-lg m-auto"
+  class="rounded-xl max-w-lg m-auto"
   alt="Real-time widget development entirely from within JupyterLab"
   src="https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif"
 />
