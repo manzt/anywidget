@@ -30,13 +30,13 @@ let reposWithoutImages = repos
 ---
 
 
-<div id="gallery" class="grid grid-cols-2 gap-2">
+<div class="gallery" id="gallery">
   {reposWithImages.map((d) => <GitHubCard {...d} />)}
 </div>
 
 <br />
 
-<div class="grid grid-cols-2 gap-2">
+<div class="gallery">
   {reposWithoutImages.map((d) => <GitHubCard {...d} />)}
 </div>
 
@@ -66,3 +66,11 @@ let reposWithoutImages = repos
     observer.observe(items[i]);
   }
 </script>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+</style>

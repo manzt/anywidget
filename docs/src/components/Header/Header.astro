@@ -7,7 +7,9 @@ import SidebarToggle from "./SidebarToggle";
 import LanguageSelect from "./LanguageSelect";
 import ThemeToggleButton from "./ThemeToggleButton";
 import Search from "./Search";
-type Props = { currentPage: string; };
+type Props = {
+	currentPage: string;
+};
 const { currentPage } = Astro.props as Props;
 const lang = getLanguageFromURL(currentPage);
 ---
@@ -78,6 +80,7 @@ const lang = getLanguageFromURL(currentPage);
 		justify-content: flex-end;
 		gap: 1em;
 		width: 100%;
+		max-width: 82em;
 		padding: 0 1rem;
 	}
 	@media (min-width: 50em) {

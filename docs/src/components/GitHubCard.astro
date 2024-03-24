@@ -27,10 +27,10 @@ let username = repo.split('/')[0];
 <div class="w-full group flex flex-col justify-between bg-teal-50 border border-teal-200 rounded-lg overflow-hidden max-h-64">
 	<div class="px-3 py-2">
 		<div class="flex justify-between">
-			<div class="flex items-center space-x-2">
+			<div class="flex items-center space-x-2 truncate">
 				<img class="h-6 w-6 rounded border" src={`https://www.github.com/${username}.png`} alt={username} />
 				<div class="text-sm font-semibold">
-					<a href={url} class="text-primary-600 hover:text-primary-700">{repo}</a>
+					<a href={url} class="text-gray-600 hover:text-gray-700">{repo}</a>
 				</div>
 			</div>
 			{stars ?
