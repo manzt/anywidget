@@ -11,6 +11,24 @@ the Jupyter Widgets API, but their tutorial mixes boilerplate/packaging details
 with core "concepts" to Jupyter Widgets. Below is an attempt to distill these
 concepts for **anywidget** authors._
 
+## Watch & Learn
+
+This video provides a practical guide to **anywidget** fundementals, including
+synchronizing Python and JavaScript state, binary data, animations, and
+publishing a package on PyPI.
+
+<iframe
+  client:visible
+  class="rounded-md max-w-xl m-auto"
+  src="https://www.youtube.com/embed/oZhyilx3gqI?si=vFhviCebYi6FBuWN"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
+More detailed explantations of specific widget concepts are included below.
+
 ## The Widget Front End
 
 This section frames the Jupyter Widgets documentation in the context of
