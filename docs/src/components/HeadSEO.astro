@@ -3,7 +3,7 @@ import { SITE, OPEN_GRAPH, type Frontmatter } from "../consts";
 import { getTitle } from "../util";
 
 export interface Props {
-	frontmatter?: Frontmatter;
+	frontmatter?: Omit<Frontmatter, "layout">;
 	canonicalUrl: URL;
 }
 

@@ -3,8 +3,11 @@ title: Getting Started
 description: Docs getting started
 layout: ../../layouts/MainLayout.astro
 ---
-
+import { Image } from "astro:assets";
 import CounterButton from "../../components/CounterButton.astro";
+import imageUrl from "/teaser.png?url";
+
+<img class="max-w-md m-auto" src="/teaser.png" />
 
 ## What is anywidget?
 
@@ -140,4 +143,24 @@ allowing real-time updates to your widget during development (below).
 > ANYWIDGET_HMR=1 jupyter lab
 > ```
 
-![Real-time widget development entirely from within JupyterLab](https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif)
+<img
+  class="rounded-md max-w-lg m-auto"
+  alt="Real-time widget development entirely from within JupyterLab"
+  src="https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif"
+/>
+
+## Watch & Learn
+
+This video provides a detailed exploration of **anywidget** fundementals,
+including synchronizing Python and JavaScript state, binary data, animations,
+and publishing a package on PyPI.
+
+<iframe
+  client:visible
+  class="rounded-md max-w-xl m-auto"
+  src="https://www.youtube.com/embed/oZhyilx3gqI?si=vFhviCebYi6FBuWN"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>

@@ -5,7 +5,7 @@ import TableOfContents from "../RightSidebar/TableOfContents";
 import type { MarkdownHeading } from "astro";
 
 type Props = {
-	frontmatter: Frontmatter;
+	frontmatter: Omit<Frontmatter, "layout">;
 	headings: MarkdownHeading[];
 	githubEditUrl: string;
 };

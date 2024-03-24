@@ -18,3 +18,4 @@ dist/
 .coverage
 .dmypy.json
 .venv
+.DS_Store
