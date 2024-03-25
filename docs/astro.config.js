@@ -7,6 +7,8 @@ import ipynb from "./scripts/ipynb.mjs";
 // TODO: remove or migrate entire to tailwind
 import tailwind from "@astrojs/tailwind";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
 	site: `https://anywidget.dev/`,
@@ -26,10 +28,17 @@ export default defineConfig({
 			include: ["./src/components/Header/Search.tsx"],
 		}),
 		// Support .ipynb pages
-		ipynb({ execute: false }),
+		ipynb({
+			execute: false,
+		}),
 		// Added for custom landing page
-		tailwind({ config: { applyBaseStyles: false } }),
+		tailwind({
+			config: {
+				applyBaseStyles: false,
+			},
+		}),
 		// Suports components in markdown
 		mdx(),
+		sitemap(),
 	],
 });

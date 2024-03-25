@@ -15,6 +15,7 @@
 		"@astrojs/mdx": "^2.2.1",
 		"@astrojs/preact": "^3.1.1",
 		"@astrojs/react": "^3.1.0",
+		"@astrojs/sitemap": "^3.1.1",
 		"@astrojs/tailwind": "^5.1.0",
 		"@docsearch/css": "^3.1.0",
 		"@docsearch/react": "^3.1.0",
