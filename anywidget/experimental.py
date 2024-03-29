@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import pathlib
 import typing
@@ -130,9 +131,12 @@ _AnyWidgetCommandBound = typing.Callable[
 def _collect_commands(widget: WidgetBase) -> dict[str, _AnyWidgetCommandBound]:
     cmds: dict[str, _AnyWidgetCommandBound] = {}
     for attr_name in dir(widget):
-        attr = getattr(widget, attr_name)
-        if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
-            cmds[attr_name] = attr
+        # suppressing silly assertion erro from ipywidgets _staticproperty
+        # ref: https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L291-L297
+        with contextlib.suppress(AssertionError):
+            attr = getattr(widget, attr_name)
+            if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
+                cmds[attr_name] = attr
     return cmds
 
 
