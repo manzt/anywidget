@@ -41,7 +41,7 @@ let username = repo.split("/")[0];
 					alt={username}
 				/>
 				<div class="text-sm font-semibold">
-					<a href={url} class="text-gray-600 hover:text-gray-700"
+					<a href={url} target="_blank" class="text-gray-600 hover:text-gray-700"
 						>{repo}</a
 					>
 				</div>
@@ -51,6 +51,7 @@ let username = repo.split("/")[0];
 					<div class="flex items-center">
 						<a
 							href={`${url}/stargazers`}
+							target="_blank"
 							class="text-sm flex items-center fill-gray-500 hover:fill-gray-600 text-gray-500 hover:text-gray-600"
 						>
 							<svg
@@ -75,7 +76,7 @@ let username = repo.split("/")[0];
 	</div>
 	{
 		Astro.props.image ? (
-			<a href={url} aria-label={`View ${repo} on GitHub`}>
+			<a href={url} target="_blank" aria-label={`View ${repo} on GitHub`}>
 				<Image
 					class="image-preview w-full"
 					inferSize
