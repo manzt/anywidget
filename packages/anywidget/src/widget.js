@@ -1,9 +1,5 @@
-import {
-	createEffect,
-	createResource,
-	createRoot,
-	createSignal,
-} from "solid-js";
+import * as uuid from "@lukeed/uuid";
+import * as solid from "solid-js";
 
 /**
  * @typedef AnyWidget
@@ -258,7 +254,9 @@ export function invoke(
 	buffers = [],
 	{ timeout = 3000 } = {},
 ) {
-	let id = Date.now().toString(36);
+	// crypto.randomUUID() is not available in non-secure contexts (i.e., http://)
+	// so we use simple (non-secure) polyfill.
+	let id = uuid.v4();
 	return new Promise((resolve, reject) => {
 		let timer = setTimeout(() => {
 			reject(new Error(`Promise timed out after ${timeout} ms`));
@@ -295,20 +293,20 @@ class Runtime {
 
 	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
 	constructor(model) {
-		this.#disposer = createRoot((dispose) => {
-			let [css, set_css] = createSignal(model.get("_css"));
+		this.#disposer = solid.createRoot((dispose) => {
+			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] css hot updated: ${id}`);
 				set_css(model.get("_css"));
 			});
-			createEffect(() => {
+			solid.createEffect(() => {
 				let id = model.get("_anywidget_id");
 				load_css(css(), id);
 			});
 
 			/** @type {import("solid-js").Signal<string>} */
-			let [esm, setEsm] = createSignal(model.get("_esm"));
+			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
 			model.on("change:_esm", async () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] esm hot updated: ${id}`);
@@ -316,7 +314,7 @@ class Runtime {
 			});
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			this.#widget_result = createResource(esm, async (update) => {
+			this.#widget_result = solid.createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
@@ -348,11 +346,11 @@ class Runtime {
 	 */
 	async create_view(view) {
 		let model = view.model;
-		let disposer = createRoot((dispose) => {
+		let disposer = solid.createRoot((dispose) => {
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
 			let resource =
-				createResource(this.#widget_result, async (widget_result) => {
+				solid.createResource(this.#widget_result, async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
 					model.off(null, null, view);
@@ -374,7 +372,7 @@ class Runtime {
 						throw_anywidget_error(e);
 					}
 				})[0];
-			createEffect(() => {
+			solid.createEffect(() => {
 				if (resource.error) {
 					// TODO: Show error in the view?
 				}
