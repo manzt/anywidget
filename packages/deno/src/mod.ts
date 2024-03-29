@@ -200,7 +200,7 @@ export class Model<State> {
 		name: Event,
 		callback: () => void,
 	): void {
-		this._target.addEventListener(name, callback);
+		this._target.addEventListener(name as string, callback);
 	}
 }
 
@@ -276,6 +276,7 @@ export function widget<State>(options: WidgetOptions<State>): Model<State> {
 		);
 	let model = new Model(state);
 	for (let key in state) {
+		// @ts-expect-error - TS can't infer this is correctly keyof ChangeEvents<State>
 		model.on(`change:${key}`, () => {
 			comm.send_state({ [key]: model.get(key) });
 		});
