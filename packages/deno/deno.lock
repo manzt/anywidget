@@ -1,0 +1,80 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@std/assert@^0.220.1": "jsr:@std/assert@0.220.1",
+      "jsr:@std/cli@^0.220.1": "jsr:@std/cli@0.220.1",
+      "jsr:@std/fmt@^0.220.1": "jsr:@std/fmt@0.220.1",
+      "jsr:@std/fs@0.220.1": "jsr:@std/fs@0.220.1",
+      "jsr:@std/path": "jsr:@std/path@0.220.1",
+      "jsr:@std/path@0.220.1": "jsr:@std/path@0.220.1",
+      "jsr:@std/path@^0.220.1": "jsr:@std/path@0.220.1",
+      "jsr:@std/testing@0.220.1": "jsr:@std/testing@0.220.1",
+      "npm:unzipit@1.4": "npm:unzipit@1.4.3",
+      "npm:zod@3.9": "npm:zod@3.9.8"
+    },
+    "jsr": {
+      "@std/assert@0.220.1": {
+        "integrity": "88710d54f3afdd7a5761e7805abba1f56cd14e4b212feffeb3e73a9f77482425",
+        "dependencies": [
+          "jsr:@std/fmt@^0.220.1"
+        ]
+      },
+      "@std/cli@0.220.1": {
+        "integrity": "6c38388efc899c9d98811d38a46effe01e0d91138068483f1e6ae834caad5e82",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1"
+        ]
+      },
+      "@std/fmt@0.220.1": {
+        "integrity": "3b1a698477a26b1dacbbee26db1a65030a005c6d71db3b3a0e59f8a638f04d7a"
+      },
+      "@std/fs@0.220.1": {
+        "integrity": "7fe79c08e9e2ea6818b05f271ddba07eaed7e6dac7ce7cfb35e3f8521aa18fc1",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1",
+          "jsr:@std/path@^0.220.1"
+        ]
+      },
+      "@std/path@0.220.1": {
+        "integrity": "cc63c1b5e5192e2f718dc2f365a3514fffb26cc0380959bab0f8fb5988a52f0c",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1"
+        ]
+      },
+      "@std/testing@0.220.1": {
+        "integrity": "be77cc1df543f70217d450612637f9f6fcc6887f19fca89665ce08456ee1f290",
+        "dependencies": [
+          "jsr:@std/assert@^0.220.1"
+        ]
+      }
+    },
+    "npm": {
+      "unzipit@1.4.3": {
+        "integrity": "sha512-gsq2PdJIWWGhx5kcdWStvNWit9FVdTewm4SEG7gFskWs+XCVaULt9+BwuoBtJiRE8eo3L1IPAOrbByNLtLtIlg==",
+        "dependencies": {
+          "uzip-module": "uzip-module@1.0.3"
+        }
+      },
+      "uzip-module@1.0.3": {
+        "integrity": "sha512-AMqwWZaknLM77G+VPYNZLEruMGWGzyigPK3/Whg99B3S6vGHuqsyl5ZrOv1UUF3paGK1U6PM0cnayioaryg/fA==",
+        "dependencies": {}
+      },
+      "zod@3.9.8": {
+        "integrity": "sha512-pTNhdJd45PPOBpdxO8x00Tv+HhknYGx3WdgFQndazp+G1Gd2Cxf81L5yMfCIIcd/SA3VqrcTv/G4bFcr+DsZhA==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/cli@^0.220.1",
+      "jsr:@std/fs@0.220.1",
+      "jsr:@std/path@0.220.1",
+      "jsr:@std/testing@0.220.1",
+      "npm:unzipit@1.4",
+      "npm:zod@3.9"
+    ]
+  }
+}

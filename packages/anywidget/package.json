@@ -25,11 +25,11 @@
 		"@anywidget/vite": "workspace:~",
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6",
 		"@lukeed/uuid": "^2.0.1",
-		"solid-js": "^1.8.14"
+		"solid-js": "^1.8.16"
 	},
 	"devDependencies": {
 		"@jupyter-widgets/base-manager": "^1.0.8",
-		"@rspack/core": "^0.5.5"
+		"@rspack/core": "^0.5.9"
 	},
 	"jupyterlab": {
 		"extension": "./src/plugin.js",

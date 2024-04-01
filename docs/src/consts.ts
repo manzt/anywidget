@@ -51,17 +51,18 @@ export const SIDEBAR: Sidebar = {
 	en: {
 		Guide: [
 			{ text: "Getting Started", link: "en/getting-started" },
+			{ text: "Community", link: "en/community" },
+		],
+		Learn: [
 			{
 				text: "Jupyter Widgets: The Good Parts",
 				link: "en/jupyter-widgets-the-good-parts",
 			},
+			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
 		],
 		Advanced: [
 			{ text: "Bundling", link: "en/bundling" },
 			{ text: "Experimental Features", link: "en/experimental" },
-		],
-		Notebooks: [
-			{ text: "Build a Counter Widget", link: "en/notebooks/counter" },
 		],
 		Blog: [
 			{ text: "Introducing anywidget", link: "blog/introducing-anywidget" },

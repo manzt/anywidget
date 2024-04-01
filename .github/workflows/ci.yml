@@ -15,16 +15,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - uses: pre-commit/action@v3.0.1
         with:
-          extra_args: --all-files
+          python-version: "3.12"
+      - run: |
+          pip install uv
+          uv pip install --system ruff
+          ruff check
+          ruff format
+
+  TypecheckPython:
+    name: Python / Typecheck
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      # Disable jupyter-builder build hook because not needed for typechecking, and requires npm
+      - run: |
+          sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
+          cat pyproject.toml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install uv
+          uv pip install --system -e '.[test,dev]'
+      - run: mypy
 
   TestPython:
     name: Python / Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -39,9 +62,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: |
+      - if: ${{ matrix.python-version != '3.7' }}
+        run: |
           pip install uv
           uv pip install --system -e '.[test,dev]'
+
+      - if: ${{ matrix.python-version == '3.7' }}
+        run: |
+          pip install -e '.[test,dev]'
 
       - name: Run tests
         run: pytest ./tests --color=yes --cov anywidget --cov-report xml

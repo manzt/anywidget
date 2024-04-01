@@ -32,7 +32,7 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
 		<title>{getTitle(frontmatter)}</title>
-		<style>
+		<style is:global>
 			body {
 				width: 100%;
 				display: grid;
@@ -45,7 +45,8 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 				display: grid;
 				grid-auto-flow: column;
 				grid-template-columns:
-					minmax(var(--gutter), 1fr) minmax(0, var(--max-width))
+					minmax(var(--gutter), 1fr)
+					minmax(0, var(--max-width))
 					minmax(var(--gutter), 1fr);
 				overflow-x: hidden;
 			}

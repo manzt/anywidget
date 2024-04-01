@@ -1,6 +1,6 @@
 {
 	"name": "create-anywidget",
-	"version": "0.5.3",
+	"version": "0.5.6",
 	"type": "module",
 	"author": "Trevor Manz",
 	"bin": {
@@ -27,7 +27,7 @@
 	"devDependencies": {
 		"@anywidget/react": "workspace:^",
 		"@anywidget/types": "workspace:^",
-		"@types/node": "^20.10.6",
+		"@types/node": "^20.12.2",
 		"@types/react": "^18.2.61",
 		"@types/react-dom": "^18.2.19",
 		"esbuild": "^0.20.0",

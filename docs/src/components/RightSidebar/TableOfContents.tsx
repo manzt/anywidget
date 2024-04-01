@@ -1,10 +1,8 @@
 /** @jsxImportSource preact */
-
 import { unescape } from "html-escaper";
 import type { MarkdownHeading } from "astro";
 import type { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { JSXInternal } from "preact/src/jsx";
 
 type ItemOffsets = {
 	id: string;
@@ -70,10 +68,6 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 		return () => headingsObserver.disconnect();
 	}, [toc.current]);
 
-	const onLinkClick: JSXInternal.MouseEventHandler<HTMLAnchorElement> = (e) => {
-		setCurrentID(e.currentTarget.getAttribute("href")!.replace("#", ""));
-	};
-
 	return (
 		<>
 			<h2 id={onThisPageID} className="heading">
@@ -88,7 +82,14 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 								currentID === heading.slug ? "current-header-link" : ""
 							}`.trim()}
 						>
-							<a href={`#${heading.slug}`} onClick={onLinkClick}>
+							<a
+								href={`#${heading.slug}`}
+								onClick={(e) => {
+									setCurrentID(
+										e.currentTarget.getAttribute("href")!.replace("#", ""),
+									);
+								}}
+							>
 								{unescape(heading.text)}
 							</a>
 						</li>

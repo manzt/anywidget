@@ -7,8 +7,12 @@ import ipynb from "./scripts/ipynb.mjs";
 // TODO: remove or migrate entire to tailwind
 import tailwind from "@astrojs/tailwind";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
+	site: `https://anywidget.dev/`,
+	prefetch: true,
 	markdown: {
 		shikiConfig: {
 			theme: "poimandres",
@@ -16,15 +20,28 @@ export default defineConfig({
 	},
 	integrations: [
 		// Enable Preact to support Preact JSX components.
-		preact(),
+		preact({
+			exclude: ["./src/components/Header/Search.tsx"],
+		}),
 		// Enable React for the Algolia search component.
-		react(),
+		react({
+			include: ["./src/components/Header/Search.tsx"],
+		}),
 		// Support .ipynb pages
-		ipynb({ execute: false }),
+		ipynb({
+			execute: false,
+		}),
 		// Added for custom landing page
-		tailwind({ config: { applyBaseStyles: false } }),
+		tailwind({
+			config: {
+				applyBaseStyles: false,
+			},
+		}),
 		// Suports components in markdown
 		mdx(),
+		sitemap(),
 	],
-	site: `https://anywidget.dev/`,
+	image: {
+		remotePatterns: [{ protocol: "https" }],
+	},
 });

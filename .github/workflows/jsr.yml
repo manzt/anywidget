@@ -1,0 +1,23 @@
+name: Publish @anywidget/deno to jsr
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: macos-14
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - run: |
+          cd packages/deno
+          # sync deno version with package.json
+          sed -i '' 's/\"version\": \"[^\"]*\"/\"version\": \"'$(jq -r '.version' package.json)'\"/' deno.json
+          deno publish --allow-dirty

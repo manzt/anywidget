@@ -1,5 +1,5 @@
-/** @jsxImportSource react */
-import type { FunctionComponent } from "react";
+/** @jsxImportSource preact */
+import type { FunctionComponent } from "preact";
 import "./LanguageSelect.css";
 import { KNOWN_LANGUAGES, langPathRegex } from "../../languages";
 
@@ -28,7 +28,8 @@ const LanguageSelect: FunctionComponent<{ lang: string }> = ({ lang }) => {
 				className="language-select"
 				value={lang}
 				onChange={(e) => {
-					const newLang = e.target.value;
+					// @ts-expect-error
+					const newLang = e.target?.value;
 					let actualDest = window.location.pathname.replace(langPathRegex, "/");
 					if (actualDest == "/") actualDest = `/getting-started`;
 					window.location.pathname = "/" + newLang + actualDest;

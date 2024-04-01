@@ -1,5 +1,27 @@
 # create-anywidget
 
+## 0.5.6
+
+### Patch Changes
+
+- Fix README.md to point to static folder for un-bundled ([#496](https://github.com/manzt/anywidget/pull/496))
+
+- Ignore `.venv` for Deno config and use defaults (rather than Trevor's preferences 🙃) ([#496](https://github.com/manzt/anywidget/pull/496))
+
+## 0.5.5
+
+### Patch Changes
+
+- Switch default option to Vanilla (minimal) ([#484](https://github.com/manzt/anywidget/pull/484))
+
+- Add `autoreload` extension to demo notebook ([#486](https://github.com/manzt/anywidget/pull/486))
+
+## 0.5.4
+
+### Patch Changes
+
+- Change order of "Next steps" (npm install before git commands) ([#476](https://github.com/manzt/anywidget/pull/476))
+
 ## 0.5.3
 
 ### Patch Changes

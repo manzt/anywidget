@@ -218,7 +218,7 @@ export default defineConfig({
       formats: ["es"],
     },
   },
-+  plugin: [anywidget()],
++  plugins: [anywidget()],
 });
 ```
 
