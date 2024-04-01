@@ -1,5 +1,12 @@
 # @anywidget/svelte
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`777fc268ee06fcf13e48a1c00cfdf90c14d786dc`](https://github.com/manzt/anywidget/commit/777fc268ee06fcf13e48a1c00cfdf90c14d786dc)]:
+  - @anywidget/types@0.1.7
+
 ## 0.0.5
 
 ### Patch Changes
