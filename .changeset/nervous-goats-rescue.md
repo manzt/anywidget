@@ -13,13 +13,16 @@ functions.
 ```py
 class Widget(anywidget.AnyWidget):
     _esm = """
-    async function render({ model, el, experimental }) {
-      let [msg, _buffers] = await experimental.invoke("_echo", "Hello, world");
-    }
-    export default { render };
+    export default {
+      async render({ model, el, experimental }) {
+        let [msg, buffers] = await experimental.invoke("_echo", "hello, world");
+        console.log(msg); // "HELLO, WORLD"
+      },
+    };
     """
 
     @anywidget.experimental.command
     def _echo(self, msg, buffers):
-        return msg, buffers
+        # upper case the message
+        return msg.upper(), buffers
 ```
