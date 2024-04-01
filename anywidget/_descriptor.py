@@ -604,7 +604,7 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
             send_state({event.signal.name})
 
         def _disconnect() -> None:
-            cast("psygnal.SignalGroup", events).disconnect(_on_psygnal_event)
+            events.disconnect(_on_psygnal_event)
 
         return _disconnect
     return None
