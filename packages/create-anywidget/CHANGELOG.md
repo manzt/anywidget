@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.7
+
+### Patch Changes
+
+- Update typings with experimental API ([#518](https://github.com/manzt/anywidget/pull/518))
+
 ## 0.5.6
 
 ### Patch Changes
