@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -127,8 +127,8 @@ importers:
         specifier: ^2 || ^3 || ^4 || ^5 || ^6
         version: 6.0.7(react@18.2.0)
       solid-js:
-        specifier: ^1.8.14
-        version: 1.8.14
+        specifier: ^1.8.16
+        version: 1.8.16
     devDependencies:
       '@jupyter-widgets/base-manager':
         specifier: ^1.0.8
@@ -8353,8 +8353,8 @@ packages:
       websocket-driver: 0.7.4
     dev: true
 
-  /solid-js@1.8.14:
-    resolution: {integrity: sha512-kDfgHBm+ROVLDVuqaXh/jYz0ZVJ29TYfVsKsgDPtNcjoyaPtOvDX2l0tVnthjLdEXr7vDTYeqEYFfMkZakDsOQ==}
+  /solid-js@1.8.16:
+    resolution: {integrity: sha512-rja94MNU9flF3qQRLNsu60QHKBDKBkVE1DldJZPIfn2ypIn3NV2WpSbGTQIvsyGPBo+9E2IMjwqnqpbgfWuzeg==}
     dependencies:
       csstype: 3.1.2
       seroval: 1.0.4
