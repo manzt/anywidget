@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import json
 import pathlib
 import sys
 import time
+import typing
 from unittest.mock import MagicMock, patch
 
 import anywidget
@@ -45,8 +48,7 @@ def test_basic():
 
 
 def test_default_esm():
-    class Widget(anywidget.AnyWidget):
-        ...
+    class Widget(anywidget.AnyWidget): ...
 
     w = Widget()
 
@@ -267,3 +269,40 @@ def test_dom_less_widget():
         """
 
     assert Widget()._repr_mimebundle_() is None
+
+
+def test_command_not_registered_by_default():
+    class Widget(anywidget.AnyWidget):
+        _esm = "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+
+    w = Widget()
+    assert len(w._msg_callbacks.callbacks) == 0
+
+
+def test_anywidget_commands_register_one_callback():
+    import anywidget.experimental
+
+    class Widget(anywidget.AnyWidget):
+        _esm = """
+        export default {
+            async render({ model, el, experimental }) {
+                let [msg] = await experimental.invoke("_echo", "hi");
+                let [msg] = await experimental.invoke("_echo2", "hi");
+            }
+        }
+        """
+
+        @anywidget.experimental.command
+        def _echo(
+            self, msg: typing.Any, buffers: list[bytes]
+        ) -> tuple[str, list[bytes]]:
+            return msg, buffers
+
+        @anywidget.experimental.command
+        def _echo2(
+            self, msg: typing.Any, buffers: list[bytes]
+        ) -> tuple[str, list[bytes]]:
+            return msg, buffers
+
+    w = Widget()
+    assert len(w._msg_callbacks.callbacks) == 1

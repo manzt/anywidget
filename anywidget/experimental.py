@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import pathlib
 import typing
@@ -7,6 +8,9 @@ import typing
 import psygnal
 
 from ._descriptor import MimeBundleDescriptor
+
+if typing.TYPE_CHECKING:  # pragma: no cover
+    from ._protocols import WidgetBase
 
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
@@ -103,3 +107,62 @@ def dataclass(
         return cls
 
     return _decorator(cls) if cls is not None else _decorator  # type: ignore
+
+
+_ANYWIDGET_COMMAND = "_anywidget_command"
+
+_AnyWidgetCommand = typing.Callable[
+    [typing.Any, typing.Any, typing.List[bytes]],
+    typing.Tuple[typing.Any, typing.List[bytes]],
+]
+
+
+def command(cmd: _AnyWidgetCommand) -> _AnyWidgetCommand:
+    """Mark a function as a command for anywidget."""
+    setattr(cmd, _ANYWIDGET_COMMAND, True)
+    return cmd
+
+
+_AnyWidgetCommandBound = typing.Callable[
+    [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
+]
+
+
+def _collect_commands(widget: WidgetBase) -> dict[str, _AnyWidgetCommandBound]:
+    cmds: dict[str, _AnyWidgetCommandBound] = {}
+    for attr_name in dir(widget):
+        # suppressing silly assertion erro from ipywidgets _staticproperty
+        # ref: https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L291-L297
+        with contextlib.suppress(AssertionError):
+            attr = getattr(widget, attr_name)
+            if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
+                cmds[attr_name] = attr
+    return cmds
+
+
+def _register_anywidget_commands(
+    widget: WidgetBase,
+) -> None:
+    """Register a custom message reducer for a widget if it implements the protocol."""
+    # Only add the callback if the widget has any commands.
+    cmds = _collect_commands(widget)
+    if len(cmds) == 0:
+        return None
+
+    def handle_anywidget_command(
+        self: WidgetBase, msg: str | list | dict, buffers: list[bytes]
+    ) -> None:
+        if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
+            return
+        cmd = cmds[msg["name"]]
+        response, buffers = cmd(msg["msg"], buffers)
+        self.send(
+            {
+                "id": msg["id"],
+                "kind": "anywidget-command-response",
+                "response": response,
+            },
+            buffers,
+        )
+
+    widget.on_msg(handle_anywidget_command)
