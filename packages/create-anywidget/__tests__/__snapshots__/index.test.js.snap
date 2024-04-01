@@ -91,7 +91,7 @@ src/ipyfoo/static
 		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.4",
+		"@anywidget/react": "0.0.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -297,7 +297,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.4",
+		"@anywidget/react": "0.0.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -934,7 +934,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.6",
+		"@anywidget/types": "0.1.7",
 		"typescript": "^5.3.3"
 	}
 }",
@@ -1172,7 +1172,7 @@ src/ipyfoo/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.4",
+		"@anywidget/react": "0.0.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -1380,7 +1380,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.4",
+		"@anywidget/react": "0.0.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -2020,7 +2020,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.6",
+		"@anywidget/types": "0.1.7",
 		"typescript": "^5.3.3",
 		"esbuild": "^0.20.0"
 	}
