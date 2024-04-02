@@ -8,7 +8,7 @@ import * as ReactDOM from "react-dom/client";
  */
 
 /** @type {React.Context<RenderContext>} */
-let RenderContext = React.createContext(/** @type {any} */(null));
+let RenderContext = React.createContext(/** @type {any} */ (null));
 
 /** @returns {RenderContext} */
 function useRenderContext() {
