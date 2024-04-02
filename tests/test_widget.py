@@ -306,3 +306,29 @@ def test_anywidget_commands_register_one_callback():
 
     w = Widget()
     assert len(w._msg_callbacks.callbacks) == 1
+
+
+def test_supresses_error_in_constructor():
+    import anywidget.experimental
+
+    class Widget(anywidget.AnyWidget):
+        _esm = """
+        export default {
+            async render({ model, el, experimental }) {
+                let [msg] = await experimental.invoke("_echo", "hi");
+            }
+        }
+        """
+
+        @anywidget.experimental.command
+        def _echo(
+            self, msg: typing.Any, buffers: list[bytes]
+        ) -> tuple[str, list[bytes]]:
+            return msg, buffers
+
+        @property
+        def value(self):
+            raise ValueError("error")
+
+    w = Widget()
+    assert len(w._msg_callbacks.callbacks) == 1

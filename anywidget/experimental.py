@@ -133,7 +133,7 @@ def _collect_commands(widget: WidgetBase) -> dict[str, _AnyWidgetCommandBound]:
     for attr_name in dir(widget):
         # suppressing silly assertion erro from ipywidgets _staticproperty
         # ref: https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L291-L297
-        with contextlib.suppress(AssertionError):
+        with contextlib.suppress(Exception):
             attr = getattr(widget, attr_name)
             if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
                 cmds[attr_name] = attr
