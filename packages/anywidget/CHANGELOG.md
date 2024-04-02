@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.5
+
+### Patch Changes
+
+- feat: Suppress errors when inspecting widget for commands ([#522](https://github.com/manzt/anywidget/pull/522))
+
 ## 0.9.4
 
 ### Patch Changes
