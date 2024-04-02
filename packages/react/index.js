@@ -1,14 +1,32 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
-/** @type {React.Context<import("@anywidget/types").AnyModel>} */
-let ModelContext = React.createContext(/** @type {any} */ (null));
+/**
+ * @typedef RenderContext
+ * @property {import("@anywidget/types").AnyModel} model
+ * @property {import("@anywidget/types").Experimental} experimental
+ */
+
+/** @type {React.Context<RenderContext>} */
+let RenderContext = React.createContext(/** @type {any} */(null));
+
+/** @returns {RenderContext} */
+function useRenderContext() {
+	let ctx = React.useContext(RenderContext);
+	if (!ctx) throw new Error("RenderContext not found");
+	return ctx;
+}
 
 /** @returns {import("@anywidget/types").AnyModel} */
 export function useModel() {
-	let model = React.useContext(ModelContext);
-	if (!model) throw new Error("Model not found");
-	return model;
+	let ctx = useRenderContext();
+	return ctx.model;
+}
+
+/** @returns {import("@anywidget/types").Experimental} */
+export function useExperimental() {
+	let ctx = useRenderContext();
+	return ctx.experimental;
 }
 
 /**
@@ -39,15 +57,15 @@ export function useModelState(key) {
  * @returns {import("@anywidget/types").Render}
  */
 export function createRender(Widget) {
-	return ({ model, el }) => {
+	return ({ el, model, experimental }) => {
 		let root = ReactDOM.createRoot(el);
 		root.render(
 			React.createElement(
 				React.StrictMode,
 				null,
 				React.createElement(
-					ModelContext.Provider,
-					{ value: model },
+					RenderContext.Provider,
+					{ value: { model, experimental } },
 					React.createElement(Widget),
 				),
 			),
