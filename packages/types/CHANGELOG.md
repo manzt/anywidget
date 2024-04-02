@@ -1,5 +1,11 @@
 # @anywidget/types
 
+## 0.1.8
+
+### Patch Changes
+
+- Export `Experimental` type ([#524](https://github.com/manzt/anywidget/pull/524))
+
 ## 0.1.7
 
 ### Patch Changes
