@@ -75,13 +75,26 @@ _TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
 _ANYWIDGET_JS_MODULE = "anywidget"
+
+
+def get_semver_version(version: str):
+    split = version.split(".", maxsplit=2)
+    is_pre_release = "a" in split[2] or "b" in split[2]
+    if is_pre_release:
+        return ".".join(split)
+
+    return "~" + ".".join([split[0], split[1], "0"])
+
+
+_ANYWIDGET_SEMVER_VERSION = get_semver_version(__version__)
+
 _ANYWIDGET_STATE = {
     "_model_module": _ANYWIDGET_JS_MODULE,
     "_model_name": _ANYWIDGET_MODEL_NAME,
-    "_model_module_version": __version__,
+    "_model_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_module": _ANYWIDGET_JS_MODULE,
     "_view_name": _ANYWIDGET_VIEW_NAME,
-    "_view_module_version": __version__,
+    "_view_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_count": None,
 }
 
@@ -368,7 +381,7 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers) # type: ignore
+            self._comm.send(data=msg, buffers=buffers)  # type: ignore
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -437,7 +450,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg) # type: ignore
+            self._comm.on_msg(self._handle_msg)  # type: ignore
             self.send_state()
 
         if py_to_js and self._autodetect_observer:
