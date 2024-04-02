@@ -83,7 +83,7 @@ def get_semver_version(version: str):
     if is_pre_release:
         return ".".join(split)
 
-    return "~" + ".".join([split[0], split[1], "0"])
+    return "~" + ".".join([split[0], split[1], "*"])
 
 
 _ANYWIDGET_SEMVER_VERSION = get_semver_version(__version__)
