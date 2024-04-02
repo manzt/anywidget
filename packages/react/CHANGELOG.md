@@ -1,5 +1,14 @@
 # @anywidget/react
 
+## 0.0.6
+
+### Patch Changes
+
+- Add `useExperimental` hook ([#524](https://github.com/manzt/anywidget/pull/524))
+
+- Updated dependencies [[`0c629955fee6379234fece8246c297c69f51ee79`](https://github.com/manzt/anywidget/commit/0c629955fee6379234fece8246c297c69f51ee79)]:
+  - @anywidget/types@0.1.8
+
 ## 0.0.5
 
 ### Patch Changes
