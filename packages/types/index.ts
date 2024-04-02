@@ -43,7 +43,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	widget_manager: IWidgetManager;
 }
 
-type Experimental = {
+export type Experimental = {
 	invoke: <T>(
 		name: string,
 		msg?: any,
