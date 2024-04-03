@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 import dataclasses
 import pathlib
 import typing
@@ -110,6 +109,7 @@ def dataclass(
 
 
 _ANYWIDGET_COMMAND = "_anywidget_command"
+_ANYWIDGET_COMMANDS = "_anywidget_commands"
 
 _AnyWidgetCommand = typing.Callable[
     [typing.Any, typing.Any, typing.List[bytes]],
@@ -128,25 +128,26 @@ _AnyWidgetCommandBound = typing.Callable[
 ]
 
 
-def _collect_commands(widget: WidgetBase) -> dict[str, _AnyWidgetCommandBound]:
+def _collect_anywidget_commands(widget_cls: type) -> None:
     cmds: dict[str, _AnyWidgetCommandBound] = {}
-    for attr_name in dir(widget):
-        # suppressing silly assertion erro from ipywidgets _staticproperty
-        # ref: https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L291-L297
-        with contextlib.suppress(Exception):
-            attr = getattr(widget, attr_name)
+    for base in widget_cls.__mro__:
+        if not hasattr(base, "__dict__"):
+            continue
+        for name, attr in base.__dict__.items():
             if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
-                cmds[attr_name] = attr
-    return cmds
+                cmds[name] = attr
+
+    setattr(widget_cls, _ANYWIDGET_COMMANDS, cmds)
 
 
-def _register_anywidget_commands(
-    widget: WidgetBase,
-) -> None:
+def _register_anywidget_commands(widget: WidgetBase) -> None:
     """Register a custom message reducer for a widget if it implements the protocol."""
     # Only add the callback if the widget has any commands.
-    cmds = _collect_commands(widget)
-    if len(cmds) == 0:
+    cmds = typing.cast(
+        dict[str, _AnyWidgetCommandBound],
+        getattr(type(widget), _ANYWIDGET_COMMANDS, {}),
+    )
+    if not cmds:
         return None
 
     def handle_anywidget_command(

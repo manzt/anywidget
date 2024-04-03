@@ -17,7 +17,7 @@ from ._util import (
     try_file_contents,
 )
 from ._version import __version__
-from .experimental import _register_anywidget_commands
+from .experimental import _register_anywidget_commands, _collect_anywidget_commands
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -68,6 +68,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
             file_contents = try_file_contents(getattr(cls, key))
             if file_contents:
                 setattr(cls, key, file_contents)
+        _collect_anywidget_commands(cls)
 
     if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
         # ipywidgets v8
