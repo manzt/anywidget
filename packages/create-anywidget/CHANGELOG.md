@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.8
+
+### Patch Changes
+
+- Bump template dependencies. `@anywidget/react==0.0.6` and `@anywidget/types==0.1.8`. ([#527](https://github.com/manzt/anywidget/pull/527))
+
 ## 0.5.7
 
 ### Patch Changes
