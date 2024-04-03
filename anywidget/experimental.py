@@ -144,7 +144,7 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
     """Register a custom message reducer for a widget if it implements the protocol."""
     # Only add the callback if the widget has any commands.
     cmds = typing.cast(
-        dict[str, _AnyWidgetCommandBound],
+        'dict[str, _AnyWidgetCommandBound]',
         getattr(type(widget), _ANYWIDGET_COMMANDS, {}),
     )
     if not cmds:
