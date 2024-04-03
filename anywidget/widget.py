@@ -17,7 +17,7 @@ from ._util import (
     try_file_contents,
 )
 from ._version import __version__
-from .experimental import _register_anywidget_commands, _collect_anywidget_commands
+from .experimental import _collect_anywidget_commands, _register_anywidget_commands
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
