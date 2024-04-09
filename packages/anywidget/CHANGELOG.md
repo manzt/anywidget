@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.7
+
+### Patch Changes
+
+- Refactor AnyWidget command registration ([#526](https://github.com/manzt/anywidget/pull/526))
+
 ## 0.9.6
 
 ### Patch Changes
