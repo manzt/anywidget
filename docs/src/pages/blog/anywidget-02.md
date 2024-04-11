@@ -215,6 +215,40 @@ export default { render };
 > Note: The above front-end code requires transformation with tool like
 > `esbuild` to allow for the special JSX syntax (e.g., `<App />`).
 
+Another common scenario requiring proper cleanup is when using
+`requestAnimationFrame` to continually redraw into a canvas:
+
+```javascript
+class MyCustomRenderer {
+	constructor() {
+		this.render = this.render.bind(this);
+		this.redrawRequest = requestAnimationFrame(this.render);
+		this.canvasEl = document.createElement("canvas");
+	}
+
+	render() {
+		this.redrawRequest = requestAnimationFrame(this.render);
+
+		// ...custom rendering goes here...
+	}
+}
+
+export default {
+	render({ model, el }) {
+		const renderer = new MyCustomRenderer();
+
+		el.appendChild(renderer.canvasEl);
+
+		return () => {
+			cancelAnimationFrame(renderer.redrawRequest);
+		};
+	},
+};
+```
+
+This prevents the accumulation of several animation loops executing at the same
+time after re-running the cell a bunch of times.
+
 ## Getting Started
 
 To start using **anywidget** v0.2, upgrade your package using pip:
