@@ -223,7 +223,7 @@ export default {
 	render({ model, el }) {
 		const canvasEl = document.createElement("canvas");
 		let requestId = requestAnimationFrame(step);
-		
+
 		function step() {
 			/* ...custom rendering goes here... */
 			requestId = requestAnimationFrame(step);
