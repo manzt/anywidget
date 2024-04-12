@@ -219,28 +219,19 @@ Another common scenario requiring proper cleanup is when using
 `requestAnimationFrame` to continually redraw into a canvas:
 
 ```javascript
-class MyCustomRenderer {
-	constructor() {
-		this.render = this.render.bind(this);
-		this.redrawRequest = requestAnimationFrame(this.render);
-		this.canvasEl = document.createElement("canvas");
-	}
-
-	render() {
-		this.redrawRequest = requestAnimationFrame(this.render);
-
-		// ...custom rendering goes here...
-	}
-}
-
 export default {
 	render({ model, el }) {
-		const renderer = new MyCustomRenderer();
-
-		el.appendChild(renderer.canvasEl);
+		const canvasEl = document.createElement("canvas");
+		let requestId = requestAnimationFrame(step);
+		
+		function step() {
+			/* ...custom rendering goes here... */
+			requestId = requestAnimationFrame(step);
+		}
+		el.appendChild(canvasEl);
 
 		return () => {
-			cancelAnimationFrame(renderer.redrawRequest);
+			cancelAnimationFrame(requestId);
 		};
 	},
 };
