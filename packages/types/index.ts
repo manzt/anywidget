@@ -47,7 +47,10 @@ export type Experimental = {
 	invoke: <T>(
 		name: string,
 		msg?: any,
-		buffers?: DataView[],
+		options?: {
+			buffers?: DataView[];
+			signal?: AbortSignal;
+		},
 	) => Promise<[T, DataView[]]>;
 };
 
