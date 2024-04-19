@@ -123,13 +123,8 @@ def command(cmd: _AnyWidgetCommand) -> _AnyWidgetCommand:
     return cmd
 
 
-_AnyWidgetCommandBound = typing.Callable[
-    [typing.Any, typing.List[bytes]], typing.Tuple[typing.Any, typing.List[bytes]]
-]
-
-
 def _collect_anywidget_commands(widget_cls: type) -> None:
-    cmds: dict[str, _AnyWidgetCommandBound] = {}
+    cmds: dict[str, _AnyWidgetCommand] = {}
     for base in widget_cls.__mro__:
         if not hasattr(base, "__dict__"):
             continue
@@ -144,7 +139,7 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
     """Register a custom message reducer for a widget if it implements the protocol."""
     # Only add the callback if the widget has any commands.
     cmds = typing.cast(
-        "dict[str, _AnyWidgetCommandBound]",
+        "dict[str, _AnyWidgetCommand]",
         getattr(type(widget), _ANYWIDGET_COMMANDS, {}),
     )
     if not cmds:
@@ -156,7 +151,7 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return
         cmd = cmds[msg["name"]]
-        response, buffers = cmd(msg["msg"], buffers)
+        response, buffers = cmd(widget, msg["msg"], buffers)
         self.send(
             {
                 "id": msg["id"],
