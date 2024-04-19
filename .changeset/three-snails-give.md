@@ -3,7 +3,7 @@
 "@anywidget/types": patch
 ---
 
-Experimental: Replace invoke timeout with more flexible `AbortSignal`
+**experimental** Replace invoke timeout with more flexible `AbortSignal`
 
 This allows more flexible control over aborting the invoke request, including delegating to third-party libraries that manage cancellation.
 

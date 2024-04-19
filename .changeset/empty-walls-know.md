@@ -2,4 +2,4 @@
 "anywidget": patch
 ---
 
-Ensure anywidget.experimental.command is called with self
+**experimental** Ensure anywidget.experimental.command is called with self
