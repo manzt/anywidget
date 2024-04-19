@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/react",
 	"type": "module",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "React utilities for anywidget",
 	"main": "index.js",
 	"types": "dist/index.d.ts",
