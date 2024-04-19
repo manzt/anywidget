@@ -1,5 +1,39 @@
 # anywidget
 
+## 0.9.8
+
+### Patch Changes
+
+- **experimental** Ensure anywidget.experimental.command is called with self ([#545](https://github.com/manzt/anywidget/pull/545))
+
+- **experimental** Replace invoke timeout with more flexible `AbortSignal` ([#540](https://github.com/manzt/anywidget/pull/540))
+
+  This allows more flexible control over aborting the invoke request, including delegating to third-party libraries that manage cancellation.
+
+  ```js
+  export default {
+    async render({ model, el }) {
+      const controller = new AbortController();
+
+      // Randomly abort the request after 1 second
+      setTimeout(() => Math.random() < 0.5 && controller.abort(), 1000);
+
+      const signal = controller.signal;
+      model
+        .invoke("echo", "Hello, world", { signal })
+        .then((result) => {
+          el.innerHTML = result;
+        })
+        .catch((err) => {
+          el.innerHTML = `Error: ${err.message}`;
+        });
+    },
+  };
+  ```
+
+- Updated dependencies [[`a4b0ec07b2b8937111487108e9b82daf3d9be2df`](https://github.com/manzt/anywidget/commit/a4b0ec07b2b8937111487108e9b82daf3d9be2df)]:
+  - @anywidget/types@0.1.9
+
 ## 0.9.7
 
 ### Patch Changes
