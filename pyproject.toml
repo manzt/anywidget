@@ -76,6 +76,7 @@ pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
 features = ["test", "dev"]
+uv = true
 
 [tool.hatch.envs.default.scripts]
 lint = [
