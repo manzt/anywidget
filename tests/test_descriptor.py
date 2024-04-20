@@ -10,11 +10,11 @@ import pytest
 import watchfiles
 from anywidget._descriptor import (
     _COMMS,
-    _WIDGET_MIME_TYPE,
     MimeBundleDescriptor,
     ReprMimeBundle,
 )
 from anywidget._file_contents import FileContents
+from anywidget._util import _WIDGET_MIME_TYPE
 from watchfiles import Change
 
 if TYPE_CHECKING:

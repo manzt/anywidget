@@ -38,10 +38,10 @@ from ._util import (
     _ANYWIDGET_ID_KEY,
     _DEFAULT_ESM,
     _ESM_KEY,
-    _WIDGET_MIME_TYPE,
-    get_repr_metadata,
+    _PROTOCOL_VERSION,
     put_buffers,
     remove_buffers,
+    repr_mimebundle,
     try_file_contents,
 )
 from ._version import __version__
@@ -68,9 +68,6 @@ _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
 
-_PROTOCOL_VERSION_MAJOR = 2
-_PROTOCOL_VERSION_MINOR = 1
-_PROTOCOL_VERSION = f"{_PROTOCOL_VERSION_MAJOR}.{_PROTOCOL_VERSION_MINOR}.0"
 _TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
@@ -368,7 +365,7 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers) # type: ignore
+            self._comm.send(data=msg, buffers=buffers)  # type: ignore
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -409,17 +406,9 @@ class ReprMimeBundle:
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
-        data = {
-            "text/plain": repr(self._obj()),
-            _WIDGET_MIME_TYPE: {
-                "version_major": _PROTOCOL_VERSION_MAJOR,
-                "version_minor": _PROTOCOL_VERSION_MINOR,
-                "model_id": self._comm.comm_id,
-            },
-        }
         if self._no_view:
             return None
-        return data, get_repr_metadata()
+        return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr(self._obj()))
 
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
@@ -437,7 +426,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg) # type: ignore
+            self._comm.on_msg(self._handle_msg)  # type: ignore
             self.send_state()
 
         if py_to_js and self._autodetect_observer:

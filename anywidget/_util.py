@@ -11,6 +11,9 @@ from ._file_contents import FileContents
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 _WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
+_PROTOCOL_VERSION_MAJOR = 2
+_PROTOCOL_VERSION_MINOR = 1
+_PROTOCOL_VERSION = f"{_PROTOCOL_VERSION_MAJOR}.{_PROTOCOL_VERSION_MINOR}.0"
 _ANYWIDGET_ID_KEY = "_anywidget_id"
 _ESM_KEY = "_esm"
 _CSS_KEY = "_css"
@@ -260,3 +263,19 @@ def try_file_contents(x: Any) -> FileContents | None:
         path=path,
         start_thread=_should_start_thread(path),
     )
+
+
+def repr_mimebundle(
+    model_id: str,
+    repr_text: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Create a MIME bundle for a widget representation."""
+    data = {
+        "text/plain": repr_text,
+        _WIDGET_MIME_TYPE: {
+            "version_major": _PROTOCOL_VERSION_MAJOR,
+            "version_minor": _PROTOCOL_VERSION_MINOR,
+            "model_id": model_id,
+        },
+    }
+    return data, get_repr_metadata()
