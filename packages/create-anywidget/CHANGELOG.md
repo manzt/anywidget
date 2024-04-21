@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.5.8
+
+### Patch Changes
+
+- Bump dependencies ([#547](https://github.com/manzt/anywidget/pull/547))
+
 ## 0.5.7
 
 ### Patch Changes
