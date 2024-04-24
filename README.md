@@ -1,12 +1,21 @@
-# anywidget <a href="https://github.com/manzt/anywidget"><img align="right" src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" height="38"></img></a>
+<h1>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" alt="Logo" width="60">
+  <br>anywidget
+</h1>
+<samp>
+	<p align="center">
+		<span>custom jupyter widgets made easy</span>
+		<br>
+		<br>
+		<a href="https://anywidget.dev">docs</a> .
+		<a href="https://discord.gg/W5h4vPMbDQ">community</a> .
+        <a href="https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102">learn</a>
+	</p>
+</samp>
+</p>
 
-[![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
-[![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
-[![codecov](https://codecov.io/gh/manzt/anywidget/branch/main/graph/badge.svg)](https://codecov.io/gh/manzt/anywidget)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
-[![DOI](https://zenodo.org/badge/557583774.svg)](https://zenodo.org/badge/latestdoi/557583774)
-
-custom jupyter widgets made easy
+## Features
 
 - 🛠️ create widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
