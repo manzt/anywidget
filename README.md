@@ -4,14 +4,14 @@
   <br>anywidget
 </h1>
 <samp>
-	<p align="center">
-		<span>custom jupyter widgets made easy</span>
-		<br>
-		<br>
-		<a href="https://anywidget.dev">docs</a> .
-		<a href="https://discord.gg/W5h4vPMbDQ">community</a> .
-        <a href="https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102">learn</a>
-	</p>
+  <p align="center">
+    <span>custom jupyter widgets made easy</span>
+      <br>
+      <br>
+      <a href="https://anywidget.dev">docs</a> .
+      <a href="https://discord.gg/W5h4vPMbDQ">community</a> .
+      <a href="https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102">learn</a>
+  </p>
 </samp>
 </p>
 
