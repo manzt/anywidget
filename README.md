@@ -1,6 +1,6 @@
 <h1>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" alt="Logo" width="60">
+  <img src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" alt="anywidget logo. A circular icon with two connected arrows pointing clockwise, symbolizing a refresh or restart action" width="60">
   <br>anywidget
 </h1>
 <samp>
@@ -8,6 +8,7 @@
     <span>custom jupyter widgets made easy</span>
       <br>
       <br>
+      <a href="#installation">installation</a> .
       <a href="https://anywidget.dev">docs</a> .
       <a href="https://discord.gg/W5h4vPMbDQ">community</a> .
       <a href="https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102">learn</a>
@@ -15,7 +16,9 @@
 </samp>
 </p>
 
-## Features
+## About
+
+**anywidget** uses modern web standards to simplify authoring and distributing custom Jupyter Widgets.
 
 - 🛠️ create widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
