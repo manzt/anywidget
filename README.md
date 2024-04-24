@@ -18,7 +18,8 @@
 
 ## About
 
-**anywidget** uses modern web standards to simplify authoring and distributing custom Jupyter Widgets.
+**anywidget** uses modern web standards to simplify authoring and distributing
+custom Jupyter Widgets.
 
 - 🛠️ create widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
