@@ -89,15 +89,16 @@ more.
 
 ## Packages
 
-| Package                                                                                    | Version (click for changelogs)                                                                                                                                                  |
-| ------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [anywidget](https://github.com/manzt/anywidget/tree/main/packages/anywidget)               | [![anywidget version](https://img.shields.io/npm/v/anywidget.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/anywidget/CHANGELOG.md)                      |
-| [packages/types](https://github.com/manzt/anywidget/tree/main/packages/types)              | [![@anywidget/types version](https://img.shields.io/npm/v/@anywidget/types.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/types/CHANGELOG.md)            |
-| [packages/vite](https://github.com/manzt/anywidget/tree/main/packages/vite)                | [![@anywidget/vite version](https://img.shields.io/npm/v/@anywidget/vite.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/vite/CHANGELOG.md)               |
-| [@anywidget/react](https://github.com/manzt/anywidget/tree/main/packages/react)            | [![@anywidget/react version](https://img.shields.io/npm/v/@anywidget/react.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/react/CHANGELOG.md)            |
-| [@anywidget/svelte](https://github.com/manzt/anywidget/tree/main/packages/svelte)          | [![@anywidget/svelte version](https://img.shields.io/npm/v/@anywidget/svelte.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/svelte/CHANGELOG.md)         |
-| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)              | [![@anywidget/deno version](https://img.shields.io/npm/v/@anywidget/deno.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/deno/CHANGELOG.md)               |
-| [create-anywidget](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | [![create-anywidget version](https://img.shields.io/npm/v/create-anywidget.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget/CHANGELOG.md) |
+| Name                                                                                                  | Description                 | Version                                                        |
+| ----------------------------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
+| [anywidget](https://github.com/manzt/anywidget/tree/main/anywidget)                                   | Primary Python package      | ![version](https://img.shields.io/pypi/v/anywidget.svg)        |
+| [@anywidget/anywidget](https://github.com/manzt/anywidget/tree/main/packages/anywidget)               | JavaScript component        | ![version](https://img.shields.io/npm/v/anywidget.svg)         |
+| [@anywidget/types](https://github.com/manzt/anywidget/tree/main/packages/types)                       | Type declarations           | ![version](https://img.shields.io/npm/v/@anywidget/types.svg)  |
+| [@anywidget/vite](https://github.com/manzt/anywidget/tree/main/packages/vite)                         | Vite plugin                 | ![version](https://img.shields.io/npm/v/@anywidget/vite.svg)   |
+| [@anywidget/react](https://github.com/manzt/anywidget/tree/main/packages/react)                       | React adapter               | ![version](https://img.shields.io/npm/v/@anywidget/react.svg)  |
+| [@anywidget/svelte](https://github.com/manzt/anywidget/tree/main/packages/svelte)                     | Svelte adapter              | ![version](https://img.shields.io/npm/v/@anywidget/svelte.svg) |
+| [@anywidget/create-anywidget](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | CLI to create a new project | ![version](https://img.shields.io/npm/v/create-anywidget.svg)  |
+| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)                         | Backend for Deno            | ![version](https://img.shields.io/npm/v/@anywidget/deno.svg)   |
 
 ## Support
 
