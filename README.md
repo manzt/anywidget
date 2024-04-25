@@ -89,15 +89,18 @@ more.
 
 ## Packages
 
-| Name                                                                                                  | Description                 | Version                                                        |
-| ----------------------------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
-| [anywidget](https://github.com/manzt/anywidget/tree/main/anywidget)                                   | Primary Python package      | ![version](https://img.shields.io/pypi/v/anywidget.svg)        |
-| [@anywidget/types](https://github.com/manzt/anywidget/tree/main/packages/types)                       | Type declarations           | ![version](https://img.shields.io/npm/v/@anywidget/types.svg)  |
-| [@anywidget/vite](https://github.com/manzt/anywidget/tree/main/packages/vite)                         | Vite plugin                 | ![version](https://img.shields.io/npm/v/@anywidget/vite.svg)   |
-| [@anywidget/react](https://github.com/manzt/anywidget/tree/main/packages/react)                       | React adapter               | ![version](https://img.shields.io/npm/v/@anywidget/react.svg)  |
-| [@anywidget/svelte](https://github.com/manzt/anywidget/tree/main/packages/svelte)                     | Svelte adapter              | ![version](https://img.shields.io/npm/v/@anywidget/svelte.svg) |
-| [@anywidget/create-anywidget](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | CLI to create a new project | ![version](https://img.shields.io/npm/v/create-anywidget.svg)  |
-| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)                         | Backend for Deno            | ![version](https://jsr.io/badges/@anywidget/deno)              |
+Beyond the primary Python package, **anywidget** provides an ecosystem of
+tooling to help you build and distribute custom Jupyter Widgets.
+
+| Name                                                                                             | Description                     | Version (click for changelogs)                                                                                                                       |
+| ------------------------------------------------------------------------------------------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`anywidget`](https://github.com/manzt/anywidget/tree/main/packages/anywidget)                   | Primary Python package          | [![version](https://img.shields.io/pypi/v/anywidget.svg)](https://github.com/manzt/anywidget/blob/main/packages/anywidget/CHANGELOG.md)              |
+| [`npm:@anywidget/types`](https://github.com/manzt/anywidget/tree/main/packages/types)            | Client type declarations        | [![version](https://img.shields.io/npm/v/@anywidget/types.svg)](https://github.com/manzt/anywidget/blob/main/packages/types/CHANGELOG.md)            |
+| [`npm:@anywidget/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite)              | Vite plugin                     | [![version](https://img.shields.io/npm/v/@anywidget/vite.svg)](https://github.com/manzt/anywidget/blob/main/packages/vite/CHANGELOG.md)              |
+| [`npm:@anywidget/react`](https://github.com/manzt/anywidget/tree/main/packages/react)            | React framework adapter         | [![version](https://img.shields.io/npm/v/@anywidget/react.svg)](https://github.com/manzt/anywidget/blob/main/packages/react/CHANGELOG.md)            |
+| [`npm:@anywidget/svelte`](https://github.com/manzt/anywidget/tree/main/packages/svelte)          | Svelte framework adapter        | [![version](https://img.shields.io/npm/v/@anywidget/svelte.svg)](https://github.com/manzt/anywidget/blob/main/packages/svelte/CHANGELOG.md)          |
+| [`npm:create-anywidget`](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | CLI to bootstrap a new project  | [![version](https://img.shields.io/npm/v/create-anywidget.svg)](https://github.com/manzt/anywidget/blob/main/packages/create-anywidget/CHANGELOG.md) |
+| [`jsr:@anywidget/deno`](https://github.com/manzt/anywidget/tree/main/packages/deno)              | Backend for Deno Jupyter kernel | [![version](https://jsr.io/badges/@anywidget/deno)](https://github.com/manzt/anywidget/blob/main/packages/deno/CHANGELOG.md)                         |
 
 ## Support
 
