@@ -92,13 +92,12 @@ more.
 | Name                                                                                                  | Description                 | Version                                                        |
 | ----------------------------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
 | [anywidget](https://github.com/manzt/anywidget/tree/main/anywidget)                                   | Primary Python package      | ![version](https://img.shields.io/pypi/v/anywidget.svg)        |
-| [@anywidget/anywidget](https://github.com/manzt/anywidget/tree/main/packages/anywidget)               | JavaScript component        | ![version](https://img.shields.io/npm/v/anywidget.svg)         |
 | [@anywidget/types](https://github.com/manzt/anywidget/tree/main/packages/types)                       | Type declarations           | ![version](https://img.shields.io/npm/v/@anywidget/types.svg)  |
 | [@anywidget/vite](https://github.com/manzt/anywidget/tree/main/packages/vite)                         | Vite plugin                 | ![version](https://img.shields.io/npm/v/@anywidget/vite.svg)   |
 | [@anywidget/react](https://github.com/manzt/anywidget/tree/main/packages/react)                       | React adapter               | ![version](https://img.shields.io/npm/v/@anywidget/react.svg)  |
 | [@anywidget/svelte](https://github.com/manzt/anywidget/tree/main/packages/svelte)                     | Svelte adapter              | ![version](https://img.shields.io/npm/v/@anywidget/svelte.svg) |
 | [@anywidget/create-anywidget](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | CLI to create a new project | ![version](https://img.shields.io/npm/v/create-anywidget.svg)  |
-| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)                         | Backend for Deno            | ![version](https://img.shields.io/npm/v/@anywidget/deno.svg)   |
+| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)                         | Backend for Deno            | ![version](https://jsr.io/badges/@anywidget/deno)              |
 
 ## Support
 
