@@ -87,6 +87,18 @@ class CounterWidget(anywidget.AnyWidget):
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
 more.
 
+## Packages
+
+| Package                                                                                    | Version (click for changelogs)                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [anywidget](https://github.com/manzt/anywidget/tree/main/packages/anywidget)               | [![anywidget version](https://img.shields.io/npm/v/anywidget.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/anywidget/CHANGELOG.md)                      |
+| [packages/types](https://github.com/manzt/anywidget/tree/main/packages/types)              | [![@anywidget/types version](https://img.shields.io/npm/v/@anywidget/types.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/types/CHANGELOG.md)            |
+| [packages/vite](https://github.com/manzt/anywidget/tree/main/packages/vite)                | [![@anywidget/vite version](https://img.shields.io/npm/v/@anywidget/vite.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/vite/CHANGELOG.md)               |
+| [@anywidget/react](https://github.com/manzt/anywidget/tree/main/packages/react)            | [![@anywidget/react version](https://img.shields.io/npm/v/@anywidget/react.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/react/CHANGELOG.md)            |
+| [@anywidget/svelte](https://github.com/manzt/anywidget/tree/main/packages/svelte)          | [![@anywidget/svelte version](https://img.shields.io/npm/v/@anywidget/svelte.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/svelte/CHANGELOG.md)         |
+| [@anywidget/deno](https://github.com/manzt/anywidget/tree/main/packages/deno)              | [![@anywidget/deno version](https://img.shields.io/npm/v/@anywidget/deno.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/deno/CHANGELOG.md)               |
+| [create-anywidget](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | [![create-anywidget version](https://img.shields.io/npm/v/create-anywidget.svg?label=%20)](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget/CHANGELOG.md) |
+
 ## Support
 
 Having trouble? Get help in our [Discord](https://discord.gg/W5h4vPMbDQ) or open
