@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.10
+
+### Patch Changes
+
+- fix: Bring back `anywidget.json` to support notebook v6 discovery ([#553](https://github.com/manzt/anywidget/pull/553))
+
 ## 0.9.9
 
 ### Patch Changes
