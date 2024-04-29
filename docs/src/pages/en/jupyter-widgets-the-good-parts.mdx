@@ -115,8 +115,8 @@ class CustomWidget(anywidget.AnyWidget):
 In **anywidget**, developers define _view rendering_ logic with `render`, but
 _model initialization_ is usually handled automatically by the framework.
 **Automatic _model initialization_ is sufficient for most widgets**, but
-sometimes it can be useful to run custom logic when the front-end most is first
-created. For example, a widget might need to register an event handlers just
+sometimes it can be useful to run custom logic when the front-end model is first
+created. For example, a widget might need to register an event handler just
 _once_ or create some state to share across views.
 
 In this case, you can also implement `initialize` to define _model
@@ -151,7 +151,7 @@ exactly **once per output cell** that displays the widget instance. Therefore,
 
 ## Connecting JavaScript with Python
 
-The Jupyter Widgets framework is build on top of the IPython Comm framework
+The Jupyter Widgets framework is built on top of the IPython Comm framework
 (short for communication). It's worth reading the
 [_Low Level Widget Explanation_](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Low%20Level.html#Low-Level-Widget-Explanation)
 to understand the core of Jupyter Widget's Model, View, Controller (MVC)
@@ -274,8 +274,8 @@ widget.send({ "type": "my-event", "foo": "bar" })
 <blockquote>
 
 **Warning**: Custom messages are only received if your front-end code has
-executed (i.e., the widget is displayed **before** sending messages). Calling
-the snippet above out of order:
+executed (i.e., the widget is displayed **before** sending messages). Changing the order of calls in
+the snippet above:
 
 <br/>
 
