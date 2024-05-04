@@ -12,7 +12,7 @@ license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
 requires-python = ">=3.7"
-dependencies = [
+dependencies =  [
     "ipywidgets>=7.6.0",
     "importlib-metadata; python_version < '3.8'",
     "typing-extensions>=4.2.0",
@@ -93,7 +93,6 @@ test = "pytest . --cov anywidget --cov-report term-missing"
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 88
-target-version = "py38"
 src = ["anywidget", "tests"]
 exclude = ["packages"]
 
@@ -109,7 +108,7 @@ extend-select = [
 # using this instead of tool.ruff.pydocstyle.convention until overrides
 # are supported: https://github.com/charliermarsh/ruff/issues/2606
 # specifically, we'd like to INCLUDE D417, which is not in the numpy convention
-extend-ignore = [
+ignore = [
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public package
     "D107", # Missing docstring in __init__
@@ -139,6 +138,9 @@ filterwarnings = [
     "ignore:Jupyter is migrating its paths:DeprecationWarning",
     "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
 ]
+log_cli_level = "INFO"
+xfail_strict = true
+addopts = ["-ra", "--strict-markers", "--strict-config"]
 
 # https://coverage.readthedocs.io/en/6.4/config.html
 [tool.coverage.report]
