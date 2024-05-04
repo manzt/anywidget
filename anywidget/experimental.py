@@ -1,7 +1,8 @@
+"""Experimental features for anywidget."""
+
 from __future__ import annotations
 
 import dataclasses
-import pathlib
 import typing
 
 import psygnal
@@ -9,6 +10,8 @@ import psygnal
 from ._descriptor import MimeBundleDescriptor
 
 if typing.TYPE_CHECKING:  # pragma: no cover
+    import pathlib
+
     from ._protocols import WidgetBase
 
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
@@ -44,7 +47,7 @@ def widget(
         kwargs["_css"] = css
 
     def _decorator(cls: _T) -> _T:
-        setattr(cls, "_repr_mimebundle_", MimeBundleDescriptor(**kwargs))
+        cls._repr_mimebundle_ = MimeBundleDescriptor(**kwargs)
         return cls
 
     return _decorator

@@ -1,3 +1,4 @@
+"""AnyWidget base class for custom Jupyter widgets."""
 from __future__ import annotations
 
 from typing import Any

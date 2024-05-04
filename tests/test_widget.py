@@ -273,7 +273,7 @@ def test_dom_less_widget():
 
 def test_command_not_registered_by_default():
     class Widget(anywidget.AnyWidget):
-        _esm = "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+        _esm = "export default { render(ctx) { ctx.el.innerText = 'Hello, world'; } }"
 
     w = Widget()
     assert len(w._msg_callbacks.callbacks) == 0
