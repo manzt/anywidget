@@ -21,7 +21,7 @@
 		"happy-dom": "^13.6.2",
 		"publint": "^0.2.5",
 		"typescript": "^5.3.3",
-		"vitest": "^1.1.1"
+		"vitest": "^1.5.3"
 	},
 	"packageManager": "pnpm@8.6.1"
 }
