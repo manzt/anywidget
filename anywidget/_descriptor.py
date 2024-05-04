@@ -240,7 +240,7 @@ class MimeBundleDescriptor:
             # when IPython accesses _repr_mimebundle_ on an object, it catches
             # exceptions and swallows them.  We want to make sure that the user
             # knows that something went wrong, so we'll print the exception here.
-            warnings.warn(f"Error in Anywidget repr:\n{e}")
+            warnings.warn(f"Error in Anywidget repr:\n{e}", stacklevel=1)
             raise
 
         with contextlib.suppress(AttributeError, ValueError):
@@ -308,7 +308,8 @@ class ReprMimeBundle:
             warnings.warn(
                 f"Anywidget: {obj} is not weakrefable, so it will not be garbage "
                 "collected until the view is closed. Please consider adding "
-                "`__slots__ = ('__weakref__',)` to your class definition."
+                "`__slots__ = ('__weakref__',)` to your class definition.",
+                stacklevel=2,
             )
 
         self._comm = _comm_for(obj)
@@ -436,7 +437,7 @@ class ReprMimeBundle:
                 raise RuntimeError("Cannot sync a deleted object")
 
             if self._disconnectors:
-                warnings.warn("Refusing to re-sync a synced object.")
+                warnings.warn("Refusing to re-sync a synced object.", stacklevel=2)
                 return
 
             # each of these _connect_* functions receives the python object, and the
@@ -453,7 +454,9 @@ class ReprMimeBundle:
             else:
                 warnings.warn(
                     f"Could not find a notifier on {obj} (e.g. psygnal, traitlets). "
-                    "Changes to the python object will not be reflected in the JS view."
+                    f"Changes to the python object will not be reflected in the JS "
+                    f"view.",
+                    stacklevel=2,
                 )
 
     def unsync_object_with_view(self) -> None:
