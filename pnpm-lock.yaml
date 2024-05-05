@@ -24,8 +24,8 @@ importers:
         specifier: ^0.20.0
         version: 0.20.2
       happy-dom:
-        specifier: ^13.6.2
-        version: 13.10.1
+        specifier: ^14.7.1
+        version: 14.7.1
       publint:
         specifier: ^0.2.5
         version: 0.2.7
@@ -34,7 +34,7 @@ importers:
         version: 5.4.3
       vitest:
         specifier: ^1.5.3
-        version: 1.5.3(happy-dom@13.10.1)
+        version: 1.5.3(happy-dom@14.7.1)
 
   docs:
     dependencies:
@@ -4949,8 +4949,8 @@ packages:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
     dev: true
 
-  /happy-dom@13.10.1:
-    resolution: {integrity: sha512-9GZLEFvQL5EgfJX2zcBgu1nsPUn98JF/EiJnSfQbdxI6YEQGqpd09lXXxOmYonRBIEFz9JlGCOiPflDzgS1p8w==}
+  /happy-dom@14.7.1:
+    resolution: {integrity: sha512-v60Q0evZ4clvMcrAh5/F8EdxDdfHdFrtffz/CNe10jKD+nFweZVxM91tW+UyY2L4AtpgIaXdZ7TQmiO1pfcwbg==}
     engines: {node: '>=16.0.0'}
     dependencies:
       entities: 4.5.0
@@ -8909,7 +8909,7 @@ packages:
     dependencies:
       vite: 5.2.7(@types/node@18.19.28)
 
-  /vitest@1.5.3(happy-dom@13.10.1):
+  /vitest@1.5.3(happy-dom@14.7.1):
     resolution: {integrity: sha512-2oM7nLXylw3mQlW6GXnRriw+7YvZFk/YNV8AxIC3Z3MfFbuziLGWP9GPxxu/7nRlXhqyxBikpamr+lEEj1sUEw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -8943,7 +8943,7 @@ packages:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      happy-dom: 13.10.1
+      happy-dom: 14.7.1
       local-pkg: 0.5.0
       magic-string: 0.30.8
       pathe: 1.1.2
