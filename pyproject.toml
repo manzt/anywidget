@@ -157,6 +157,7 @@ files = "anywidget/**/*.py"
 strict = true
 # this one is cumbersome, and not always that useful
 disallow_any_generics = false
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
 [[tool.mypy.overrides]]
 module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
