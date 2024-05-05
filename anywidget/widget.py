@@ -76,5 +76,5 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + "…"
         if self._view_name is None:
-            return None
+            return None # type: ignore[unreachable]
         return repr_mimebundle(model_id=self.model_id, repr_text=plaintext)
