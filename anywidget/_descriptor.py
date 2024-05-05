@@ -366,7 +366,7 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers)  # type: ignore
+            self._comm.send(data=msg, buffers=buffers)  # type: ignore[arg-type]
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -427,7 +427,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg)  # type: ignore
+            self._comm.on_msg(self._handle_msg)  # type: ignore[arg-type]
             self.send_state()
 
         if py_to_js and self._autodetect_observer:
@@ -557,7 +557,7 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     else:
         psygnal = sys.modules.get("psygnal")
     if psygnal is None:
-        return None
+        return None # type: ignore[unreachable]
 
     # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
