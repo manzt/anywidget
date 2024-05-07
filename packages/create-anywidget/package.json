@@ -1,6 +1,6 @@
 {
 	"name": "create-anywidget",
-	"version": "0.5.8",
+	"version": "0.5.9",
 	"type": "module",
 	"author": "Trevor Manz",
 	"bin": {
