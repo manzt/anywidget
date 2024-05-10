@@ -12,7 +12,7 @@ license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
 requires-python = ">=3.7"
-dependencies = [
+dependencies =  [
     "ipywidgets>=7.6.0",
     "importlib-metadata; python_version < '3.8'",
     "typing-extensions>=4.2.0",
@@ -21,7 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "mypy==1.9.0; python_version > '3.7'",
+    "mypy==1.10.0; python_version > '3.7'",
     "pydantic",
     "pytest",
     "pytest-cov",
@@ -76,6 +76,7 @@ pattern = "\"version\": \"(?P<version>.+?)\""
 
 [tool.hatch.envs.default]
 features = ["test", "dev"]
+uv = true
 
 [tool.hatch.envs.default.scripts]
 lint = [
@@ -92,39 +93,36 @@ test = "pytest . --cov anywidget --cov-report term-missing"
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 88
-target-version = "py38"
 src = ["anywidget", "tests"]
 exclude = ["packages"]
 
 [tool.ruff.lint]
-extend-select = [
+pydocstyle = { convention = "numpy" }
+select = [
     "E",    # style errors
+    "W",    # style warnings
     "F",    # flakes
     "D",    # pydocstyle
+    "D417", # Missing argument descriptions in Docstrings
     "I",    # isort
     "UP",   # pyupgrade
+    "C4",   # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "A001", # flake8-builtins
     "RUF",  # ruff-specific rules
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
 ]
-# using this instead of tool.ruff.pydocstyle.convention until overrides
-# are supported: https://github.com/charliermarsh/ruff/issues/2606
-# specifically, we'd like to INCLUDE D417, which is not in the numpy convention
-extend-ignore = [
-    "D100", # Missing docstring in public module
-    "D104", # Missing docstring in public package
-    "D107", # Missing docstring in __init__
-    "D203", # 1 blank line required before class docstring
-    "D212", # Multi-line docstring summary should start at the first line
-    "D213", # Multi-line docstring summary should start at the second line
-    "D401", # Imperative mood
-    "D413", # Missing blank line after last section
-    "D416", # Section name should end with a colon
-
-    "D206", # Docstring should be indented with spaces (delegate to `ruff format`)
-    "E501", # Line too long (delegate to `ruff format`)
+ignore = [
+    "D401", # First line should be in imperative mood (remove to opt in)
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*.py" = ["D", "S101"]
+"tests/*.py" = [
+    "D",    # no docstrings in tests
+    "S101", # use of assert
+    "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+]
 "docs/*.py" = ["D"]
 
 # https://docs.pytest.org/en/latest/customize.html
@@ -138,6 +136,9 @@ filterwarnings = [
     "ignore:Jupyter is migrating its paths:DeprecationWarning",
     "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
 ]
+log_cli_level = "INFO"
+xfail_strict = true
+addopts = ["-ra", "--strict-markers", "--strict-config"]
 
 # https://coverage.readthedocs.io/en/6.4/config.html
 [tool.coverage.report]
@@ -156,6 +157,8 @@ files = "anywidget/**/*.py"
 strict = true
 # this one is cumbersome, and not always that useful
 disallow_any_generics = false
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
 
 [[tool.mypy.overrides]]
 module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed

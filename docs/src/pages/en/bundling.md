@@ -62,7 +62,7 @@ which will prefer Bun's built-in bundler.
 
 ## Bundler Guides
 
-We recommend using one of the above project templates if you widget needs a
+We recommend using one of the above project templates if your widget needs a
 bundler. However, the follow sections provide a general guide of configuring
 these bundlers.
 

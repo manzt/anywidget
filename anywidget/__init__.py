@@ -1,3 +1,5 @@
+"""Jupyter Widgets made easy."""
+
 from __future__ import annotations
 
 from ._version import __version__

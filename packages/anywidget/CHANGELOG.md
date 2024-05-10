@@ -1,5 +1,90 @@
 # anywidget
 
+## 0.9.10
+
+### Patch Changes
+
+- fix: Bring back `anywidget.json` to support notebook v6 discovery ([#553](https://github.com/manzt/anywidget/pull/553))
+
+## 0.9.9
+
+### Patch Changes
+
+- Make a blanket `_repr_mimbundle_` implementation ([#546](https://github.com/manzt/anywidget/pull/546))
+
+  `ipywidgets` v7 and v8 switched from using `_ipython_display_` to `_repr_mimebundle_` for rendering widgets in Jupyter. This means that depending on which version of `ipywidgets` used (v7 in Google Colab), anywidget end users need to handle the behavior of both methods. This change adds a blanket implementation of `_repr_mimebundle_` so that it is easier to wrap an `anywidget`:
+
+  ```python
+  import anywidget
+  import traitlets
+
+  class Widget(anywidget.AnyWidget):
+      _esm = "index.js"
+      _css = "style.css"
+      value = traitlets.Unicode("Hello, World!").tag(sync=True)
+
+  class Wrapper:
+      def __init__(self):
+          self._widget = Widget()
+
+      # Easy to forward the underlying widget's repr to the wrapper class, across all versions of ipywidgets
+      def _repr_mimebundle_(self, include=None, exclude=None):
+          return self._widget._repr_mimebundle_(include, exclude)
+  ```
+
+## 0.9.8
+
+### Patch Changes
+
+- **experimental** Ensure anywidget.experimental.command is called with self ([#545](https://github.com/manzt/anywidget/pull/545))
+
+- **experimental** Replace invoke timeout with more flexible `AbortSignal` ([#540](https://github.com/manzt/anywidget/pull/540))
+
+  This allows more flexible control over aborting the invoke request, including delegating to third-party libraries that manage cancellation.
+
+  ```js
+  export default {
+    async render({ model, el }) {
+      const controller = new AbortController();
+
+      // Randomly abort the request after 1 second
+      setTimeout(() => Math.random() < 0.5 && controller.abort(), 1000);
+
+      const signal = controller.signal;
+      model
+        .invoke("echo", "Hello, world", { signal })
+        .then((result) => {
+          el.innerHTML = result;
+        })
+        .catch((err) => {
+          el.innerHTML = `Error: ${err.message}`;
+        });
+    },
+  };
+  ```
+
+- Updated dependencies [[`a4b0ec07b2b8937111487108e9b82daf3d9be2df`](https://github.com/manzt/anywidget/commit/a4b0ec07b2b8937111487108e9b82daf3d9be2df)]:
+  - @anywidget/types@0.1.9
+
+## 0.9.7
+
+### Patch Changes
+
+- Refactor AnyWidget command registration ([#526](https://github.com/manzt/anywidget/pull/526))
+
+## 0.9.6
+
+### Patch Changes
+
+- Updated dependencies [[`0c629955fee6379234fece8246c297c69f51ee79`](https://github.com/manzt/anywidget/commit/0c629955fee6379234fece8246c297c69f51ee79)]:
+  - @anywidget/types@0.1.8
+
+## 0.9.5
+
+### Patch Changes
+
+- feat: Suppress errors when inspecting widget for commands ([#522](https://github.com/manzt/anywidget/pull/522))
+
 ## 0.9.4
 
 ### Patch Changes

@@ -1,12 +1,25 @@
-# anywidget <a href="https://github.com/manzt/anywidget"><img align="right" src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" height="38"></img></a>
+<h1>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/favicon.svg" alt="anywidget logo. A circular icon with two connected arrows pointing clockwise, symbolizing a refresh or restart action" width="60">
+  <br>anywidget
+</h1>
+<samp>
+  <p align="center">
+    <span>custom jupyter widgets made easy</span>
+      <br>
+      <br>
+      <a href="#installation">installation</a> .
+      <a href="https://anywidget.dev">docs</a> .
+      <a href="https://discord.gg/W5h4vPMbDQ">community</a> .
+      <a href="https://blog.jupyter.org/anywidget-jupyter-widgets-made-easy-164eb2eae102">learn</a>
+  </p>
+</samp>
+</p>
 
-[![PyPI](https://img.shields.io/pypi/v/anywidget.svg?color=green)](https://pypi.org/project/anywidget)
-[![License](https://img.shields.io/pypi/l/anywidget.svg?color=green)](https://github.com/manzt/anywidget/raw/main/LICENSE)
-[![codecov](https://codecov.io/gh/manzt/anywidget/branch/main/graph/badge.svg)](https://codecov.io/gh/manzt/anywidget)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/manzt/anywidget/blob/main/examples/Counter.ipynb)
-[![DOI](https://zenodo.org/badge/557583774.svg)](https://zenodo.org/badge/latestdoi/557583774)
+## About
 
-custom jupyter widgets made easy
+**anywidget** uses modern web standards to simplify authoring and distributing
+custom Jupyter Widgets.
 
 - 🛠️ create widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
@@ -73,6 +86,21 @@ class CounterWidget(anywidget.AnyWidget):
 
 Read [the documentation](https://anywidget.dev/en/getting-started) to learn
 more.
+
+## Packages
+
+Beyond the primary Python package, **anywidget** provides an ecosystem of
+tooling to help you build and distribute custom Jupyter Widgets.
+
+| Name                                                                                             | Description                     | Version (click for changelogs)                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`anywidget`](https://github.com/manzt/anywidget/tree/main/packages/anywidget)                   | Primary Python package          | [![version](https://img.shields.io/pypi/v/anywidget.svg?labelColor=0273B7&color=0C3141)](https://github.com/manzt/anywidget/blob/main/packages/anywidget/CHANGELOG.md)                             |
+| [`npm:@anywidget/types`](https://github.com/manzt/anywidget/tree/main/packages/types)            | Client type declarations        | [![version](https://img.shields.io/npm/v/@anywidget/types.svg?labelColor=C43636&color=0C3141&logo=npm&label)](https://github.com/manzt/anywidget/blob/main/packages/types/CHANGELOG.md)            |
+| [`npm:@anywidget/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite)              | Vite plugin                     | [![version](https://img.shields.io/npm/v/@anywidget/vite.svg?labelColor=C43636&color=0C3141&logo=npm&label)](https://github.com/manzt/anywidget/blob/main/packages/vite/CHANGELOG.md)              |
+| [`npm:@anywidget/react`](https://github.com/manzt/anywidget/tree/main/packages/react)            | React framework adapter         | [![version](https://img.shields.io/npm/v/@anywidget/react.svg?labelColor=C43636&color=0C3141&logo=npm&label)](https://github.com/manzt/anywidget/blob/main/packages/react/CHANGELOG.md)            |
+| [`npm:@anywidget/svelte`](https://github.com/manzt/anywidget/tree/main/packages/svelte)          | Svelte framework adapter        | [![version](https://img.shields.io/npm/v/@anywidget/svelte.svg?labelColor=C43636&color=0C3141&logo=npm&label)](https://github.com/manzt/anywidget/blob/main/packages/svelte/CHANGELOG.md)          |
+| [`npm:create-anywidget`](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) | CLI to bootstrap a new project  | [![version](https://img.shields.io/npm/v/create-anywidget.svg?labelColor=C43636&color=0C3141&logo=npm&label)](https://github.com/manzt/anywidget/blob/main/packages/create-anywidget/CHANGELOG.md) |
+| [`jsr:@anywidget/deno`](https://github.com/manzt/anywidget/tree/main/packages/deno)              | Backend for Deno Jupyter kernel | [![version](https://jsr.io/badges/@anywidget/deno)](https://github.com/manzt/anywidget/blob/main/packages/deno/CHANGELOG.md)                                                                       |
 
 ## Support
 

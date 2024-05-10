@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/svelte",
 	"type": "module",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"description": "Svelte utilities for anywidget",
 	"main": "src/index.js",
 	"types": "dist/index.d.ts",
@@ -21,6 +21,6 @@
 		"@anywidget/types": "workspace:^"
 	},
 	"devDependencies": {
-		"svelte": "^4.2.12"
+		"svelte": "^4.2.15"
 	}
 }

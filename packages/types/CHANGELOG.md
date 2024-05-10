@@ -1,5 +1,40 @@
 # @anywidget/types
 
+## 0.1.9
+
+### Patch Changes
+
+- **experimental** Replace invoke timeout with more flexible `AbortSignal` ([#540](https://github.com/manzt/anywidget/pull/540))
+
+  This allows more flexible control over aborting the invoke request, including delegating to third-party libraries that manage cancellation.
+
+  ```js
+  export default {
+    async render({ model, el }) {
+      const controller = new AbortController();
+
+      // Randomly abort the request after 1 second
+      setTimeout(() => Math.random() < 0.5 && controller.abort(), 1000);
+
+      const signal = controller.signal;
+      model
+        .invoke("echo", "Hello, world", { signal })
+        .then((result) => {
+          el.innerHTML = result;
+        })
+        .catch((err) => {
+          el.innerHTML = `Error: ${err.message}`;
+        });
+    },
+  };
+  ```
+
+## 0.1.8
+
+### Patch Changes
+
+- Export `Experimental` type ([#524](https://github.com/manzt/anywidget/pull/524))
+
 ## 0.1.7
 
 ### Patch Changes

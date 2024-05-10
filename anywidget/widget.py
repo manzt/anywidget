@@ -1,3 +1,4 @@
+"""AnyWidget base class for custom Jupyter widgets."""
 from __future__ import annotations
 
 from typing import Any
@@ -12,12 +13,12 @@ from ._util import (
     _DEFAULT_ESM,
     _ESM_KEY,
     enable_custom_widget_manager_once,
-    get_repr_metadata,
     in_colab,
+    repr_mimebundle,
     try_file_contents,
 )
 from ._version import __version__
-from .experimental import _register_anywidget_commands
+from .experimental import _collect_anywidget_commands, _register_anywidget_commands
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -68,11 +69,12 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
             file_contents = try_file_contents(getattr(cls, key))
             if file_contents:
                 setattr(cls, key, file_contents)
+        _collect_anywidget_commands(cls)
 
-    if hasattr(ipywidgets.DOMWidget, "_repr_mimebundle_"):
-        # ipywidgets v8
-        def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
-            mimebundle = super()._repr_mimebundle_(**kwargs)
-            if mimebundle is None:
-                return None
-            return mimebundle, get_repr_metadata()
+    def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
+        plaintext = repr(self)
+        if len(plaintext) > 110:
+            plaintext = plaintext[:110] + "…"
+        if self._view_name is None:
+            return None # type: ignore[unreachable]
+        return repr_mimebundle(model_id=self.model_id, repr_text=plaintext)

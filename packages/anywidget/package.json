@@ -1,7 +1,7 @@
 {
 	"name": "anywidget",
 	"type": "module",
-	"version": "0.9.4",
+	"version": "0.9.10",
 	"author": "Trevor Manz",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -25,11 +25,11 @@
 		"@anywidget/vite": "workspace:~",
 		"@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6",
 		"@lukeed/uuid": "^2.0.1",
-		"solid-js": "^1.8.16"
+		"solid-js": "^1.8.17"
 	},
 	"devDependencies": {
 		"@jupyter-widgets/base-manager": "^1.0.8",
-		"@rspack/core": "^0.5.9"
+		"@rspack/core": "^0.6.3"
 	},
 	"jupyterlab": {
 		"extension": "./src/plugin.js",
