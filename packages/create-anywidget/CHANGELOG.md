@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.6.1
+
+### Patch Changes
+
+- Simplify default CSS class names ([#576](https://github.com/manzt/anywidget/pull/576))
+
 ## 0.6.0
 
 ### Minor Changes
