@@ -234,7 +234,7 @@ let notebook = (name) =>
 /** @param {string} name */
 let styles = (name) =>
 	`\
-.${name}-counter-button {
+.${name} button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -254,7 +254,7 @@ let styles = (name) =>
 	transition: transform 0.25s ease-in-out;
 }
 
-.${name}-counter-button:hover {
+.${name} button:hover {
 	transform: scale(1.05);
 }
 `;
@@ -269,12 +269,11 @@ import "./widget.css";
 const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
 	return (
-		<button
-			className="${name}-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
+		<div className="${name}">
+			<button onClick={() => setValue(value + 1)}>
+				count is {value}
+			</button>
+		</div>
 	);
 });
 
@@ -291,12 +290,11 @@ import "./widget.css";
 const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
 	return (
-		<button
-			className="${name}-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
+		<div className="${name}">
+			<button onClick={() => setValue(value + 1)}>
+				count is {value}
+			</button>
+		</div>
 	);
 });
 
@@ -310,7 +308,6 @@ import "./widget.css";
 
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -319,6 +316,7 @@ function render({ model, el }) {
 	model.on("change:value", () => {
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
@@ -339,7 +337,6 @@ interface WidgetModel {
 
 function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -348,6 +345,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	model.on("change:value", () => {
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
@@ -515,7 +513,6 @@ import confetti from "https://esm.sh/canvas-confetti@1";
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -525,6 +522,7 @@ function render({ model, el }) {
 		confetti();
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
