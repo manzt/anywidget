@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.6.0
+
+### Minor Changes
+
+- Rename Python Counter class to Widget ([#574](https://github.com/manzt/anywidget/pull/574))
+
 ## 0.5.9
 
 ### Patch Changes
