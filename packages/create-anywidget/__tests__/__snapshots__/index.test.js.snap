@@ -55,8 +55,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -147,7 +147,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -260,8 +260,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -357,7 +357,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -498,8 +498,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -586,7 +586,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -692,8 +692,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -779,7 +779,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -896,8 +896,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -988,7 +988,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -1136,8 +1136,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -1230,7 +1230,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -1343,8 +1343,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -1441,7 +1441,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -1582,8 +1582,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -1672,7 +1672,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -1778,8 +1778,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -1865,7 +1865,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -1982,8 +1982,8 @@ in the notebook.
 			"metadata": {},
 			"outputs": [],
 			"source": [
-				"from ipyfoo import Counter\\n",
-				"Counter()"
+				"from ipyfoo import Widget\\n",
+				"Widget()"
 			]
 		}
 	],
@@ -2075,7 +2075,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
