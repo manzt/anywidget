@@ -13,10 +13,11 @@ dynamic = ["version"]
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies =  [
-    "ipywidgets>=7.6.0",
     "importlib-metadata; python_version < '3.8'",
-    "typing-extensions>=4.2.0",
+    "jupyterlab_widgets~=3.0.10",
     "psygnal>=0.8.1",
+    "traitlets>=4.3.1",
+    "typing-extensions>=4.2.0",
 ]
 
 [project.optional-dependencies]

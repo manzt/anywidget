@@ -64,8 +64,8 @@ class AnywidgetProtocol(Protocol):
 class WidgetBase(Protocol):
     """Widget subclasses with a custom message reducer."""
 
-    def send(self, msg: str | dict | list, buffers: list[bytes]) -> None: ...
+    def send(self, msg: Any, buffers: list[memoryview] | None) -> None: ...
 
     def on_msg(
-        self, callback: Callable[[Any, str | list | dict, list[bytes]], None]
+        self, callback: Callable[[str | list | dict, list[bytes]], None]
     ) -> None: ...
