@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies =  [
     "comm>=0.1.4",
+    "importlib-metadata; python_version < '3.8'",
     "jupyterlab_widgets~=3.0.10",
     "psygnal>=0.8.1",
     "traitlets>=4.3.1",

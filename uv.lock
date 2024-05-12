@@ -63,6 +63,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "comm", specifier = ">=0.1.4" },
+    { name = "importlib-metadata", marker = "python_full_version < '3.8'" },
     { name = "jupyterlab-widgets", specifier = "~=3.0.10" },
     { name = "psygnal", specifier = ">=0.8.1" },
     { name = "traitlets", specifier = ">=4.3.1" },
