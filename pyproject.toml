@@ -19,6 +19,7 @@ dependencies =  [
     "psygnal>=0.8.1",
     "traitlets>=4.3.1",
     "typing-extensions>=4.2.0",
+    "widgetsnbextension~=4.0.10",
 ]
 
 [project.optional-dependencies]
