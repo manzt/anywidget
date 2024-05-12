@@ -113,8 +113,8 @@ _ANYWIDGET_COMMAND = "_anywidget_command"
 _ANYWIDGET_COMMANDS = "_anywidget_commands"
 
 _AnyWidgetCommand = typing.Callable[
-    [object, object, typing.List[bytes]],
-    typing.Tuple[object, typing.List[bytes]],
+    [object, object, list[bytes] | list[memoryview]],
+    tuple[object, list[bytes] | list[memoryview]],
 ]
 
 
@@ -160,14 +160,14 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
 
     def handle_anywidget_command(
         self: WidgetBase,
-        msg: str | list | dict,
-        buffers: list[bytes],
+        msg: typing.Any,
+        buffers: list[bytes] | list[memoryview],
     ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return
         cmd = cmds[msg["name"]]
-        response, buffers = cmd(widget, msg["msg"], buffers)
-        self.send(
+        response, buffers = cmd(widget, msg["msg"], buffers or [])
+        widget.send(
             {
                 "id": msg["id"],
                 "kind": "anywidget-command-response",
