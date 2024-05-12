@@ -44,7 +44,7 @@ from ._util import (
     repr_mimebundle,
     try_file_contents,
 )
-from ._version import __version__
+from ._version import _ANYWIDGET_SEMVER_VERSION
 
 if TYPE_CHECKING:  # pragma: no cover
     import comm
@@ -72,13 +72,14 @@ _TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
 _ANYWIDGET_JS_MODULE = "anywidget"
+
 _ANYWIDGET_STATE = {
     "_model_module": _ANYWIDGET_JS_MODULE,
     "_model_name": _ANYWIDGET_MODEL_NAME,
-    "_model_module_version": __version__,
+    "_model_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_module": _ANYWIDGET_JS_MODULE,
     "_view_name": _ANYWIDGET_VIEW_NAME,
-    "_view_module_version": __version__,
+    "_view_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_count": None,
 }
 
