@@ -44,7 +44,7 @@ from ._util import (
     repr_mimebundle,
     try_file_contents,
 )
-from ._version import __version__
+from ._version import _ANYWIDGET_SEMVER_VERSION
 
 if TYPE_CHECKING:  # pragma: no cover
     import comm
@@ -72,18 +72,6 @@ _TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
 _ANYWIDGET_JS_MODULE = "anywidget"
-
-
-def get_semver_version(version: str):
-    split = version.split(".", maxsplit=2)
-    is_pre_release = "a" in split[2] or "b" in split[2]
-    if is_pre_release:
-        return ".".join(split)
-
-    return "~" + ".".join([split[0], split[1], "*"])
-
-
-_ANYWIDGET_SEMVER_VERSION = get_semver_version(__version__)
 
 _ANYWIDGET_STATE = {
     "_model_module": _ANYWIDGET_JS_MODULE,

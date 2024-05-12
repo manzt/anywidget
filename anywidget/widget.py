@@ -17,7 +17,7 @@ from ._util import (
     repr_mimebundle,
     try_file_contents,
 )
-from ._version import __version__
+from ._version import _ANYWIDGET_SEMVER_VERSION
 from .experimental import _collect_anywidget_commands, _register_anywidget_commands
 
 
@@ -26,11 +26,11 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
     _model_name = t.Unicode("AnyModel").tag(sync=True)
     _model_module = t.Unicode("anywidget").tag(sync=True)
-    _model_module_version = t.Unicode(__version__).tag(sync=True)
+    _model_module_version = t.Unicode(_ANYWIDGET_SEMVER_VERSION).tag(sync=True)
 
     _view_name = t.Unicode("AnyView").tag(sync=True)
     _view_module = t.Unicode("anywidget").tag(sync=True)
-    _view_module_version = t.Unicode(__version__).tag(sync=True)
+    _view_module_version = t.Unicode(_ANYWIDGET_SEMVER_VERSION).tag(sync=True)
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if in_colab():
