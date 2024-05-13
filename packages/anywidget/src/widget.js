@@ -1,9 +1,5 @@
-import {
-	createEffect,
-	createResource,
-	createRoot,
-	createSignal,
-} from "solid-js";
+import * as uuid from "@lukeed/uuid";
+import * as solid from "solid-js";
 
 /**
  * @typedef AnyWidget
@@ -242,6 +238,58 @@ function throw_anywidget_error(source) {
 	throw source;
 }
 
+/**
+ * @typedef InvokeOptions
+ * @prop {DataView[]} [buffers]
+ * @prop {AbortSignal} [signal]
+ */
+
+/**
+ * @template T
+ * @param {import("@anywidget/types").AnyModel} model
+ * @param {string} name
+ * @param {any} [msg]
+ * @param {InvokeOptions} [options]
+ * @return {Promise<[T, DataView[]]>}
+ */
+export function invoke(
+	model,
+	name,
+	msg,
+	options = {},
+) {
+	// crypto.randomUUID() is not available in non-secure contexts (i.e., http://)
+	// so we use simple (non-secure) polyfill.
+	let id = uuid.v4();
+	let signal = options.signal ?? AbortSignal.timeout(3000);
+
+	return new Promise((resolve, reject) => {
+		if (signal.aborted) {
+			reject(signal.reason);
+		}
+		signal.addEventListener("abort", () => {
+			model.off("msg:custom", handler);
+			reject(signal.reason);
+		});
+
+		/**
+		 * @param {{ id: string, kind: "anywidget-command-response", response: T }} msg
+		 * @param {DataView[]} buffers
+		 */
+		function handler(msg, buffers) {
+			if (!(msg.id === id)) return;
+			resolve([msg.response, buffers]);
+			model.off("msg:custom", handler);
+		}
+		model.on("msg:custom", handler);
+		model.send(
+			{ id, kind: "anywidget-command", name, msg },
+			undefined,
+			options.buffers ?? [],
+		);
+	});
+}
+
 class Runtime {
 	/** @type {() => void} */
 	#disposer = () => {};
@@ -253,20 +301,20 @@ class Runtime {
 
 	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
 	constructor(model) {
-		this.#disposer = createRoot((dispose) => {
-			let [css, set_css] = createSignal(model.get("_css"));
+		this.#disposer = solid.createRoot((dispose) => {
+			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] css hot updated: ${id}`);
 				set_css(model.get("_css"));
 			});
-			createEffect(() => {
+			solid.createEffect(() => {
 				let id = model.get("_anywidget_id");
 				load_css(css(), id);
 			});
 
 			/** @type {import("solid-js").Signal<string>} */
-			let [esm, setEsm] = createSignal(model.get("_esm"));
+			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
 			model.on("change:_esm", async () => {
 				let id = model.get("_anywidget_id");
 				console.debug(`[anywidget] esm hot updated: ${id}`);
@@ -274,13 +322,17 @@ class Runtime {
 			});
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			this.#widget_result = createResource(esm, async (update) => {
+			this.#widget_result = solid.createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
 					let widget = await load_widget(update);
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
+						experimental: {
+							// @ts-expect-error - bind isn't working
+							invoke: invoke.bind(null, model),
+						},
 					});
 					return ok(widget);
 				} catch (e) {
@@ -302,11 +354,11 @@ class Runtime {
 	 */
 	async create_view(view) {
 		let model = view.model;
-		let disposer = createRoot((dispose) => {
+		let disposer = solid.createRoot((dispose) => {
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
 			let resource =
-				createResource(this.#widget_result, async (widget_result) => {
+				solid.createResource(this.#widget_result, async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
 					model.off(null, null, view);
@@ -319,12 +371,16 @@ class Runtime {
 						cleanup = await widget.render?.({
 							model: model_proxy(model, view),
 							el: view.el,
+							experimental: {
+								// @ts-expect-error - bind isn't working
+								invoke: invoke.bind(null, model),
+							},
 						});
 					} catch (e) {
 						throw_anywidget_error(e);
 					}
 				})[0];
-			createEffect(() => {
+			solid.createEffect(() => {
 				if (resource.error) {
 					// TODO: Show error in the view?
 				}

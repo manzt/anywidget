@@ -126,7 +126,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
-class Counter(anywidget.AnyWidget):
+class Widget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
@@ -138,6 +138,7 @@ let gitignore = (extras = []) =>
 node_modules
 .venv
 dist
+.DS_Store
 
 # Python
 __pycache__
@@ -146,15 +147,54 @@ __pycache__
 ${extras.join("\n")}
 `;
 
-/** @param {string} name */
-let readme = (name) =>
-	`\
+/**
+ * @param {string} name
+ * @param {TemplateType} type
+ */
+let readme = (name, type = "bundled") => {
+	let body = `\
 # ${name}
+
+## Installation
 
 \`\`\`sh
 pip install ${name}
 \`\`\`
+
+## Development installation
+
+Create a virtual environment and and install ${name} in *editable* mode with the
+optional development dependencies:
+
+\`\`\`sh
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+\`\`\`
+
 `;
+
+	if (type === "bundled") {
+		body = body.concat(`\
+You then need to install the JavaScript dependencies and run the development server.
+
+\`\`\`sh
+npm install
+npm run dev
+\`\`\`
+
+`);
+	}
+
+	let jsdir = type === "bundled" ? "js/" : `src/${name}/static/`;
+
+	body = body.concat(`\
+Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
+to start developing. Changes made in \`${jsdir}\` will be reflected
+in the notebook.
+`);
+	return body;
+};
 
 /** @param {string} name */
 let notebook = (name) =>
@@ -166,8 +206,19 @@ let notebook = (name) =>
 				"metadata": {},
 				"outputs": [],
 				"source": [
-					`from ${name} import Counter\n`,
-					"Counter()",
+					"%load_ext autoreload\n",
+					"%autoreload 2\n",
+					"%env ANYWIDGET_HMR=1",
+				],
+			},
+			{
+				"cell_type": "code",
+				"execution_count": null,
+				"metadata": {},
+				"outputs": [],
+				"source": [
+					`from ${name} import Widget\n`,
+					"Widget()",
 				],
 			},
 		],
@@ -183,7 +234,7 @@ let notebook = (name) =>
 /** @param {string} name */
 let styles = (name) =>
 	`\
-.${name}-counter-button {
+.${name} button {
 	background: linear-gradient(
 		300deg,
 		#9933ff 33.26%,
@@ -203,7 +254,7 @@ let styles = (name) =>
 	transition: transform 0.25s ease-in-out;
 }
 
-.${name}-counter-button:hover {
+.${name} button:hover {
 	transform: scale(1.05);
 }
 `;
@@ -218,12 +269,11 @@ import "./widget.css";
 const render = createRender(() => {
 	const [value, setValue] = useModelState<number>("value");
 	return (
-		<button
-			className="${name}-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
+		<div className="${name}">
+			<button onClick={() => setValue(value + 1)}>
+				count is {value}
+			</button>
+		</div>
 	);
 });
 
@@ -240,12 +290,11 @@ import "./widget.css";
 const render = createRender(() => {
 	const [value, setValue] = useModelState("value");
 	return (
-		<button
-			className="${name}-counter-button"
-			onClick={() => setValue(value + 1)}
-		>
-			count is {value}
-		</button>
+		<div className="${name}">
+			<button onClick={() => setValue(value + 1)}>
+				count is {value}
+			</button>
+		</div>
 	);
 });
 
@@ -259,7 +308,6 @@ import "./widget.css";
 
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -268,6 +316,7 @@ function render({ model, el }) {
 	model.on("change:value", () => {
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
@@ -288,7 +337,6 @@ interface WidgetModel {
 
 function render({ model, el }: RenderContext<WidgetModel>) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -297,6 +345,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	model.on("change:value", () => {
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
@@ -447,12 +496,10 @@ let deno_json = {
 		lib: ["ES2020", "DOM", "DOM.Iterable"],
 	},
 	fmt: {
-		useTabs: true,
+		exclude: [".venv"],
 	},
 	lint: {
-		rules: {
-			exclude: ["prefer-const"],
-		},
+		exclude: [".venv"],
 	},
 };
 
@@ -466,7 +513,6 @@ import confetti from "https://esm.sh/canvas-confetti@1";
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
 	let btn = document.createElement("button");
-	btn.classList.add("${name}-counter-button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
 		model.set("value", model.get("value") + 1);
@@ -476,6 +522,7 @@ function render({ model, el }) {
 		confetti();
 		btn.innerHTML = \`count is \${model.get("value")}\`;
 	});
+	el.classList.add("${name}");
 	el.appendChild(btn);
 }
 
@@ -489,7 +536,7 @@ export default { render };
 export async function gather_files(type, { name, pkg_manager }) {
 	if (type === "template-vanilla-deno-jsdoc") {
 		return [
-			{ path: `README.md`, content: readme(name) },
+			{ path: `README.md`, content: readme(name, type) },
 			{ path: `example.ipynb`, content: notebook(name) },
 			{ path: `pyproject.toml`, content: pyproject_toml(name) },
 			{ path: `deno.json`, content: json_dumps(deno_json) },

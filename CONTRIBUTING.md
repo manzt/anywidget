@@ -36,14 +36,22 @@ You can deactivate the environment with `Ctrl + D` and reset it using
 
 Entry points to be aware of:
 
-- [`anywidget`](https://github.com/manzt/anywidget/tree/main/anywidget) - the
+- [`anywidget`](https://github.com/manzt/anywidget/tree/main/anywidget) -
   primary Python package
 - [`packages/anywidget`](https://github.com/manzt/anywidget/tree/main/packages/anywidget) -
-  the JavaScript component of the Python package
+  JavaScript component of the Python package
 - [`packages/types`](https://github.com/manzt/anywidget/tree/main/packages/types) -
   type declarations for anywidget (`@anywidget/types`)
 - [`packages/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite) -
-  the [Vite](https://vitejs.dev/) plugin (`@anywidget/vite`)
+  [Vite](https://vitejs.dev/) plugin (`@anywidget/vite`)
+- [`packages/react`](https://github.com/manzt/anywidget/tree/main/packages/react) -
+  [React](https://react.dev/) adapter (`@anywidget/react`)
+- [`packages/svelte`](https://github.com/manzt/anywidget/tree/main/packages/svelte) -
+  [Svelte](https://svelte.dev/) adapter (`@anywidget/svelte`)
+- [`packages/create-anywidget`](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) -
+  CLI to create a new anywidget project
+- [`packages/deno`](https://github.com/manzt/anywidget/tree/main/packages/deno) -
+  anywidget backend for [Deno](https://deno.com/) Jupyter kernel
 
 ## Making changes
 

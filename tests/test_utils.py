@@ -10,6 +10,7 @@ from anywidget._util import (
     remove_buffers,
     try_file_contents,
 )
+from anywidget._version import get_semver_version
 
 
 def enable_hmr():
@@ -163,3 +164,22 @@ def test_try_file_contents_warns(
 
         assert isinstance(file_contents, FileContents)
         assert file_contents._background_thread is None
+
+
+@pytest.mark.parametrize(
+    "version, expected",
+    [
+        ("1.0.0", "~1.0.*"),
+        ("2.1.1", "~2.1.*"),
+        ("0.0.1", "~0.0.*"),
+        ("1.2.3a", "1.2.3a"),
+        ("4.5.6b", "4.5.6b"),
+        ("1.0.0-alpha", "1.0.0-alpha"),
+        ("2.1.1-beta", "2.1.1-beta"),
+        ("3.2.1-alpha.1", "3.2.1-alpha.1"),
+        ("0.0.1-beta.2", "0.0.1-beta.2"),
+        ("1.2.3-rc.4", "~1.2.*"),
+    ],
+)
+def test_get_semver_version(version, expected):
+    assert get_semver_version(version) == expected

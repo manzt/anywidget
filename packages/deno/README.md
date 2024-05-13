@@ -1,19 +1,17 @@
-# anywidget (deno)
+# @anywidget/deno
 
-Jupyter Widgets for Jupyter JavaScript Kernels (experimental).
+[anywidget](https://anywidget.dev) for the Deno Jupyter kernel.
 
 ## Usage
 
 `In[1]:`
 
 ```typescript
-import { widget } from "https://deno.land/x/anywidget/mod.ts";
+import { widget } from "jsr:@anywidget/deno";
 
-const model = await widget({
+const model = widget({
 	state: { letters: "abcd" },
-	imports: `\
-import * as d3 from "https://esm.sh/d3";
-`,
+	imports: `import * as d3 from "https://esm.sh/d3";`,
 	render: ({ model, el }) => {
 		const width = 300;
 		const svg = d3.create("svg")
@@ -72,4 +70,26 @@ for (let word of dict.split("\n")) {
 	model.set("letters", word);
 	await new Promise((resolve) => setTimeout(resolve, 500));
 }
+```
+
+## Installing the anywidget front end
+
+The above code should "just work" in VS Code. However, JupyterLab requires
+manual installation of anywidget front end. This can be accomplished either by
+installing the Python package into the virtual environment with Jupyter,
+
+```sh
+pip install anywidget
+```
+
+or with Deno,
+
+```sh
+deno run jsr:@anywidget/deno/install
+```
+
+You can uninstall the assets with:
+
+```sh
+deno run jsr:@anywidget/deno/uninstall
 ```

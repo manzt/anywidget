@@ -43,9 +43,21 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	widget_manager: IWidgetManager;
 }
 
+export type Experimental = {
+	invoke: <T>(
+		name: string,
+		msg?: any,
+		options?: {
+			buffers?: DataView[];
+			signal?: AbortSignal;
+		},
+	) => Promise<[T, DataView[]]>;
+};
+
 export interface RenderProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
 	el: HTMLElement;
+	experimental: Experimental;
 }
 
 export interface Render<T extends ObjectHash = ObjectHash> {
@@ -54,8 +66,18 @@ export interface Render<T extends ObjectHash = ObjectHash> {
 
 export interface InitializeProps<T extends ObjectHash = ObjectHash> {
 	model: AnyModel<T>;
+	experimental: Experimental;
 }
 
 export interface Initialize<T extends ObjectHash = ObjectHash> {
 	(props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>)>;
 }
+
+interface WidgetDef<T extends ObjectHash = ObjectHash> {
+	initialize?: Initialize<T>;
+	render?: Render<T>;
+}
+
+export type AnyWidget<T extends ObjectHash = ObjectHash> =
+	| WidgetDef<T>
+	| (() => Awaitable<WidgetDef<T>>);

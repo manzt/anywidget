@@ -18,6 +18,7 @@ dist/
 .coverage
 .dmypy.json
 .venv
+.DS_Store
 
 # JupyterLite generated files
 *.doit.db

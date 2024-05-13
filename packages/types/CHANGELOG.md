@@ -1,5 +1,74 @@
 # @anywidget/types
 
+## 0.1.9
+
+### Patch Changes
+
+- **experimental** Replace invoke timeout with more flexible `AbortSignal` ([#540](https://github.com/manzt/anywidget/pull/540))
+
+  This allows more flexible control over aborting the invoke request, including delegating to third-party libraries that manage cancellation.
+
+  ```js
+  export default {
+    async render({ model, el }) {
+      const controller = new AbortController();
+
+      // Randomly abort the request after 1 second
+      setTimeout(() => Math.random() < 0.5 && controller.abort(), 1000);
+
+      const signal = controller.signal;
+      model
+        .invoke("echo", "Hello, world", { signal })
+        .then((result) => {
+          el.innerHTML = result;
+        })
+        .catch((err) => {
+          el.innerHTML = `Error: ${err.message}`;
+        });
+    },
+  };
+  ```
+
+## 0.1.8
+
+### Patch Changes
+
+- Export `Experimental` type ([#524](https://github.com/manzt/anywidget/pull/524))
+
+## 0.1.7
+
+### Patch Changes
+
+- Add experimental `invoke` API to call Python functions from the front end and ([#453](https://github.com/manzt/anywidget/pull/453))
+  await the response.
+
+  This removes a lot of boilerplate required for this pattern. The API is
+  experimental and opt-in only. Subclasses must use the `command` to register
+  functions.
+
+  ```py
+  class Widget(anywidget.AnyWidget):
+      _esm = """
+      export default {
+        async render({ model, el, experimental }) {
+          let [msg, buffers] = await experimental.invoke("_echo", "hello, world");
+          console.log(msg); // "HELLO, WORLD"
+        },
+      };
+      """
+
+      @anywidget.experimental.command
+      def _echo(self, msg, buffers):
+          # upper case the message
+          return msg.upper(), buffers
+  ```
+
+## 0.1.6
+
+### Patch Changes
+
+- Add `AnyWidget` definition ([`9aa8dcc8558e00e33fbe4506b68ae30113df3728`](https://github.com/manzt/anywidget/commit/9aa8dcc8558e00e33fbe4506b68ae30113df3728))
+
 ## 0.1.5
 
 ### Patch Changes

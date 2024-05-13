@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Sequence
 
 from typing_extensions import Literal, Protocol, TypedDict
 
@@ -40,7 +40,7 @@ class CommMessage(TypedDict):
 
 
 class MimeReprCallable(Protocol):
-    """Protocol for _repr_mimebundle.
+    """Protocol for _repr_mimebundle_.
 
     https://ipython.readthedocs.io/en/stable/config/integrating.html#more-powerful-methods
 
@@ -52,11 +52,20 @@ class MimeReprCallable(Protocol):
 
     def __call__(
         self, include: Sequence[str], exclude: Sequence[str]
-    ) -> dict | tuple[dict, dict]:
-        ...
+    ) -> dict | tuple[dict, dict]: ...
 
 
 class AnywidgetProtocol(Protocol):
     """Anywidget classes have a MimeBundleDescriptor at `_repr_mimebundle_`."""
 
     _repr_mimebundle_: MimeBundleDescriptor
+
+
+class WidgetBase(Protocol):
+    """Widget subclasses with a custom message reducer."""
+
+    def send(self, msg: str | dict | list, buffers: list[bytes]) -> None: ...
+
+    def on_msg(
+        self, callback: Callable[[Any, str | list | dict, list[bytes]], None]
+    ) -> None: ...

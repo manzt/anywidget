@@ -1,0 +1,75 @@
+---
+import GitHubCard from "./GitHubCard.astro"
+import { z } from "astro:content";
+
+let base = new URL("https://manzt.github.io/built-with-anywidget/manifest-complete.json");
+
+let RepoSchema = z.object({
+	repo: z.string(),
+	description: z.string(),
+	stars: z.number(),
+	image: z.string().optional(),
+	gif: z.string().optional(),
+});
+
+let response = await fetch(base);
+let raw = await response.json();
+let repos = z.array(RepoSchema).parse(raw);
+repos.sort((a, b) => b.stars - a.stars);
+
+let reposWithImages = repos
+	.filter(repo => repo.image)
+	.map((repo) => ({
+		...repo,
+		image: repo.image ? new URL(repo.image, base).href : undefined,
+		gif: repo.gif ? new URL(repo.gif, base).href : undefined,
+	}));
+
+let reposWithoutImages = repos.filter(repo => !repo.image);
+---
+
+
+<div class="gallery" id="gallery">
+  {reposWithImages.map((d) => <GitHubCard {...d} />)}
+</div>
+
+<br />
+
+<div class="gallery">
+  {reposWithoutImages.map((d) => <GitHubCard {...d} />)}
+</div>
+
+<script is:inline>
+	let observer = new IntersectionObserver((entries) => {
+		for (let entry of entries) {
+			if (!entry.isIntersecting) {
+				continue;
+			}
+			let image = entry.target.querySelector(".image-preview");
+			let gifUrl = image?.dataset.gif;
+			if (!gifUrl) {
+				continue;
+			}
+			Object.assign(new Image, {
+				src: gifUrl,
+				onload: () => { image.src = gifUrl; },
+			});
+		}
+	}, {
+		root: null,
+		rootMargin: "0px",
+		threshold: 0.1,
+	});
+
+	for (let item of document.querySelector("#gallery").children) {
+		observer.observe(item);
+	}
+</script>
+
+<style>
+	.gallery {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	}
+</style>

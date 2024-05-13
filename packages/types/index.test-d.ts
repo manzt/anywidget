@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import type { AnyModel } from "./index.js";
+import type { AnyModel, AnyWidget } from "./index.js";
 
 declare let model: AnyModel;
 declare let typedModel: AnyModel<{ value: number; name: string }>;
@@ -69,6 +69,44 @@ describe("AnyModel.on", () => {
 	it("infers any for unknown event", async () => {
 		model.on("foo:bar", (...args) => {
 			expectTypeOf(args).toEqualTypeOf<any[]>();
+		});
+	});
+});
+
+describe("Define AnyWidget", () => {
+	it("infers initialize and render for static widget", () => {
+		let w: AnyWidget<{ value: number }> = {
+			initialize({ model }) {
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
+			render({ model, el }) {
+				expectTypeOf(el).toEqualTypeOf<HTMLElement>();
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
+		};
+	});
+
+	it("infers initialize and render for function widget", () => {
+		let w: AnyWidget<{ value: number }> = () => ({
+			initialize({ model }) {
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
+			render({ model, el }) {
+				expectTypeOf(el).toEqualTypeOf<HTMLElement>();
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
+		});
+	});
+
+	it("infers initialize and render for async function widget", () => {
+		let w: AnyWidget<{ value: number }> = async () => ({
+			initialize({ model }) {
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
+			render({ model, el }) {
+				expectTypeOf(el).toEqualTypeOf<HTMLElement>();
+				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+			},
 		});
 	});
 });

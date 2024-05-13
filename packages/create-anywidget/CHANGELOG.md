@@ -1,5 +1,69 @@
 # create-anywidget
 
+## 0.6.1
+
+### Patch Changes
+
+- Simplify default CSS class names ([#576](https://github.com/manzt/anywidget/pull/576))
+
+## 0.6.0
+
+### Minor Changes
+
+- Rename Python Counter class to Widget ([#574](https://github.com/manzt/anywidget/pull/574))
+
+## 0.5.9
+
+### Patch Changes
+
+- Bump `typescript`, `react`, `react-dom` ([#567](https://github.com/manzt/anywidget/pull/567))
+
+## 0.5.8
+
+### Patch Changes
+
+- Bump dependencies ([#547](https://github.com/manzt/anywidget/pull/547))
+
+## 0.5.7
+
+### Patch Changes
+
+- Update typings with experimental API ([#518](https://github.com/manzt/anywidget/pull/518))
+
+## 0.5.6
+
+### Patch Changes
+
+- Fix README.md to point to static folder for un-bundled ([#496](https://github.com/manzt/anywidget/pull/496))
+
+- Ignore `.venv` for Deno config and use defaults (rather than Trevor's preferences 🙃) ([#496](https://github.com/manzt/anywidget/pull/496))
+
+## 0.5.5
+
+### Patch Changes
+
+- Switch default option to Vanilla (minimal) ([#484](https://github.com/manzt/anywidget/pull/484))
+
+- Add `autoreload` extension to demo notebook ([#486](https://github.com/manzt/anywidget/pull/486))
+
+## 0.5.4
+
+### Patch Changes
+
+- Change order of "Next steps" (npm install before git commands) ([#476](https://github.com/manzt/anywidget/pull/476))
+
+## 0.5.3
+
+### Patch Changes
+
+- Add development installation instructions in the generated READMEs ([`08762a52f88b567942b44710320da65d0cb8ac06`](https://github.com/manzt/anywidget/commit/08762a52f88b567942b44710320da65d0cb8ac06))
+
+## 0.5.2
+
+### Patch Changes
+
+- Set `ANYWIDGET_HMR=1` in demo notebook ([#470](https://github.com/manzt/anywidget/pull/470))
+
 ## 0.5.1
 
 ### Patch Changes

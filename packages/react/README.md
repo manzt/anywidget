@@ -16,10 +16,12 @@ import { createRender, useModelState } from "@anywidget/react";
 
 function Counter() {
 	let [value, setValue] = useModelState("value");
-	return <button onClick={() => setValue(value + 1)}>count is {count}</button>;
+	return <button onClick={() => setValue(value + 1)}>count is {value}</button>;
 }
 
-export let render = createRender(Counter);
+const render = createRender(Counter);
+
+export default { render };
 ```
 
 ## License

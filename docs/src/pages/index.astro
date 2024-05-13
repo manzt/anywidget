@@ -1,9 +1,16 @@
 ---
 import SplashLayout from "../layouts/SplashLayout.astro";
 import Hero from "../components/Hero.astro";
+import type { Frontmatter } from "../consts";
+
+let frontmatter: Frontmatter = {
+	title: "anywidget",
+	description: "juypyter widgets made easy",
+	layout: "splash"
+};
 ---
 
-<SplashLayout>
+<SplashLayout frontmatter={frontmatter}>
 	<Hero />
 </SplashLayout>
 

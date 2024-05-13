@@ -16,13 +16,12 @@ npm install @anywidget/types
  * @prop {number} value - the current count
  */
 
+/** @type {import("@anywidget/types").AnyWidget<Model>} */
 export default {
-	/** @type {import("@anywidget/types").Initialize<Model>} */
 	initialize({ model }) {
 		let value = model.get("value");
 		//^? number
 	},
-	/** @type {import("@anywidget/types").Render<Model>} */
 	render({ model, el }) {
 		let value = model.get("value");
 		//^? number

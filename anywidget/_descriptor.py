@@ -38,13 +38,13 @@ from ._util import (
     _ANYWIDGET_ID_KEY,
     _DEFAULT_ESM,
     _ESM_KEY,
-    _WIDGET_MIME_TYPE,
-    get_repr_metadata,
+    _PROTOCOL_VERSION,
     put_buffers,
     remove_buffers,
+    repr_mimebundle,
     try_file_contents,
 )
-from ._version import __version__
+from ._version import _ANYWIDGET_SEMVER_VERSION
 
 if TYPE_CHECKING:  # pragma: no cover
     import comm
@@ -57,8 +57,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ._protocols import CommMessage
 
     class _GetState(Protocol):
-        def __call__(self, obj: Any, include: set[str] | None) -> dict:
-            ...
+        def __call__(self, obj: Any, include: set[str] | None) -> dict: ...
 
     # catch all for types that can be serialized ... too hard to actually type
     Serializable: TypeAlias = Any
@@ -69,27 +68,25 @@ _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
 
-_PROTOCOL_VERSION_MAJOR = 2
-_PROTOCOL_VERSION_MINOR = 1
-_PROTOCOL_VERSION = f"{_PROTOCOL_VERSION_MAJOR}.{_PROTOCOL_VERSION_MINOR}.0"
 _TARGET_NAME = "jupyter.widget"
 _ANYWIDGET_MODEL_NAME = "AnyModel"
 _ANYWIDGET_VIEW_NAME = "AnyView"
 _ANYWIDGET_JS_MODULE = "anywidget"
+
 _ANYWIDGET_STATE = {
     "_model_module": _ANYWIDGET_JS_MODULE,
     "_model_name": _ANYWIDGET_MODEL_NAME,
-    "_model_module_version": __version__,
+    "_model_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_module": _ANYWIDGET_JS_MODULE,
     "_view_name": _ANYWIDGET_VIEW_NAME,
-    "_view_module_version": __version__,
+    "_view_module_version": _ANYWIDGET_SEMVER_VERSION,
     "_view_count": None,
 }
 
 
 def open_comm(
     target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
-) -> comm.DummyComm:
+) -> comm.base_comm.BaseComm:
     import comm
 
     return comm.create_comm(
@@ -102,10 +99,10 @@ def open_comm(
 # cache of comms: mapp of id(obj) -> Comm.
 # we use id(obj) rather than WeakKeyDictionary because we can't assume that the
 # object has a __hash__ method
-_COMMS: dict[int, comm.DummyComm] = {}
+_COMMS: dict[int, comm.base_comm.BaseComm] = {}
 
 
-def _comm_for(obj: object) -> comm.DummyComm:
+def _comm_for(obj: object) -> comm.base_comm.BaseComm:
     """Get or create a communcation channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple
@@ -205,12 +202,10 @@ class MimeBundleDescriptor:
         self._name = name
 
     @overload
-    def __get__(self, instance: None, owner: type) -> MimeBundleDescriptor:
-        ...
+    def __get__(self, instance: None, owner: type) -> MimeBundleDescriptor: ...
 
     @overload
-    def __get__(self, instance: object, owner: type) -> ReprMimeBundle:
-        ...
+    def __get__(self, instance: object, owner: type) -> ReprMimeBundle: ...
 
     def __get__(
         self, instance: object | None, owner: type
@@ -246,7 +241,7 @@ class MimeBundleDescriptor:
             # when IPython accesses _repr_mimebundle_ on an object, it catches
             # exceptions and swallows them.  We want to make sure that the user
             # knows that something went wrong, so we'll print the exception here.
-            warnings.warn(f"Error in Anywidget repr:\n{e}")
+            warnings.warn(f"Error in Anywidget repr:\n{e}", stacklevel=1)
             raise
 
         with contextlib.suppress(AttributeError, ValueError):
@@ -314,7 +309,8 @@ class ReprMimeBundle:
             warnings.warn(
                 f"Anywidget: {obj} is not weakrefable, so it will not be garbage "
                 "collected until the view is closed. Please consider adding "
-                "`__slots__ = ('__weakref__',)` to your class definition."
+                "`__slots__ = ('__weakref__',)` to your class definition.",
+                stacklevel=2,
             )
 
         self._comm = _comm_for(obj)
@@ -371,7 +367,7 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers)
+            self._comm.send(data=msg, buffers=buffers)  # type: ignore[arg-type]
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -412,17 +408,9 @@ class ReprMimeBundle:
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
-        data = {
-            "text/plain": repr(self._obj()),
-            _WIDGET_MIME_TYPE: {
-                "version_major": _PROTOCOL_VERSION_MAJOR,
-                "version_minor": _PROTOCOL_VERSION_MINOR,
-                "model_id": self._comm.comm_id,
-            },
-        }
         if self._no_view:
             return None
-        return data, get_repr_metadata()
+        return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr(self._obj()))
 
     def sync_object_with_view(
         self, py_to_js: bool = True, js_to_py: bool = True
@@ -440,7 +428,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg)
+            self._comm.on_msg(self._handle_msg)  # type: ignore[arg-type]
             self.send_state()
 
         if py_to_js and self._autodetect_observer:
@@ -450,7 +438,7 @@ class ReprMimeBundle:
                 raise RuntimeError("Cannot sync a deleted object")
 
             if self._disconnectors:
-                warnings.warn("Refusing to re-sync a synced object.")
+                warnings.warn("Refusing to re-sync a synced object.", stacklevel=2)
                 return
 
             # each of these _connect_* functions receives the python object, and the
@@ -467,7 +455,9 @@ class ReprMimeBundle:
             else:
                 warnings.warn(
                     f"Could not find a notifier on {obj} (e.g. psygnal, traitlets). "
-                    "Changes to the python object will not be reflected in the JS view."
+                    f"Changes to the python object will not be reflected in the JS "
+                    f"view.",
+                    stacklevel=2,
                 )
 
     def unsync_object_with_view(self) -> None:
@@ -568,7 +558,7 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     else:
         psygnal = sys.modules.get("psygnal")
     if psygnal is None:
-        return None
+        return None # type: ignore[unreachable]
 
     # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
@@ -604,7 +594,7 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
             send_state({event.signal.name})
 
         def _disconnect() -> None:
-            cast("psygnal.SignalGroup", events).disconnect(_on_psygnal_event)
+            events.disconnect(_on_psygnal_event)
 
         return _disconnect
     return None
@@ -634,7 +624,7 @@ def _get_traitlets_state(
 ) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
-    return obj.trait_values(**kwargs)  # type: ignore [no-untyped-call]
+    return obj.trait_values(**kwargs)
 
 
 def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
@@ -654,14 +644,14 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
     def _on_trait_change(change: dict) -> None:
         send_state({change["name"]})
 
-    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))  # type: ignore
+    obj.observe(_on_trait_change, names=list(obj.traits(sync=True)))
 
     obj_ref = weakref.ref(obj)
 
     def _disconnect() -> None:
         obj = obj_ref()
         if obj is not None:
-            obj.unobserve(_on_trait_change)  # type: ignore
+            obj.unobserve(_on_trait_change)
 
     return _disconnect
 

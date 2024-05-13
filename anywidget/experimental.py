@@ -1,12 +1,18 @@
+"""Experimental features for anywidget."""
+
 from __future__ import annotations
 
 import dataclasses
-import pathlib
 import typing
 
 import psygnal
 
 from ._descriptor import MimeBundleDescriptor
+
+if typing.TYPE_CHECKING:  # pragma: no cover
+    import pathlib
+
+    from ._protocols import WidgetBase
 
 __all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
 
@@ -41,7 +47,7 @@ def widget(
         kwargs["_css"] = css
 
     def _decorator(cls: _T) -> _T:
-        setattr(cls, "_repr_mimebundle_", MimeBundleDescriptor(**kwargs))
+        setattr(cls, "_repr_mimebundle_", MimeBundleDescriptor(**kwargs)) # noqa: B010
         return cls
 
     return _decorator
@@ -97,9 +103,65 @@ def dataclass(
     """
 
     def _decorator(cls: T) -> T:
-        cls = dataclasses.dataclass(cls, **dataclass_kwargs)  # type: ignore
-        cls = psygnal.evented(cls)  # type: ignore
+        cls = dataclasses.dataclass(cls, **dataclass_kwargs)  # type: ignore[call-overload]
+        cls = psygnal.evented(cls)  # type: ignore[call-overload]
         cls = widget(esm=esm, css=css)(cls)
         return cls
 
-    return _decorator(cls) if cls is not None else _decorator  # type: ignore
+    return _decorator(cls) if cls is not None else _decorator  # type: ignore[return-value]
+
+
+_ANYWIDGET_COMMAND = "_anywidget_command"
+_ANYWIDGET_COMMANDS = "_anywidget_commands"
+
+_AnyWidgetCommand = typing.Callable[
+    [typing.Any, typing.Any, typing.List[bytes]],
+    typing.Tuple[typing.Any, typing.List[bytes]],
+]
+
+
+def command(cmd: _AnyWidgetCommand) -> _AnyWidgetCommand:
+    """Mark a function as a command for anywidget."""
+    setattr(cmd, _ANYWIDGET_COMMAND, True)
+    return cmd
+
+
+def _collect_anywidget_commands(widget_cls: type) -> None:
+    cmds: dict[str, _AnyWidgetCommand] = {}
+    for base in widget_cls.__mro__:
+        if not hasattr(base, "__dict__"):
+            continue
+        for name, attr in base.__dict__.items():
+            if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
+                cmds[name] = attr
+
+    setattr(widget_cls, _ANYWIDGET_COMMANDS, cmds)
+
+
+def _register_anywidget_commands(widget: WidgetBase) -> None:
+    """Register a custom message reducer for a widget if it implements the protocol."""
+    # Only add the callback if the widget has any commands.
+    cmds = typing.cast(
+        "dict[str, _AnyWidgetCommand]",
+        getattr(type(widget), _ANYWIDGET_COMMANDS, {}),
+    )
+    if not cmds:
+        return None
+
+    def handle_anywidget_command(
+        self: WidgetBase, msg: str | list | dict, buffers: list[bytes]
+    ) -> None:
+        if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
+            return
+        cmd = cmds[msg["name"]]
+        response, buffers = cmd(widget, msg["msg"], buffers)
+        self.send(
+            {
+                "id": msg["id"],
+                "kind": "anywidget-command-response",
+                "response": response,
+            },
+            buffers,
+        )
+
+    widget.on_msg(handle_anywidget_command)

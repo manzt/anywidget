@@ -4,7 +4,7 @@ import * as child_process from "node:child_process";
 import * as crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-import { renderMarkdown } from "@astrojs/markdown-remark";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import {
 	createAstroComponentString,
 	getFileInfo,
@@ -151,13 +151,12 @@ function widgetClientHtml(widgetState) {
  * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any>, widgetState?: WidgetStateData }} options
  */
 async function renderCellsMarkdown(nb, options) {
+	let processor = await createMarkdownProcessor(options.config.markdown);
 	/** @param {string} content */
 	function _renderMarkdown(content) {
-		return renderMarkdown(content, {
-			...options.config.markdown,
-			fileURL: new URL(`file://${options.fileId}`),
-			// @ts-expect-error
-			contentDir: new URL("./content/", options.config.srcDir),
+		return processor.render(content, {
+			// fileURL: new URL(`file://${options.fileId}`),
+			// contentDir: new URL("./content/", options.config.srcDir),
 			frontmatter: options.frontmatter,
 		});
 	}
