@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@jupyter-widgets/base-manager": "^1.0.8",
-		"@rspack/core": "^0.6.3"
+		"@rspack/core": "^0.6.5"
 	},
 	"jupyterlab": {
 		"extension": "./src/plugin.js",
