@@ -60,7 +60,7 @@ export default function () {
 		apply: "serve",
 		resolveId(id) {
 			if (id.startsWith("anywidget:")) {
-				return "\0" + id;
+				return `\0${id}`;
 			}
 		},
 		load(id) {
@@ -73,7 +73,7 @@ export default function () {
 				if (req.url?.endsWith("?anywidget")) {
 					// turn into a bare identifier
 					let path = req.url.slice(0, -"?anywidget".length);
-					req.url = "anywidget:" + path;
+					req.url = `anywidget:${path}`;
 				}
 				next();
 			});

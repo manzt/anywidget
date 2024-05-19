@@ -94,8 +94,7 @@ features = ["dev"]
  * @param {string} npm
  */
 let pyproject_toml_with_hatch_jupyter_builder = (name, npm) =>
-	pyproject_toml(name) +
-	`\n
+	`${pyproject_toml(name)}\n
 [tool.hatch.build]
 only-packages = true
 artifacts = ["src/${name}/static/*"]
@@ -199,36 +198,33 @@ in the notebook.
 /** @param {string} name */
 let notebook = (name) =>
 	json_dumps({
-		"cells": [
+		cells: [
 			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {},
-				"outputs": [],
-				"source": [
+				cell_type: "code",
+				execution_count: null,
+				metadata: {},
+				outputs: [],
+				source: [
 					"%load_ext autoreload\n",
 					"%autoreload 2\n",
 					"%env ANYWIDGET_HMR=1",
 				],
 			},
 			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {},
-				"outputs": [],
-				"source": [
-					`from ${name} import Widget\n`,
-					"Widget()",
-				],
+				cell_type: "code",
+				execution_count: null,
+				metadata: {},
+				outputs: [],
+				source: [`from ${name} import Widget\n`, "Widget()"],
 			},
 		],
-		"metadata": {
-			"language_info": {
-				"name": "python",
+		metadata: {
+			language_info: {
+				name: "python",
 			},
 		},
-		"nbformat": 4,
-		"nbformat_minor": 2,
+		nbformat: 4,
+		nbformat_minor: 2,
 	});
 
 /** @param {string} name */
@@ -436,11 +432,9 @@ async function generate_package_json(
 	/** @type {string[]} */
 	let dev_extra = [];
 	if (pkg_manager === "bun") {
-		scripts.build =
-			`bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
+		scripts.build = `bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
 	} else {
-		scripts.build =
-			`esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
+		scripts.build = `esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
 		dev_extra.push("esbuild");
 	}
 
@@ -462,7 +456,7 @@ async function generate_package_json(
 async function render_template(template, { name, pkg_manager }) {
 	let build_dir = `src/${name}/static`;
 	let tsconfig = template.files.find((file) =>
-		file.path.includes("tsconfig.json")
+		file.path.includes("tsconfig.json"),
 	);
 	let package_json = await generate_package_json(template, {
 		build_dir,

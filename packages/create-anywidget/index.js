@@ -13,7 +13,7 @@ let p = new Proxy(_p, {
 	 * @param {T} prop
 	 */
 	get(target, prop) {
-		if (prop === "select" || prop === "text" || prop == "confirm") {
+		if (prop === "select" || prop === "text" || prop === "confirm") {
 			let fn = /** @type {(typeof _p)["text"]} */ (target[prop]);
 			/** @type {typeof fn} */
 			return async (opts) => {
@@ -163,9 +163,9 @@ if (template !== "template-vanilla-deno-jsdoc") {
 
 // dprint-ignore
 console.log(
-	`  ${i++}: ${
-		bold(cyan('git init && git add -A && git commit -m "Initial commit"'))
-	} (optional)`,
+	`  ${i++}: ${bold(
+		cyan('git init && git add -A && git commit -m "Initial commit"'),
+	)} (optional)`,
 );
 
 if (template !== "template-vanilla-deno-jsdoc") {
