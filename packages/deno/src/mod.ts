@@ -8,7 +8,7 @@ import { find_data_dir } from "./jupyter_paths.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
-let DEFAULT_VERSION: string = "0.9.3";
+let DEFAULT_VERSION = "0.9.3";
 let DEFAULT_ANYWIDGET_VERSION: string = await find_anywidget_version().catch(
 	(err) => {
 		console.warn(`Failed to find anywidget frontend version: ${err}`);
@@ -125,8 +125,7 @@ class Comm {
 			},
 			{
 				metadata: {
-					version:
-						`${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
+					version: `${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
 				},
 			},
 		);
@@ -211,7 +210,8 @@ export type FrontEndModel<State> = Model<State> & {
 };
 
 // Requires mod user to include lib DOM in their compiler options if they want to use this type.
-type HTMLElement = typeof globalThis extends { HTMLElement: infer T } ? T
+type HTMLElement = typeof globalThis extends { HTMLElement: infer T }
+	? T
 	: unknown;
 
 // TODO: more robust serialization of render function (with context?)
@@ -272,7 +272,7 @@ export function widget<State>(options: WidgetOptions<State>): Model<State> {
 	let init_promise = comm
 		.init()
 		.then(() =>
-			comm.send_state({ ...state, _esm: to_esm({ imports, render }) })
+			comm.send_state({ ...state, _esm: to_esm({ imports, render }) }),
 		);
 	let model = new Model(state);
 	for (let key in state) {

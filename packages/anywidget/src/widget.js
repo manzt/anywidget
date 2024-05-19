@@ -142,7 +142,7 @@ async function load_widget(esm) {
 		warn_render_deprecation();
 		return {
 			url,
-			async initialize() { },
+			async initialize() {},
 			render: mod.render,
 		};
 	}
@@ -285,7 +285,7 @@ export function invoke(model, name, msg, options = {}) {
 
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => { };
+	#disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
@@ -405,7 +405,7 @@ class Runtime {
 let version = globalThis.VERSION;
 
 /** @param {typeof import("@jupyter-widgets/base")} base */
-export default function({ DOMWidgetModel, DOMWidgetView }) {
+export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();
 

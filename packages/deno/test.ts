@@ -16,22 +16,22 @@ Deno.test("widget() initializes the front end", async () => {
 			args: [
 				"comm_open",
 				{
-					"comm_id": _internals.get_comm(model).id,
-					"target_name": "jupyter.widget",
-					"data": {
-						"state": {
-							"_model_module": "anywidget",
-							"_model_name": "AnyModel",
-							"_model_module_version": _internals.version,
-							"_view_module": "anywidget",
-							"_view_name": "AnyView",
-							"_view_module_version": _internals.version,
-							"_view_count": null,
+					comm_id: _internals.get_comm(model).id,
+					target_name: "jupyter.widget",
+					data: {
+						state: {
+							_model_module: "anywidget",
+							_model_name: "AnyModel",
+							_model_module_version: _internals.version,
+							_view_module: "anywidget",
+							_view_name: "AnyView",
+							_view_module_version: _internals.version,
+							_view_count: null,
 						},
 					},
 				},
 				{
-					"metadata": { "version": "2.1.0" },
+					metadata: { version: "2.1.0" },
 				},
 			],
 		});
@@ -39,13 +39,12 @@ Deno.test("widget() initializes the front end", async () => {
 			args: [
 				"comm_msg",
 				{
-					"comm_id": _internals.get_comm(model).id,
-					"data": {
-						"method": "update",
-						"state": {
-							"value": 0,
-							"_esm":
-								"BLAH\nexport default { render: async ({ model, el })=>{} }",
+					comm_id: _internals.get_comm(model).id,
+					data: {
+						method: "update",
+						state: {
+							value: 0,
+							_esm: "BLAH\nexport default { render: async ({ model, el })=>{} }",
 						},
 					},
 				},
@@ -66,10 +65,13 @@ Deno.test("model.set() sends change events to the front end", async () => {
 		await _internals.get_init_promise(model);
 		model.set("value", 1);
 		mock.assertSpyCall(jupyter_broadcast, 2, {
-			args: ["comm_msg", {
-				"comm_id": _internals.get_comm(model).id,
-				"data": { "method": "update", "state": { "value": 1 } },
-			}],
+			args: [
+				"comm_msg",
+				{
+					comm_id: _internals.get_comm(model).id,
+					data: { method: "update", state: { value: 1 } },
+				},
+			],
 		});
 	} finally {
 		jupyter_broadcast.restore();
@@ -88,22 +90,22 @@ Deno.test("Explicit anywidget version overrides the default", () => {
 		args: [
 			"comm_open",
 			{
-				"comm_id": _internals.get_comm(model).id,
-				"target_name": "jupyter.widget",
-				"data": {
-					"state": {
-						"_model_module": "anywidget",
-						"_model_name": "AnyModel",
-						"_model_module_version": version,
-						"_view_module": "anywidget",
-						"_view_name": "AnyView",
-						"_view_module_version": version,
-						"_view_count": null,
+				comm_id: _internals.get_comm(model).id,
+				target_name: "jupyter.widget",
+				data: {
+					state: {
+						_model_module: "anywidget",
+						_model_name: "AnyModel",
+						_model_module_version: version,
+						_view_module: "anywidget",
+						_view_name: "AnyView",
+						_view_module_version: version,
+						_view_count: null,
 					},
 				},
 			},
 			{
-				"metadata": { "version": "2.1.0" },
+				metadata: { version: "2.1.0" },
 			},
 		],
 	});
