@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.6.2
+
+### Patch Changes
+
+- Bump esbuild version ([#584](https://github.com/manzt/anywidget/pull/584))
+
 ## 0.6.1
 
 ### Patch Changes
