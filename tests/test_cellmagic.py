@@ -1,4 +1,4 @@
-from anywidget._file_contents import VirtualFileContents
+from anywidget._file_contents import _VIRTUAL_FILES, VirtualFileContents
 from IPython.testing.globalipapp import get_ipython
 
 maybe_ipython = get_ipython()
@@ -8,6 +8,7 @@ ip.run_line_magic("load_ext", "anywidget")
 
 
 def test_creates_virtual_file_contents():
-    ip.run_cell_magic("aw_file", "-n testing_123", "Hello, world!")
-    assert isinstance(ip.user_ns["testing_123"], VirtualFileContents)
-    assert str(ip.user_ns["testing_123"]) == "Hello, world!\n"
+    ip.run_cell_magic("vfile", "data.txt", "Hello, world!")
+    assert "data.txt" in _VIRTUAL_FILES
+    assert isinstance(_VIRTUAL_FILES["data.txt"], VirtualFileContents)
+    assert str(_VIRTUAL_FILES["data.txt"]) == "Hello, world!\n"
