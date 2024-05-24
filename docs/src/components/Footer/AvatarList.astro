@@ -107,6 +107,7 @@ async function removeDupsAndFindCoAuthors(arr: Commit[]) {
 
 	for (let email of coAuthorEmails) {
 		let users = await searchUsers(email);
+		// biome-ignore lint/complexity/noForEach: Nice and readable
 		users.forEach((user) => map.set(email, user));
 	}
 

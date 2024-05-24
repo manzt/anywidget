@@ -23,19 +23,16 @@ export default function Search() {
 
 	const onOpen = useCallback(() => {
 		setIsOpen(true);
-	}, [setIsOpen]);
+	}, []);
 
 	const onClose = useCallback(() => {
 		setIsOpen(false);
-	}, [setIsOpen]);
+	}, []);
 
-	const onInput = useCallback(
-		(e: KeyboardEvent) => {
-			setIsOpen(true);
-			setInitialQuery(e.key);
-		},
-		[setIsOpen, setInitialQuery],
-	);
+	const onInput = useCallback((e: KeyboardEvent) => {
+		setIsOpen(true);
+		setInitialQuery(e.key);
+	}, []);
 
 	useDocSearchKeyboardEvents({
 		isOpen,
@@ -69,7 +66,7 @@ export default function Search() {
 						strokeLinecap="round"
 						strokeLinejoin="round"
 						transform="translate(-1)"
-					></path>
+					/>
 				</svg>
 
 				<span className="search-placeholder">Search</span>

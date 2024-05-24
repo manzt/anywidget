@@ -1,6 +1,6 @@
 import type { MarkdownHeading } from "astro";
 /** @jsxImportSource preact */
-import { unescape } from "html-escaper";
+import * as htmlEscaper from "html-escaper";
 import type { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
@@ -60,13 +60,14 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 		);
 
 		// Observe all the headings in the main page content.
+		// biome-ignore lint/complexity/noForEach: This is plenty readable.
 		document
 			.querySelectorAll("article :is(h1,h2,h3)")
 			.forEach((h) => headingsObserver.observe(h));
 
 		// Stop observing when the component is unmounted.
 		return () => headingsObserver.disconnect();
-	}, [toc.current]);
+	}, []);
 
 	return (
 		<>
@@ -78,6 +79,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 					.filter(({ depth }) => depth > 1 && depth < 4)
 					.map((heading) => (
 						<li
+							key={heading.slug}
 							className={`header-link depth-${heading.depth} ${
 								currentID === heading.slug ? "current-header-link" : ""
 							}`.trim()}
@@ -90,7 +92,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 									);
 								}}
 							>
-								{unescape(heading.text)}
+								{htmlEscaper.unescape(heading.text)}
 							</a>
 						</li>
 					))}

@@ -1,3 +1,3 @@
-Array.from(document.getElementsByTagName("pre")).forEach((element) => {
+for (const element of document.getElementsByTagName("pre")) {
 	element.setAttribute("tabindex", "0");
-});
+}
