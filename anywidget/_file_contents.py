@@ -7,7 +7,9 @@ from typing import Iterator
 
 from psygnal import Signal
 
-__all__ = ["FileContents", "VirtualFileContents"]
+__all__ = ["FileContents", "VirtualFileContents", "_VIRTUAL_FILES"]
+
+_VIRTUAL_FILES = {}
 
 
 class VirtualFileContents:
