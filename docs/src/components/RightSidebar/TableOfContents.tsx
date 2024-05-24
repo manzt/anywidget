@@ -88,6 +88,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 								href={`#${heading.slug}`}
 								onClick={(e) => {
 									setCurrentID(
+										// @ts-expect-error: href is always a string.
 										e.currentTarget.getAttribute("href")?.replace("#", ""),
 									);
 								}}
