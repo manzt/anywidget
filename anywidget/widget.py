@@ -1,4 +1,5 @@
 """AnyWidget base class for custom Jupyter widgets."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -76,5 +77,5 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + "…"
         if self._view_name is None:
-            return None # type: ignore[unreachable]
+            return None  # type: ignore[unreachable]
         return repr_mimebundle(model_id=self.model_id, repr_text=plaintext)

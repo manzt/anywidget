@@ -558,7 +558,7 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
     else:
         psygnal = sys.modules.get("psygnal")
     if psygnal is None:
-        return None # type: ignore[unreachable]
+        return None  # type: ignore[unreachable]
 
     # most likely case: signal group is called "events"
     events = getattr(obj, "events", None)
