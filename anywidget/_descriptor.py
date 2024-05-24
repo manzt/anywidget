@@ -33,7 +33,7 @@ from typing import (
     overload,
 )
 
-from ._file_contents import FileContents
+from ._file_contents import FileContents, VirtualFileContents
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _DEFAULT_ESM,
@@ -324,7 +324,7 @@ class ReprMimeBundle:
         self._set_state = determine_state_setter(obj)
 
         for key, value in self._extra_state.items():
-            if isinstance(value, FileContents):
+            if isinstance(value, (VirtualFileContents, FileContents)):
                 self._extra_state[key] = str(value)
 
                 @value.changed.connect
