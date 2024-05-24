@@ -86,7 +86,11 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - uses: dprint/check@v2.2
+      - uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - run: biome ci .
+
 
   TypecheckJavaScript:
     name: JavaScript / Typecheck
