@@ -1,7 +1,7 @@
-import { defineConfig } from "astro/config";
+import mdx from "@astrojs/mdx";
 import preact from "@astrojs/preact";
 import react from "@astrojs/react";
-import mdx from "@astrojs/mdx";
+import { defineConfig } from "astro/config";
 import ipynb from "./scripts/ipynb.mjs";
 
 // TODO: remove or migrate entire to tailwind

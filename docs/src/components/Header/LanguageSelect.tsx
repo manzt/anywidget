@@ -31,8 +31,8 @@ const LanguageSelect: FunctionComponent<{ lang: string }> = ({ lang }) => {
 					// @ts-expect-error
 					const newLang = e.target?.value;
 					let actualDest = window.location.pathname.replace(langPathRegex, "/");
-					if (actualDest == "/") actualDest = `/getting-started`;
-					window.location.pathname = "/" + newLang + actualDest;
+					if (actualDest === "/") actualDest = `/getting-started`;
+					window.location.pathname = `/${newLang}${actualDest}`;
 				}}
 			>
 				{Object.entries(KNOWN_LANGUAGES).map(([key, value]) => {

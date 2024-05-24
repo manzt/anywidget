@@ -15,7 +15,7 @@ async function ghFetch(endpoint: string) {
 
 	if (!token) {
 		throw new Error(
-			'Cannot find "SNOWPACK_PUBLIC_GITHUB_TOKEN" used for escaping rate-limiting.'
+			'Cannot find "SNOWPACK_PUBLIC_GITHUB_TOKEN" used for escaping rate-limiting.',
 		);
 	}
 
@@ -33,7 +33,7 @@ async function ghFetch(endpoint: string) {
 
 	if (!res.ok) {
 		throw new Error(
-			`GitHub request for ${url.pathname} failed. Reason: ${res.statusText} Message: ${data.message}`
+			`GitHub request for ${url.pathname} failed. Reason: ${res.statusText} Message: ${data.message}`,
 		);
 	}
 
@@ -107,6 +107,7 @@ async function removeDupsAndFindCoAuthors(arr: Commit[]) {
 
 	for (let email of coAuthorEmails) {
 		let users = await searchUsers(email);
+		// biome-ignore lint/complexity/noForEach: Nice and readable
 		users.forEach((user) => map.set(email, user));
 	}
 

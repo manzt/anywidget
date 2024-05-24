@@ -21,7 +21,7 @@
 		}
 	},
 	"files": {
-		"ignore": ["package.json", "docs", "anywidget/nbextension/extension.js"]
+		"ignore": ["package.json", "anywidget/nbextension/extension.js"]
 	},
 	"vcs": {
 		"enabled": true,

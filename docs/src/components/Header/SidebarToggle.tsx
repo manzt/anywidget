@@ -9,11 +9,11 @@ const MenuToggle: FunctionalComponent = () => {
 	const [sidebarShown, setSidebarShown] = useState(false);
 
 	useEffect(() => {
-		const body = document.querySelector("body")!;
+		const body = document.querySelector("body");
 		if (sidebarShown) {
-			body.classList.add("mobile-sidebar-toggle");
+			body?.classList.add("mobile-sidebar-toggle");
 		} else {
-			body.classList.remove("mobile-sidebar-toggle");
+			body?.classList.remove("mobile-sidebar-toggle");
 		}
 	}, [sidebarShown]);
 
@@ -33,6 +33,7 @@ const MenuToggle: FunctionalComponent = () => {
 				viewBox="0 0 24 24"
 				stroke="currentColor"
 			>
+				<title>Toggle sidebar</title>
 				<path
 					stroke-linecap="round"
 					stroke-linejoin="round"

@@ -6,8 +6,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
 	image: {
-		src:
-			"https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/banner-minimal.png",
+		src: "https://raw.githubusercontent.com/manzt/anywidget/main/docs/public/banner-minimal.png",
 		alt: "anywidget logo on white background",
 	},
 	twitter: "trevmanz",

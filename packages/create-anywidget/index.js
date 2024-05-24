@@ -161,7 +161,6 @@ if (template !== "template-vanilla-deno-jsdoc") {
 	console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
 }
 
-// dprint-ignore
 console.log(
 	`  ${i++}: ${bold(
 		cyan('git init && git add -A && git commit -m "Initial commit"'),
