@@ -1,8 +1,8 @@
 import { getContext, onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
-import { MODEL_SYMBOL, STORES_SYMBOL } from "./constants.js";
 import WrapperComponent from "./WrapperComponent.svelte";
+import { MODEL_SYMBOL, STORES_SYMBOL } from "./constants.js";
 
 /**
  * @template Model

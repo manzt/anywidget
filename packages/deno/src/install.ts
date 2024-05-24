@@ -9,9 +9,9 @@
  * ```
  */
 
-import * as path from "@std/path";
-import * as fs from "@std/fs";
 import * as cli from "@std/cli";
+import * as fs from "@std/fs";
+import * as path from "@std/path";
 import * as unzipit from "unzipit";
 import * as z from "zod";
 import {
