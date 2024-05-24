@@ -5,13 +5,15 @@ import "@docsearch/css";
 import "./HeaderButton.css";
 import "./Search.css";
 
-import { createPortal } from "react-dom";
 import * as docSearchReact from "@docsearch/react";
+import { createPortal } from "react-dom";
 
 /** FIXME: This is still kinda nasty, but DocSearch is not ESM ready. */
-const DocSearchModal = docSearchReact.DocSearchModal ||
+const DocSearchModal =
+	docSearchReact.DocSearchModal ||
 	(docSearchReact as any).default.DocSearchModal;
-const useDocSearchKeyboardEvents = docSearchReact.useDocSearchKeyboardEvents ||
+const useDocSearchKeyboardEvents =
+	docSearchReact.useDocSearchKeyboardEvents ||
 	(docSearchReact as any).default.useDocSearchKeyboardEvents;
 
 export default function Search() {
@@ -67,8 +69,7 @@ export default function Search() {
 						strokeLinecap="round"
 						strokeLinejoin="round"
 						transform="translate(-1)"
-					>
-					</path>
+					></path>
 				</svg>
 
 				<span className="search-placeholder">Search</span>

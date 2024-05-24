@@ -1,6 +1,6 @@
+import type { MarkdownHeading } from "astro";
 /** @jsxImportSource preact */
 import { unescape } from "html-escaper";
-import type { MarkdownHeading } from "astro";
 import type { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
@@ -86,7 +86,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 								href={`#${heading.slug}`}
 								onClick={(e) => {
 									setCurrentID(
-										e.currentTarget.getAttribute("href")!.replace("#", ""),
+										e.currentTarget.getAttribute("href")?.replace("#", ""),
 									);
 								}}
 							>

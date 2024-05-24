@@ -1,8 +1,10 @@
 ---
-import GitHubCard from "./GitHubCard.astro"
 import { z } from "astro:content";
+import GitHubCard from "./GitHubCard.astro";
 
-let base = new URL("https://manzt.github.io/built-with-anywidget/manifest-complete.json");
+let base = new URL(
+	"https://manzt.github.io/built-with-anywidget/manifest-complete.json",
+);
 
 let RepoSchema = z.object({
 	repo: z.string(),
@@ -18,14 +20,14 @@ let repos = z.array(RepoSchema).parse(raw);
 repos.sort((a, b) => b.stars - a.stars);
 
 let reposWithImages = repos
-	.filter(repo => repo.image)
+	.filter((repo) => repo.image)
 	.map((repo) => ({
 		...repo,
 		image: repo.image ? new URL(repo.image, base).href : undefined,
 		gif: repo.gif ? new URL(repo.gif, base).href : undefined,
 	}));
 
-let reposWithoutImages = repos.filter(repo => !repo.image);
+let reposWithoutImages = repos.filter((repo) => !repo.image);
 ---
 
 

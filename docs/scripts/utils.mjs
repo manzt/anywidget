@@ -27,15 +27,14 @@ export function parseFrontmatter(code, id) {
 			};
 			err.message = err.reason;
 			throw err;
-		} else {
-			throw err;
 		}
+		throw err;
 	}
 }
 
 /** @param {string} path */
 function appendForwardSlash(path) {
-	return path.endsWith("/") ? path : path + "/";
+	return path.endsWith("/") ? path : `${path}/`;
 }
 
 /**
@@ -63,7 +62,7 @@ export function getFileInfo(id, config) {
 		fileUrl = fileId
 			.replace(/^.*?\/pages\//, sitePathname)
 			.replace(/(\/index)?\.mdx$/, "");
-	} else if (url && url.pathname.startsWith(config.root.pathname)) {
+	} else if (url?.pathname.startsWith(config.root.pathname)) {
 		fileUrl = url.pathname.slice(config.root.pathname.length);
 	} else {
 		fileUrl = fileId;
@@ -121,8 +120,9 @@ export function createAstroComponentString({
 		content.url = url;
 		content.astro = {};
 		const contentFragment = h(Fragment, { 'set:html': html });
-		return ${layout
-			? `h(Layout, {
+		return ${
+			layout
+				? `h(Layout, {
 			file,
 			url,
 			content,
@@ -133,7 +133,7 @@ export function createAstroComponentString({
 			'server:root': true,
 			children: contentFragment
 		})`
-			: `contentFragment`
+				: `contentFragment`
 		};
 	}
 	Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};

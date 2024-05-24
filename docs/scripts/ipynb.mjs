@@ -1,7 +1,7 @@
-// @ts-check
-import * as fs from "node:fs/promises";
 import * as child_process from "node:child_process";
 import * as crypto from "node:crypto";
+// @ts-check
+import * as fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
@@ -100,8 +100,8 @@ function extractCellSource(cell) {
 /** @param {Cell} cell */
 function extractMarkdownContent(cell) {
 	let source = extractCellSource(cell);
-	if (cell.cell_type == "markdown") return source;
-	if (cell.cell_type == "raw") return `\`\`\`\n${source}\n\`\`\`\n`;
+	if (cell.cell_type === "markdown") return source;
+	if (cell.cell_type === "raw") return `\`\`\`\n${source}\n\`\`\`\n`;
 	return `\`\`\`python\n${source}\n\`\`\`\n`;
 }
 
@@ -139,11 +139,9 @@ function widgetClientHtml(widgetState) {
 	return `\
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 	<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
-	<script type="application/vnd.jupyter.widget-state+json">${
-		JSON.stringify(
-			widgetState,
-		)
-	}</script>\n`;
+	<script type="application/vnd.jupyter.widget-state+json">${JSON.stringify(
+		widgetState,
+	)}</script>\n`;
 }
 
 /**
@@ -160,8 +158,8 @@ async function renderCellsMarkdown(nb, options) {
 			frontmatter: options.frontmatter,
 		});
 	}
-	let raw = "",
-		html = "";
+	let raw = "";
+	let html = "";
 	let headings;
 
 	for (let cell of nb.cells) {
@@ -196,7 +194,7 @@ function vitePlugin(options) {
 
 			let frontmatter = {};
 
-			if (nb.cells[0].cell_type == "raw") {
+			if (nb.cells[0].cell_type === "raw") {
 				let rawSource = extractCellSource(nb.cells.shift());
 				frontmatter = parseFrontmatter(rawSource, id).data;
 			}
