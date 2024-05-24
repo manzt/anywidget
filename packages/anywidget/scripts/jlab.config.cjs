@@ -44,9 +44,9 @@ module.exports = {
 				compiler.hooks.afterEmit.tap(
 					"CreateJupyterLabDataPlugin",
 					(compilation) => {
-						let entry = Object
-							.keys(compilation.assets)
-							.find((f) => f.startsWith("remoteEntry."));
+						let entry = Object.keys(compilation.assets).find((f) =>
+							f.startsWith("remoteEntry."),
+						);
 						if (!entry) {
 							throw new Error("remoteEntry not found");
 						}

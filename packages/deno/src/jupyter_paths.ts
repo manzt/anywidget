@@ -1,5 +1,11 @@
 import * as path from "@std/path";
 
+function assert(condition: unknown, message: string): asserts condition {
+	if (!condition) {
+		throw new Error(message);
+	}
+}
+
 // Adapted from https://github.com/nteract/jupyter-paths/blob/main/index.js#L175
 
 /**
@@ -9,9 +15,10 @@ import * as path from "@std/path";
  */
 async function guess_sys_prefix(): Promise<string | undefined> {
 	let dirs = (Deno.env.get("PATH") ?? "").split(":");
-	let pathext = Deno.build.os === "windows"
-		? (Deno.env.get("PATHEXT") ?? "").split(";")
-		: [""];
+	let pathext =
+		Deno.build.os === "windows"
+			? (Deno.env.get("PATHEXT") ?? "").split(";")
+			: [""];
 	for (let dir of dirs) {
 		for (let ext of pathext) {
 			let bin = path.join(dir, `python${ext}`);
@@ -37,13 +44,18 @@ async function guess_sys_prefix(): Promise<string | undefined> {
  */
 export function user_data_dir(): string {
 	if (Deno.build.os === "windows") {
-		return path.resolve(Deno.env.get("APPDATA")!, "jupyter");
+		let appdata = Deno.env.get("APPDATA");
+		assert(appdata, "APPDATA environment variable not set");
+		return path.resolve(appdata, "jupyter");
 	}
 	if (Deno.build.os === "darwin") {
-		return path.resolve(Deno.env.get("HOME")!, "Library", "Jupyter");
+		let home = Deno.env.get("HOME");
+		assert(home, "HOME environment variable not set");
+		return path.resolve(home, "Library", "Jupyter");
 	}
 	let home = Deno.env.get("XDG_DATA_HOME") ?? Deno.env.get("HOME");
-	return path.resolve(home!, ".local", "share", "jupyter");
+	assert(home, "HOME environment variable not set");
+	return path.resolve(home, ".local", "share", "jupyter");
 }
 
 /**
@@ -53,12 +65,11 @@ export function user_data_dir(): string {
  */
 export function system_data_dirs(): Array<string> {
 	if (Deno.build.os === "windows") {
-		return [path.resolve(Deno.env.get("PROGRAMDATA")!, "jupyter")];
+		let programdata = Deno.env.get("PROGRAMDATA");
+		assert(programdata, "PROGRAMDATA environment variable not set");
+		return [path.resolve(programdata, "jupyter")];
 	}
-	return [
-		"/usr/local/share/jupyter",
-		"/usr/share/jupyter",
-	];
+	return ["/usr/local/share/jupyter", "/usr/share/jupyter"];
 }
 
 /**

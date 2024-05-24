@@ -11,16 +11,11 @@
 	},
 	"lint": {
 		"rules": {
-			"exclude": [
-				"prefer-const"
-			]
+			"exclude": ["prefer-const"]
 		}
 	},
 	"compilerOptions": {
-		"lib": [
-			"deno.window",
-			"deno.unstable"
-		]
+		"lib": ["deno.window", "deno.unstable"]
 	},
 	"imports": {
 		"@std/cli": "jsr:@std/cli@^0.220.1",

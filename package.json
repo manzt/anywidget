@@ -8,15 +8,14 @@
 		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
 		"typecheck": "tsc --build && vitest --typecheck.only --run",
-		"format": "dprint fmt",
-		"lint": "dprint check",
+		"fix": "biome check --apply .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.7.3",
 		"@changesets/cli": "^2.27.3",
 		"@rspack/cli": "^0.6.5",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
-		"dprint": "^0.45.1",
 		"esbuild": "^0.21.3",
 		"happy-dom": "^14.11.0",
 		"publint": "^0.2.8",

@@ -26,7 +26,8 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	): void;
 	on<K extends `change:${keyof T & string}`>(
 		eventName: K,
-		callback: K extends `change:${infer Key}` ? ChangeEventHandler<T[Key]>
+		callback: K extends `change:${infer Key}`
+			? ChangeEventHandler<T[Key]>
 			: never,
 	): void;
 	on<K extends `change:${string}`>(

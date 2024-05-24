@@ -150,9 +150,8 @@ async function load_widget(esm) {
 		mod.default,
 		`[anywidget] module must export a default function or object.`,
 	);
-	let widget = typeof mod.default === "function"
-		? await mod.default()
-		: mod.default;
+	let widget =
+		typeof mod.default === "function" ? await mod.default() : mod.default;
 	return { url, ...widget };
 }
 
@@ -230,9 +229,8 @@ function throw_anywidget_error(source) {
 	}
 	let lines = source.stack?.split("\n") ?? [];
 	let anywidget_index = lines.findIndex((line) => line.includes("anywidget"));
-	let clean_stack = anywidget_index === -1
-		? lines
-		: lines.slice(0, anywidget_index + 1);
+	let clean_stack =
+		anywidget_index === -1 ? lines : lines.slice(0, anywidget_index + 1);
 	source.stack = clean_stack.join("\n");
 	console.error(source);
 	throw source;
@@ -252,12 +250,7 @@ function throw_anywidget_error(source) {
  * @param {InvokeOptions} [options]
  * @return {Promise<[T, DataView[]]>}
  */
-export function invoke(
-	model,
-	name,
-	msg,
-	options = {},
-) {
+export function invoke(model, name, msg, options = {}) {
 	// crypto.randomUUID() is not available in non-secure contexts (i.e., http://)
 	// so we use simple (non-secure) polyfill.
 	let id = uuid.v4();
@@ -357,8 +350,9 @@ class Runtime {
 		let disposer = solid.createRoot((dispose) => {
 			/** @type {void | (() => import("vitest").Awaitable<void>)} */
 			let cleanup;
-			let resource =
-				solid.createResource(this.#widget_result, async (widget_result) => {
+			let resource = solid.createResource(
+				this.#widget_result,
+				async (widget_result) => {
 					cleanup?.();
 					// Clear all previous event listeners from this hook.
 					model.off(null, null, view);
@@ -379,7 +373,8 @@ class Runtime {
 					} catch (e) {
 						throw_anywidget_error(e);
 					}
-				})[0];
+				},
+			)[0];
 			solid.createEffect(() => {
 				if (resource.error) {
 					// TODO: Show error in the view?
@@ -399,6 +394,7 @@ class Runtime {
 	}
 
 	dispose() {
+		// biome-ignore lint/complexity/noForEach: Easier to read than a for loop.
 		this.#view_disposers.forEach((dispose) => dispose());
 		this.#view_disposers.clear();
 		this.#disposer();

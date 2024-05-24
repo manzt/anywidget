@@ -46,7 +46,7 @@ async function fetch_wheel(
 		console.log(`No entries found for version ${version}`);
 		Deno.exit(1);
 	}
-	let wheel = release.find((e) => e.packagetype == "bdist_wheel");
+	let wheel = release.find((e) => e.packagetype === "bdist_wheel");
 	if (!wheel) {
 		console.log(`No wheel found for version ${version}`);
 		Deno.exit(1);
@@ -62,8 +62,7 @@ function extract_data_files(
 ): Promise<[string, Uint8Array][]> {
 	let data_prefix = /^.*\.data\/data\/share\/jupyter\//;
 	return Promise.all(
-		Object
-			.entries(zip.entries)
+		Object.entries(zip.entries)
 			.filter(([name]) => data_prefix.test(name))
 			.map(async ([name, reader]) => {
 				return [
@@ -74,10 +73,7 @@ function extract_data_files(
 	);
 }
 
-async function write_files(
-	files: [string, Uint8Array][],
-	out_dir: string,
-) {
+async function write_files(files: [string, Uint8Array][], out_dir: string) {
 	for (let [data_file_path, bytes] of files) {
 		let file_path = path.resolve(out_dir, data_file_path);
 		await fs.ensureFile(file_path);
@@ -87,8 +83,7 @@ async function write_files(
 
 async function has_jupyter_widgets() {
 	for (let dir of [out_dir, user_data_dir(), ...system_data_dirs()]) {
-		let contains = await Deno
-			.stat(path.resolve(dir, "@jupyter-widgets"))
+		let contains = await Deno.stat(path.resolve(dir, "@jupyter-widgets"))
 			.then((stat) => stat.isDirectory)
 			.catch(() => false);
 		if (contains) {
