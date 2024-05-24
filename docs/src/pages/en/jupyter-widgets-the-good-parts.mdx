@@ -378,8 +378,8 @@ w.whatever = b"Hello, World!"           #  DataView(13)
 
 ## Custom Serialization
 
-A custom serializer for a trait can be defined by adding a `to_json` method to
-the metadata, which must return one of the types listed in the [Data
+A custom serializer for a trait can be defined by implementing `to_json` hook
+on the trait metadata, which must return one of the types listed in the [Data
 Types](#data-types) table.
 
 For example, let's serialize a `pathlib.Path` to it's file contents:
@@ -405,10 +405,13 @@ class Widget(anywidget.AnyWidget):
 Widget(my_path=pathlib.Path("example.txt"))
 ```
 
-A more complex example might be to serialize a `pandas.DataFrame` to the
-[Apache Arrow](https://arrow.apache.org/#) format or a `numpy` array to a
-binary buffer. Several [community examples](./community) should serve as a good
-starting point for learning more advanced use cases.
+The `to_json` hook is called whenever the `Widget.my_path` changes, and the
+return value is sent to the front end.
+
+A more complex serialization example might be to serialize a `pandas.DataFrame`
+to the [Apache Arrow](https://arrow.apache.org/#) format or a `numpy` array to
+its underlying bytes. Several [community examples](./community) should serve as
+a good starting point to learn about more advanced use cases.
 
 ## Tips for beginners
 
