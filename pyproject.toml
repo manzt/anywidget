@@ -165,6 +165,10 @@ module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
+module = "anywidget._cellmagic"  # makes heavy use of IPython, which is not typed
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
 # this might be missing in pre-commit, but they aren't typed anyway
 module = ["ipywidgets", "traitlets.*", "comm", "IPython.*"]
 ignore_missing_imports = true

@@ -9,7 +9,7 @@ from psygnal import Signal
 
 __all__ = ["FileContents", "VirtualFileContents", "_VIRTUAL_FILES"]
 
-_VIRTUAL_FILES = {}
+_VIRTUAL_FILES: dict[str, VirtualFileContents] = {}
 
 
 class VirtualFileContents:

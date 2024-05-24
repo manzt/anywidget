@@ -13,10 +13,10 @@ if typing.TYPE_CHECKING:
 
 @magics_class
 class AnyWidgetMagics(Magics):
-    @magic_arguments()
-    @argument("file_name", type=str, help="The name of the virtual file.")
-    @cell_magic
-    def vfile(self, line, cell):
+    @magic_arguments()  # type: ignore[misc]
+    @argument("file_name", type=str, help="The name of the virtual file.")  # type: ignore[misc]
+    @cell_magic  # type: ignore[misc]
+    def vfile(self, line: str, cell: str) -> None:
         """Create a virtual file with the contents of the cell."""
         args = parse_argstring(AnyWidgetMagics.vfile, line)
         name = typing.cast(str, args.file_name)
@@ -30,7 +30,7 @@ class AnyWidgetMagics(Magics):
             _VIRTUAL_FILES[name] = VirtualFileContents(code)
 
 
-def load_ipython_extension(ipython: InteractiveShell):
+def load_ipython_extension(ipython: InteractiveShell) -> None:
     """Load the IPython extension.
 
     Parameters
