@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.3",
-		"@changesets/cli": "^2.27.2",
+		"@changesets/cli": "^2.27.3",
 		"@rspack/cli": "^0.6.5",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.21.3",
