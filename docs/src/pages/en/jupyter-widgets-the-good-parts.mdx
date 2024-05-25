@@ -291,6 +291,133 @@ widget
 
 </blockquote>
 
+
+## Data Types
+
+A common misconception about widgets is that they only support
+JSON-serializable data. However, the [Jupyter Widgets Messaging
+Protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schema/messages.md)
+supports custom binary data as well. Both **anywidget** and `ipywidgets`
+automatically pack and unpack custom binary data from otherwise
+JSON-serializable builtins (e.g., `dict`, `list`, `set`, etc.) when (de)serializing
+the model state. This ensures that you can safely pass binary data to (and from) the front
+end without additional overhead (e.g., converting to JSON or base64 encoding).
+
+Here's a summary of how Python data types are mapped to JavaScript types (and vice versa):
+
+| Python                                                                                                                                                                                                                 | JavaScript                                                                                              |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [`str`](https://docs.python.org/3/library/stdtypes.html#str)                                                                                                                                                           | [`string`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)         |
+| [`float`](https://docs.python.org/3/library/stdtypes.html#float)                                                                                                                                                       | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
+| [`int`](https://docs.python.org/3/library/stdtypes.html#int)                                                                                                                                                           | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
+| [`bool`](https://docs.python.org/3/library/stdtypes.html#bool)                                                                                                                                                         | [`boolean`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)       |
+| [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)                                                                                                                                                         | [`object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)     |
+| [`list`](https://docs.python.org/3/library/stdtypes.html#list) \| [`set`](https://docs.python.org/3/library/stdtypes.html#set)                                                                                           | [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)       |
+| [`bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) \| [`bytearray`](https://docs.python.org/3/library/stdtypes.html#bytearray) \| [`memoryview`](https://docs.python.org/3/library/stdtypes.html#memoryview) | [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) |
+
+You might be curious how `traitlets` come into play with data types. Although
+`ipywidgets` are deeply tied to `traitlets`, it's just a library to help with
+validation and custom serialization if necessary. Ultimately, all data sent to
+the frontend must match a Python data type in the table above. 
+
+```python
+class Widget(anywidget.AnyWidget):
+    _esm = """
+    function render({ model, el }) {
+      console.log(model.get("my_str"));    // "Hello, World!"
+      console.log(model.get("my_float"));  // 3.14
+      console.log(model.get("my_int"));    // 42
+      console.log(model.get("my_bool"));   // true
+      console.log(model.get("my_dict"));   // { foo: "bar", bar: 42 }
+      console.log(model.get("my_list"));   // [ "foo", "bar", 42 ]
+      console.log(model.get("my_set"));    // [ "foo", "bar", 42 ]
+      console.log(model.get("my_bytes"));  // DataView(13)
+    }
+    export default { render };
+    """
+    my_str = traitlets.Unicode("Hello, World!").tag(sync=True)
+    my_float = traitlets.Float(3.14).tag(sync=True)
+    my_int = traitlets.Int(42).tag(sync=True)
+    my_bool = traitlets.Bool(True).tag(sync=True)
+    my_dict = traitlets.Dict({"foo": "bar", "bar": 42}).tag(sync=True)
+    my_list = traitlets.List(["foo", "bar", 42]).tag(sync=True)
+    my_set = traitlets.Set({"foo", "bar", 42}).tag(sync=True)
+    my_bytes = traitlets.Bytes(b"Hello, World!").tag(sync=True)
+```
+
+The specific traitlets above just provide validation on the Python side.
+Alternatively, you can use `traitlets.Any` to avoid validation, and
+the data will still be serialized to the front end according to the table above.
+
+```python
+class Widget(anywidget.AnyWidget):
+    _esm = """
+    function render({ model, el }) {
+      model.on("change:whatever", () => {
+        console.log(model.get("whatever"));
+      })
+    }
+    export default { render };
+    """
+    whatever = traitlets.Any().tag(sync=True)
+
+w = Widget()
+w
+```
+
+```py
+w.whatever = "Hello, World!"            # "Hello, World!"
+w.whatever = 3.14                       # 3.14
+w.whatever = 42                         # 42
+w.whatever = True                       # true
+w.whatever = {"foo": "bar", "bar": 42}  # { foo: "bar", bar: 42 }
+w.whatever = ["foo", "bar", 42]         # [ "foo", "bar", 42 ]
+w.whatever = {"foo", "bar", 42}         # [ "foo", "bar", 42 ]
+w.whatever = b"Hello, World!"           #  DataView(13)
+```
+
+## Custom Serialization
+
+A custom serializer for a trait can be defined in the form of a `to_json` hook
+that is passed as trait metadata. The hook must return one of the types listed in the [Data
+Types](#data-types) table.
+
+For example, let's serialize a `pathlib.Path` to it's file contents:
+
+```python
+import pathlib
+
+def path_to_json(path: pathlib.Path, widget: anywidget.AnyWidget):
+    # `widget` is the Widget instance, but unused in this example.
+    #  It's useful for accessing other state when serializing.
+    return {
+      "name": path.name,
+      "contents": path.read_bytes(),
+    }
+
+class Widget(anywidget.AnyWidget):
+    _esm = """
+    function render({ model, el }) {
+      console.log(model.get("my_path"));
+      // { name: "example.txt", contents: DataView(13) }
+    }
+    export default { render };
+    """
+    my_path = traitlets.Instance(pathlib.Path).tag(
+        sync=True, to_json=path_to_json
+    )
+
+Widget(my_path=pathlib.Path("example.txt"))
+```
+
+The `to_json` hook is called whenever the `Widget.my_path` changes, and the
+return value is sent to the front end.
+
+A more complex serialization example might be to serialize a `pandas.DataFrame`
+to the [Apache Arrow](https://arrow.apache.org/#) format or a `numpy` array to
+its underlying bytes. Several [community examples](./community) should serve as
+good starting points to learn about more advanced use cases.
+
 ## Tips for beginners
 
 **anywidget** is a minimal layer on top of Jupyter Widgets and explicitly avoids
