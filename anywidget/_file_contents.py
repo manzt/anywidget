@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pathlib
 import threading
+import weakref
 from collections import deque
 from typing import Iterator
 
@@ -9,7 +10,9 @@ from psygnal import Signal
 
 __all__ = ["FileContents", "VirtualFileContents", "_VIRTUAL_FILES"]
 
-_VIRTUAL_FILES: dict[str, VirtualFileContents] = {}
+_VIRTUAL_FILES: weakref.WeakValueDictionary[str, VirtualFileContents] = (
+    weakref.WeakValueDictionary()
+)
 
 
 class VirtualFileContents:

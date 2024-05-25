@@ -9,6 +9,13 @@ ip.run_line_magic("load_ext", "anywidget")
 
 def test_creates_virtual_file_contents():
     ip.run_cell_magic("vfile", "data.txt", "Hello, world!")
-    assert "data.txt" in _VIRTUAL_FILES
-    assert isinstance(_VIRTUAL_FILES["data.txt"], VirtualFileContents)
-    assert str(_VIRTUAL_FILES["data.txt"]) == "Hello, world!\n"
+    assert "vfile:data.txt" in _VIRTUAL_FILES
+    assert isinstance(_VIRTUAL_FILES["vfile:data.txt"], VirtualFileContents)
+    assert str(_VIRTUAL_FILES["vfile:data.txt"]) == "Hello, world!\n"
+
+
+def test_clears_vfiles():
+    ip.run_cell_magic("vfile", "data.txt", "Hello,\nworld!")
+    assert "vfile:data.txt" in _VIRTUAL_FILES
+    ip.run_line_magic("clear_vfiles", "")
+    assert "vfile:data.txt" not in _VIRTUAL_FILES
