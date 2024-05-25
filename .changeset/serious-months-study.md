@@ -2,11 +2,13 @@
 "anywidget": patch
 ---
 
-Add ipython cell magic to enable HMR within Jupyter notebooks
+Add IPython Cell Magic for HMR
 
-Introduces a new experimental cell magic `%%vfile`, designed for prototyping widget ideas within Jupyter notebooks. This is not intended for production use. The goal is to enable nicer syntax highlighting of code and to allow using anywidget's Hot Module Replacement (HMR) entirely from within a notebook.
+New `%%vfile` cell magic for prototyping widgets in notebooks. Enables syntax highlighting and anywidget's Hot Module Replacement (HMR) directly within the notebook.
 
-Previously, anywidget ESM and CSS had to be provided as inline strings or file paths. Notebook development required editing JS/CSS as inline strings, which resulted in losing widget state to see front-end code changes. Anywidget's HMR enables live reloading of front-end code without losing state, but only by monitoring the file system (requring making separate files for the best DX). With the new `%%vfile` cell magic, you can prototype entirely from within a notebook and enjoy live reloads whenever the cell is re-executed.
+Previously, front-end code had to be inline strings or file paths, causing loss of widget state when editing inline-strings in notebooks. The new `%%vfile` cell magic allows editing front-end code within the notebook with live reloading on cell re-execution.
+
+Use `%%vfile <filename>` to create a virtual file for either JavaScript or CSS, and use `vfile:<filename>` in `_esm` or `_css` attributes of an `AnyWidget` subclass to reference the virtual file. Anywidget applies HMR updates automatically on cell re-execution.
 
 `In[1]`:
 
