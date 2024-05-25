@@ -378,8 +378,8 @@ w.whatever = b"Hello, World!"           #  DataView(13)
 
 ## Custom Serialization
 
-A custom serializer for a trait can be defined by implementing `to_json` hook
-on the trait metadata, which must return one of the types listed in the [Data
+A custom serializer for a trait can be defined in the form of a `to_json` hook
+that is passed as trait metadata. The hook must return one of the types listed in the [Data
 Types](#data-types) table.
 
 For example, let's serialize a `pathlib.Path` to it's file contents:
