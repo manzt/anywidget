@@ -388,6 +388,8 @@ For example, let's serialize a `pathlib.Path` to it's file contents:
 import pathlib
 
 def path_to_json(path: pathlib.Path, widget: anywidget.AnyWidget):
+    # `widget` is the Widget instance, but unused in this example.
+    #  It's useful for accessing other state when serializing.
     return {
       "name": path.name,
       "contents": path.read_bytes(),
@@ -396,11 +398,14 @@ def path_to_json(path: pathlib.Path, widget: anywidget.AnyWidget):
 class Widget(anywidget.AnyWidget):
     _esm = """
     function render({ model, el }) {
-      console.log(model.get("my_path"));  // { name: "example.txt", contents: DataView(13) }
+      console.log(model.get("my_path"));
+      // { name: "example.txt", contents: DataView(13) }
     }
     export default { render };
     """
-    my_path = traitlets.Instance(pathlib.Path).tag(sync=True, to_json=path_to_json)
+    my_path = traitlets.Instance(pathlib.Path).tag(
+        sync=True, to_json=path_to_json
+    )
 
 Widget(my_path=pathlib.Path("example.txt"))
 ```
