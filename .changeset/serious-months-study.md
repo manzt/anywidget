@@ -35,7 +35,7 @@ import traitlets
 
 class Widget(anywidget.AnyWidget):
     _esm = "vfile:index.js"
-    name = traitlets.Unicode("world")
+    name = traitlets.Unicode("world").tag(sync=True)
 
 Widget()
 ```
