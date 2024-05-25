@@ -297,7 +297,7 @@ widget
 A common misconception about widgets is that they only support
 JSON-serializable data. However, the [Jupyter Widgets Messaging
 Protocol](https://github.com/jupyter-widgets/ipywidgets/blob/main/packages/schema/messages.md)
-supports custom binary data as well. **anywidget** and `ipywidgets`
+supports custom binary data as well. Both **anywidget** and `ipywidgets`
 automatically pack and unpack custom binary data from otherwise
 JSON-serializable builtins (e.g., `dict`, `list`, `set`, etc.) when (de)serializing
 the model state. This ensures that you can safely pass binary data to the front
