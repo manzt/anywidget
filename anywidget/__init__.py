@@ -21,3 +21,9 @@ def _jupyter_nbextension_paths() -> list[dict]:
             "require": "anywidget/extension",
         }
     ]
+
+
+def load_ipython_extension(ipython):  # type: ignore[no-untyped-def]
+    from ._cellmagic import load_ipython_extension
+
+    load_ipython_extension(ipython)

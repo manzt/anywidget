@@ -1,4 +1,5 @@
 """AnyWidget base class for custom Jupyter widgets."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -6,7 +7,7 @@ from typing import Any
 import ipywidgets
 import traitlets.traitlets as t
 
-from ._file_contents import FileContents
+from ._file_contents import FileContents, VirtualFileContents
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _CSS_KEY,
@@ -41,7 +42,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
             if hasattr(self, key) and not self.has_trait(key):
                 value = getattr(self, key)
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
-                if isinstance(value, FileContents):
+                if isinstance(value, (VirtualFileContents, FileContents)):
                     value.changed.connect(
                         lambda new_contents, key=key: setattr(self, key, new_contents)
                     )
@@ -76,5 +77,5 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + "…"
         if self._view_name is None:
-            return None # type: ignore[unreachable]
+            return None  # type: ignore[unreachable]
         return repr_mimebundle(model_id=self.model_id, repr_text=plaintext)

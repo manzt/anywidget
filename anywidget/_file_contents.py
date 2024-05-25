@@ -2,10 +2,46 @@ from __future__ import annotations
 
 import pathlib
 import threading
+import weakref
 from collections import deque
 from typing import Iterator
 
 from psygnal import Signal
+
+__all__ = ["FileContents", "VirtualFileContents", "_VIRTUAL_FILES"]
+
+_VIRTUAL_FILES: weakref.WeakValueDictionary[str, VirtualFileContents] = (
+    weakref.WeakValueDictionary()
+)
+
+
+class VirtualFileContents:
+    """Stores text file contents in memory and emits a signal when it changes.
+
+    Calling `str(obj)` on this object will always return the current contents.
+
+    Parameters
+    ----------
+    contents : str, optional
+        The initial contents of the file (default: "")
+    """
+
+    changed = Signal(str)
+
+    def __init__(self, contents: str = ""):
+        self._contents = contents
+
+    @property
+    def contents(self) -> str:
+        return self._contents
+
+    @contents.setter
+    def contents(self, value: str) -> None:
+        self._contents = value
+        self.changed.emit(value)
+
+    def __str__(self) -> str:
+        return self.contents
 
 
 class FileContents:

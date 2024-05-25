@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 import watchfiles
-from anywidget._file_contents import FileContents
+from anywidget._file_contents import FileContents, VirtualFileContents
 from watchfiles import Change
 
 
@@ -149,3 +149,14 @@ def test_missing_file_fails():
 
     with pytest.raises(ValueError):
         FileContents(pathlib.Path("not_a_file.txt"))
+
+
+def test_virtual_file_contents():
+    CONTENTS = "hello, world"
+    contents = VirtualFileContents(CONTENTS)
+    assert str(contents) == CONTENTS
+    mock_changed = MagicMock()
+    contents.changed.connect(mock_changed)
+    contents.contents = "blah"
+    mock_changed.assert_called_once_with("blah")
+    assert str(contents) == "blah"

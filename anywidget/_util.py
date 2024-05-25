@@ -7,7 +7,7 @@ import sys
 from functools import lru_cache
 from typing import Any
 
-from ._file_contents import FileContents
+from ._file_contents import _VIRTUAL_FILES, FileContents, VirtualFileContents
 
 _BINARY_TYPES = (memoryview, bytearray, bytes)
 _WIDGET_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
@@ -250,8 +250,11 @@ def try_file_path(x: Any) -> pathlib.Path | None:
     return None
 
 
-def try_file_contents(x: Any) -> FileContents | None:
+def try_file_contents(x: Any) -> FileContents | VirtualFileContents | None:
     """Try to coerce x into a FileContents object."""
+    if x in _VIRTUAL_FILES:
+        return _VIRTUAL_FILES[x]
+
     maybe_path = try_file_path(x)
     if maybe_path is None:
         return None
