@@ -38,30 +38,27 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
     function render({ model, el }) {
-      let getCount = () => model.get("count");
       let button = document.createElement("button");
-      button.classList.add("counter-button");
-      button.innerHTML = `count is ${getCount()}`;
+      button.innerHTML = `count is ${model.get("value")}`;
       button.addEventListener("click", () => {
-        model.set("count", getCount() + 1);
+        model.set("value", model.get("value") + 1);
         model.save_changes();
       });
-      model.on("change:count", () => {
-        button.innerHTML = `count is ${getCount()}`;
+      model.on("change:value", () => {
+        button.innerHTML = `count is ${model.get("value")}`;
       });
+      el.classList.add("counter-widget");
       el.appendChild(button);
     }
-	export default { render };
+    export default { render };
     """
-    _css="""
-    .counter-button { background-color: #ea580c; }
-    .counter-button:hover { background-color: #9a3412; }
+    _css = """
+    .counter-widget button { background-color: #ea580c; }
+    .counter-widget button:hover { background-color: #9a3412; }
     """
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 
-counter = CounterWidget()
-counter.count = 42
-counter
+CounterWidget(value=42)
 ```
 
 <CounterButton size={"lg"} initialValue={42} />
