@@ -19,15 +19,29 @@ function showErrorOverlay(err) {
 window.addEventListener("error", showErrorOverlay);
 window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
 
-import.meta.hot.accept("${src}", (newModule) => {
-	import.meta.hot.data.render = newModule.render;
+async function getRender(newModule) {
+        let newRender == newModule.render;
+        if (newRender) {
+            console.warn('[anywidget] Deprecation Warning. Direct export of a \'render\' will likely be deprecated in the future.')
+            return newRender;
+        }
+        newRender = newModule.default.render;
+	assert(
+		newRender,
+		'[anywidget] module must export a default function or object.',
+	);
+        return typeof newRender === "function" ? await newRender() : newRender;
+}
+
+import.meta.hot.accept("${src}", async (newModule) => {
+	import.meta.hot.data.render = await getRender(newModule);
 	refresh();
 });
 
-export async function render({ model, el } ) {
+async function render({ model, el } ) {
 	if (import.meta.hot.data.render == null) {
 		let m = await import("${src}");
-		import.meta.hot.data.render = m.render;
+		import.meta.hot.data.render = await getRender(m);
 	}
 	if (import.meta.hot.data.contexts == null) {
 		import.meta.hot.data.contexts = [];
@@ -51,6 +65,8 @@ async function refresh() {
 		context.cleanup = cleanup ?? noop;
 	}
 }
+
+export default { render };
 `;
 
 /** @returns {import("vite").Plugin} */
