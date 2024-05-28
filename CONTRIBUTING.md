@@ -6,7 +6,7 @@ This is a monorepo, meaning the repo holds multiple packages. Since the project
 contains both JavaScript and Python components, it requires dual package
 managers:
 
-- [pnpm](https://pnpm.js.org/en/) for JavaScript
+- [pnpm](https://pnpm.io) for JavaScript
 - [hatch](https://github.com/pypa/hatch) for Python
 
 You can [install pnpm](https://pnpm.io/installation) and
