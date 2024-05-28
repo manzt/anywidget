@@ -20,17 +20,16 @@ window.addEventListener("error", showErrorOverlay);
 window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
 
 async function getRender(newModule) {
-        let newRender == newModule.render;
+        let newRender = newModule.render;
         if (newRender) {
-            console.warn('[anywidget] Deprecation Warning. Direct export of a \'render\' will likely be deprecated in the future.')
+            console.warn('[anywidget] Deprecation Warning. Direct export of a "render" will likely be deprecated in the future.')
             return newRender;
         }
-        newRender = newModule.default.render;
-	assert(
-		newRender,
-		'[anywidget] module must export a default function or object.',
-	);
-        return typeof newRender === "function" ? await newRender() : newRender;
+        newRender = newModule.default;
+	if (!newRender) {
+            throw new Error('[anywidget] module must export a default function or object.');
+        }
+        return typeof newRender === "function" ? await newRender() : newRender.render;
 }
 
 import.meta.hot.accept("${src}", async (newModule) => {
@@ -38,7 +37,7 @@ import.meta.hot.accept("${src}", async (newModule) => {
 	refresh();
 });
 
-async function render({ model, el } ) {
+async function render({ model, el }) {
 	if (import.meta.hot.data.render == null) {
 		let m = await import("${src}");
 		import.meta.hot.data.render = await getRender(m);
