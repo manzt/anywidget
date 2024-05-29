@@ -1,7 +1,7 @@
-import hmrTemplate from './hmr.raw.js'
+import hmrTemplate from "./hmr.raw.js";
 
-const query = "?anywidget"
-const namespace = "anywidget:"
+const query = "?anywidget";
+const namespace = "anywidget:";
 const resolvedNamespace = `\0${namespace}`;
 
 /** @returns {import("vite").Plugin} */
@@ -17,7 +17,7 @@ export default function () {
 		async load(id) {
 			if (id.startsWith(resolvedNamespace)) {
 				let src = id.split(":")[1];
-				
+
 				return hmrTemplate.replaceAll("__ANYWIDGET_HMR_SRC__", src);
 			}
 		},

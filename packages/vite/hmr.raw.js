@@ -15,17 +15,23 @@ function showErrorOverlay(err) {
 }
 
 window.addEventListener("error", showErrorOverlay);
-window.addEventListener("unhandledrejection", (e) => showErrorOverlay(e.reason));
+window.addEventListener("unhandledrejection", (e) =>
+	showErrorOverlay(e.reason),
+);
 
 async function getRender(newModule) {
 	let newRender = newModule.render;
 	if (newRender) {
-		console.warn('[anywidget] Deprecation Warning. Direct export of a "render" will likely be deprecated in the future.')
+		console.warn(
+			'[anywidget] Deprecation Warning. Direct export of a "render" will likely be deprecated in the future.',
+		);
 		return newRender;
 	}
 	newRender = newModule.default;
 	if (!newRender) {
-		throw new Error('[anywidget] module must export a default function or object.');
+		throw new Error(
+			"[anywidget] module must export a default function or object.",
+		);
 	}
 	return typeof newRender === "function" ? await newRender() : newRender.render;
 }
