@@ -6,7 +6,7 @@
 	"main": "index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "esbuild --bundle --format=cjs --platform=node --outfile=dist/index.cjs --loader:.raw.js=text index.js"
+		"build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
 	},
 	"files": [
 		"dist"

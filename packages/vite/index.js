@@ -1,8 +1,13 @@
-import hmrTemplate from "./hmr.raw.js";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as url from "node:url";
 
 const query = "?anywidget";
 const namespace = "anywidget:";
 const resolvedNamespace = `\0${namespace}`;
+
+let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+let hmrTemplate = fs.readFileSync(path.resolve(__dirname, "hmr.js"), { encoding: "utf-8" });
 
 /** @returns {import("vite").Plugin} */
 export default function () {
