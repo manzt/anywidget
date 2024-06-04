@@ -28,8 +28,8 @@
 		"solid-js": "^1.8.17"
 	},
 	"devDependencies": {
-		"@jupyter-widgets/base-manager": "^1.0.8",
-		"@rspack/core": "^0.6.5"
+		"@jupyter-widgets/base-manager": "^1.0.9",
+		"@rspack/core": "^0.7.0"
 	},
 	"jupyterlab": {
 		"extension": "./src/plugin.js",
