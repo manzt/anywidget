@@ -36,13 +36,13 @@ bibliography: paper.bib
 # Summary
 
 The **anywidget** project provides a specification and toolset for portable and
-reusable web-based widgets in interactive computing environments. First, it
-defines a standard for widget front-end code based on the web browser's native
-module system. Second, it provides tools to author, distribute, and execute
-these modules across web-based computing platforms (\autoref{fig:overview}).
-Since its release a year and a half ago, anywidget has steadily gained
-adoption. Nearly 70 new widgets have been created with or ported to anywidget
-and published to the Python Package Index (PyPI), along with numerous
+reusable web-based widgets in interactive computing environments
+(\autoref{fig:overview}). First, it defines a standard for widget front-end
+code based on the web browser's native module system. Second, it provides tools
+to author, distribute, and execute these modules across web-based computing
+platforms. Since its release a year and a half ago, anywidget has steadily
+gained adoption. Nearly 70 new widgets have been created with or ported to
+anywidget and published to the Python Package Index (PyPI), along with numerous
 standalone scripts and notebooks. These tools cover general-purpose
 visualization libraries [@jscatter; @Heer2024-rr] as well as notebook
 integrations for applications in biology [@gos; @vitessce; @viv; @cev], mapping
@@ -50,6 +50,15 @@ integrations for applications in biology [@gos; @vitessce; @viv; @cev], mapping
 been integrated into popular visualization libraries like Altair [@altair],
 enhancing interactivity in notebooks and deepening user engagement with
 visualizations and code.
+
+![The anywidget project. Anywidget Front-End Module (AFM) is a specification
+for widget front-end code based on ECMAScript (ES) modules. AFM can be
+written in web-standard ES or with _authoring tools_ that bridge popular
+front-end frameworks. The `anywidget` Python package adapts Jupyter-compatible
+platforms (JCPs) into AFM-compatible hosts, allowing Jupyter Widgets to be
+authored and distributed with AFM. Other platforms support AFM directly. A
+project template CLI allows bootstrapping new anywidget projects that are ready
+to publish to PyPI. \label{fig:overview}](overview.png)
 
 # Statement of need
 
@@ -77,16 +86,6 @@ simplify authorship and support a distributed collection of pluggable
 interactive visualizations across computational notebooks.
 
 # Overview
-
-![Overview of the anywidget project. (a) Anywidget Front-End Module (AFM) is a
-specification for widget front-end code based on ECMAScript (ES) modules
-(middle). Platform hosts load the module and call lifecycle methods with
-required interfaces (top). The `anywidget` Python package adapts
-Jupyter-compatible platforms (JCPs) into AFM-compatible hosts, allowing Jupyter
-Widgets to be authored and distributed with AFM. Other AFM authoring tools help
-developers write their widget front-end code with popular frameworks (bottom).
-(b) A project template CLI allows bootstrapping new anywidget projects that are
-ready to publish to PyPI.  \label{fig:overview}](overview.png)
 
 ## A standard for widget front-end modules
 
@@ -191,8 +190,8 @@ ANYWIDGET_HMR=1
 
 Finally, the anywidget project includes a command line interface (CLI) for
 bootstrapping new anywidget projects that are ready to publish to PyPI
-(\autoref{fig:overview}b). The CLI includes options for selecting front-end
-framework adapters and additional tools like TypeScript.
+(\autoref{fig:overview}, bottom). The CLI includes options for selecting
+front-end framework adapters and additional tools like TypeScript.
 
 ```bash
 npm create anywidget@latest
