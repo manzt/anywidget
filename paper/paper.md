@@ -31,6 +31,9 @@ affiliations:
     index: 3
 date: 05 June 2023
 bibliography: paper.bib
+exports:
+  - format: typst
+  - template: lapreprint-typst
 ---
 
 # Summary
@@ -44,7 +47,7 @@ platforms. Since its release a year and a half ago, anywidget has steadily
 gained adoption. Nearly 70 new widgets have been created or ported to anywidget
 and published to the Python Package Index (PyPI), along with many standalone
 scripts and notebooks. These tools cover general-purpose visualization
-libraries [@jscatter; @Heer2024-rr] as well as notebook integrations for
+libraries [@jscatter; @Heer2024] as well as notebook integrations for
 applications in biology [@gos; @vitessce; @viv; @cev], mapping [@lonboard],
 astronomy [@ipyaladin], and education [@drawdata]. Anywidget has also been
 integrated into popular visualization libraries like Altair [@altair],
@@ -52,7 +55,7 @@ enhancing interactivity in notebooks and deepening user engagement with
 visualizations and code.
 
 ![The anywidget project. The Anywidget Front-End Module (AFM) is a
-specification for widget front-end code based on ECMAScript (ES) modules. AFM
+specification for widget front-end code based on ECMAScript (ES) modules [@ecma]. AFM
 can be written in web-standard ES or with _authoring tools_ that support popular
 front-end frameworks. The `anywidget` Python package adapts Jupyter-compatible
 platforms (JCPs) into AFM-compatible _host platforms_, enabling Jupyter Widgets
@@ -65,13 +68,13 @@ that are ready to publish to PyPI. \label{fig:overview}](overview.png)
 Computational notebooks are the preferred environment for interactive computing
 and data analysis. Their popularity has spurred the development of interactive
 visual analytics systems that integrate seamlessly within these environments
-[@Wang2024-ki]. The Jupyter project [@Kluyver2016-xa; @Perez2007-im;
-@Granger2021-jb] has fostered an ecosystem for writing, executing, and sharing
-computational notebooks, including tools for converting them into formats like
+[@Wang2024]. The Jupyter project [@Kluyver2016; @Perez2007; @Granger2021] has
+fostered an ecosystem for writing, executing, and sharing computational
+notebooks, including tools for converting them into formats like
 books[@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert;
-@Wang2023-ic], and dashboards [@voila]. However, approaches for authoring
+@Wang2023], and dashboards [@voila]. However, approaches for authoring
 interactive notebook visualizations vary widely in features and platform
-compatibility [@Wang2024-ki], resulting in diverse yet incompatible systems.
+compatibility [@Wang2024], resulting in diverse yet incompatible systems.
 This inconsistency hinders composition and reuse of interactive visualizations
 in notebooks, fostering platform-specific, monolithic integrations instead of
 reusable, modular components that fit various analysis workflows.
@@ -231,20 +234,19 @@ documentation about the project can be found at https://anywidget.dev.
 # Related work
 
 Interactive notebook visualization tools vary widely in features and
-compatibility [@Wang2024-ki]. Some tools offer rich features (e.g.,
+compatibility [@Wang2024]. Some tools offer rich features (e.g.,
 bi-directional communication) but rely on platform-specific APIs, limiting
-compatibility [@Zhao2022-gi; @Wang2023-ic; @Drosos2020-nn; @Li2023-en;
-@Jain2022-xc]. More simple approaches provide broader compatibility but lack
-features which meaningfully enrich user workflows. For example, using static
-templates or the NOVA framework [@Wang2022-ck] offers wide compatibility,
-as the resulting HTML displays can be embedded in nearly any web-based notebook
-platform. However, this approach supports only client-side applications with
-one-way communication, meaning that only the initial visualization state can
-come from the notebook, without further updates from other cells. Other
-approaches, like ImJoy [@Ouyang2019-un], offer a more unified architecture for
-building interactive visualizations with rich features across multiple
-platforms. However, it is an entirely separate computing platform with limited
-JCP integrations, not a framework for building reusable, modular visualization
-components.
+compatibility [@Zhao2022; @Wang2023; @Drosos2020; @Li2023; @Jain2022]. More
+simple approaches provide broader compatibility but lack features which
+meaningfully enrich user workflows. For example, using static templates or the
+NOVA framework [@Wang2022] offers wide compatibility, as the resulting HTML
+displays can be embedded in nearly any web-based notebook platform. However,
+this approach supports only client-side applications with one-way
+communication, meaning that only the initial visualization state can come from
+the notebook, without further updates from other cells. Other approaches, like
+ImJoy [@Ouyang2019], offer a more unified architecture for building interactive
+visualizations with rich features across multiple platforms. However, it is an
+entirely separate computing platform with limited JCP integrations, not a
+framework for building reusable, modular visualization components.
 
 # References
