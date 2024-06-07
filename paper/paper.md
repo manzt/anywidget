@@ -81,7 +81,7 @@ visual analytics systems that integrate seamlessly within these environments
 [@Wang2024]. The Jupyter project [@Kluyver2016; @Perez2007; @Granger2021] has
 fostered an ecosystem for writing, executing, and sharing computational
 notebooks, including tools for converting them into formats like
-books[@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert;
+books [@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert;
 @Wang2023], and dashboards [@voila]. However, approaches for authoring
 interactive notebook visualizations vary widely in features and platform
 compatibility [@Wang2024], resulting in diverse yet incompatible systems.
