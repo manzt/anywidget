@@ -91,7 +91,7 @@ reusable, modular components that fit various analysis workflows.
 
 No authoring approach aligns interactive visualization systems with the broader
 notebook ecosystem, except for Jupyter Widgets, which show potential due to
-their modularity, wide platform support, and advanced features. Unfortunately,
+their modularity, wide platform support, and advanced features. However,
 the complexity and error-prone nature of authoring custom Jupyter Widgets have
 limited their adoption by the visualization community, leading authors to
 create or resort to alternative methods. A universal protocol is needed to
