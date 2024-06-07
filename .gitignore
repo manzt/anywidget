@@ -13,6 +13,7 @@ anywidget/labextension/package.json
 anywidget/labextension/static/*
 
 dist/
+_build/
 
 .astro
 .coverage
