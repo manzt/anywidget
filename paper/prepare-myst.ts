@@ -27,8 +27,9 @@ ${content}
 :::
 `;
 	})
-	// Replace markdown links with myst links
-	.replace("# Summary", "# Overview");
+	.replace(/\\autoref{(.*?)}/g, '[@$1]').replace(/(\[@.*?\])(\w)/g, '$1 $2')
+	.replace("# Summary", "# General Summary")
+	.replace("# Overview", "# Project Overview")
 
 Deno.writeTextFileSync(
 	"main.md",
