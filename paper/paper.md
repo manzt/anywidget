@@ -206,10 +206,10 @@ anywidgets, thanks to the Jupyter Widgets compatibility layer. AFM also
 provides opportunities for frameworks and platforms to add more specialized
 support, making better use of their respective internal state management and
 reactivity systems. For instance, marimo [@marimo], a new reactive notebook for
-Python, supports AFM directly by implementing the required host platform APIs,
-allowing anywidgets to run without additional glue code. Similarly, the
-developers of the Panel web framework [@panel] are exploring deeper integration
-with AFM for better compatibility with their reactive programming model.
+Python, has adopted AFM as the standard for its third-party plugin API.
+Similarly, the developers of the Panel web framework [@panel] are exploring
+deeper integration with AFM for better compatibility with their reactive
+programming model.
 
 Efforts are underway to support AFM with other compute backends besides Python.
 For example, anyhtmlwidget [@anyhtmlwidget] brings anywidget concepts to R,
