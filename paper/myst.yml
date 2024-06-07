@@ -9,17 +9,17 @@ project:
       affiliations:
         - Department of Biomedical Informatics, Harvard Medical School, Boston, MA, USA
       corresponding: true
-    - name: Nils Gehlenborg
-      email: nils@hms.harvard.edu
-      orcid: 0000-0003-0327-8297
-      affiliations:
-        - Department of Biomedical Informatics, Harvard Medical School, Boston, MA, USA
     - name: Nezar Abdennur
       email: nezar.abdennur@umassmed.edu
       orcid: 0000-0001-5814-0864
       affiliations:
         - Department of Genomics and Computational Biology, UMass Chan Medical School, Worcester, MA, USA
         - Department of Systems Biology, UMass Chan Medical School, Worcester, MA, USA
+    - name: Nils Gehlenborg
+      email: nils@hms.harvard.edu
+      orcid: 0000-0003-0327-8297
+      affiliations:
+        - Department of Biomedical Informatics, Harvard Medical School, Boston, MA, USA
   keywords:
     - Computational notebooks
     - Jupyter
