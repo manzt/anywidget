@@ -61,7 +61,6 @@ ${markdown}`,
 new Deno.Command("myst", { args: ["build", "--pdf", "tmp.md"] })
 	.output()
 	.then((data) => {
-		console.log(data);
 		console.log(`PDF saved to ${output}`);
 	})
 	.catch(console.error)
