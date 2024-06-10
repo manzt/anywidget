@@ -1,0 +1,38 @@
+version: 1
+project:
+  authors:
+    - name: Trevor Manz
+      email: "trevor\_manz@g.harvard.edu"
+      orcid: 0000-0001-7694-5164
+      affiliations:
+        - Department of Biomedical Informatics, Harvard Medical School
+      corresponding: "trevor\_manz@g.harvard.edu"
+    - name: Nezar Abdennur
+      email: "nezar.abdennur@umassmed.edu"
+      orcid: 0000-0001-5814-0864
+      affiliations:
+        - Department of Genomics and Computational Biology, UMass Chan Medical School
+        - Department of Systems Biology, UMass Chan Medical School
+    - name: Nils Gehlenborg
+      email: "nils@hms.harvard.edu"
+      orcid: 0000-0003-0327-8297
+      affiliations:
+        - Department of Biomedical Informatics, Harvard Medical School
+  keywords:
+    - Computational notebooks
+    - Jupyter
+    - Widgets
+    - Python
+    - R
+    - JavaScript
+    - Data visualization
+    - Interactive computing
+  abbreviations:
+    JCP: Jupyter Compatible Platform
+    AFM: Anywidget Front-End Module
+    ESM: ECMAScript Modules
+  # The rest of the information shouldn't be modified
+  subject: Research Article
+  open_access: true
+  license: CC-BY-4.0
+  date: 2024-06-07
