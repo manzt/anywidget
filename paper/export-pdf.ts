@@ -1,3 +1,5 @@
+// deno run -A export-pdf.ts [output.pdf]
+
 // @ts-expect-error
 import { parse, stringify } from "jsr:@std/yaml";
 
@@ -25,10 +27,10 @@ data["exports"] = {
 
 data["margin"] = [
 	{
-		"title": "Correspondence to",
-		"content": "Correspondence: [author-email]",
-	}
-]
+		title: "Correspondence to",
+		content: "Correspondence: [author-email]",
+	},
+];
 
 let markdown = raw
 	// Replace markdown images with myst images
@@ -59,7 +61,7 @@ ${markdown}`,
 new Deno.Command("myst", { args: ["build", "--pdf", "tmp.md"] })
 	.output()
 	.then((data) => {
-		console.log(data)
+		console.log(data);
 		console.log(`PDF saved to ${output}`);
 	})
 	.catch(console.error)
