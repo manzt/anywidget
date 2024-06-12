@@ -22,7 +22,6 @@
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:~",
-		"@anywidget/vite": "workspace:~",
 		"@jupyter-widgets/base": "^6",
 		"@lukeed/uuid": "^2.0.1",
 		"solid-js": "^1.8.17"
