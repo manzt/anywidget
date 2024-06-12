@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/vite",
 	"type": "module",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"description": "a vite plugin for anywidget",
 	"files": [
 		"dist",
