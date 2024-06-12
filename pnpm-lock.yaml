@@ -120,9 +120,6 @@ importers:
       '@anywidget/types':
         specifier: workspace:~
         version: link:../types
-      '@anywidget/vite':
-        specifier: workspace:~
-        version: link:../vite
       '@jupyter-widgets/base':
         specifier: ^6
         version: 6.0.8(react@18.3.1)
