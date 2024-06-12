@@ -3,19 +3,15 @@
 	"type": "module",
 	"version": "0.1.2",
 	"description": "a vite plugin for anywidget",
-	"main": "index.js",
-	"types": "dist/index.d.ts",
-	"scripts": {
-		"build": "esbuild --format=cjs --platform=node --outfile=dist/index.cjs index.js"
-	},
 	"files": [
-		"dist"
+		"dist",
+		"index.js",
+		"hmr.js"
 	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": "./index.js",
-			"require": "./dist/index.cjs"
+			"import": "./index.js"
 		}
 	},
 	"devDependencies": {

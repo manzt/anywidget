@@ -6,8 +6,10 @@ const query = "?anywidget";
 const namespace = "anywidget:";
 const resolvedNamespace = `\0${namespace}`;
 
-let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-let hmrTemplate = fs.readFileSync(path.resolve(__dirname, "hmr.js"), { encoding: "utf-8" });
+let dirname = path.dirname(url.fileURLToPath(import.meta.url));
+let hmrTemplate = fs.readFileSync(path.resolve(dirname, "hmr.js"), {
+	encoding: "utf-8",
+});
 
 /** @returns {import("vite").Plugin} */
 export default function () {
@@ -22,7 +24,6 @@ export default function () {
 		async load(id) {
 			if (id.startsWith(resolvedNamespace)) {
 				let src = id.split(":")[1];
-
 				return hmrTemplate.replaceAll("__ANYWIDGET_HMR_SRC__", src);
 			}
 		},
