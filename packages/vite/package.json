@@ -8,6 +8,9 @@
 		"index.js",
 		"hmr.js"
 	],
+	"scripts": {
+		"prepare": "tsc"
+	},
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
