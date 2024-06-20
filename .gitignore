@@ -20,3 +20,7 @@ _build/
 .dmypy.json
 .venv
 .DS_Store
+
+# JupyterLite generated files
+*.doit.db
+_output
