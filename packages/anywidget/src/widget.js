@@ -110,9 +110,10 @@ async function load_esm(esm) {
 	return { mod, url };
 }
 
-function warn_render_deprecation() {
+/** @param {string} anywidget_id */
+function warn_render_deprecation(anywidget_id) {
 	console.warn(`\
-[anywidget] Deprecation Warning. Direct export of a 'render' will likely be deprecated in the future. To migrate ...
+[anywidget] Deprecation Warning for ${anywidget_id}: Direct export of a 'render' will likely be deprecated in the future. To migrate ...
 
 Remove the 'export' keyword from 'render'
 -----------------------------------------
@@ -128,18 +129,24 @@ function render({ model, el }) { ... }
 export default { render }
                  ^^^^^^
 
-To learn more, please see: https://github.com/manzt/anywidget/pull/395
+Pin to anywidget>=0.9.0 in your pyproject.toml
+----------------------------------------------
+
+dependencies = ["anywidget>=0.9.0"]
+
+To learn more, please see: https://github.com/manzt/anywidget/pull/395.
 `);
 }
 
 /**
  * @param {string} esm
+ * @param {string} anywidget_id
  * @returns {Promise<AnyWidget & { url: string }>}
  */
-async function load_widget(esm) {
+async function load_widget(esm, anywidget_id) {
 	let { mod, url } = await load_esm(esm);
 	if (mod.render) {
-		warn_render_deprecation();
+		warn_render_deprecation(anywidget_id);
 		return {
 			url,
 			async initialize() {},
@@ -319,7 +326,7 @@ class Runtime {
 				await safe_cleanup(cleanup, "initialize");
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
-					let widget = await load_widget(update);
+					let widget = await load_widget(update, model.get("_anywidget_id"));
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
 						experimental: {
