@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.13
+
+### Patch Changes
+
+- Improve legacy ESM deprecation notice with widget provenance and Python migration instruction ([#609](https://github.com/manzt/anywidget/pull/609))
+
 ## 0.9.12
 
 ### Patch Changes
