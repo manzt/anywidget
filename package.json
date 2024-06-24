@@ -12,14 +12,14 @@
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.8.1",
-		"@changesets/cli": "^2.27.5",
-		"@rspack/cli": "^0.7.3",
+		"@biomejs/biome": "^1.8.2",
+		"@changesets/cli": "^2.27.6",
+		"@rspack/cli": "^0.7.4",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.21.5",
-		"happy-dom": "^14.12.0",
+		"happy-dom": "^14.12.3",
 		"publint": "^0.2.8",
-		"typescript": "^5.4.5",
+		"typescript": "^5.5.2",
 		"vitest": "^1.6.0"
 	},
 	"packageManager": "pnpm@9.1.0"
