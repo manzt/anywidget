@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.0
+
+### Minor Changes
+
+- Upgrade templates to TypeScript v5.5 ([#611](https://github.com/manzt/anywidget/pull/611))
+
 ## 0.6.3
 
 ### Patch Changes
