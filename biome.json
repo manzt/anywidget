@@ -10,7 +10,8 @@
 			"style": {
 				"useConst": "off",
 				"useShorthandFunctionType": "off",
-				"noUnusedTemplateLiteral": "off"
+				"noUnusedTemplateLiteral": "off",
+				"noParameterAssign": "off"
 			},
 			"complexity": {
 				"useLiteralKeys": "off"
