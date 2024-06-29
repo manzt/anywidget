@@ -8,7 +8,7 @@
  * import { effect, signal } from "@preact/signals-core";
  * import { defineWidget } from "@anywidget/signals";
  *
- * export default signalify(signal, {
+ * export default defineWidget(signal, {
  *   render({ model, el }) {
  *     let btn = document.createElement("button");
  *     btn.addEventListener("click", () => model.value += 1);
@@ -197,7 +197,7 @@ type WidgetDef<T extends Record<string, any>> = {
  * import { effect, signal } from "@preact/signals-core";
  * import { defineWidget } from "@anywidget/signals";
  *
- * export default signalify(signal, {
+ * export default defineWidget(signal, {
  *   render({ model, el }) {
  *     let btn = document.createElement("button");
  *     btn.addEventListener("click", () => model.value += 1);
