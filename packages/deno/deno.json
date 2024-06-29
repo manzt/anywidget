@@ -1,6 +1,6 @@
 {
 	"name": "@anywidget/deno",
-	"version": "DO NOT EDIT DIRECTLY. Set by changesets in package.json",
+	"version": "DO NOT VERSION EDIT DIRECTLY. Set by changesets in package.json",
 	"exports": {
 		".": "./src/mod.ts",
 		"./install": "./src/install.ts",

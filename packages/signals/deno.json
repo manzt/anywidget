@@ -1,0 +1,22 @@
+{
+	"name": "@anywidget/signals",
+	"version": "DO NOT EDIT VERSION DIRECTLY. Set by changesets in package.json",
+	"exports": "./mod.ts",
+	"compilerOptions": {
+		"lib": ["ES2020", "DOM", "DOM.Iterable"]
+	},
+	"fmt": {
+		"useTabs": true
+	},
+	"lint": {
+		"rules": {
+			"exclude": ["prefer-const"]
+		}
+	},
+	"imports": {
+		"@anywidget/types": "npm:@anywidget/types@0.1.9"
+	},
+	"publish": {
+		"exclude": ["npm.README.md"]
+	}
+}
