@@ -1,6 +1,6 @@
 {
 	"name": "@anywidget/signals",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A stub-package for making releases of the jsr:@anywidget/signals with changesets",
 	"scripts": {
 		"prepublish": "mv README.md tmp.md && mv npm.README.md README.md",

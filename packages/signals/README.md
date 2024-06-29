@@ -9,8 +9,8 @@ Use [signals](https://github.com/tc39/proposal-signals) with
 ## Usage
 
 ```javascript
-import { effect, signal } from "https://esm.sh/@preact/signals-core";
-import { defineWidget } from "https://esm.sh/jsr/@anywidget/signals";
+import { effect, signal } from "@preact/signals-core";
+import { defineWidget } from "@anywidget/signals";
 
 export default signalify(signal, {
   render({ model, el }) {
@@ -41,8 +41,8 @@ class Counter(anywidget.Widget):
 With `@preact/signals-core`:
 
 ```typescript
-import { effect, signal } from "https://esm.sh/@preact/signals-core";
-import { defineWidget } from "https://esm.sh/jsr/@anywidget/signals";
+import { effect, signal } from "@preact/signals-core";
+import { defineWidget } from "@anywidget/signals";
 
 export default signalify(signal, {
   render({ model, el }) {
@@ -59,10 +59,10 @@ export default signalify(signal, {
 With `solid-js`:
 
 ```typescript
-import { createEffect, createSignal } from "https://esm.sh/solid-js";
-import { defineWidget } from "https://esm.sh/jsr/@anywidget/signals";
+import { createEffect, createSignal } from "solid-js";
+import { defineWidget } from "@anywidget/signals";
 
-export default defineWidget(singal, {
+export default defineWidget(createSignal, {
   render({ model, el }) {
     let btn = document.createElement("button");
     btn.addEventListener("click", () => model.value += 1);
@@ -76,8 +76,9 @@ export default defineWidget(singal, {
 
 Behind the scenes, `defineWidget` creates a _signal_ for each widget attribute.
 
-> [!IMPORTANT] The `model` passed into the widget lifecycle methods is
-> _different_ from the `model` without the signals bridge.
+> [!IMPORTANT
+> The `model` passed into the widget lifecycle methods is _different_ from the
+> `model` without the signals bridge.
 
 This `model` is special. In AFM, model state is normally accessed though `.get`
 and `.set`/`.save_changes`. With the `@anywidget/signals` bridge, the state is
@@ -99,8 +100,8 @@ _compose_ signals with the effect system of your choice. For example, we can
 create derived signals:
 
 ```typescript
-import { signal, computed, effect } from "https://esm.sh/@preact/signals-core";
-import { defineWidget } from "https://esm.sh/jsr/@anywidget/signals";
+import { signal, computed, effect } from "@preact/signals-core";
+import { defineWidget } from "@anywidget/signals";
 
 export default defineWidget(signal, {
   render({ model, el }) {
