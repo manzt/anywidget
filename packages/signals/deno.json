@@ -1,6 +1,6 @@
 {
 	"name": "@anywidget/signals",
-	"version": "0.0.0",
+	"version": "DO NOT EDIT VERSION DIRECTLY. Set by changesets in package.json",
 	"exports": "./mod.ts",
 	"compilerOptions": {
 		"lib": ["ES2020", "DOM", "DOM.Iterable"]
@@ -15,5 +15,8 @@
 	},
 	"imports": {
 		"@anywidget/types": "npm:@anywidget/types@0.1.9"
+	},
+	"publish": {
+		"exclude": ["npm.README.md"]
 	}
 }
