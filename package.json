@@ -8,7 +8,7 @@
 		"release": "pnpm build:packages && python -m build && changeset publish && twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
 		"typecheck": "tsc --build && vitest --typecheck.only --run",
-		"fix": "biome check --apply .",
+		"fix": "biome check --write .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {

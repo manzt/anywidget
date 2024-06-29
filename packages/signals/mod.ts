@@ -1,3 +1,26 @@
+/**
+ * @module
+ *
+ * Thie module contains an anywidget bridge to define widgets using signals.
+ *
+ * @example
+ * ```ts
+ * import { effect, signal } from "@preact/signals-core";
+ * import { defineWidget } from "@anywidget/signals";
+ *
+ * export default signalify(signal, {
+ *   render({ model, el }) {
+ *     let btn = document.createElement("button");
+ *     btn.addEventListener("click", () => model.value += 1);
+ *     effect(() => {
+ *       btn.innerText = `Count is ${model.value}`;
+ *     });
+ *     el.appendChild(btn);
+ *   },
+ * });
+ * ```
+ */
+
 import type * as aw from "@anywidget/types";
 
 // https://github.com/tc39/proposal-signals
@@ -10,18 +33,25 @@ type CustomMessageListener = {
 	(event: MessageEvent<[data: unknown, buffers: Array<Uint8Array>]>): void;
 };
 
-interface HostPlatform {
+/** The interface for a host platform connection */
+export interface HostPlatform {
+	/** Send a message to the host platform */
 	postMessage(msg: unknown, buffers?: Array<Uint8Array>): void;
+	/** Add a listener for custom messages from the host */
 	addEventListener(type: "message", listener: CustomMessageListener): void;
+	/** Remove a listener for custom messages from the host */
 	removeEventListener(type: "message", listener: CustomMessageListener): void;
 }
 
-type SignalModel<T extends Record<string, unknown>> = {
-	[Key in Exclude<keyof T & string, "host">]: T[Key];
-} & {
-	host: HostPlatform;
-};
+export type SignalModel<T extends Record<string, unknown>> =
+	& {
+		[Key in Exclude<keyof T & string, "host">]: T[Key];
+	}
+	& {
+		host: HostPlatform;
+	};
 
+/** Connects a Jupyter Widget model as a host platform */
 class JupyterWidgetHostPlatform extends EventTarget {
 	#model: aw.AnyModel;
 	constructor(model: aw.AnyModel) {
@@ -30,13 +60,20 @@ class JupyterWidgetHostPlatform extends EventTarget {
 		model.on("msg:custom", this.#dispatch.bind(this));
 	}
 	#dispatch(msg: unknown, buffers?: Array<Uint8Array>) {
-		this.dispatchEvent(new MessageEvent("message", { data: [msg, buffers] }));
+		this.dispatchEvent(
+			new MessageEvent("message", { data: [msg, buffers] }),
+		);
 	}
 	postMessage(msg: unknown, buffers?: Array<Uint8Array>) {
 		this.#model.send(msg, {}, buffers);
 	}
 }
 
+/**
+ * Create a signal model from a model and a signal function
+ * @param signal The function to create a TC39-like signal
+ * @param model The anywidget model to connect to
+ */
 function create<T extends Record<string, unknown>>(
 	signal: <T>(value: T) => Signal<T>,
 	model: aw.AnyModel<T>,
@@ -77,20 +114,20 @@ function create<T extends Record<string, unknown>>(
 	});
 }
 
-type CreateSignalFunction =
-	| (<T>(value: T) => Signal<T>)
-	| (<T>(value: T) => { value: T })
-	| (<T>(value: T) => [() => T, (value: T) => void]);
+type AnySignal = <T>(value: T) => Signal<T>;
+type PreactLikeSignal = <T>(value: T) => { value: T };
+type SolidLikeSignal = <T>(value: T) => [() => T, (value: T) => void];
+type CreateSignalFunction = AnySignal | PreactLikeSignal | SolidLikeSignal;
 
 function isPreactLikeSignal(
-	signal: CreateSignalFunction,
+	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,
 ): signal is <T>(value: T) => { value: T } {
 	let test = signal(undefined);
 	return "value" in test;
 }
 
 function isSolidLikeSignal(
-	signal: CreateSignalFunction,
+	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,
 ): signal is <T>(value: T) => [() => T, (value: T) => void] {
 	let test = signal(undefined);
 	return (
@@ -101,7 +138,9 @@ function isSolidLikeSignal(
 	);
 }
 
-function resolve(fn: CreateSignalFunction): <T>(value: T) => Signal<T> {
+function resolve(
+	fn: AnySignal | PreactLikeSignal | SolidLikeSignal,
+): AnySignal {
 	if (isPreactLikeSignal(fn)) {
 		return <T>(initial: T) => {
 			let signal = fn(initial);
@@ -125,20 +164,52 @@ function resolve(fn: CreateSignalFunction): <T>(value: T) => Signal<T> {
 	return fn;
 }
 
-export default function signalify<T extends Record<string, unknown>>(
-	signal: CreateSignalFunction,
-	def: {
-		initialize(ctx: { model: SignalModel<T> }): void;
-		render(ctx: { model: SignalModel<T>; el: HTMLElement }): void;
-	},
+// deno-lint-ignore no-explicit-any
+type WidgetDef<T extends Record<string, any>> = {
+	initialize?: (ctx: {
+		model: SignalModel<T>;
+	}) => ReturnType<aw.Initialize<T>>;
+	render?: (ctx: {
+		model: SignalModel<T>;
+		el: HTMLElement;
+	}) => ReturnType<aw.Render<T>>;
+};
+
+/**
+ * Define a widget that uses signals to manage state.
+ *
+ * @param signal The signal function to create a Signal for a piece of model state
+ * @param definition The widget definition
+ * @returns An AFM-compatible widget
+ *
+ * @example
+ * ```ts
+ * import { effect, signal } from "@preact/signals-core";
+ * import { defineWidget } from "@anywidget/signals";
+ *
+ * export default signalify(signal, {
+ *   render({ model, el }) {
+ *     let btn = document.createElement("button");
+ *     btn.addEventListener("click", () => model.value += 1);
+ *     effect(() => {
+ *       btn.innerText = `Count is ${model.value}`;
+ *     });
+ *     el.appendChild(btn);
+ *   },
+ * });
+ * ```
+ */
+export function defineWidget<T extends Record<string, unknown>>(
+	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,
+	definition: WidgetDef<T>,
 ): aw.AnyWidget<T> {
 	signal = resolve(signal);
 	return {
 		initialize({ model }) {
-			return def.initialize?.({ model: create(signal, model) });
+			return definition.initialize?.({ model: create(signal, model) });
 		},
 		render({ model, el }) {
-			return def.render?.({ model: create(signal, model), el });
+			return definition.render?.({ model: create(signal, model), el });
 		},
 	};
 }
