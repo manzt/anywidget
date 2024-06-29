@@ -43,13 +43,11 @@ export interface HostPlatform {
 	removeEventListener(type: "message", listener: CustomMessageListener): void;
 }
 
-export type SignalModel<T extends Record<string, unknown>> =
-	& {
-		[Key in Exclude<keyof T & string, "host">]: T[Key];
-	}
-	& {
-		host: HostPlatform;
-	};
+export type SignalModel<T extends Record<string, unknown>> = {
+	[Key in Exclude<keyof T & string, "host">]: T[Key];
+} & {
+	host: HostPlatform;
+};
 
 /** Connects a Jupyter Widget model as a host platform */
 class JupyterWidgetHostPlatform extends EventTarget {
@@ -60,9 +58,7 @@ class JupyterWidgetHostPlatform extends EventTarget {
 		model.on("msg:custom", this.#dispatch.bind(this));
 	}
 	#dispatch(msg: unknown, buffers?: Array<Uint8Array>) {
-		this.dispatchEvent(
-			new MessageEvent("message", { data: [msg, buffers] }),
-		);
+		this.dispatchEvent(new MessageEvent("message", { data: [msg, buffers] }));
 	}
 	postMessage(msg: unknown, buffers?: Array<Uint8Array>) {
 		this.#model.send(msg, {}, buffers);
