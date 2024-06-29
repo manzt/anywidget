@@ -23,12 +23,20 @@
 
 import type * as aw from "@anywidget/types";
 
-// https://github.com/tc39/proposal-signals
+/**
+ * Represents a abstract signal that internally manages reactive data dependencies.
+ * @see {@link https://github.com/tc39/proposal-signals}
+ */
 interface Signal<T> {
 	get(): T;
 	set(value: T): void;
 }
 
+/**
+ * A callback for when a message is received
+ * @param event The message event
+ * @param data The data of the message
+ */
 type CustomMessageListener = {
 	(event: MessageEvent<[data: unknown, buffers: Array<Uint8Array>]>): void;
 };
@@ -43,6 +51,12 @@ export interface HostPlatform {
 	removeEventListener(type: "message", listener: CustomMessageListener): void;
 }
 
+/**
+ * Represents a widget model that has signals for each attribute,
+ * and a host platform connection.
+ *
+ * @template T The data types for the model
+ */
 export type SignalModel<T extends Record<string, unknown>> = {
 	[Key in Exclude<keyof T & string, "host">]: T[Key];
 } & {
