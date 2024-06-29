@@ -45,13 +45,15 @@ Entry points to be aware of:
 - [`packages/vite`](https://github.com/manzt/anywidget/tree/main/packages/vite) -
   [Vite](https://vitejs.dev/) plugin (`@anywidget/vite`)
 - [`packages/react`](https://github.com/manzt/anywidget/tree/main/packages/react) -
-  [React](https://react.dev/) adapter (`@anywidget/react`)
+  [React](https://react.dev/) bridge (`@anywidget/react`)
 - [`packages/svelte`](https://github.com/manzt/anywidget/tree/main/packages/svelte) -
-  [Svelte](https://svelte.dev/) adapter (`@anywidget/svelte`)
+  [Svelte](https://svelte.dev/) bridge (`@anywidget/svelte`)
 - [`packages/create-anywidget`](https://github.com/manzt/anywidget/tree/main/packages/create-anywidget) -
   CLI to create a new anywidget project
 - [`packages/deno`](https://github.com/manzt/anywidget/tree/main/packages/deno) -
   anywidget backend for [Deno](https://deno.com/) Jupyter kernel
+- [`packages/signals`](https://github.com/manzt/anywidget/tree/main/packages/signals) -
+  A signals bridge for anywidget
 
 ## Making changes
 
