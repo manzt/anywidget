@@ -21,7 +21,7 @@ dependencies =  [
 
 [project.optional-dependencies]
 test = [
-    "mypy==1.10.0; python_version > '3.7'",
+    "mypy==1.10.1; python_version > '3.7'",
     "pydantic",
     "pytest",
     "pytest-cov",
