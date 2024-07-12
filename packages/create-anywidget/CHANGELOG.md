@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.1
+
+### Patch Changes
+
+- Update templates to esbuild v0.23 ([#620](https://github.com/manzt/anywidget/pull/620))
+
 ## 0.7.0
 
 ### Minor Changes
