@@ -20,7 +20,7 @@
 		"happy-dom": "^14.12.3",
 		"publint": "^0.2.8",
 		"typescript": "^5.5.3",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.3"
 	},
 	"packageManager": "pnpm@9.4.0"
 }
