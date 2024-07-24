@@ -85,7 +85,7 @@ class WidgetTraitTuple(traitlets.Tuple):
         return value
 
 
-def patch_ipywidgets() -> None:
+def _patch_ipywidgets() -> None:
     """Patch ipywidgets to allow for more flexible serialization and deserialization."""
     ipywidgets.Box.children.metadata["to_json"] = _widget_to_json
     ipywidgets.Box.children.metadata["from_json"] = _json_to_widget
