@@ -38,9 +38,7 @@ version = "0.9.13"
 source = { editable = "." }
 dependencies = [
     { name = "comm" },
-    { name = "jupyterlab-widgets" },
     { name = "psygnal" },
-    { name = "traitlets" },
     { name = "typing-extensions" },
 ]
 
@@ -64,9 +62,7 @@ dev = [
 requires-dist = [
     { name = "comm", specifier = ">=0.1.4" },
     { name = "importlib-metadata", marker = "python_full_version < '3.8'" },
-    { name = "jupyterlab-widgets", specifier = "~=3.0.10" },
     { name = "psygnal", specifier = ">=0.8.1" },
-    { name = "traitlets", specifier = ">=4.3.1" },
     { name = "typing-extensions", specifier = ">=4.2.0" },
     { name = "watchfiles", marker = "extra == 'dev'", specifier = ">=0.18.0" },
 ]
@@ -877,15 +873,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0a/c9/a883ce65eb27905ce77ace410d83587c82ea64dc85a48d1f7ed52bcfa68d/jupyterlab_server-2.27.3.tar.gz", hash = "sha256:eb36caca59e74471988f0ae25c77945610b887f777255aa21f8065def9e51ed4", size = 76173 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/09/2032e7d15c544a0e3cd831c51d77a8ca57f7555b2e1b2922142eddb02a84/jupyterlab_server-2.27.3-py3-none-any.whl", hash = "sha256:e697488f66c3db49df675158a77b3b017520d772c6e1548c7d9bcc5df7944ee4", size = 59700 },
-]
-
-[[package]]
-name = "jupyterlab-widgets"
-version = "3.0.13"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/59/73/fa26bbb747a9ea4fca6b01453aa22990d52ab62dd61384f1ac0dc9d4e7ba/jupyterlab_widgets-3.0.13.tar.gz", hash = "sha256:a2966d385328c1942b683a8cd96b89b8dd82c8b8f81dda902bb2bc06d46f5bed", size = 203556 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/93/858e87edc634d628e5d752ba944c2833133a28fa87bb093e6832ced36a3e/jupyterlab_widgets-3.0.13-py3-none-any.whl", hash = "sha256:e3cda2c233ce144192f1e29914ad522b2f4c40e77214b0cc97377ca3d323db54", size = 214392 },
 ]
 
 [[package]]
