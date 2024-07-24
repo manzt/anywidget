@@ -60,7 +60,7 @@ class WidgetTrait(traitlets.TraitType):
     """Traitlet for validating things that can be (de)serialized into widgets."""
 
     # anything that can get a model id is ok as a widget
-    def validate(self, obj: t.Any, value: t.Any):
+    def validate(self, obj: t.Any, value: t.Any) -> t.Any:
         if _get_model_id(value) is not None:
             return value
         else:
@@ -73,7 +73,7 @@ class WidgetTraitTuple(traitlets.Tuple):
 
     info_text = "A (Widget, 'trait_name') pair"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WidgetTrait(), traitlets.Unicode())
 
     def validate_elements(self, obj: t.Any, value: t.Any) -> t.Any:
