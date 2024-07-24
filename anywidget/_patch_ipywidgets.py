@@ -15,13 +15,14 @@ import typing as t
 
 import ipywidgets
 import traitlets
-from ipywidgets.widgets.trait_types import TypedTuple
-from ipywidgets.widgets.widget import Widget, _instances
+from ipywidgets import Widget
 
 from ._descriptor import _COMMS
 
+_WIDGET_INSTANCES = ipywidgets.widgets.widget._instances
 
-def _get_model_id(x: t.Any) -> str | None:
+
+def _get_model_id(x: t.Any) -> t.Any:
     """Get the model id of a widget or comm."""
     if isinstance(x, Widget):
         return x.model_id
@@ -45,8 +46,12 @@ def _json_to_widget(x: t.Any, obj: t.Any) -> t.Any:
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, str) and x.startswith("IPY_MODEL_") and x[10:] in _instances:
-        return _instances[x[10:]]
+    elif (
+        isinstance(x, str)
+        and x.startswith("IPY_MODEL_")
+        and x[10:] in _WIDGET_INSTANCES
+    ):
+        return _WIDGET_INSTANCES[x[10:]]
     else:
         return x
 
@@ -55,7 +60,7 @@ class WidgetTrait(traitlets.TraitType):
     """Traitlet for validating things that can be (de)serialized into widgets."""
 
     # anything that can get a model id is ok as a widget
-    def validate(self, obj: t.Any, value: t.Any):
+    def validate(self, obj: t.Any, value: t.Any) -> t.Any:
         if _get_model_id(value) is not None:
             return value
         else:
@@ -68,7 +73,7 @@ class WidgetTraitTuple(traitlets.Tuple):
 
     info_text = "A (Widget, 'trait_name') pair"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WidgetTrait(), traitlets.Unicode())
 
     def validate_elements(self, obj: t.Any, value: t.Any) -> t.Any:
@@ -89,7 +94,9 @@ def _patch_ipywidgets() -> None:
     """Patch ipywidgets to allow for more flexible serialization and deserialization."""
     ipywidgets.Box.children.metadata["to_json"] = _widget_to_json
     ipywidgets.Box.children.metadata["from_json"] = _json_to_widget
-    ipywidgets.Box.children.validate = TypedTuple(WidgetTrait()).validate
+    ipywidgets.Box.children.validate = ipywidgets.widgets.trait_types.TypedTuple(
+        WidgetTrait()
+    ).validate
 
     ipywidgets.widgets.widget_link.Link.source.metadata["to_json"] = _widget_to_json
     ipywidgets.widgets.widget_link.Link.source.metadata["from_json"] = _json_to_widget
