@@ -3,8 +3,6 @@ from __future__ import annotations
 import pathlib
 import typing
 
-import traitlets as t
-
 from anywidget._file_contents import VirtualFileContents
 
 from ._descriptor import open_comm
@@ -56,8 +54,5 @@ class StaticAsset:
         """Close the comm when the asset is deleted."""
         self._comm.close()
 
-    def as_traittype(self) -> t.TraitType:
-        """Return a traitlet that represents the asset."""
-        return t.Instance(StaticAsset, default_value=self).tag(
-            sync=True, to_json=lambda *_: "anywidget-static-asset:" + self._comm.comm_id
-        )
+    def serialize(self) -> str:
+        return f"anywidget-static-asset:{self._comm.comm_id}"

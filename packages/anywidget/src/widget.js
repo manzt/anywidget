@@ -467,6 +467,22 @@ class Runtime {
 	}
 }
 
+let anywidget_static_asset = {
+	/** @param {{ model_id: string }} model */
+	serialize(model) {
+		return `anywidget-static-asset:${model.model_id}`;
+	},
+	/**
+	 * @param {string} value
+	 * @param {import("@jupyter-widgets/base").DOMWidgetModel["widget_manager"]} widget_manager
+	 */
+	async deserialize(value, widget_manager) {
+		let model_id = value.slice("anywidget-static-asset:".length);
+		let model = await widget_manager.get_model(model_id);
+		return model;
+	},
+};
+
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
@@ -497,6 +513,12 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 			});
 			RUNTIMES.set(this, runtime);
 		}
+
+		static serializers = {
+			...DOMWidgetModel.serializers,
+			_esm: anywidget_static_asset,
+			_css: anywidget_static_asset,
+		};
 
 		/**
 		 * @param {Record<string, any>} state
