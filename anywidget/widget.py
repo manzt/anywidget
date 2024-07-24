@@ -7,7 +7,7 @@ import typing
 import ipywidgets
 import traitlets.traitlets as t
 
-from ._file_contents import FileContents, VirtualFileContents
+from ._static_asset import StaticAsset
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _CSS_KEY,
@@ -16,31 +16,9 @@ from ._util import (
     enable_custom_widget_manager_once,
     in_colab,
     repr_mimebundle,
-    try_file_contents,
 )
 from ._version import _ANYWIDGET_SEMVER_VERSION
 from .experimental import _collect_anywidget_commands, _register_anywidget_commands
-
-if typing.TYPE_CHECKING:
-    import pathlib
-
-
-class _Asset(ipywidgets.Widget):
-    data = t.Unicode().tag(sync=True)
-
-    def __init__(self, data: str | pathlib.Path) -> None:
-        file_contents = try_file_contents(data)
-        super().__init__(data=str(file_contents) if file_contents else data)
-        if file_contents:
-            file_contents.changed.connect(
-                lambda new_contents: setattr(self, "data", new_contents)
-            )
-        self._file_contents = file_contents
-
-    def as_traittype(self) -> t.TraitType:
-        return t.Instance(_Asset, default_value=self).tag(
-            sync=True, to_json=lambda x, _: "anywidget-asset:" + x.model_id
-        )
 
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
@@ -59,18 +37,8 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
             enable_custom_widget_manager_once()
 
         anywidget_traits = {}
-        for key in (_ESM_KEY, _CSS_KEY):
-            if hasattr(self, key) and not self.has_trait(key):
-                value = getattr(self, key)
-                anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
-                if isinstance(value, (VirtualFileContents, FileContents)):
-                    value.changed.connect(
-                        lambda new_contents, key=key: setattr(self, key, new_contents)
-                    )
-
-        # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
-            anywidget_traits[_ESM_KEY] = _Asset(data=_DEFAULT_ESM).as_traittype()
+            anywidget_traits[_ESM_KEY] = StaticAsset(_DEFAULT_ESM).as_traittype()
 
         # TODO: a better way to uniquely identify this subclasses?
         # We use the fully-qualified name to get an id which we
@@ -91,7 +59,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
             if isinstance(value, t.TraitType):
                 # we don't know how to handle this
                 continue
-            setattr(cls, key, _Asset(value))
+            setattr(cls, key, StaticAsset(value).as_traittype())
         _collect_anywidget_commands(cls)
 
     def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
