@@ -19,7 +19,7 @@ from ipywidgets import Widget
 
 from ._descriptor import _COMMS
 
-_WIDGET_INSTANCES = ipywidgets.widgets.widget._instances
+_IPYWIDGETS_INSTANCES = ipywidgets.widgets.widget._instances
 
 
 def _get_model_id(x: t.Any) -> t.Any:
@@ -49,9 +49,9 @@ def _json_to_widget(x: t.Any, obj: t.Any) -> t.Any:
     elif (
         isinstance(x, str)
         and x.startswith("IPY_MODEL_")
-        and x[10:] in _WIDGET_INSTANCES
+        and x[10:] in _IPYWIDGETS_INSTANCES
     ):
-        return _WIDGET_INSTANCES[x[10:]]
+        return _IPYWIDGETS_INSTANCES[x[10:]]
     else:
         return x
 
@@ -60,7 +60,7 @@ class WidgetTrait(traitlets.TraitType):
     """Traitlet for validating things that can be (de)serialized into widgets."""
 
     # anything that can get a model id is ok as a widget
-    def validate(self, obj: t.Any, value: t.Any) -> t.Any:
+    def validate(self, obj: t.Any, value: t.Any):
         if _get_model_id(value) is not None:
             return value
         else:
@@ -73,7 +73,7 @@ class WidgetTraitTuple(traitlets.Tuple):
 
     info_text = "A (Widget, 'trait_name') pair"
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__(WidgetTrait(), traitlets.Unicode())
 
     def validate_elements(self, obj: t.Any, value: t.Any) -> t.Any:
