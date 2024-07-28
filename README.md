@@ -24,7 +24,7 @@ custom Jupyter Widgets.
 - 🛠️ create widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
 - 🤖 prototype **within** `.ipynb` or `.py` files
-- 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, [**marimo**](https://github.com/marimo-team/marimo) and more
 - ⚡ develop with **instant HMR**, like modern web frameworks
 
 Learn more in the
