@@ -34,7 +34,7 @@ importers:
         version: 5.5.3
       vitest:
         specifier: ^2.0.4
-        version: 2.0.4(@types/node@20.14.11)(happy-dom@14.12.3)(terser@5.31.3)
+        version: 2.0.4(@types/node@22.0.0)(happy-dom@14.12.3)(terser@5.31.3)
 
   docs:
     dependencies:
@@ -156,8 +156,8 @@ importers:
         specifier: workspace:^
         version: link:../types
       '@types/node':
-        specifier: ^20.14.11
-        version: 20.14.11
+        specifier: ^22.0.0
+        version: 22.0.0
       '@types/react':
         specifier: ^18.3.2
         version: 18.3.3
@@ -220,7 +220,7 @@ importers:
     devDependencies:
       vite:
         specifier: ^5.3.4
-        version: 5.3.4(@types/node@20.14.11)(terser@5.31.3)
+        version: 5.3.4(@types/node@22.0.0)(terser@5.31.3)
 
 packages:
 
@@ -1731,8 +1731,8 @@ packages:
   '@types/node@18.19.33':
     resolution: {integrity: sha512-NR9+KrpSajr2qBVp/Yt5TU/rp+b5Mayi3+OlMlcg2cVCfRmcG5PWZ7S4+MG9PZ5gWBoc9Pd0BKSRViuBCRPu0A==}
 
-  '@types/node@20.14.11':
-    resolution: {integrity: sha512-kprQpL8MMeszbz6ojB5/tU8PLN4kesnN8Gjzw349rDlNgsSzg90lAVj3llK99Dh7JON+t9AuscPPFW6mPbTnSA==}
+  '@types/node@22.0.0':
+    resolution: {integrity: sha512-VT7KSYudcPOzP5Q0wfbowyNLaVR8QWUdw+088uFWwfvpY6uCWaXpqV6ieLAu9WBcnTa7H4Z5RLK8I5t2FuOcqw==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -4448,6 +4448,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.11.1:
+    resolution: {integrity: sha512-mIDEX2ek50x0OlRgxryxsenE5XaQD4on5U2inY7RApK3SOJpofyw7uW2AyfMKkhAxXIceo2DeWGVGwyvng1GNQ==}
+
   unherit@3.0.1:
     resolution: {integrity: sha512-akOOQ/Yln8a2sgcLj4U0Jmx0R5jpIg2IUyRrWOzmEbjBtGzBdHtSeFKgoEcoH4KYIG/Pb8GQ/BwtYm0GCq1Sqg==}
 
@@ -6537,20 +6540,20 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 4.19.5
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/cookie@0.6.0': {}
 
@@ -6576,7 +6579,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -6598,7 +6601,7 @@ snapshots:
 
   '@types/http-proxy@1.17.14':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/jquery@3.5.30':
     dependencies:
@@ -6624,7 +6627,7 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/node@12.20.55': {}
 
@@ -6634,9 +6637,9 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.14.11':
+  '@types/node@22.0.0':
     dependencies:
-      undici-types: 5.26.5
+      undici-types: 6.11.1
 
   '@types/prop-types@15.7.12': {}
 
@@ -6657,14 +6660,14 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/semver@7.5.8': {}
 
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -6673,14 +6676,14 @@ snapshots:
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
       '@types/send': 0.17.4
 
   '@types/sizzle@2.3.8': {}
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@types/underscore@1.11.15': {}
 
@@ -6690,7 +6693,7 @@ snapshots:
 
   '@types/ws@8.5.10':
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
 
   '@ungap/structured-clone@1.2.0': {}
 
@@ -8275,7 +8278,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -9968,6 +9971,8 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  undici-types@6.11.1: {}
+
   unherit@3.0.1: {}
 
   unified@10.1.2:
@@ -10131,13 +10136,13 @@ snapshots:
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
 
-  vite-node@2.0.4(@types/node@20.14.11)(terser@5.31.3):
+  vite-node@2.0.4(@types/node@22.0.0)(terser@5.31.3):
     dependencies:
       cac: 6.7.14
       debug: 4.3.5
       pathe: 1.1.2
       tinyrainbow: 1.2.0
-      vite: 5.3.4(@types/node@20.14.11)(terser@5.31.3)
+      vite: 5.3.4(@types/node@22.0.0)(terser@5.31.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10168,13 +10173,13 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.3
 
-  vite@5.3.4(@types/node@20.14.11)(terser@5.31.3):
+  vite@5.3.4(@types/node@22.0.0)(terser@5.31.3):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.39
       rollup: 4.19.0
     optionalDependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
       fsevents: 2.3.3
       terser: 5.31.3
 
@@ -10182,7 +10187,7 @@ snapshots:
     optionalDependencies:
       vite: 5.3.4(@types/node@18.19.33)(terser@5.31.3)
 
-  vitest@2.0.4(@types/node@20.14.11)(happy-dom@14.12.3)(terser@5.31.3):
+  vitest@2.0.4(@types/node@22.0.0)(happy-dom@14.12.3)(terser@5.31.3):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.4
@@ -10200,11 +10205,11 @@ snapshots:
       tinybench: 2.8.0
       tinypool: 1.0.0
       tinyrainbow: 1.2.0
-      vite: 5.3.4(@types/node@20.14.11)(terser@5.31.3)
-      vite-node: 2.0.4(@types/node@20.14.11)(terser@5.31.3)
+      vite: 5.3.4(@types/node@22.0.0)(terser@5.31.3)
+      vite-node: 2.0.4(@types/node@22.0.0)(terser@5.31.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 20.14.11
+      '@types/node': 22.0.0
       happy-dom: 14.12.3
     transitivePeerDependencies:
       - less
