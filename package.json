@@ -19,7 +19,7 @@
 		"esbuild": "^0.23.0",
 		"happy-dom": "^14.12.3",
 		"publint": "^0.2.9",
-		"typescript": "^5.5.3",
+		"typescript": "^5.5.4",
 		"vitest": "^2.0.4"
 	},
 	"packageManager": "pnpm@9.4.0"
