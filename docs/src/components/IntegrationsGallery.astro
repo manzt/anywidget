@@ -3,6 +3,7 @@ type Integration = {
 	url: string;
 	repo: string;
 	logo: string;
+	status: "implemented" | "planned";
 };
 
 let integrations = [
@@ -10,20 +11,35 @@ let integrations = [
 		repo: "marimo-team/marimo",
 		url: "https://github.com/marimo-team/marimo",
 		logo: "https://raw.githubusercontent.com/marimo-team/marimo/main/docs/_static/marimo-logotype-thick.svg",
+		status: "implemented",
+	},
+	{
+		repo: "executablebooks/MyST-Parser",
+		url: "https://github.com/executablebooks/MyST-Parser",
+		logo: "https://raw.githubusercontent.com/executablebooks/MyST-Parser/master/docs/_static/logo-wide.svg",
+		status: "planned",
 	},
 ] satisfies Array<Integration>;
 ---
 
-<div class="integration" id="integration">
+<div class="flex gap-4" id="integration">
 
-	{integrations.map(({ url, repo, logo }) => (
-		<a
-			class="w-36 h-36 p-5 group flex bg-teal-50 border border-teal-200 rounded-lg"
-			href={url}
-			aria-label={`View ${repo} on GitHub`}
-		>
-			<img class="image-preview w-full" src={logo} alt={repo} />
-		</a>
+	{integrations.map(({ url, repo, logo, status }) => (
+		<div class="relative w-fit h-fit">
+			<a
+				class="w-28 h-28 p-5 group flex bg-teal-50 border border-teal-200 rounded-lg hover:bg-teal-100 transition duration-100 ease-in-out"
+				class:list={[status === "implemented" ? "opacity-100" : "opacity-50"]}
+				href={url}
+				aria-label={`View ${repo} on GitHub`}
+			>
+				<img class="image-preview w-full" src={logo} alt={repo} />
+				{status === "planned" && (
+					<span class="w-full text-black absolute text-center left-0 -bottom-7 rounded-lg">
+						in progress
+					</span>
+				)}
+			</a>
+		</div>
 	))}
 
 </div>
