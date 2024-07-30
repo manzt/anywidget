@@ -238,4 +238,12 @@ visualizations with rich features across multiple platforms. However, it is an
 entirely separate computing platform with limited JCP integrations, not a
 framework for building reusable, modular visualization components.
 
+# Acknowledgements
+
+We thank Talley Lambert for his technical contributions to the anywidget Python
+codebase and recognize Jan-Hendrik Müller for his significant community
+contributions and advocacy of the project. Our appreciation extends to the
+entire anywidget community and the Abdennur and HIDIVE labs for their helpful
+discussions.
+
 # References
