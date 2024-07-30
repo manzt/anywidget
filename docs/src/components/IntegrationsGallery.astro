@@ -28,13 +28,13 @@ let integrations = [
 		<div class="relative w-fit h-fit">
 			<a
 				class="w-28 h-28 p-5 group flex bg-teal-50 border border-teal-200 rounded-lg hover:bg-teal-100 transition duration-100 ease-in-out"
-				class:list={[status === "implemented" ? "opacity-100" : "opacity-50"]}
+				class:list={[status === "implemented" ? "opacity-100" : "opacity-70"]}
 				href={url}
 				aria-label={`Visit ${name} integration`}
 			>
 				<img class="image-preview w-full" src={logo} alt={name} />
 				{status === "planned" && (
-					<span class="w-full text-black absolute text-center left-0 -bottom-7 rounded-lg">
+					<span class="w-full absolute text-center left-0 -bottom-7 rounded-lg">
 						in progress
 					</span>
 				)}
