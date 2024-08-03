@@ -109,17 +109,16 @@ export default { render }
 
 As your widgets grow in complexity, it is recommended to separate your
 front-end code from your Python code. Just move the `_esm` and `_css`
-definitions to separate files and reference them via path.
+(from above) to separate files and reference them via path.
 
 ```python
-import pathlib
 import anywidget
 import traitlets
 
 class CounterWidget(anywidget.AnyWidget):
-    _esm = pathlib.Path(__file__).parent / "index.js"
-    _css = pathlib.Path(__file__).parent / "index.css"
-    count = traitlets.Int(0).tag(sync=True)
+    _esm = "index.js"
+    _css = "index.css"
+    value = traitlets.Int(0).tag(sync=True)
 ```
 
 This is both easier to read and allows you to use your favorite editor/IDE for your front-end code.
@@ -143,6 +142,20 @@ allowing real-time updates to your widget during development (below).
   alt="Real-time widget development entirely from within JupyterLab"
   src="https://miro.medium.com/v2/resize:fit:1400/1*VCG-57YX8IrfTyeby3Ybjg.gif"
 />
+
+> **Note**: Prefer `pathlib.Path` for file paths in production and outside
+> notebooks to ensure OS compatibility and correct relative path resolution.
+>
+> ```py
+> import pathlib
+> import anywidget
+> import traitlets
+>
+> class CounterWidget(anywidget.AnyWidget):
+>     _esm = pathlib.Path(__file__).parent / "index.js"
+>     _css = pathlib.Path(__file__).parent / "index.css"
+>     value = traitlets.Int(0).tag(sync=True)
+> ```
 
 ## Watch & Learn
 
