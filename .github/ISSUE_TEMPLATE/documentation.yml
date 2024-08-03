@@ -1,0 +1,31 @@
+---
+name: Documentation
+description: Create a report to help us improve the documentation
+labels: [Documentation]
+body:
+  - type: input
+    id: link
+    attributes:
+      label: Documentation Link
+      description: >-
+        Link to any documentation or examples that you are referencing.
+      placeholder: https://anywidget.dev/...
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: What is lacking, unclear, or incorrect in the documentation?
+      placeholder: |
+        * The section on [...] is confusing because [...]
+        * [...] gives the impression that [...] whereas it should be [...]
+        * An example demonstrating [...] is missing
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended improvement
+      placeholder: |
+        * Change this line to [...]
+        * Add a paragraph that explains [...]
+        * Add a new section with [...]
