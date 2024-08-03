@@ -1,7 +1,7 @@
 ---
 name: Documentation
 description: Create a report to help us improve the documentation
-labels: [Documentation]
+labels: [docs]
 body:
   - type: input
     id: link
