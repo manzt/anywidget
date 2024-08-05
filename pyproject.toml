@@ -31,7 +31,7 @@ classifiers = [
 
 [project.optional-dependencies]
 test = [
-    "mypy==1.11.0; python_version > '3.7'",
+    "mypy==1.11.1; python_version > '3.7'",
     "pydantic",
     "pytest",
     "pytest-cov",
