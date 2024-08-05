@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from ._patch_ipywidgets import _patch_ipywidgets
 from ._version import __version__
 from .widget import AnyWidget
 
 __all__ = ["AnyWidget", "__version__"]
+
+_patch_ipywidgets()
 
 
 def _jupyter_labextension_paths() -> list[dict]:
