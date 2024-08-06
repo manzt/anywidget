@@ -300,6 +300,7 @@ class ReprMimeBundle:
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
         self._no_view = no_view
+        self._callbacks = []
 
         try:
             self._obj: Callable[[], Any] = weakref.ref(obj, self._on_obj_deleted)
@@ -388,21 +389,25 @@ class ReprMimeBundle:
 
         elif data["method"] == "request_state":
             self.send_state()
-
-        # elif method == "custom":
-        # Handle a custom msg from the front-end.
-        # if "content" in data:
-        #     self._handle_custom_msg(data["content"], msg["buffers"])
+        elif data["method"] == "custom":
+            if "content" in data:
+                self._handle_custom_msg(data["content"], msg["buffers"])
         else:  # pragma: no cover
             raise ValueError(
                 f"Unrecognized method: {data['method']}.  Please report this at "
                 "https://github.com/manzt/anywidget/issues"
             )
 
-    # def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
-    #     # TODO: handle custom callbacks
-    #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
-    #     ...
+    def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
+        # https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L186
+        for callback in self._callbacks:
+            try:
+                callback(content, buffers)
+            except Exception:
+                warnings.warn(
+                    "Error in custom message callback",
+                    stacklevel=2,
+                )
 
     def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:
         """Called when _repr_mimebundle_ is called on the python object."""
@@ -467,6 +472,18 @@ class ReprMimeBundle:
         while self._disconnectors:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
+
+    def register_callback(
+        self, callback: Callable[[Any, Any, list[bytes]], None]
+    ) -> None:
+        self._callbacks.append(callback)
+
+    def send(
+        self, content: str | list | dict, buffers: list[memoryview] | None = None
+    ) -> None:
+        """Send a custom message to the front-end view."""
+        data = {"method": "custom", "content": content}
+        self._comm.send(data=data, buffers=buffers)  # type: ignore[arg-type]
 
 
 # ------------- Helper function --------------
