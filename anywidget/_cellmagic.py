@@ -37,7 +37,7 @@ class AnyWidgetMagics(Magics):
             self._files[name] = vfile
             _VIRTUAL_FILES[name] = vfile
 
-    @line_magic # type: ignore[misc]
+    @line_magic  # type: ignore[misc]
     def clear_vfiles(self, line: str) -> None:
         """Clear all virtual files."""
         self._files.clear()
