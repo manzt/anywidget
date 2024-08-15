@@ -149,13 +149,14 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
         return None
 
     def handle_anywidget_command(
-        self: WidgetBase, msg: str | list | dict, buffers: list[bytes]
+        msg: typing.Any,
+        buffers: list[bytes | memoryview] | None = None,
     ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return
         cmd = cmds[msg["name"]]
-        response, buffers = cmd(widget, msg["msg"], buffers)
-        self.send(
+        response, buffers = cmd(widget, msg["msg"], buffers or [])
+        widget.send(
             {
                 "id": msg["id"],
                 "kind": "anywidget-command-response",
