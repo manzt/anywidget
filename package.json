@@ -16,9 +16,9 @@
 		"@changesets/cli": "^2.27.7",
 		"@rspack/cli": "^0.7.5",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
-		"esbuild": "^0.23.0",
+		"esbuild": "^0.23.1",
 		"happy-dom": "^14.12.3",
-		"publint": "^0.2.9",
+		"publint": "^0.2.10",
 		"typescript": "^5.5.4",
 		"vitest": "^2.0.5"
 	},
