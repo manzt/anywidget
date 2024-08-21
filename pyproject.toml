@@ -104,7 +104,7 @@ test = "pytest . --cov anywidget --cov-report term-missing"
 [tool.ruff]
 line-length = 88
 src = ["anywidget", "tests"]
-exclude = ["packages"]
+exclude = ["packages", "docs"]
 
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
