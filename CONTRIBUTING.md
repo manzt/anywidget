@@ -7,30 +7,15 @@ contains both JavaScript and Python components, it requires dual package
 managers:
 
 - [pnpm](https://pnpm.io) for JavaScript
-- [hatch](https://github.com/pypa/hatch) for Python
+- [uv](https://github.com/astral-sh/uv) for Python
 
 You can [install pnpm](https://pnpm.io/installation) and
-[install hatch](https://github.com/pypa/hatch) with:
+[install uv](https://github.com/astral-sh/uv) with:
 
 ```bash
 npm i -g pnpm
-pipx install hatch
+curl -LsSf https://astral.sh/uv/install.sh | sh # for Linux and macOS, see link for Windows
 ```
-
-Then, create a Python virtual environment with `hatch`:
-
-```bash
-hatch shell
-```
-
-This command creates a virtual environment and installs all dependencies
-specified in the `pyproject.toml`. It also installs **anywidget** in development
-mode. The environment setup might take some time during the first run, but
-`hatch` reuses the environment in subsequent runs.
-
-You can deactivate the environment with `Ctrl + D` and reset it using
-`hatch env remove`. For more information, read the
-[hatch docs](https://hatch.pypa.io/latest/).
 
 ## Code structure
 
@@ -60,12 +45,12 @@ Entry points to be aware of:
 Once your environment is set up, you can start making changes to the codebase.
 We recommend using the classic Jupyter Notebook or Jupyter Lab for development.
 
-If you are using the classic Jupyter Notebook you need to install the local
+If you are using the classic Jupyter Notebook (<v7) you need to install the local
 nbextension:
 
 ```bash
-jupyter nbextension install --py --symlink --sys-prefix anywidget
-jupyter nbextension enable --py --sys-prefix anywidget
+uv run jupyter nbextension install --py --symlink --sys-prefix anywidget
+uv run jupyter nbextension enable --py --sys-prefix anywidget
 ```
 
 Note for developers:
@@ -78,7 +63,7 @@ Note for developers:
 For developing with JupyterLab:
 
 ```bash
-jupyter labextension develop --overwrite anywidget
+uv run jupyter labextension develop --overwrite anywidget
 ```
 
 > **Note** If you make changes to the Python code, you'll need to restart the
@@ -94,8 +79,15 @@ There are a few guidelines we follow:
 
 - For JavaScript, internal variables are written with `snake_case` while
   external APIs are written with `camelCase` (if applicable).
-- For Python, ensure `hatch run lint` passes. You can run `hatch run fmt` to
-  format and fix linting errors.
+- For Python, ensure typechecking and linting passes.
+
+Commands to know:
+
+```sh
+uv run ruff check # linting
+uv run ruff format # formatting
+uv run mypy # typechecking
+```
 
 ### Generating changelogs
 
