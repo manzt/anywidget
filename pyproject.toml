@@ -16,7 +16,6 @@ dependencies =  [
     "ipywidgets>=7.6.0",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
-    "mypy>=1.11.1",
 ]
 classifiers = [
     "Framework :: Jupyter",
@@ -38,13 +37,13 @@ dev = ["watchfiles>=0.18.0"]
 [tool.uv]
 dev-dependencies = [
     "comm>=0.1.4",
-    "msgspec>=0.18.6; python_version > '3.7'",
+    "jupyterlab>=4.2.4",
+    "msgspec>=0.18.6",
+    "mypy>=1.11.1",
     "pydantic>=2.5.3",
     "pytest>=7.4.4",
     "ruff>=0.6.1",
     "watchfiles>=0.23.0",
-    "jupyterlab>=4.2.4",
-    "mypy>=1.11.1",
 ]
 
 [tool.uv.sources]
