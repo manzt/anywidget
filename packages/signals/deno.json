@@ -1,6 +1,7 @@
 {
 	"name": "@anywidget/signals",
 	"version": "DO NOT EDIT VERSION DIRECTLY. Set by changesets in package.json",
+	"license": "MIT",
 	"exports": "./mod.ts",
 	"compilerOptions": {
 		"lib": ["ES2020", "DOM", "DOM.Iterable"]
