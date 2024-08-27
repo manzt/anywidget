@@ -15,7 +15,7 @@
 		}
 	},
 	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.8"
+		"@jupyter-widgets/base": "^6.0.10"
 	},
 	"publishConfig": {
 		"main": "dist/index.js",
