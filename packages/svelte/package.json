@@ -6,7 +6,8 @@
 	"main": "src/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"src"
 	],
 	"exports": {
 		".": {
