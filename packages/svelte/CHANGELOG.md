@@ -1,5 +1,11 @@
 # @anywidget/svelte
 
+## 0.0.9
+
+### Patch Changes
+
+- Ensure all src files are included in the package release ([#666](https://github.com/manzt/anywidget/pull/666))
+
 ## 0.0.8
 
 ### Patch Changes
