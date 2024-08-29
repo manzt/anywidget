@@ -14,9 +14,6 @@
 			"import": "./index.ts"
 		}
 	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.8"
-	},
 	"publishConfig": {
 		"main": "dist/index.js",
 		"types": "dist/index.d.ts",
