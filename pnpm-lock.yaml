@@ -130,8 +130,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       solid-js:
-        specifier: ^1.8.20
-        version: 1.8.20
+        specifier: ^1.8.22
+        version: 1.8.22
     devDependencies:
       '@jupyter-widgets/base-manager':
         specifier: ^1.0.11
@@ -213,8 +213,8 @@ importers:
   packages/types:
     dependencies:
       '@jupyter-widgets/base':
-        specifier: ^6.0.8
-        version: 6.0.8(react@18.3.1)
+        specifier: ^6.0.10
+        version: 6.0.10(react@18.3.1)
 
   packages/vite:
     devDependencies:
@@ -4279,8 +4279,8 @@ packages:
   sockjs@0.3.24:
     resolution: {integrity: sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ==}
 
-  solid-js@1.8.20:
-    resolution: {integrity: sha512-SsgaExCJ97mPm9WpAusjZ484Z8zTp8ggiueQOsrm81iAP7UaxaN+wiOgnPcJ9u6B2SQpoQ4FiDPAZBqVWi1V4g==}
+  solid-js@1.8.22:
+    resolution: {integrity: sha512-VBzN5j+9Y4rqIKEnK301aBk+S7fvFSTs9ljg+YEdFxjNjH0hkjXPiQRcws9tE5fUzMznSS6KToL5hwMfHDgpLA==}
 
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -9951,7 +9951,7 @@ snapshots:
       uuid: 8.3.2
       websocket-driver: 0.7.4
 
-  solid-js@1.8.20:
+  solid-js@1.8.22:
     dependencies:
       csstype: 3.1.3
       seroval: 1.1.0
