@@ -197,7 +197,7 @@ function model_proxy(model, context) {
 		off(name, callback) {
 			model.off(name, callback, context);
 		},
-		// @ts-expect-error - the widget_manager type is wider than what 
+		// @ts-expect-error - the widget_manager type is wider than what
 		// we want to expose to developers.
 		// In a future version, we will expose a more limited API but
 		// that can wait for a minor version bump.

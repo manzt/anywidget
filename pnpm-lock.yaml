@@ -120,9 +120,6 @@ importers:
 
   packages/anywidget:
     dependencies:
-      '@anywidget/types':
-        specifier: workspace:~
-        version: link:../types
       '@jupyter-widgets/base':
         specifier: ^6
         version: 6.0.8(react@18.3.1)
@@ -133,6 +130,9 @@ importers:
         specifier: ^1.8.20
         version: 1.8.20
     devDependencies:
+      '@anywidget/types':
+        specifier: workspace:~
+        version: link:../types
       '@jupyter-widgets/base-manager':
         specifier: ^1.0.11
         version: 1.0.11(react@18.3.1)
@@ -210,11 +210,7 @@ importers:
         specifier: ^4.2.19
         version: 4.2.19
 
-  packages/types:
-    dependencies:
-      '@jupyter-widgets/base':
-        specifier: ^6.0.8
-        version: 6.0.8(react@18.3.1)
+  packages/types: {}
 
   packages/vite:
     devDependencies:
