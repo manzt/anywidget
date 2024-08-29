@@ -14,7 +14,8 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.3",
 		"@changesets/cli": "^2.27.7",
-		"@rspack/cli": "^0.7.5",
+		"@rspack/cli": "^1.0.0",
+		"@rspack/core": "^1.0.0",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.23.1",
 		"happy-dom": "^15.0.0",
