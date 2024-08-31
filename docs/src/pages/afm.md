@@ -8,7 +8,7 @@ layout: ../../layouts/MainLayout.astro
 
 The **Anywidget Front-End Module (AFM)** specification defines a standard for
 creating portable widget front-end code. Our vision is to enable widget reuse
-**beyond Jupyter**, including other computational notebooks and standalone web
+within and **beyond Jupyter**, including other computational notebooks and standalone web
 applications. AFM is oriented around a minimal set of APIs we identified as
 essential for integration with _host platforms_, boiling down to:
 
