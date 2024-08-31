@@ -55,7 +55,7 @@ export const SIDEBAR: Sidebar = {
 		Learn: [
 			{
 				text: "Anywidget Front-End Module",
-				link: "en/anywidget-front-end-module",
+				link: "en/afm",
 			},
 			{
 				text: "Jupyter Widgets: The Good Parts",
