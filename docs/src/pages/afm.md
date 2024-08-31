@@ -67,7 +67,7 @@ A host platform is expected to:
 - Load this module.
 - Call the lifecycle methods, passing in dependencies (`model` & `el`).
 
-All browsers support ESM, so loading the module is supported natively across
+All browsers support ECMAScript modules, so loading the module is supported natively across
 web-based environments. It is then the host platform's responsibility to
 implement the required [`model` interface](#model-interface) and provide an
 output DOM element (`el`). This simple mechanism allows new host platforms to
