@@ -35,7 +35,7 @@ the platform APIs.
 The `anywidget` Python library provides the necessary glue code to make all
 Jupyter-like environments (e.g., Jupyter Notebook, JupyterLab, Google Colab, VS
 Code) an AFM-compatible host platform. The
-[marimo](https://github.com/marimo-team/marimo) project is a _native_ host
+[marimo](https://github.com/marimo-team/marimo) project is an example of a _native_ host
 platform.
 
 ## Anywidget Front-end Module (AFM)
