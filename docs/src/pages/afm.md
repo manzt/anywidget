@@ -187,7 +187,7 @@ rendering. While many front-end tools exist to help with authoring UIs (e.g.,
 React, Svelte, Vue) we strongly believe that incorporating these
 non-web-standard pieces at the specification level would be a mistake. Our goal
 is to create a solution for reusable widgets that aligns with the web's strong
-backwards compatibility garantuees.
+backwards compatibility guarantees.
 
 Instead of baking framework support into the specification, we envision support
 for UI frameworks through:
