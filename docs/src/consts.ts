@@ -54,6 +54,10 @@ export const SIDEBAR: Sidebar = {
 		],
 		Learn: [
 			{
+				text: "Anywidget Front-End Module",
+				link: "en/anywidget-front-end-module",
+			},
+			{
 				text: "Jupyter Widgets: The Good Parts",
 				link: "en/jupyter-widgets-the-good-parts",
 			},
