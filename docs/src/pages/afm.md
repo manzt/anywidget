@@ -10,7 +10,7 @@ The **Anywidget Front-End Module (AFM)** specification defines a standard for
 creating portable widget front-end code. Our vision is to enable widget reuse
 within and **beyond Jupyter**, including other computational notebooks and standalone web
 applications. AFM is oriented around a minimal set of APIs we identified as
-essential for integration with _host platforms_, boiling down to:
+essential for integration with [_host platforms_](#host-platform), boiling down to:
 
 - Bidirectional communication with a host (e.g., Jupyter)
 - Modifying output areas (DOM manipulation) (e.g., a notebook output cell)
