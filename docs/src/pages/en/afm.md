@@ -119,9 +119,10 @@ lifetime of the widget.
 ### Model interface
 
 The `model` interface in AFM is loosely based on traditional Jupyter Widgets but
-defines a _narrower_ subset of APIs. This approach maintains familiarity for
-widget developers while requiring host platforms to implement a small subset of
-APIs to be a proper host.
+defines a [_narrower_ subset of
+APIs](https://observablehq.com/@manzt/afm-narrowing-widget-front-end-apis).
+This approach maintains familiarity for widget developers while requiring host
+platforms to implement a small subset of APIs to be a proper host.
 
 The simplified interface is:
 
