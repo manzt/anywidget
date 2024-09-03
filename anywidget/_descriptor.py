@@ -59,7 +59,7 @@ if TYPE_CHECKING:  # pragma: no cover
         def __call__(self, obj: object, include: set[str] | None) -> dict: ...
 
     # catch all for types that can be serialized ... too hard to actually type
-    Serializable: TypeAlias = object
+    Serializable: TypeAlias = dict[str, object]
 
 __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
@@ -187,7 +187,8 @@ class MimeBundleDescriptor:
         self._no_view = no_view
 
         for k, v in self._extra_state.items():
-            # TODO: use := when we drop python 3.7
+            # TODO(manzt): use := when we drop python 3.7
+            # https://github.com/manzt/anywidget/pull/167
             file_contents = try_file_contents(v)
             if file_contents is not None:
                 self._extra_state[k] = file_contents
@@ -198,7 +199,7 @@ class MimeBundleDescriptor:
         In most cases, we won't *want* `name` to be anything other than
         `'_repr_mimebundle_'`.
         """
-        # TODO:  conceivably emit a warning if name != '_repr_mimebundle_'
+        # TODO(tlambert03):  conceivably emit a warning if name != '_repr_mimebundle_'  # noqa: E501, TD003
         self._name = name
 
     @overload
@@ -365,7 +366,6 @@ class ReprMimeBundle:
         if not state:
             return  # pragma: no cover
 
-        # if self._property_lock: ... # TODO
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
@@ -396,19 +396,19 @@ class ReprMimeBundle:
         elif data["method"] == "request_state":
             self.send_state()
 
-        # elif method == "custom":
+        # elif method == "custom":  # noqa: ERA001
         # Handle a custom msg from the front-end.
         # if "content" in data:
-        #     self._handle_custom_msg(data["content"], msg["buffers"])
+        #     self._handle_custom_msg(data["content"], msg["buffers"])  # noqa: ERA001
         else:  # pragma: no cover
-            msg = (
+            err_msg = (
                 f"Unrecognized method: {data['method']}.  Please report this at "
                 "https://github.com/manzt/anywidget/issues"
             )
-            raise ValueError(msg)
+            raise ValueError(err_msg)
 
     # def _handle_custom_msg(self, content: object, buffers: list[memoryview]):
-    #     # TODO: handle custom callbacks
+    #     # TODO(manzt): handle custom callbacks  # noqa: TD003
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
 
@@ -538,7 +538,7 @@ def determine_state_getter(obj: object) -> _GetState:
     # pickle protocol ... probably not type-safe enough for our purposes
     # https://docs.python.org/3/library/pickle.html#object.__getstate__
     # if hasattr(type(obj), "__getstate__"):
-    #     return type(obj).__getstate__
+    #     return type(obj).__getstate__  # noqa: ERA001
 
     msg = (
         f"Cannot determine a state-getting method for {obj!r}. "
@@ -638,7 +638,7 @@ def _is_traitlets_object(obj: object) -> TypeGuard[traitlets.HasTraits]:
 _TRAITLETS_SYNC_FLAG = "sync"
 
 
-# TODO: decide about usage of "sync" being opt-in or opt-out
+# TODO(tlambert03): decide about usage of "sync" being opt-in or opt-out  # noqa: TD003
 # users of traitlets who *don't* use ipywidgets might be surprised when their
 # state isn't being synced without opting in.
 
@@ -736,11 +736,10 @@ def _is_msgspec_struct(obj: object) -> TypeGuard[msgspec.Struct]:
     return isinstance(obj, msgspec.Struct) if msgspec is not None else False
 
 
-def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> dict:  # noqa: ARG001
+def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> Serializable:  # noqa: ARG001
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
-    # FIXME:
-    # see discussion here:
-    # https://github.com/manzt/anywidget/pull/64/files#r1129327721
+    # TODO(manzt): comm expects a dict. ideally we could serialize with msgspec
+    # https://github.com/manzt/anywidget/pull/64#discussion_r1128986939
     return cast(dict, msgspec.to_builtins(obj))

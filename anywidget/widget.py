@@ -51,7 +51,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if not hasattr(self, _ESM_KEY):
             anywidget_traits[_ESM_KEY] = t.Unicode(_DEFAULT_ESM).tag(sync=True)
 
-        # TODO: a better way to uniquely identify this subclasses?
+        # TODO(manzt): a better way to uniquely identify this subclasses?  # noqa: TD003
         # We use the fully-qualified name to get an id which we
         # can use to update CSS if necessary.
         anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(

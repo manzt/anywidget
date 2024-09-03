@@ -17,8 +17,8 @@ def test_decorator() -> None:
 
     foo = Foo()
 
-    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
-    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
+    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore [reportAttributeAccessIssue]
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore [reportAttributeAccessIssue]
 
 
 def test_dataclass() -> None:
@@ -31,5 +31,5 @@ def test_dataclass() -> None:
 
     foo = Foo()
 
-    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
-    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
+    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore [reportAttributeAccessIssue]
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore [reportAttributeAccessIssue]
