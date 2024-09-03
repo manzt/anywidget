@@ -26,7 +26,7 @@ jobs:
         with:
           run_install: true
       - name: Set up uv
-        run: curl -LsSf https://astral.sh/uv/0.3.1/install.sh | sh
+        run: curl -LsSf https://astral.sh/uv/0.4.3/install.sh | sh
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1

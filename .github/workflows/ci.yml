@@ -23,7 +23,7 @@ jobs:
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - name: Set up uv
-        run: curl -LsSf https://astral.sh/uv/0.3.1/install.sh | sh
+        run: curl -LsSf https://astral.sh/uv/0.4.3/install.sh | sh
       - run: |
           uv run ruff check
           uv run ruff format
@@ -37,7 +37,7 @@ jobs:
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - name: Set up uv
-        run: curl -LsSf https://astral.sh/uv/0.3.1/install.sh | sh
+        run: curl -LsSf https://astral.sh/uv/0.4.3/install.sh | sh
       - run: uv run mypy
 
   TestPython:
@@ -60,7 +60,7 @@ jobs:
         with:
           run_install: true
       - name: Set up uv
-        run: curl -LsSf https://astral.sh/uv/0.3.1/install.sh | sh
+        run: curl -LsSf https://astral.sh/uv/0.4.3/install.sh | sh
       - name: Run tests
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
       - uses: codecov/codecov-action@v4
