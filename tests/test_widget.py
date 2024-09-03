@@ -17,15 +17,15 @@ from anywidget.experimental import command
 from traitlets import traitlets
 from watchfiles import Change
 
-here = pathlib.Path(__file__).parent
+SELF_DIR = pathlib.Path(__file__).parent
 
 
-def enable_hmr():
+def enable_hmr():  # noqa: ANN201
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 
 def test_version() -> None:
-    with open(here / "../packages/anywidget/package.json") as f:
+    with (SELF_DIR / "../packages/anywidget/package.json").open() as f:
         pkg = json.load(f)
 
     assert anywidget.__version__ == pkg["version"]
@@ -129,6 +129,7 @@ def test_infer_traitlets_partial() -> None:
 def test_patched_repr_ipywidget_v8() -> None:
     w = anywidget.AnyWidget()
     bundle = w._repr_mimebundle_()
+    assert bundle, "No view"
     assert bundle[0]
     assert _WIDGET_MIME_TYPE in bundle[0]
     assert bundle[1] == {}
@@ -141,6 +142,7 @@ def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch) -> Non
 
     w = anywidget.AnyWidget()
     bundle = w._repr_mimebundle_()
+    assert bundle, "No view"
     assert bundle[0]
     assert _WIDGET_MIME_TYPE in bundle[0]
     assert bundle[1] == {
@@ -300,7 +302,7 @@ def test_anywidget_commands_register_one_callback() -> None:
             self,
             msg: object,
             buffers: list[bytes],
-        ) -> tuple[str, list[bytes]]:
+        ) -> tuple[object, list[bytes]]:
             return msg, buffers
 
         @command
@@ -308,7 +310,7 @@ def test_anywidget_commands_register_one_callback() -> None:
             self,
             msg: object,
             buffers: list[bytes],
-        ) -> tuple[str, list[bytes]]:
+        ) -> tuple[object, list[bytes]]:
             return msg, buffers
 
     w = Widget()
@@ -330,7 +332,7 @@ def test_supresses_error_in_constructor() -> None:
             self,
             msg: object,
             buffers: list[bytes],
-        ) -> tuple[str, list[bytes]]:
+        ) -> tuple[object, list[bytes]]:
             return msg, buffers
 
         @property

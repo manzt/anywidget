@@ -13,7 +13,7 @@ from anywidget._util import (
 from anywidget._version import get_semver_version
 
 
-def enable_hmr():
+def enable_hmr():  # noqa: ANN201
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 
@@ -182,5 +182,5 @@ def test_try_file_contents_warns(
         ("1.2.3-rc.4", "~1.2.*"),
     ],
 )
-def test_get_semver_version(version, expected) -> None:
+def test_get_semver_version(version: str, expected: str) -> None:
     assert get_semver_version(version) == expected

@@ -64,7 +64,7 @@ class FileContents:
     def __init__(self, path: str | pathlib.Path, start_thread: bool = True) -> None:
         self._path = pathlib.Path(path).expanduser().absolute()
         if not self._path.is_file():
-            msg = "File does not exist: {self._path}"
+            msg = f"File does not exist: {self._path}"
             raise ValueError(msg)
         self._contents: str | None = None  # cached contents, cleared on change
         self._stop_event = threading.Event()

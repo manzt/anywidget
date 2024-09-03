@@ -1,6 +1,7 @@
 import pathlib
 import time
 from collections import deque
+from typing import Generator
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -11,28 +12,28 @@ from watchfiles import Change
 
 def test_file_contents_no_watch(tmp_path: pathlib.Path) -> None:
     """Test __str__ reads file contents and does not start a thread"""
-    CONTENTS = "hello, world"
+    str_contents = "hello, world"
     path = tmp_path / "foo.txt"
-    path.write_text(CONTENTS)
+    path.write_text(str_contents)
 
     with patch.object(watchfiles, "watch") as mock:
         contents = FileContents(path, start_thread=False)
-        assert str(contents) == CONTENTS
+        assert str(contents) == str_contents
         assert contents._background_thread is None
     mock.assert_not_called()
 
 
 def test_file_contents_deleted(tmp_path: pathlib.Path) -> None:
     """Test deleting a file emits a deleted signal and stops the watcher"""
-    CONTENTS = "hello, world"
+    str_contents = "hello, world"
     path = tmp_path / "foo.txt"
-    path.write_text(CONTENTS)
+    path.write_text(str_contents)
 
     contents = FileContents(path, start_thread=False)
     mock = Mock()
     contents.deleted.connect(mock)
 
-    def mock_file_events():
+    def mock_file_events() -> Generator[set, None, None]:
         changes = set()
         changes.add((Change.deleted, str(path)))
         yield changes
@@ -51,18 +52,18 @@ def test_file_contents_deleted(tmp_path: pathlib.Path) -> None:
 
 def test_file_contents_changed(tmp_path: pathlib.Path) -> None:
     """Test file changes emit changed signals and update the string contents"""
-    CONTENTS = "hello, world"
+    str_contents = "hello, world"
     path = tmp_path / "foo.txt"
-    path.write_text(CONTENTS)
+    path.write_text(str_contents)
     contents = FileContents(path, start_thread=False)
 
     mock = MagicMock()
     contents.changed.connect(mock)
 
-    NEW_CONTENTS = "blah"
+    new_contents = "blah"
 
-    def mock_file_events():
-        path.write_text(NEW_CONTENTS)
+    def mock_file_events() -> Generator[set, None, None]:
+        path.write_text(new_contents)
         changes = set()
         changes.add((Change.modified, str(path)))
         yield changes
@@ -71,8 +72,8 @@ def test_file_contents_changed(tmp_path: pathlib.Path) -> None:
         mock_watch.return_value = mock_file_events()
         deque(contents.watch(), maxlen=0)
 
-    mock.assert_called_with(NEW_CONTENTS)
-    assert str(contents) == NEW_CONTENTS
+    mock.assert_called_with(new_contents)
+    assert str(contents) == new_contents
 
 
 def test_file_contents_thread(tmp_path: pathlib.Path) -> None:
@@ -103,9 +104,9 @@ def test_file_contents_thread(tmp_path: pathlib.Path) -> None:
 
 def test_background_file_contents(tmp_path: pathlib.Path) -> None:
     """Test background thread watcher sends signals and updates contents"""
-    CONTENTS = "hello, world"
+    str_contents = "hello, world"
     path = tmp_path / "foo.txt"
-    path.write_text(CONTENTS)
+    path.write_text(str_contents)
 
     contents = FileContents(path, start_thread=False)
     mock_changed = MagicMock()
@@ -114,11 +115,11 @@ def test_background_file_contents(tmp_path: pathlib.Path) -> None:
     mock_deleted = MagicMock()
     contents.deleted.connect(mock_deleted)
 
-    NEW_CONTENTS = "blah"
+    new_contents = "blah"
 
-    def mock_file_events():
+    def mock_file_events() -> Generator[set, None, None]:
         # write to file
-        path.write_text(NEW_CONTENTS)
+        path.write_text(new_contents)
         changes = set()
         changes.add((Change.modified, str(path)))
         yield changes
@@ -127,7 +128,7 @@ def test_background_file_contents(tmp_path: pathlib.Path) -> None:
         changes.add((Change.deleted, str(path)))
         yield changes
         # "re-create the file"
-        path.write_text(NEW_CONTENTS)
+        path.write_text(new_contents)
         changes = set()
         changes.add((Change.modified, str(path)))
 
@@ -138,23 +139,23 @@ def test_background_file_contents(tmp_path: pathlib.Path) -> None:
     while contents._background_thread and contents._background_thread.is_alive():
         time.sleep(0.01)
 
-    mock_changed.assert_called_once_with(NEW_CONTENTS)
-    assert str(contents) == NEW_CONTENTS
+    mock_changed.assert_called_once_with(new_contents)
+    assert str(contents) == new_contents
 
 
 def test_missing_file_fails() -> None:
     """Test missing file fails to construct"""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="does not exist"):
         FileContents("not_a_file.txt")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="does not exist"):
         FileContents(pathlib.Path("not_a_file.txt"))
 
 
 def test_virtual_file_contents() -> None:
-    CONTENTS = "hello, world"
-    contents = VirtualFileContents(CONTENTS)
-    assert str(contents) == CONTENTS
+    str_contents = "hello, world"
+    contents = VirtualFileContents(str_contents)
+    assert str(contents) == str_contents
     mock_changed = MagicMock()
     contents.changed.connect(mock_changed)
     contents.contents = "blah"

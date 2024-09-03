@@ -97,6 +97,7 @@ ignore = [
     "D401", # First line should be in imperative mood (remove to opt in)
     "COM812", # missing trailing comma (conflicts with ruff format)
     "ISC001", # import sorting (conflicts with ruff format)
+    "DOC201", # no doc for return type (TODO: fix this)
 ]
 
 [tool.ruff.lint.per-file-ignores]
