@@ -85,7 +85,8 @@ _ANYWIDGET_STATE = {
 
 
 def open_comm(
-    target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION,
+    target_name: str = _TARGET_NAME,
+    version: str = _PROTOCOL_VERSION,
 ) -> comm.base_comm.BaseComm:
     import comm
 
@@ -208,7 +209,9 @@ class MimeBundleDescriptor:
     def __get__(self, instance: object, owner: type) -> ReprMimeBundle: ...
 
     def __get__(
-        self, instance: object | None, owner: type,
+        self,
+        instance: object | None,
+        owner: type,
     ) -> ReprMimeBundle | MimeBundleDescriptor:
         """Called when this descriptor's name is accessed on a class or instance.
 
@@ -295,7 +298,7 @@ class ReprMimeBundle:
         autodetect_observer: bool = True,
         extra_state: dict[str, Any] | None = None,
         no_view: bool = False,
-    ):
+    ) -> None:
         self._autodetect_observer = autodetect_observer
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
@@ -394,9 +397,12 @@ class ReprMimeBundle:
         # if "content" in data:
         #     self._handle_custom_msg(data["content"], msg["buffers"])
         else:  # pragma: no cover
-            raise ValueError(
+            msg = (
                 f"Unrecognized method: {data['method']}.  Please report this at "
-                "https://github.com/manzt/anywidget/issues",
+                "https://github.com/manzt/anywidget/issues"
+            )
+            raise ValueError(
+                msg,
             )
 
     # def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
@@ -413,7 +419,9 @@ class ReprMimeBundle:
         return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr(self._obj()))
 
     def sync_object_with_view(
-        self, py_to_js: bool = True, js_to_py: bool = True,
+        self,
+        py_to_js: bool = True,
+        js_to_py: bool = True,
     ) -> None:
         """Connect the front-end to changes in the model, and vice versa.
 
@@ -435,7 +443,8 @@ class ReprMimeBundle:
             # connect changes in the instance to the view
             obj = self._obj()
             if obj is None:
-                raise RuntimeError("Cannot sync a deleted object")
+                msg = "Cannot sync a deleted object"
+                raise RuntimeError(msg)
 
             if self._disconnectors:
                 warnings.warn("Refusing to re-sync a synced object.", stacklevel=2)
@@ -519,9 +528,12 @@ def determine_state_getter(obj: object) -> _GetState:
     # if hasattr(type(obj), "__getstate__"):
     #     return type(obj).__getstate__
 
-    raise TypeError(  # pragma: no cover
+    msg = (
         f"Cannot determine a state-getting method for {obj!r}. "
-        "Please implement a `_get_anywidget_state()` method that returns a dict.",
+        "Please implement a `_get_anywidget_state()` method that returns a dict."
+    )
+    raise TypeError(  # pragma: no cover
+        msg,
     )
 
 
@@ -567,7 +579,9 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
 
     # try exhaustive search
     with contextlib.suppress(
-        AttributeError, RecursionError, TypeError,
+        AttributeError,
+        RecursionError,
+        TypeError,
     ):  # pragma: no cover
         for attr in vars(obj).values():
             if isinstance(attr, psygnal.SignalGroup):
@@ -620,7 +634,8 @@ _TRAITLETS_SYNC_FLAG = "sync"
 
 
 def _get_traitlets_state(
-    obj: traitlets.HasTraits, include: set[str] | None,
+    obj: traitlets.HasTraits,
+    include: set[str] | None,
 ) -> Serializable:
     """Get the state of a traitlets.HasTraits instance."""
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
@@ -666,7 +681,8 @@ def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
 
 
 def _get_pydantic_state_v1(
-    obj: pydantic.BaseModel, include: set[str] | None,
+    obj: pydantic.BaseModel,
+    include: set[str] | None,
 ) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
@@ -678,7 +694,8 @@ def _get_pydantic_state_v1(
 
 
 def _get_pydantic_state_v2(
-    obj: pydantic.BaseModel, include: set[str] | None,
+    obj: pydantic.BaseModel,
+    include: set[str] | None,
 ) -> Serializable:
     """Get the state of a pydantic (v2) BaseModel instance."""
     return obj.model_dump(mode="json", include=include)

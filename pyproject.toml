@@ -95,6 +95,8 @@ pydocstyle = { convention = "numpy" }
 select = ["ALL"]
 ignore = [
     "D401", # First line should be in imperative mood (remove to opt in)
+    "COM812", # missing trailing comma (conflicts with ruff format)
+    "ISC001", # import sorting (conflicts with ruff format)
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -102,6 +104,7 @@ ignore = [
     "D",    # no docstrings in tests
     "S101", # use of assert
     "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+    "SLF001" # access private member
 ]
 "docs/*.py" = ["D"]
 

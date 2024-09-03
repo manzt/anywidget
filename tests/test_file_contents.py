@@ -9,7 +9,7 @@ from anywidget._file_contents import FileContents, VirtualFileContents
 from watchfiles import Change
 
 
-def test_file_contents_no_watch(tmp_path: pathlib.Path):
+def test_file_contents_no_watch(tmp_path: pathlib.Path) -> None:
     """Test __str__ reads file contents and does not start a thread"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
@@ -22,7 +22,7 @@ def test_file_contents_no_watch(tmp_path: pathlib.Path):
     mock.assert_not_called()
 
 
-def test_file_contents_deleted(tmp_path: pathlib.Path):
+def test_file_contents_deleted(tmp_path: pathlib.Path) -> None:
     """Test deleting a file emits a deleted signal and stops the watcher"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
@@ -49,7 +49,7 @@ def test_file_contents_deleted(tmp_path: pathlib.Path):
     assert mock.called
 
 
-def test_file_contents_changed(tmp_path: pathlib.Path):
+def test_file_contents_changed(tmp_path: pathlib.Path) -> None:
     """Test file changes emit changed signals and update the string contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
@@ -75,7 +75,7 @@ def test_file_contents_changed(tmp_path: pathlib.Path):
     assert str(contents) == NEW_CONTENTS
 
 
-def test_file_contents_thread(tmp_path: pathlib.Path):
+def test_file_contents_thread(tmp_path: pathlib.Path) -> None:
     """Test runs watcher in background thread by default"""
     path = tmp_path / "foo.txt"
     path.touch()
@@ -101,7 +101,7 @@ def test_file_contents_thread(tmp_path: pathlib.Path):
     contents.stop_thread()
 
 
-def test_background_file_contents(tmp_path: pathlib.Path):
+def test_background_file_contents(tmp_path: pathlib.Path) -> None:
     """Test background thread watcher sends signals and updates contents"""
     CONTENTS = "hello, world"
     path = tmp_path / "foo.txt"
@@ -142,7 +142,7 @@ def test_background_file_contents(tmp_path: pathlib.Path):
     assert str(contents) == NEW_CONTENTS
 
 
-def test_missing_file_fails():
+def test_missing_file_fails() -> None:
     """Test missing file fails to construct"""
     with pytest.raises(ValueError):
         FileContents("not_a_file.txt")
@@ -151,7 +151,7 @@ def test_missing_file_fails():
         FileContents(pathlib.Path("not_a_file.txt"))
 
 
-def test_virtual_file_contents():
+def test_virtual_file_contents() -> None:
     CONTENTS = "hello, world"
     contents = VirtualFileContents(CONTENTS)
     assert str(contents) == CONTENTS

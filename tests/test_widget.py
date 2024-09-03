@@ -4,6 +4,7 @@ import json
 import pathlib
 import sys
 import time
+from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 import anywidget
@@ -22,14 +23,14 @@ def enable_hmr():
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 
-def test_version():
+def test_version() -> None:
     with open(here / "../packages/anywidget/package.json") as f:
         pkg = json.load(f)
 
     assert anywidget.__version__ == pkg["version"]
 
 
-def test_basic():
+def test_basic() -> None:
     ESM = """
     function render({ model, el }) {
         el.innerText = "Hello, world";
@@ -46,7 +47,7 @@ def test_basic():
     assert w._esm == ESM
 
 
-def test_default_esm():
+def test_default_esm() -> None:
     class Widget(anywidget.AnyWidget): ...
 
     w = Widget()
@@ -55,7 +56,7 @@ def test_default_esm():
     assert w._esm == _DEFAULT_ESM
 
 
-def test_creates_fully_qualified_identifier():
+def test_creates_fully_qualified_identifier() -> None:
     ESM = """
     function render({ model, el }) {
         el.innerText = "Hello, world";
@@ -72,7 +73,7 @@ def test_creates_fully_qualified_identifier():
     assert w._anywidget_id == "test_widget.Widget"
 
 
-def test_infer_traitlets():
+def test_infer_traitlets() -> None:
     CSS = """
     .foo { background-color: black; }
     """
@@ -97,7 +98,7 @@ def test_infer_traitlets():
     assert w.trait_metadata("_css", "sync")
 
 
-def test_infer_traitlets_partial():
+def test_infer_traitlets_partial() -> None:
     CSS = """
     .foo { background-color: black; }
     """
@@ -124,21 +125,23 @@ def test_infer_traitlets_partial():
     assert w.trait_metadata("_css", "sync")
 
 
-def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch):
+def test_patched_repr_ipywidget_v8(monkeypatch: pytest.MonkeyPatch) -> None:
     w = anywidget.AnyWidget()
     bundle = w._repr_mimebundle_()
-    assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
+    assert bundle[0]
+    assert _WIDGET_MIME_TYPE in bundle[0]
     assert bundle[1] == {}
 
 
-def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch):
+def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch) -> None:
     mock = MagicMock()
     mock._widgets._installed_url = "foo"
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
 
     w = anywidget.AnyWidget()
     bundle = w._repr_mimebundle_()
-    assert bundle[0] and _WIDGET_MIME_TYPE in bundle[0]
+    assert bundle[0]
+    assert _WIDGET_MIME_TYPE in bundle[0]
     assert bundle[1] == {
         _WIDGET_MIME_TYPE: {
             "colab": {"custom_widget_manager": {"url": mock._widgets._installed_url}},
@@ -146,7 +149,7 @@ def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch):
     }
 
 
-def test_infer_file_contents(tmp_path: pathlib.Path):
+def test_infer_file_contents(tmp_path: pathlib.Path) -> None:
     esm = tmp_path / "foo.js"
     esm.write_text(
         "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
@@ -201,7 +204,7 @@ def test_infer_file_contents(tmp_path: pathlib.Path):
     Widget._esm.stop_thread()
 
 
-def test_missing_pathlib_path_raises(tmp_path: pathlib.Path):
+def test_missing_pathlib_path_raises(tmp_path: pathlib.Path) -> None:
     esm = tmp_path / "foo.js"
 
     with pytest.raises(FileNotFoundError):
@@ -210,7 +213,7 @@ def test_missing_pathlib_path_raises(tmp_path: pathlib.Path):
             _esm = esm
 
 
-def test_missing_string_path_with_suffix_raises(tmp_path: pathlib.Path):
+def test_missing_string_path_with_suffix_raises(tmp_path: pathlib.Path) -> None:
     str_path_with_suffix = str(tmp_path / "foo.js")
 
     with pytest.raises(FileNotFoundError):
@@ -219,7 +222,7 @@ def test_missing_string_path_with_suffix_raises(tmp_path: pathlib.Path):
             _esm = str_path_with_suffix
 
 
-def test_remote_contents():
+def test_remote_contents() -> None:
     esm = "http://example.com/foo.js"
     css = "https://example.com/bar.css"
 
@@ -232,7 +235,9 @@ def test_remote_contents():
     assert widget._css == css
 
 
-def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path):
+def test_missing_string_path_without_suffix_is_raw_string(
+    tmp_path: pathlib.Path,
+) -> None:
     str_path_without_suffix = str(tmp_path / "foo")
 
     class Widget(anywidget.AnyWidget):
@@ -241,7 +246,7 @@ def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path
     assert Widget()._esm == str_path_without_suffix
 
 
-def test_explicit_file_contents(tmp_path: pathlib.Path):
+def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
     path = tmp_path / "foo.js"
     path.write_text(
         "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
@@ -257,7 +262,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path):
     assert w._esm == path.read_text()
 
 
-def test_dom_less_widget():
+def test_dom_less_widget() -> None:
     class Widget(anywidget.AnyWidget):
         _view_name = traitlets.Any(None).tag(sync=True)
         _esm = """
@@ -270,7 +275,7 @@ def test_dom_less_widget():
     assert Widget()._repr_mimebundle_() is None
 
 
-def test_command_not_registered_by_default():
+def test_command_not_registered_by_default() -> None:
     class Widget(anywidget.AnyWidget):
         _esm = "export default { render(ctx) { ctx.el.innerText = 'Hello, world'; } }"
 
@@ -278,7 +283,7 @@ def test_command_not_registered_by_default():
     assert len(w._msg_callbacks.callbacks) == 0
 
 
-def test_anywidget_commands_register_one_callback():
+def test_anywidget_commands_register_one_callback() -> None:
     import anywidget.experimental
 
     class Widget(anywidget.AnyWidget):
@@ -293,13 +298,17 @@ def test_anywidget_commands_register_one_callback():
 
         @anywidget.experimental.command
         def _echo(
-            self, msg: object, buffers: list[bytes],
+            self,
+            msg: object,
+            buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 
         @anywidget.experimental.command
         def _echo2(
-            self, msg: object, buffers: list[bytes],
+            self,
+            msg: object,
+            buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 
@@ -307,7 +316,7 @@ def test_anywidget_commands_register_one_callback():
     assert len(w._msg_callbacks.callbacks) == 1
 
 
-def test_supresses_error_in_constructor():
+def test_supresses_error_in_constructor() -> None:
     import anywidget.experimental
 
     class Widget(anywidget.AnyWidget):
@@ -321,13 +330,16 @@ def test_supresses_error_in_constructor():
 
         @anywidget.experimental.command
         def _echo(
-            self, msg: object, buffers: list[bytes],
+            self,
+            msg: object,
+            buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 
         @property
-        def value(self):
-            raise ValueError("error")
+        def value(self) -> NoReturn:
+            msg = "error"
+            raise ValueError(msg)
 
     w = Widget()
     assert len(w._msg_callbacks.callbacks) == 1

@@ -28,7 +28,7 @@ class VirtualFileContents:
 
     changed = Signal(str)
 
-    def __init__(self, contents: str = ""):
+    def __init__(self, contents: str = "") -> None:
         self._contents = contents
 
     @property
@@ -61,10 +61,11 @@ class FileContents:
     changed = Signal(str)
     deleted = Signal()
 
-    def __init__(self, path: str | pathlib.Path, start_thread: bool = True):
+    def __init__(self, path: str | pathlib.Path, start_thread: bool = True) -> None:
         self._path = pathlib.Path(path).expanduser().absolute()
         if not self._path.is_file():
-            raise ValueError("File does not exist: {self._path}")
+            msg = "File does not exist: {self._path}"
+            raise ValueError(msg)
         self._contents: str | None = None  # cached contents, cleared on change
         self._stop_event = threading.Event()
         self._background_thread: threading.Thread | None = None
@@ -106,9 +107,12 @@ class FileContents:
         try:
             from watchfiles import Change, watch
         except ImportError as exc:
-            raise ImportError(
+            msg = (
                 "watchfiles is required to watch for file changes during development. "
-                "Install with `pip install watchfiles`.",
+                "Install with `pip install watchfiles`."
+            )
+            raise ImportError(
+                msg,
             ) from exc
 
         for changes in watch(self._path, stop_event=self._stop_event):
@@ -117,7 +121,7 @@ class FileContents:
                     self.deleted.emit()
                     return
                 # Only getting Change.added events on macOS so we listen for either
-                if change == Change.modified or change == Change.added:
+                if change in (Change.modified, Change.added):
                     self._contents = None
                     self.changed.emit(str(self))
                     yield (change, path)

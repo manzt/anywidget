@@ -105,8 +105,7 @@ def dataclass(
     def _decorator(cls: T) -> T:
         cls = dataclasses.dataclass(cls, **dataclass_kwargs)  # type: ignore[call-overload]
         cls = psygnal.evented(cls)  # type: ignore[call-overload]
-        cls = widget(esm=esm, css=css)(cls)
-        return cls
+        return widget(esm=esm, css=css)(cls)
 
     return _decorator(cls) if cls is not None else _decorator  # type: ignore[return-value]
 
@@ -149,7 +148,9 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
         return
 
     def handle_anywidget_command(
-        self: WidgetBase, msg: str | list | dict, buffers: list[bytes],
+        self: WidgetBase,
+        msg: str | list | dict,
+        buffers: list[bytes],
     ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return

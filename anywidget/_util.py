@@ -38,7 +38,10 @@ export default { render };
 
 
 def _separate_buffers(
-    substate: Any, path: list, buffer_paths: list, buffers: list,
+    substate: Any,
+    path: list,
+    buffer_paths: list,
+    buffers: list,
 ) -> Any:
     """For internal, see _remove_buffers.
 
@@ -80,7 +83,8 @@ def _separate_buffers(
                         _sub = dict(substate)  # shallow clone dict
                     _sub[k] = _v
     else:  # pragma: no cover
-        raise ValueError(f"expected state to be a list or dict, not {substate!r}")
+        msg = f"expected state to be a list or dict, not {substate!r}"
+        raise ValueError(msg)
     return _sub if _sub is not None else substate
 
 
@@ -232,7 +236,7 @@ def try_file_path(x: Any) -> pathlib.Path | None:
     # Handle the string
 
     # Ignore URLs
-    if x.startswith("http://") or x.startswith("https://"):
+    if x.startswith(("http://", "https://")):
         return None
 
     # Ignore multi-line strings (probably raw file contents)
@@ -261,7 +265,8 @@ def try_file_contents(x: Any) -> FileContents | VirtualFileContents | None:
 
     path = maybe_path
     if not path.is_file():
-        raise FileNotFoundError(f"File not found: {path}")
+        msg = f"File not found: {path}"
+        raise FileNotFoundError(msg)
     return FileContents(
         path=path,
         start_thread=_should_start_thread(path),
