@@ -25,6 +25,7 @@ import weakref
 from dataclasses import asdict, is_dataclass
 from typing import (
     TYPE_CHECKING,
+    Any,
     Callable,
     Iterable,
     Sequence,
@@ -56,10 +57,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from ._protocols import CommMessage
 
     class _GetState(Protocol):
-        def __call__(self, obj: object, include: set[str] | None) -> dict: ...
+        def __call__(self, obj: Any, include: set[str] | None) -> dict: ...  # noqa: ANN401
 
     # catch all for types that can be serialized ... too hard to actually type
-    Serializable: TypeAlias = dict[str, object]
+    Serializable: TypeAlias = Any
 
 __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
