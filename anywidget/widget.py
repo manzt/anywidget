@@ -44,7 +44,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
                 if isinstance(value, (VirtualFileContents, FileContents)):
                     value.changed.connect(
-                        lambda new_contents, key=key: setattr(self, key, new_contents)
+                        lambda new_contents, key=key: setattr(self, key, new_contents),
                     )
 
         # show default _esm if not defined
@@ -55,7 +55,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         # We use the fully-qualified name to get an id which we
         # can use to update CSS if necessary.
         anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(
-            f"{self.__class__.__module__}.{self.__class__.__name__}"
+            f"{self.__class__.__module__}.{self.__class__.__name__}",
         ).tag(sync=True)
 
         self.add_traits(**anywidget_traits)

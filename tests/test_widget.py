@@ -4,7 +4,6 @@ import json
 import pathlib
 import sys
 import time
-import typing
 from unittest.mock import MagicMock, patch
 
 import anywidget
@@ -143,14 +142,14 @@ def test_patched_repr_ipywidget_v8_colab(monkeypatch: pytest.MonkeyPatch):
     assert bundle[1] == {
         _WIDGET_MIME_TYPE: {
             "colab": {"custom_widget_manager": {"url": mock._widgets._installed_url}},
-        }
+        },
     }
 
 
 def test_infer_file_contents(tmp_path: pathlib.Path):
     esm = tmp_path / "foo.js"
     esm.write_text(
-        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
     )
 
     site_packages = tmp_path / "site-packages"
@@ -245,7 +244,7 @@ def test_missing_string_path_without_suffix_is_raw_string(tmp_path: pathlib.Path
 def test_explicit_file_contents(tmp_path: pathlib.Path):
     path = tmp_path / "foo.js"
     path.write_text(
-        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
     )
     esm = FileContents(path, start_thread=False)
 
@@ -294,13 +293,13 @@ def test_anywidget_commands_register_one_callback():
 
         @anywidget.experimental.command
         def _echo(
-            self, msg: typing.Any, buffers: list[bytes]
+            self, msg: object, buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 
         @anywidget.experimental.command
         def _echo2(
-            self, msg: typing.Any, buffers: list[bytes]
+            self, msg: object, buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 
@@ -322,7 +321,7 @@ def test_supresses_error_in_constructor():
 
         @anywidget.experimental.command
         def _echo(
-            self, msg: typing.Any, buffers: list[bytes]
+            self, msg: object, buffers: list[bytes],
         ) -> tuple[str, list[bytes]]:
             return msg, buffers
 

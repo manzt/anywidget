@@ -49,7 +49,7 @@ def mock_comm():
 def _send_value(comm: "Comm", value: int) -> int:
     # test that the object responds to incoming messages
     comm.handle_msg(
-        {"content": {"data": {"method": "update", "state": {"value": value}}}}
+        {"content": {"data": {"method": "update", "state": {"value": value}}}},
     )
     return value
 
@@ -141,10 +141,10 @@ def test_state_setter_binary(mock_comm: MagicMock):
     mock_comm.handle_msg(
         {
             "content": {
-                "data": {"method": "update", "state": {}, "buffer_paths": [["value"]]}
+                "data": {"method": "update", "state": {}, "buffer_paths": [["value"]]},
             },
             "buffers": [b"hello"],
-        }
+        },
     )
     mock.assert_called_once_with({"value": b"hello"})
 
@@ -319,7 +319,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
 
     esm = site_packages / "foo.js"
     esm.write_text(
-        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
     )
 
     class Foo:
@@ -396,7 +396,7 @@ def test_no_view():
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(
-            _esm=esm, no_view=True, autodetect_observer=False
+            _esm=esm, no_view=True, autodetect_observer=False,
         )
 
         def _get_anywidget_state(self, include: Union[Set[str], None]):

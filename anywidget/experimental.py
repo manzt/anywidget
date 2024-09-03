@@ -24,7 +24,7 @@ def widget(
     *,
     esm: str | pathlib.Path,
     css: None | str | pathlib.Path = None,
-    **kwargs: typing.Any,
+    **kwargs: object,
 ) -> typing.Callable[[T], T]:
     """Decorator to register a widget class as a mimebundle.
 
@@ -60,7 +60,7 @@ def __dataclass_transform__(
     eq_default: bool = True,
     order_default: bool = False,
     kw_only_default: bool = False,
-    field_specifiers: tuple[type | typing.Callable[..., typing.Any], ...] = (()),
+    field_specifiers: tuple[type | typing.Callable[..., object], ...] = (()),
 ) -> typing.Callable[[_T], _T]:
     return lambda a: a
 
@@ -71,7 +71,7 @@ def dataclass(
     *,
     esm: str | pathlib.Path,
     css: None | str | pathlib.Path = None,
-    **dataclass_kwargs: typing.Any,
+    **dataclass_kwargs: object,
 ) -> typing.Callable[[T], T]:
     """Turns class into a dataclass, makes it evented, and registers it as a widget.
 
@@ -83,7 +83,7 @@ def dataclass(
         The path or contents of an ES Module for the widget.
     css : None | str | pathlib.Path, optional
         The path or contents of a CSS file for the widget.
-    dataclass_kwargs : typing.Any
+    dataclass_kwargs : object
         Additional keyword arguments to pass to the dataclass decorator.
 
     Returns
@@ -115,8 +115,8 @@ _ANYWIDGET_COMMAND = "_anywidget_command"
 _ANYWIDGET_COMMANDS = "_anywidget_commands"
 
 _AnyWidgetCommand = typing.Callable[
-    [typing.Any, typing.Any, typing.List[bytes]],
-    typing.Tuple[typing.Any, typing.List[bytes]],
+    [object, object, typing.List[bytes]],
+    typing.Tuple[object, typing.List[bytes]],
 ]
 
 
@@ -146,10 +146,10 @@ def _register_anywidget_commands(widget: WidgetBase) -> None:
         getattr(type(widget), _ANYWIDGET_COMMANDS, {}),
     )
     if not cmds:
-        return None
+        return
 
     def handle_anywidget_command(
-        self: WidgetBase, msg: str | list | dict, buffers: list[bytes]
+        self: WidgetBase, msg: str | list | dict, buffers: list[bytes],
     ) -> None:
         if not isinstance(msg, dict) or msg.get("kind") != "anywidget-command":
             return

@@ -100,8 +100,8 @@ def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
     meta = get_repr_metadata()
     assert meta == {
         "application/vnd.jupyter.widget-view+json": {
-            "colab": {"custom_widget_manager": {"url": "foo"}}
-        }
+            "colab": {"custom_widget_manager": {"url": "foo"}},
+        },
     }
 
 
@@ -152,7 +152,7 @@ def test_try_file_contents_google_colab(tmp_path: pathlib.Path):
 
 
 def test_try_file_contents_warns(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path,
 ):
     monkeypatch.setitem(sys.modules, "watchfiles", None)
     foo = tmp_path / "foo.txt"

@@ -108,7 +108,7 @@ class FileContents:
         except ImportError as exc:
             raise ImportError(
                 "watchfiles is required to watch for file changes during development. "
-                "Install with `pip install watchfiles`."
+                "Install with `pip install watchfiles`.",
             ) from exc
 
         for changes in watch(self._path, stop_event=self._stop_event):

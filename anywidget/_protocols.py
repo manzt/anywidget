@@ -51,7 +51,7 @@ class MimeReprCallable(Protocol):
     """
 
     def __call__(
-        self, include: Sequence[str], exclude: Sequence[str]
+        self, include: Sequence[str], exclude: Sequence[str],
     ) -> dict | tuple[dict, dict]: ...
 
 
@@ -67,5 +67,5 @@ class WidgetBase(Protocol):
     def send(self, msg: str | dict | list, buffers: list[bytes]) -> None: ...
 
     def on_msg(
-        self, callback: Callable[[Any, str | list | dict, list[bytes]], None]
+        self, callback: Callable[[Any, str | list | dict, list[bytes]], None],
     ) -> None: ...

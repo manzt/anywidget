@@ -38,7 +38,7 @@ export default { render };
 
 
 def _separate_buffers(
-    substate: Any, path: list, buffer_paths: list, buffers: list
+    substate: Any, path: list, buffer_paths: list, buffers: list,
 ) -> Any:
     """For internal, see _remove_buffers.
 

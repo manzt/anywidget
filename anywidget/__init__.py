@@ -19,7 +19,7 @@ def _jupyter_nbextension_paths() -> list[dict]:
             "src": "nbextension",
             "dest": "anywidget",
             "require": "anywidget/extension",
-        }
+        },
     ]
 
 
