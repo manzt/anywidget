@@ -1,5 +1,13 @@
 # create-anywidget
 
+## 0.7.2
+
+### Patch Changes
+
+- Upgrade framework bridges ([`3a5b386295d6aae7a69c5396f04b70e25c9b8f58`](https://github.com/manzt/anywidget/commit/3a5b386295d6aae7a69c5396f04b70e25c9b8f58))
+
+- Bump types versions ([#675](https://github.com/manzt/anywidget/pull/675))
+
 ## 0.7.1
 
 ### Patch Changes
