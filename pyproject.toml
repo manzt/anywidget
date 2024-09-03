@@ -92,30 +92,22 @@ exclude = ["packages", "docs"]
 
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
-select = [
-    "E",    # style errors
-    "W",    # style warnings
-    "F",    # flakes
-    "D",    # pydocstyle
-    "D417", # Missing argument descriptions in Docstrings
-    "I",    # isort
-    "UP",   # pyupgrade
-    "C4",   # flake8-comprehensions
-    "B",    # flake8-bugbear
-    "A001", # flake8-builtins
-    "RUF",  # ruff-specific rules
-    "TCH",  # flake8-type-checking
-    "TID",  # flake8-tidy-imports
-]
+select = ["ALL"]
 ignore = [
     "D401", # First line should be in imperative mood (remove to opt in)
+    "COM812", # Missing trailing comma (conflicts with ruff format)
+    "ISC001", # Import sorting (conflicts with ruff format)
+    "FIX002", # Fixable issue
+    "DOC201", # TODO(manzt) enable in follow-up PR; no doc for return type.
+    "FBT", # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
-    "D",    # no docstrings in tests
-    "S101", # use of assert
+    "D",    # No docstrings in tests
+    "S101", # Use of assert
     "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+    "SLF001", # Access private member
 ]
 "docs/*.py" = ["D"]
 

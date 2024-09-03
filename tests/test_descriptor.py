@@ -1,8 +1,9 @@
-import pathlib
+from __future__ import annotations
+
 import time
 import weakref
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar, Set, Union
+from typing import TYPE_CHECKING, Callable, ClassVar, Generator
 from unittest.mock import MagicMock, patch
 
 import anywidget._descriptor
@@ -18,6 +19,8 @@ from anywidget._util import _WIDGET_MIME_TYPE
 from watchfiles import Change
 
 if TYPE_CHECKING:
+    import pathlib
+
     from anywidget._protocols import AnywidgetProtocol
     from ipykernel.comm import Comm
 
@@ -28,17 +31,23 @@ class MockComm(MagicMock):
 
     msg_callback = None
 
-    def on_msg(self, cb):
+    def on_msg(self, cb: Callable) -> None:
         self.msg_callback = cb
 
-    def handle_msg(self, msg):
+    def handle_msg(self, msg: object) -> None:
         if self.msg_callback is not None:
             self.msg_callback(msg)
 
 
 @pytest.fixture
-def mock_comm():
-    """Mock a comm object."""
+def mock_comm() -> Generator[MockComm, None, None]:
+    """Mock a comm object.
+
+    Yields
+    ------
+    MockComm
+        A mock comm object that can be used to simulate a comm.
+    """
     comm = MockComm()
     assert not _COMMS
     with patch.object(anywidget._descriptor, "open_comm", return_value=comm):
@@ -46,15 +55,15 @@ def mock_comm():
     assert not _COMMS
 
 
-def _send_value(comm: "Comm", value: int) -> int:
+def _send_value(comm: Comm, value: int) -> int:
     # test that the object responds to incoming messages
     comm.handle_msg(
-        {"content": {"data": {"method": "update", "state": {"value": value}}}}
+        {"content": {"data": {"method": "update", "state": {"value": value}}}},
     )
     return value
 
 
-def _assert_sends_update(wdg: "AnywidgetProtocol", comm: MagicMock, expect: int):
+def _assert_sends_update(wdg: AnywidgetProtocol, comm: MagicMock, expect: int) -> None:
     # test that the comm sends update messages
     wdg._repr_mimebundle_.send_state({"value"})
     comm.send.assert_called_with(
@@ -66,18 +75,18 @@ def _assert_sends_update(wdg: "AnywidgetProtocol", comm: MagicMock, expect: int)
 def test_descriptor(mock_comm: MagicMock) -> None:
     """Test that the descriptor decorator makes a comm, and gets/sets state."""
 
-    VAL = 1
-    REPR = "FOO"
+    val = 1
+    repr_ = "FOO"
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
-        value: int = VAL
+        value: int = val
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
         def __repr__(self) -> str:
-            return REPR
+            return repr_
 
     foo = Foo()
     mock_comm.send.assert_not_called()  # we haven't yet created a comm object
@@ -86,11 +95,12 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_called_once()
     assert isinstance(repr_method, ReprMimeBundle)
     bundle = repr_method()
+    assert bundle
     assert _WIDGET_MIME_TYPE in bundle[0]  # we can call it as usual
     assert len(bundle[1]) == 0
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, VAL)
+    _assert_sends_update(foo, mock_comm, val)
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
@@ -100,20 +110,22 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     mock_comm.send.assert_called()
 
     # uses the base class repr for plain text
-    assert foo._repr_mimebundle_()[0]["text/plain"] == REPR
+    bundle = foo._repr_mimebundle_()
+    assert bundle
+    assert bundle[0]["text/plain"] == repr_
 
 
-def test_state_setter(mock_comm: MagicMock):
+def test_state_setter(mock_comm: MagicMock) -> None:
     """Test that `_set_anywidget_state` is used when present."""
     mock = MagicMock()
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {}
 
-        def _set_anywidget_state(self, state):
+        def _set_anywidget_state(self, state) -> None:  # noqa: ANN001
             mock(state)
 
     foo = Foo()
@@ -123,17 +135,17 @@ def test_state_setter(mock_comm: MagicMock):
     mock.assert_called_once_with(state)
 
 
-def test_state_setter_binary(mock_comm: MagicMock):
+def test_state_setter_binary(mock_comm: MagicMock) -> None:
     """Test that `_set_anywidget_state` is used when present."""
     mock = MagicMock()
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {}
 
-        def _set_anywidget_state(self, state):
+        def _set_anywidget_state(self, state: dict) -> None:
             mock(state)
 
     foo = Foo()
@@ -141,22 +153,22 @@ def test_state_setter_binary(mock_comm: MagicMock):
     mock_comm.handle_msg(
         {
             "content": {
-                "data": {"method": "update", "state": {}, "buffer_paths": [["value"]]}
+                "data": {"method": "update", "state": {}, "buffer_paths": [["value"]]},
             },
             "buffers": [b"hello"],
-        }
+        },
     )
     mock.assert_called_once_with({"value": b"hello"})
 
 
-def test_comm_cleanup():
+def test_comm_cleanup() -> None:
     """Test that the comm is cleaned up when the object is deleted."""
     assert not _COMMS
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {}
 
     foo = Foo()
@@ -176,11 +188,11 @@ def test_comm_cleanup():
         repr_obj.sync_object_with_view()
 
 
-def test_detect_observer():
+def test_detect_observer() -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor()
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {}
 
     with pytest.warns(UserWarning, match="Could not find a notifier"):
@@ -196,7 +208,7 @@ def test_descriptor_on_slots() -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     with pytest.warns(UserWarning, match=".*is not weakrefable"):
@@ -207,7 +219,7 @@ def test_descriptor_on_slots() -> None:
     _COMMS.clear()
 
 
-def test_descriptor_with_psygnal(mock_comm: MagicMock):
+def test_descriptor_with_psygnal(mock_comm: MagicMock) -> None:
     """Test that the observer pattern is found on psygnal.evented dataclasses."""
     psygnal = pytest.importorskip("psygnal")
 
@@ -221,8 +233,9 @@ def test_descriptor_with_psygnal(mock_comm: MagicMock):
     repr_obj = foo._repr_mimebundle_  # create the comm
 
     mock_comm.send.reset_mock()
-    foo.value = 2
-    assert foo.value == 2
+    target_value = 2
+    foo.value = target_value
+    assert foo.value == target_value
     mock_comm.send.assert_called_once_with(
         data={"method": "update", "state": {"value": 2}, "buffer_paths": []},
         buffers=[],
@@ -236,17 +249,17 @@ def test_descriptor_with_psygnal(mock_comm: MagicMock):
     assert not repr_obj._disconnectors
 
 
-def test_descriptor_with_pydantic(mock_comm: MagicMock):
+def test_descriptor_with_pydantic(mock_comm: MagicMock) -> None:
     if TYPE_CHECKING:
         import pydantic
     else:
         pydantic = pytest.importorskip("pydantic")
 
-    VAL = 1
+    val = 1
 
     class Foo(pydantic.BaseModel):
         __slots__ = ("__weakref__",)
-        value: int = VAL
+        value: int = val
 
         _repr_mimebundle_: ClassVar = MimeBundleDescriptor(autodetect_observer=False)
 
@@ -254,13 +267,13 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock):
     foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, VAL)
+    _assert_sends_update(foo, mock_comm, val)
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
 
 
-def test_descriptor_with_msgspec(mock_comm: MagicMock):
+def test_descriptor_with_msgspec(mock_comm: MagicMock) -> None:
     if TYPE_CHECKING:
         import msgspec
         import psygnal
@@ -268,24 +281,24 @@ def test_descriptor_with_msgspec(mock_comm: MagicMock):
         psygnal = pytest.importorskip("psygnal")
         msgspec = pytest.importorskip("msgspec")
 
-    VAL = 1
+    val = 1
 
     @psygnal.evented
     class Foo(msgspec.Struct, weakref=True):
-        value: int = VAL
+        value: int = val
         _repr_mimebundle_: ClassVar = MimeBundleDescriptor(autodetect_observer=False)
 
     foo = Foo()
     foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, VAL)
+    _assert_sends_update(foo, mock_comm, val)
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
 
 
-def test_descriptor_with_traitlets(mock_comm: MagicMock):
+def test_descriptor_with_traitlets(mock_comm: MagicMock) -> None:
     import traitlets
 
     class Foo(traitlets.HasTraits):
@@ -296,8 +309,9 @@ def test_descriptor_with_traitlets(mock_comm: MagicMock):
     repr_obj = foo._repr_mimebundle_  # create the comm
     mock_comm.send.reset_mock()
 
-    foo.value = 2
-    assert foo.value == 2
+    target_value = 2
+    foo.value = target_value
+    assert foo.value == target_value
     mock_comm.send.assert_called_once_with(
         data={"method": "update", "state": {"value": 2}, "buffer_paths": []},
         buffers=[],
@@ -319,14 +333,14 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
 
     esm = site_packages / "foo.js"
     esm.write_text(
-        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }"
+        "export default { render({ model, el }) { el.innerText = 'Hello, world'; } }",
     )
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
@@ -336,7 +350,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
     foo = Foo()
     assert foo._repr_mimebundle_._extra_state["_esm"] == esm.read_text()
 
-    def mock_file_events():
+    def mock_file_events() -> Generator[set, None, None]:
         esm.write_text("blah")
         # write to file
         changes = set()
@@ -374,7 +388,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(bar=bar, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
@@ -385,7 +399,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
     assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()
 
 
-def test_no_view():
+def test_no_view() -> None:
     """Test that the descriptor works without a view."""
 
     esm = """
@@ -396,10 +410,12 @@ def test_no_view():
 
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(
-            _esm=esm, no_view=True, autodetect_observer=False
+            _esm=esm,
+            no_view=True,
+            autodetect_observer=False,
         )
 
-        def _get_anywidget_state(self, include: Union[Set[str], None]):
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
             return {}
 
     foo = Foo()

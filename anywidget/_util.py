@@ -37,9 +37,12 @@ export default { render };
 # https://github.com/jupyter-widgets/ipywidgets/blob/7325e5952efb71bd69692b2d7ed815646c0ac521/python/ipywidgets/ipywidgets/widgets/widget.py
 
 
-def _separate_buffers(
-    substate: Any, path: list, buffer_paths: list, buffers: list
-) -> Any:
+def _separate_buffers(  # noqa: C901, PLR0912
+    substate: object,
+    path: list,
+    buffer_paths: list,
+    buffers: list,
+) -> object:
     """For internal, see _remove_buffers.
 
     remove binary types from dicts and lists, but keep track of their paths any part of
@@ -48,6 +51,11 @@ def _separate_buffers(
     will result in {'x': {}, 'y': [None, None]}, [ar, ar2, ar3], [['x', 'ar'], ['y', 0],
     ['y', 1]] instead of removing elements from the list, this will make replacing the
     buffers on the js side much easier
+
+    Raises
+    ------
+    TypeError
+        If substate is not a list or dict.
     """
     _t = type(substate)
     _sub: list | dict | None = None
@@ -80,11 +88,12 @@ def _separate_buffers(
                         _sub = dict(substate)  # shallow clone dict
                     _sub[k] = _v
     else:  # pragma: no cover
-        raise ValueError(f"expected state to be a list or dict, not {substate!r}")
+        msg = f"expected state to be a list or dict, not {substate!r}"
+        raise TypeError(msg)
     return _sub if _sub is not None else substate
 
 
-def remove_buffers(state: Any) -> tuple[Any, list[list], list[memoryview]]:
+def remove_buffers(state: object) -> tuple[Any, list[list], list[memoryview]]:
     """Return (state_without_buffers, buffer_paths, buffers) for binary message parts.
 
     A binary message part is a memoryview, bytearray, or python 3 bytes object.
@@ -161,7 +170,7 @@ def get_repr_metadata() -> dict:
         return {}
 
     enable_custom_widget_manager_once()
-    url = sys.modules["google.colab.output"]._widgets._installed_url
+    url = sys.modules["google.colab.output"]._widgets._installed_url  # noqa: SLF001
 
     if url is None:
         return {}
@@ -202,7 +211,7 @@ def _should_start_thread(path: pathlib.Path) -> bool:
     return True
 
 
-def try_file_path(x: Any) -> pathlib.Path | None:
+def try_file_path(x: object) -> pathlib.Path | None:
     """If possible coerce x into a pathlib.Path object.
 
     If a string, we handle the following cases:
@@ -232,7 +241,7 @@ def try_file_path(x: Any) -> pathlib.Path | None:
     # Handle the string
 
     # Ignore URLs
-    if x.startswith("http://") or x.startswith("https://"):
+    if x.startswith(("http://", "https://")):
         return None
 
     # Ignore multi-line strings (probably raw file contents)
@@ -250,9 +259,15 @@ def try_file_path(x: Any) -> pathlib.Path | None:
     return None
 
 
-def try_file_contents(x: Any) -> FileContents | VirtualFileContents | None:
-    """Try to coerce x into a FileContents object."""
-    if x in _VIRTUAL_FILES:
+def try_file_contents(x: object) -> FileContents | VirtualFileContents | None:
+    """Try to coerce x into a FileContents object.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the file is not found.
+    """
+    if isinstance(x, str) and x in _VIRTUAL_FILES:
         return _VIRTUAL_FILES[x]
 
     maybe_path = try_file_path(x)
@@ -261,7 +276,8 @@ def try_file_contents(x: Any) -> FileContents | VirtualFileContents | None:
 
     path = maybe_path
     if not path.is_file():
-        raise FileNotFoundError(f"File not found: {path}")
+        msg = f"File not found: {path}"
+        raise FileNotFoundError(msg)
     return FileContents(
         path=path,
         start_thread=_should_start_thread(path),

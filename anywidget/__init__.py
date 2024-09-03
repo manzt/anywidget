@@ -19,11 +19,11 @@ def _jupyter_nbextension_paths() -> list[dict]:
             "src": "nbextension",
             "dest": "anywidget",
             "require": "anywidget/extension",
-        }
+        },
     ]
 
 
-def load_ipython_extension(ipython):  # type: ignore[no-untyped-def]
+def load_ipython_extension(ipython) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
     from ._cellmagic import load_ipython_extension
 
     load_ipython_extension(ipython)

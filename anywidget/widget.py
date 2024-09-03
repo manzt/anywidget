@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import ipywidgets
 import traitlets.traitlets as t
 
@@ -21,6 +19,8 @@ from ._util import (
 from ._version import _ANYWIDGET_SEMVER_VERSION
 from .experimental import _collect_anywidget_commands, _register_anywidget_commands
 
+_PLAIN_TEXT_MAX_LEN = 110
+
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     """Main AnyWidget base class."""
@@ -33,7 +33,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(_ANYWIDGET_SEMVER_VERSION).tag(sync=True)
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         if in_colab():
             enable_custom_widget_manager_once()
 
@@ -44,18 +44,18 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
                 if isinstance(value, (VirtualFileContents, FileContents)):
                     value.changed.connect(
-                        lambda new_contents, key=key: setattr(self, key, new_contents)
+                        lambda new_contents, key=key: setattr(self, key, new_contents),
                     )
 
         # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
             anywidget_traits[_ESM_KEY] = t.Unicode(_DEFAULT_ESM).tag(sync=True)
 
-        # TODO: a better way to uniquely identify this subclasses?
+        # TODO(manzt): a better way to uniquely identify this subclasses?  # noqa: TD003
         # We use the fully-qualified name to get an id which we
         # can use to update CSS if necessary.
         anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(
-            f"{self.__class__.__module__}.{self.__class__.__name__}"
+            f"{self.__class__.__module__}.{self.__class__.__name__}",
         ).tag(sync=True)
 
         self.add_traits(**anywidget_traits)
@@ -66,15 +66,16 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         """Coerces _esm and _css to FileContents if they are files."""
         super().__init_subclass__(**kwargs)
         for key in (_ESM_KEY, _CSS_KEY) & cls.__dict__.keys():
-            # TODO: Upgrate to := when we drop Python 3.7
+            # TODO(manzt): Upgrate to := when we drop Python 3.7
+            # https://github.com/manzt/anywidget/pull/167
             file_contents = try_file_contents(getattr(cls, key))
             if file_contents:
                 setattr(cls, key, file_contents)
         _collect_anywidget_commands(cls)
 
-    def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
+    def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:  # noqa: ARG002
         plaintext = repr(self)
-        if len(plaintext) > 110:
+        if len(plaintext) > _PLAIN_TEXT_MAX_LEN:
             plaintext = plaintext[:110] + "…"
         if self._view_name is None:
             return None  # type: ignore[unreachable]

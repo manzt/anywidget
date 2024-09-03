@@ -13,11 +13,11 @@ from anywidget._util import (
 from anywidget._version import get_semver_version
 
 
-def enable_hmr():
+def enable_hmr():  # noqa: ANN201
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
 
 
-def test_remove_and_put_buffers():
+def test_remove_and_put_buffers() -> None:
     mv1 = memoryview(b"test1")
     mv2 = memoryview(b"test2")
     state = {
@@ -76,7 +76,7 @@ def test_remove_and_put_buffers():
     assert state_before == state
 
 
-def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
+def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch) -> None:
     mock = MagicMock()
     monkeypatch.setitem(sys.modules, "google.colab.output", mock)
     get_repr_metadata()
@@ -84,7 +84,7 @@ def test_enables_widget_manager_in_colab(monkeypatch: pytest.MonkeyPatch):
     mock.enable_custom_widget_manager.assert_called_once()
 
 
-def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
+def test_get_metadata(monkeypatch: pytest.MonkeyPatch) -> None:
     meta = get_repr_metadata()
     assert meta == {}
 
@@ -100,12 +100,12 @@ def test_get_metadata(monkeypatch: pytest.MonkeyPatch):
     meta = get_repr_metadata()
     assert meta == {
         "application/vnd.jupyter.widget-view+json": {
-            "colab": {"custom_widget_manager": {"url": "foo"}}
-        }
+            "colab": {"custom_widget_manager": {"url": "foo"}},
+        },
     }
 
 
-def test_try_file_contents_development(tmp_path: pathlib.Path):
+def test_try_file_contents_development(tmp_path: pathlib.Path) -> None:
     foo = tmp_path / "foo.txt"
 
     with pytest.raises(FileNotFoundError):
@@ -115,7 +115,7 @@ def test_try_file_contents_development(tmp_path: pathlib.Path):
     assert try_file_contents(foo) is not None
 
 
-def test_try_file_contents_development_enable_hmr(tmp_path: pathlib.Path):
+def test_try_file_contents_development_enable_hmr(tmp_path: pathlib.Path) -> None:
     foo = tmp_path / "foo.txt"
 
     with pytest.raises(FileNotFoundError):
@@ -129,7 +129,7 @@ def test_try_file_contents_development_enable_hmr(tmp_path: pathlib.Path):
     file_contents.stop_thread()  # stop the background thread for CI
 
 
-def test_try_file_contents_production(tmp_path: pathlib.Path):
+def test_try_file_contents_production(tmp_path: pathlib.Path) -> None:
     site_packages = tmp_path / "site-packages"
     site_packages.mkdir()
     bar = site_packages / "bar.txt"
@@ -140,7 +140,7 @@ def test_try_file_contents_production(tmp_path: pathlib.Path):
     assert file_contents._background_thread is None
 
 
-def test_try_file_contents_google_colab(tmp_path: pathlib.Path):
+def test_try_file_contents_google_colab(tmp_path: pathlib.Path) -> None:
     site_packages = tmp_path / "dist-packages"
     site_packages.mkdir()
     bar = site_packages / "bar.txt"
@@ -152,8 +152,9 @@ def test_try_file_contents_google_colab(tmp_path: pathlib.Path):
 
 
 def test_try_file_contents_warns(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path
-):
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: pathlib.Path,
+) -> None:
     monkeypatch.setitem(sys.modules, "watchfiles", None)
     foo = tmp_path / "foo.txt"
     foo.write_text("foo")
@@ -167,7 +168,7 @@ def test_try_file_contents_warns(
 
 
 @pytest.mark.parametrize(
-    "version, expected",
+    ("version", "expected"),
     [
         ("1.0.0", "~1.0.*"),
         ("2.1.1", "~2.1.*"),
@@ -181,5 +182,5 @@ def test_try_file_contents_warns(
         ("1.2.3-rc.4", "~1.2.*"),
     ],
 )
-def test_get_semver_version(version, expected):
+def test_get_semver_version(version: str, expected: str) -> None:
     assert get_semver_version(version) == expected
