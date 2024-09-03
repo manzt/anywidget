@@ -14,9 +14,8 @@ if typing.TYPE_CHECKING:  # pragma: no cover
 
     from ._protocols import WidgetBase
 
-__all__ = ["dataclass", "widget", "MimeBundleDescriptor"]
+__all__ = ["MimeBundleDescriptor", "dataclass", "widget"]
 
-_T = typing.TypeVar("_T")
 T = typing.TypeVar("T")
 
 
@@ -24,7 +23,7 @@ def widget(
     *,
     esm: str | pathlib.Path,
     css: None | str | pathlib.Path = None,
-    **kwargs: object,
+    **kwargs: typing.Any,  # noqa: ANN401
 ) -> typing.Callable[[T], T]:
     """Decorator to register a widget class as a mimebundle.
 
@@ -46,7 +45,7 @@ def widget(
     if css is not None:
         kwargs["_css"] = css
 
-    def _decorator(cls: _T) -> _T:
+    def _decorator(cls: T) -> T:
         setattr(cls, "_repr_mimebundle_", MimeBundleDescriptor(**kwargs))  # noqa: B010
         return cls
 
@@ -55,13 +54,13 @@ def widget(
 
 # To preserve the signature of the decorated class.
 # see: https://github.com/pyapp-kit/magicgui/blob/5e068f31eaeeb130f43c38727b25423cc3ea4de3/src/magicgui/schema/_guiclass.py#L145-L162
-def __dataclass_transform__(
+def __dataclass_transform__(  # noqa: N807
     *,
-    eq_default: bool = True,
-    order_default: bool = False,
-    kw_only_default: bool = False,
-    field_specifiers: tuple[type | typing.Callable[..., object], ...] = (()),
-) -> typing.Callable[[_T], _T]:
+    eq_default: bool = True,  # noqa: ARG001
+    order_default: bool = False,  # noqa: ARG001
+    kw_only_default: bool = False,  # noqa: ARG001
+    field_specifiers: tuple[type | typing.Callable[..., object], ...] = (()),  # noqa: ARG001
+) -> typing.Callable[[T], T]:
     return lambda a: a
 
 
@@ -119,8 +118,20 @@ _AnyWidgetCommand = typing.Callable[
 ]
 
 
-def command(cmd: _AnyWidgetCommand) -> _AnyWidgetCommand:
-    """Mark a function as a command for anywidget."""
+def command(cmd: T) -> T:
+    """Mark a function as a command for anywidget.
+
+    Parameters
+    ----------
+    cmd : Callable
+        The function to mark as a command.
+
+    Returns
+    -------
+    Callable
+        The decorated function annotated as a command.
+
+    """
     setattr(cmd, _ANYWIDGET_COMMAND, True)
     return cmd
 
@@ -132,7 +143,7 @@ def _collect_anywidget_commands(widget_cls: type) -> None:
             continue
         for name, attr in base.__dict__.items():
             if callable(attr) and getattr(attr, _ANYWIDGET_COMMAND, False):
-                cmds[name] = attr
+                cmds[name] = attr  # noqa: PERF403
 
     setattr(widget_cls, _ANYWIDGET_COMMANDS, cmds)
 

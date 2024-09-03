@@ -104,7 +104,8 @@ ignore = [
     "D",    # no docstrings in tests
     "S101", # use of assert
     "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
-    "SLF001" # access private member
+    "SLF001", # access private member
+    "PLC2701", # import private name
 ]
 "docs/*.py" = ["D"]
 
