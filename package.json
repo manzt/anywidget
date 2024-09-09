@@ -13,14 +13,14 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.3",
-		"@changesets/cli": "^2.27.7",
-		"@rspack/cli": "^1.0.0",
-		"@rspack/core": "^1.0.0",
+		"@changesets/cli": "^2.27.8",
+		"@rspack/cli": "^1.0.3",
+		"@rspack/core": "^1.0.3",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"esbuild": "^0.23.1",
 		"happy-dom": "^15.7.3",
 		"publint": "^0.2.10",
-		"typescript": "^5.5.4",
+		"typescript": "^5.6.2",
 		"vitest": "^2.0.5"
 	},
 	"packageManager": "pnpm@9.9.0"
