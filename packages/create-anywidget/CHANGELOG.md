@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.3
+
+### Patch Changes
+
+- Bump TypeScript to 5.6 ([#680](https://github.com/manzt/anywidget/pull/680))
+
 ## 0.7.2
 
 ### Patch Changes
