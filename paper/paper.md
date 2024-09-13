@@ -246,4 +246,9 @@ contributions and advocacy of the project. Our appreciation extends to the
 entire anywidget community and the Abdennur and HIDIVE labs for their helpful
 discussions.
 
+# Funding
+
+TM, NA, and NG acknowledge funding from the National Institutes of Health (UM1
+HG011536, OT2 OD033758, R33 CA263666, R01 HG011773).
+
 # References
