@@ -18,7 +18,7 @@
 
 ## About
 
-**anywidget** is both a [**specification**](https://anywidget/dev/en/afm) and
+**anywidget** is both a [**specification**](https://anywidget.dev/en/afm) and
 **toolkit** for authoring reusable web-based widgets for interactive computing
 environments.
 
