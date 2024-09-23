@@ -5,7 +5,7 @@
 </h1>
 <samp>
   <p align="center">
-    <span>custom jupyter widgets made easy</span>
+    <span>reusable widgets made easy</span>
       <br>
       <br>
       <a href="#installation">installation</a> .
@@ -18,10 +18,11 @@
 
 ## About
 
-**anywidget** uses modern web standards to simplify authoring and distributing
-custom Jupyter Widgets.
+**anywidget** is both a [**specification**](https://anywidget/dev/en/afm) and
+**toolkit** for authoring reusable web-based widgets for interactive computing
+environments.
 
-- 🛠️ create widgets **without complicated cookiecutter templates**
+- 🛠️ create custom Jupyter Widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
 - 🤖 prototype **within** `.ipynb` or `.py` files
 - 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, [**marimo**](https://github.com/marimo-team/marimo) and more
@@ -45,6 +46,8 @@ conda install -c conda-forge anywidget
 ```
 
 ## Usage
+
+The easiest way to start developing with **anywidget** is with the Python package.
 
 ```python
 import anywidget

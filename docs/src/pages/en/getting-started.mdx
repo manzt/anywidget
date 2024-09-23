@@ -9,23 +9,26 @@ import CounterButton from "../../components/CounterButton.astro";
 
 ## What is anywidget?
 
-**anywidget** is a Python library that simplifies creating and publishing
-custom [Jupyter Widgets](https://ipywidgets.readthedocs.io/en/latest/).
-No messy build configuration or complicated cookiecutter templates.
-
-It is <u>**not**</u> a new interactive widgets framework, but rather
-an abstraction for creating custom Jupyter Widgets using modern web standards.
+**anywidget** is both a **specification** and **toolkit** for authoring
+reusable web-based widgets for interactive computing environments. As a
+specification, it defines a standard for widget front-end code. As a toolkit,
+it provides tools for authoring widget front-end code according to the
+specification, as well as a Python library that simplifies creating and
+publishing custom [Jupyter
+Widgets](https://ipywidgets.readthedocs.io/en/latest/).
 
 ## Key features
 
 - 🛠️ Create widgets **without complicated cookiecutter templates**
-- 📚 **Publish to PyPI** like any other Python package
+- 📚 **Publish Jupyter Widgets to PyPI** like any other Python package
 - 🤖 Prototype **within** `.ipynb` or `.py` files
 - 🚀 Run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, **marimo**, and more
 - ⚡ Develop with **instant HMR**, like modern web frameworks
 
 
 ## Example
+
+The easiest way to start developing with **anywidget** is with the Python package.
 
 ```
 pip install "anywidget[dev]"
@@ -69,15 +72,16 @@ What's going on here:
   Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
   keyword argument.
 
-- `_esm` specifies a <u>**required**</u> [ECMAScript module](https://nodejs.org/api/esm.html) for the widget.
+- `_esm` specifies a <u>**required**</u> [Anywidget Front-End Module (AFM)](/en/afm) for the widget.
   It defines and exports `render`, a function for rendering and initializes dynamic updates for the custom widget.
 
 - `_css` specifies an <u>**optional**</u> CSS stylesheet to load for the widget. It can be a full URL or plain text. Styles are loaded
   in the global scope if using this feature, so take care to avoid naming conflicts.
 
-ECMAScript modules are the offical standard format to package JavaScript code for reuse and are supported
-natively across [all major browsers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#javascript.statements.export).
-Therefore, dependencies can be imported directly via a fully qualified URL.
+The Anywidget Front-End Module (AFM) is a web-standard [ECMAScript module
+(ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+that defines a widget's behavior. It can be authored in a single file using URLs
+for third-party dependencies:
 
 ```javascript
 import * as d3 from "https://esm.sh/d3@7";
@@ -90,20 +94,9 @@ function render({ model, el }) {
 export default { render };
 ```
 
-The `render` function can also (optionally) return a callback that is executed any time the view is
-removed from the DOM. This feature is useful when dealing with complex event listeners, subscriptions,
-or third-party libraries that require proper teardown.
-
-```javascript
-/** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
-function render({ model, el }) {
-	// Create DOM elements and set up subscribers
-	return () => {
-		// Optionally cleanup
-	};
-}
-export default { render }
-```
+Or produced via [a build step](/en/bundling) to include local dependencies or
+use popular JS frameworks (e.g., React, Svelte, Vue). For details on lifecycle
+methods and authoring AFM, see the [AFM documentation](/en/afm).
 
 ## Progressive Development
 
@@ -172,3 +165,14 @@ and publishing a package on PyPI.
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
   allowfullscreen
 ></iframe>
+
+## Relationship to Jupyter Widgets
+
+**anywidget** began as a modern alternative for authoring custom Jupyter
+Widgets and is now the [recommended
+method](https://github.com/jupyter-widgets/widget-cookiecutter) for creating
+them. The project has since grown in scope as [AFM](/en/afm) has been adopted
+by platforms beyond Python and Jupyter. While maintaining its primary focus on
+Jupyter Widgets, **anywidget** now enables the creation of custom widgets for a
+variety of interactive computing environments (including Deno, R, and entirely
+in the browser).
