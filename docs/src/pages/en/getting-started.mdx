@@ -10,9 +10,9 @@ import CounterButton from "../../components/CounterButton.astro";
 ## What is anywidget?
 
 **anywidget** is both a **specification** and **toolkit** for authoring
-portable and reusable web-based widgets for interactive computing environments.
-As a specification, it defines a standard for widget front-end code. As a
-toolkit, it provides tools for authoring widget front-end code according to the
+reusable web-based widgets for interactive computing environments. As a
+specification, it defines a standard for widget front-end code. As a toolkit,
+it provides tools for authoring widget front-end code according to the
 specification, as well as a Python library that simplifies creating and
 publishing custom [Jupyter
 Widgets](https://ipywidgets.readthedocs.io/en/latest/).
@@ -165,3 +165,14 @@ and publishing a package on PyPI.
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
   allowfullscreen
 ></iframe>
+
+## Relationship to Jupyter Widgets
+
+**anywidget** began as a modern alternative for authoring custom Jupyter
+Widgets and is now the [recommended
+method](https://github.com/jupyter-widgets/widget-cookiecutter) for creating
+them. The project has since grown in scope as [AFM](/en/afm) has been adopted
+by platforms beyond Python and Jupyter. While maintaining its primary focus on
+Jupyter Widgets, **anywidget** now enables the creation of custom widgets for a
+variety of interactive computing environments (including Deno, R, and entirely
+in the browser).
