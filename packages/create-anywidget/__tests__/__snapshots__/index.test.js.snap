@@ -301,7 +301,7 @@ src/ipyfoo/static
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.5",
+		"@types/react": "^18.3.9",
 		"@types/react-dom": "^18.3.0",
 		"typescript": "^5.6.2"
 	}
@@ -1175,7 +1175,7 @@ src/ipyfoo/static
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"esbuild": "^0.23.1"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -1382,10 +1382,10 @@ src/ipyfoo/static
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.5",
+		"@types/react": "^18.3.9",
 		"@types/react-dom": "^18.3.0",
 		"typescript": "^5.6.2",
-		"esbuild": "^0.23.1"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -1615,7 +1615,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.23.1"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -2018,7 +2018,7 @@ src/ipyfoo/static
 	"devDependencies": {
 		"@anywidget/types": "0.2.0",
 		"typescript": "^5.6.2",
-		"esbuild": "^0.23.1"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
