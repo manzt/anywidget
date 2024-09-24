@@ -56,7 +56,6 @@ export default function Search() {
 					viewBox="0 0 24 24"
 					fill="none"
 					focusable="false"
-					aria-hidden="true"
 					role="img"
 				>
 					<path
