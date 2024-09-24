@@ -225,7 +225,7 @@ documentation about the project can be found at https://anywidget.dev.
 Interactive notebook visualization tools vary widely in features and
 compatibility [@Wang2024]. Some tools offer rich features (e.g.,
 bi-directional communication) but rely on platform-specific APIs, limiting
-compatibility [@Zhao2022; @Wang2023; @Drosos2020; @Li2023; @Jain2022]. More
+compatibility [@Zhao2022; @Wang2023; @Drosos2020; @Li2023; @Jain2022; @bokeh; @streamlit]. More
 simple approaches provide broader compatibility but lack features which
 meaningfully enrich user workflows. For example, using static templates or the
 NOVA framework [@Wang2022] offers wide compatibility, as the resulting HTML
