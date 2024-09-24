@@ -22,9 +22,9 @@ jobs:
       # Disable jupyter-builder build hook because not needed for linting/formatting, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
-      - uses: astral-sh/setup-uv@v2
+      - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.6"
+          version: "0.4.16"
       - run: |
           uv run ruff check
           uv run ruff format
@@ -37,9 +37,9 @@ jobs:
       # Disable jupyter-builder build hook because not needed for typechecking, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
-      - uses: astral-sh/setup-uv@v2
+      - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.6"
+          version: "0.4.16"
       - run: uv run mypy
 
   TestPython:
@@ -61,9 +61,9 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
-      - uses: astral-sh/setup-uv@v2
+      - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.6"
+          version: "0.4.16"
       - name: Run tests
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
       - uses: codecov/codecov-action@v4

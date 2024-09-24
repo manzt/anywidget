@@ -5,7 +5,7 @@
 		"build:packages": "tsc --build && pnpm --filter=\"./packages/**\" -r build && pnpm publint",
 		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version",
-		"release": "pnpm build:packages && uvx --from build pyproject-build && changeset publish && uvx twine upload --skip-existing dist/*",
+		"release": "pnpm build:packages && uv build && changeset publish && uv publish dist/*",
 		"test": "vitest --environment=happy-dom --run",
 		"typecheck": "tsc --build && vitest --typecheck.only --run",
 		"fix": "biome check --write .",

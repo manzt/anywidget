@@ -46,9 +46,6 @@ dev-dependencies = [
     "watchfiles>=0.23.0",
 ]
 
-[tool.uv.sources]
-anywidget = { workspace = true }
-
 [tool.hatch.build.targets.wheel.shared-data]
 "anywidget/nbextension" = "share/jupyter/nbextensions/anywidget"
 "anywidget/labextension" = "share/jupyter/labextensions/anywidget"
