@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.4
+
+### Patch Changes
+
+- Use esbuild v0.24.0 ([#694](https://github.com/manzt/anywidget/pull/694))
+
 ## 0.7.3
 
 ### Patch Changes
