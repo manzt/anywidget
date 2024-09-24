@@ -44,11 +44,11 @@ reusable web-based widgets in interactive computing environments
 code based on the web browser's native module system. Second, it provides tools
 to author, distribute, and execute these modules across web-based computing
 platforms. Since its release a year and a half ago, anywidget has steadily
-gained adoption. Nearly 70 new widgets have been created or ported to anywidget
-and published to the Python Package Index (PyPI), along with many standalone
-scripts and notebooks. These tools cover general-purpose visualization
-libraries [@jscatter; @Heer2024] as well as notebook integrations for
-applications in biology [@gos; @vitessce; @viv; @cev], mapping [@lonboard],
+gained adoption. Nearly 100 new widgets have been created or ported to
+anywidget and published to the Python Package Index (PyPI), along with many
+standalone scripts and notebooks. These tools cover general-purpose
+visualization libraries [@jscatter; @Heer2024] as well as notebook integrations
+for applications in biology [@gos; @vitessce; @viv; @cev], mapping [@lonboard],
 astronomy [@ipyaladin], and education [@drawdata]. Anywidget has also been
 integrated into popular visualization libraries like Altair [@altair],
 enhancing interactivity in notebooks and deepening user engagement with
@@ -59,27 +59,32 @@ visualizations and code.
 # Statement of need
 
 Computational notebooks are the preferred environment for interactive computing
-and data analysis. Their popularity has spurred the development of interactive
-visual analytics systems that integrate seamlessly within these environments
-[@Wang2024]. The Jupyter project [@Kluyver2016; @Perez2007; @Granger2021] has
-fostered an ecosystem for writing, executing, and sharing computational
-notebooks, including tools for converting them into formats like
-books [@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert;
-@Wang2023], and dashboards [@voila]. However, approaches for authoring
-interactive notebook visualizations vary widely in features and platform
-compatibility [@Wang2024], resulting in diverse yet incompatible systems.
-This inconsistency hinders composition and reuse of interactive visualizations
-in notebooks, fostering platform-specific, monolithic integrations instead of
-reusable, modular components that fit various analysis workflows.
+and data analysis. These platforms provide an interface where users can write,
+execute, and interact with code and data in real-time. Notebooks connect an
+interactive front end (typically a web browser) to an external system that runs
+the code, combining prose, executable snippets, and media. The widespread
+adoption of notebooks has driven the development of tools for integrating
+interactive visualizations within these environments [@Wang2024]. The Jupyter
+project [@Kluyver2016; @Perez2007; @Granger2021] has become synonymous with
+computational notebooks, largely due to its widespread success in fostering an
+extensive ecosystem of community tools (e.g., for producing books
+[@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert; @Wang2023],
+and dashboards [@voila]).
 
-No authoring approach aligns interactive visualization systems with the broader
-notebook ecosystem, except for Jupyter Widgets, which show potential due to
-their modularity, wide platform support, and advanced features. However,
-the complexity and error-prone nature of authoring custom Jupyter Widgets have
-limited their adoption by the visualization community, leading authors to
-create or resort to alternative methods. A universal protocol is needed to
-simplify authorship and support a distributed collection of pluggable
-interactive visualizations across computational notebooks.
+Approaches for authoring interactive visualizations across notebook platforms,
+including Jupyter, vary widely [@Wang2024]. This inconsistency has led to
+fragmented methods for creating and distributing custom visualizations and
+interactive components, hindering the development of a composable solutions.
+The Jupyter Widgets system shows unique potential for aligning interactive
+visualization systems with the broader notebook ecosystem. However, the
+complexity and error-prone nature of authoring custom widgets has limited their
+adoption by the visualization community. Widget development is hindered by the
+need to integrate front-end code across diverse environments, fragmented
+distribution models, and a cumbersome development experience [@scipy].
+Moreover, Jupyter Widgets are Jupyter-specific, with the widest support limited
+to Python kernels, leaving gaps in addressing new and alternative interactive
+computing environments. A universal protocol is needed to simplify authorship
+and support an ecosystem of pluggable interactive widgets.
 
 # Overview
 
