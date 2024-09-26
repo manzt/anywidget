@@ -36,5 +36,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          UV_PUBLISH_USERNAME: __token__
-          UV_PUBLISH_PASSWORD: ${{ secrets.TWINE_API_KEY }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
