@@ -301,7 +301,7 @@ src/ipyfoo/static
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.9",
+		"@types/react": "^18.3.10",
 		"@types/react-dom": "^18.3.0",
 		"typescript": "^5.6.2"
 	}
@@ -1382,7 +1382,7 @@ src/ipyfoo/static
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.9",
+		"@types/react": "^18.3.10",
 		"@types/react-dom": "^18.3.0",
 		"typescript": "^5.6.2",
 		"esbuild": "^0.24.0"
