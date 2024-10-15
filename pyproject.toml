@@ -24,10 +24,10 @@ classifiers = [
 ]
 dependencies =  [
     "comm>=0.1.4",
-    "jupyterlab-widgets>=3.0.13",
     "psygnal>=0.8.1",
-    "traitlets>=5.14.3",
-    "widgetsnbextension>=4.0.13",
+    "traitlets>=4.3.1",
+    "jupyterlab-widgets~=3.0.12", # Installs widgets extension for JupyterLab
+    "widgetsnbextension~=4.0.12", # Installs widgets extension for classic notebooks
 ]
 
 [project.optional-dependencies]
@@ -155,5 +155,5 @@ disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
 # this might be missing in pre-commit, but they aren't typed anyway
-module = ["ipywidgets", "traitlets.*", "comm", "IPython.*"]
+module = ["traitlets.*", "comm", "IPython.*"]
 ignore_missing_imports = true

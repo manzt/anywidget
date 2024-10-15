@@ -64,11 +64,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "comm", specifier = ">=0.1.4" },
-    { name = "jupyterlab-widgets", specifier = ">=3.0.13" },
+    { name = "jupyterlab-widgets", specifier = "~=3.0.12" },
     { name = "psygnal", specifier = ">=0.8.1" },
-    { name = "traitlets", specifier = ">=5.14.3" },
+    { name = "traitlets", specifier = ">=4.3.1" },
     { name = "watchfiles", marker = "extra == 'dev'", specifier = ">=0.18.0" },
-    { name = "widgetsnbextension", specifier = ">=4.0.13" },
+    { name = "widgetsnbextension", specifier = "~=4.0.12" },
 ]
 
 [package.metadata.requires-dev]
