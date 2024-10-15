@@ -1,15 +1,6 @@
-try:
-    from importlib.metadata import PackageNotFoundError, version
-except ImportError:
-    from importlib_metadata import (  # type: ignore[import-not-found, no-redef]
-        PackageNotFoundError,
-        version,
-    )
+import importlib.metadata
 
-try:
-    __version__ = version("anywidget")
-except PackageNotFoundError:
-    __version__ = "uninstalled"
+__version__ = importlib.metadata.version("anywidget")
 
 
 def get_semver_version(version: str) -> str:
