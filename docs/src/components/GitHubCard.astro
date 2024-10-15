@@ -75,7 +75,7 @@ let username = repo.split("/")[0];
 			<a href={url} target="_blank" aria-label={`View ${repo} on GitHub`}>
 				<Image
 					class="image-preview w-full"
-					inferSize
+					inferSize={true}
 					src={Astro.props.image}
 					alt={username}
 					data-gif={Astro.props.gif}
