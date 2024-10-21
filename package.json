@@ -12,10 +12,10 @@
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.3",
+		"@biomejs/biome": "^1.9.4",
 		"@changesets/cli": "^2.27.9",
-		"@rspack/cli": "^1.0.10",
-		"@rspack/core": "^1.0.10",
+		"@rspack/cli": "^1.0.13",
+		"@rspack/core": "^1.0.13",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
 		"esbuild": "^0.24.0",
 		"happy-dom": "^15.7.4",
