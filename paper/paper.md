@@ -68,14 +68,14 @@ interactive visualizations within these environments [@Wang2024]. The Jupyter
 project [@Kluyver2016; @Perez2007; @Granger2021] has become synonymous with
 computational notebooks, largely due to its widespread success in fostering an
 extensive ecosystem of community tools (e.g., for producing books
-[@JupyterBook; @JupyterBookMyst], presentation slides [@nbconvert; @Wang2023],
-and dashboards [@voila]).
+[@JupyterBookMyst], presentation slides [@Wang2023], and dashboards (e.g.,
+[Voilà](https://voila.readthedocs.io))).
 
 Approaches for authoring interactive visualizations across notebook platforms,
 including Jupyter, vary widely [@Wang2024]. This inconsistency has led to
 fragmented methods for creating and distributing custom visualizations and
 interactive components, hindering the development of a composable solutions.
-The Jupyter Widgets system shows unique potential for aligning interactive
+The Jupyter Widgets system shows potential for aligning interactive
 visualization systems with the broader notebook ecosystem. However, the
 complexity and error-prone nature of authoring custom widgets has limited their
 adoption by the visualization community. Widget development is hindered by the
@@ -137,8 +137,8 @@ using frameworks (\autoref{fig:afm-and-anywidget}a, bottom). These libraries
 provide utilities to use idiomatic APIs and constructs to manage widget state
 and to wrap those constructs into the AFM lifecycle methods used by host
 platforms. For example, anywidget’s React bridge exposes a React-based
-declarative hook `useModelState` for accessing widget state and a function that
-converts a React component into an AFM `render` method for export.
+declarative hook `useModelState` for accessing widget state and a function to
+convert a React component into an AFM export.
 
 There are several advantages to supporting frameworks via bridges. First, AFM
 is more stable and minimal because it is not tied to a third-party library or
@@ -174,7 +174,7 @@ Widgets in notebooks, standalone HTML pages, and dashboarding frameworks
 To make widget development more enjoyable and accessible, the anywidget project
 offers additional development tools for widget authors. It allows for creating
 widgets directly within notebooks, enabling them to start as prototypes and
-evolve into full packages. To align with modern front-end tools, anywidget also
+evolve into full packages. Aligning with modern front-end tools, anywidget also
 implements hot module replacement (HMR) for live code editing development. HMR
 dynamically updates widgets without reloading the page or losing state,
 improving the developer experience and enabling rapid prototyping. To enable
@@ -204,9 +204,8 @@ provides opportunities for frameworks and platforms to add more specialized
 support, making better use of their respective internal state management and
 reactivity systems. For instance, marimo [@marimo], a new reactive notebook for
 Python, has adopted AFM as the standard for its third-party plugin API.
-Similarly, the developers of the Panel web framework [@panel] are exploring
-deeper integration with AFM for better compatibility with their reactive
-programming model.
+Similarly, the Panel web framework [@panel] supports using AFM to define custom
+components.
 
 Efforts are underway to support AFM with other compute backends besides Python.
 For example, anyhtmlwidget [@anyhtmlwidget] brings anywidget concepts to R,
@@ -228,20 +227,20 @@ documentation about the project can be found at https://anywidget.dev.
 # Related work
 
 Interactive notebook visualization tools vary widely in features and
-compatibility [@Wang2024]. Some tools offer rich features (e.g.,
-bi-directional communication) but rely on platform-specific APIs, limiting
-compatibility [@Zhao2022; @Wang2023; @Drosos2020; @Li2023; @Jain2022; @bokeh; @streamlit]. More
-simple approaches provide broader compatibility but lack features which
-meaningfully enrich user workflows. For example, using static templates or the
-NOVA framework [@Wang2022] offers wide compatibility, as the resulting HTML
-displays can be embedded in nearly any web-based notebook platform. However,
-this approach supports only client-side applications with one-way
-communication, meaning that only the initial visualization state can come from
-the notebook, without further updates from other cells. Other approaches, like
-ImJoy [@Ouyang2019], offer a more unified architecture for building interactive
-visualizations with rich features across multiple platforms. However, it is an
-entirely separate computing platform with limited JCP integrations, not a
-framework for building reusable, modular visualization components.
+compatibility [@Wang2024]. Some tools offer rich features (e.g., bi-directional
+communication) but rely on platform-specific APIs, limiting compatibility
+[@Zhao2022; @Wang2023; @Drosos2020; @Li2023; @Jain2022]. More simple approaches
+provide broader compatibility but lack features which meaningfully enrich user
+workflows. For example, using static templates or the NOVA framework
+[@Wang2022] offers wide compatibility, as the resulting HTML displays can be
+embedded in nearly any web-based notebook platform. However, this approach
+supports only client-side applications with one-way communication, meaning that
+only the initial visualization state can come from the notebook, without
+further updates from other cells. Other approaches, like ImJoy [@Ouyang2019],
+offer a more unified architecture for building interactive visualizations with
+rich features across multiple platforms. However, it is an entirely separate
+computing platform with limited JCP integrations, not a framework for building
+reusable, modular visualization components.
 
 # Acknowledgements
 
