@@ -43,10 +43,10 @@ reusable web-based widgets in interactive computing environments
 (\autoref{fig:overview}). First, it defines a standard for widget front-end
 code based on the web browser's native module system. Second, it provides tools
 to author, distribute, and execute these modules across web-based computing
-platforms. Since its release a year and a half ago, anywidget has steadily
-gained adoption. Nearly 100 new widgets have been created or ported to
-anywidget and published to the Python Package Index (PyPI), along with many
-standalone scripts and notebooks. These tools cover general-purpose
+platforms. Since its release in February 2023, anywidget has steadily gained
+adoption. As of October 2024, nearly 100 new widgets have been created or
+ported to anywidget and published to the Python Package Index (PyPI), along
+with many standalone scripts and notebooks. These tools cover general-purpose
 visualization libraries [@jscatter; @Heer2024] as well as notebook integrations
 for applications in biology [@gos; @vitessce; @viv; @cev], mapping [@lonboard],
 astronomy [@ipyaladin], and education [@drawdata]. Anywidget has also been
@@ -54,7 +54,7 @@ integrated into popular visualization libraries like Altair [@altair],
 enhancing interactivity in notebooks and deepening user engagement with
 visualizations and code.
 
-![The anywidget project. The Anywidget Front-End Module (AFM) is a specification for widget front-end code based on ECMAScript (ES) modules [@ecma]. AFM can be written in web-standard ES or with _authoring tools_ that support popular front-end frameworks. The `anywidget` Python package adapts Jupyter-compatible platforms (JCPs) into AFM-compatible _host platforms_, enabling Jupyter Widgets to be authored and distributed with AFM. Other _host platforms_ support AFM directly. The _project CLI_ can be used to bootstrap new anywidget projects that are ready to publish to PyPI. \label{fig:overview}](overview.png)
+![The anywidget project. Components highlighted in magenta. The Anywidget Front-End Module (AFM) is a specification for widget front-end code based on ECMAScript (ES) modules [@ecma]. AFM can be written in web-standard ES or with _authoring tools_ that support popular front-end frameworks. The `anywidget` Python package adapts Jupyter-compatible platforms (JCPs) into AFM-compatible _host platforms_, enabling Jupyter Widgets to be authored and distributed with AFM. Other _host platforms_ support AFM directly. The _project CLI_ can be used to bootstrap new anywidget projects that are ready to publish to PyPI. \label{fig:overview}](overview.png)
 
 # Statement of need
 
@@ -78,13 +78,13 @@ interactive components, hindering the development of a composable solutions.
 The Jupyter Widgets system shows potential for aligning interactive
 visualization systems with the broader notebook ecosystem. However, the
 complexity and error-prone nature of authoring custom widgets has limited their
-adoption by the visualization community. Widget development is hindered by the
-need to integrate front-end code across diverse environments, fragmented
-distribution models, and a cumbersome development experience [@scipy].
-Moreover, Jupyter Widgets are Jupyter-specific, with the widest support limited
-to Python kernels, leaving gaps in addressing new and alternative interactive
-computing environments. A universal protocol is needed to simplify authorship
-and support an ecosystem of pluggable interactive widgets.
+adoption by the visualization community. Widget development is hindered by
+fragmented distribution and cumbersome development experience due to complex
+integration requirements from diverse environments [@scipy]. Moreover, Jupyter
+Widgets are Jupyter-specific, with the widest support limited to Python
+kernels, leaving gaps in addressing new and alternative interactive computing
+environments. A universal protocol is needed to simplify authorship and support
+an ecosystem of pluggable interactive widgets.
 
 # Overview
 
@@ -120,7 +120,7 @@ communicate with the host and modify the output user interface (UI).
 Importantly, AFM does not impose specific implementations for widget state or
 UI management. By making host requirements explicit, it decouples widget
 front-end code from host implementations, thereby improving widget portability
-[@scipy]. With AFM, developers can author a widget writing a web-standard ES
+[@scipy]. With AFM, developers can author a widget by writing a web-standard ES
 module, either inline or in a separate file, without a build process
 (\autoref{fig:afm-and-anywidget}a, top). For better ergonomics when creating
 UIs, developers can introduce a build step targeting AFM to utilize advanced
