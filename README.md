@@ -93,7 +93,7 @@ more.
 ## Packages
 
 Beyond the primary Python package, **anywidget** provides an ecosystem of
-tooling to help you build and distribute custom Jupyter Widgets.
+tooling to help you build and distribute custom widgets.
 
 | Name                                                                                             | Description                     | Version (click for changelogs)                                                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
