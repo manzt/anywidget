@@ -119,6 +119,41 @@ a [Discussion](https://github.com/manzt/anywidget/issues/new).
 Join us on [Discord](https://discord.gg/W5h4vPMbDQ) to meet other maintainers.
 We'll help you get your first contribution in no time!
 
-## License
+## Citation
 
-[MIT](https://github.com/manzt/anywidget/blob/main/LICENSE)
+If you are using **anywidget** in your work, please consider citing the
+following papers:
+
+1.) For the overall project and ecosystem of tools:
+
+```bibtex
+@article{manz2024anywidget,
+  title = {anywidget: reusable widgets for interactive analysis and visualization in computational notebooks},
+  volume = {9},
+  url = {https://doi.org/10.21105/joss.06939},
+  doi = {10.21105/joss.06939},
+  number = {102},
+  journal = {Journal of Open Source Software},
+  author = {Manz, Trevor and Abdennur, Nezar and Gehlenborg, Nils},
+  year = {2024},
+  note = {Publisher: The Open Journal},
+  pages = {6939},
+}
+```
+
+2.) For the motivation and implementation of Jupyter Widgets support:
+
+```bibtex
+@inproceedings{manz2024notebooks,
+  address = {Tacoma, Washington},
+  title = {Any notebook served: authoring and sharing reusable interactive widgets},
+  copyright = {https://creativecommons.org/licenses/by/4.0/},
+  url = {https://doi.curvenote.com/10.25080/NRPV2311},
+  doi = {10.25080/NRPV2311},
+  urldate = {2024-10-07},
+  booktitle = {Proceedings of the 23rd {Python} in {Science} {Conference}},
+  author = {Manz, Trevor and Gehlenborg, Nils and Abdennur, Nezar},
+  month = jul,
+  year = {2024},
+}
+```
