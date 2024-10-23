@@ -217,12 +217,12 @@ runtime.
 # Availability
 
 The anywidget project is released under an open-source MIT license, with all
-source code publicly available on GitHub (https://github.com/manzt/anywidget).
+source code publicly available on GitHub ([https://github.com/manzt/anywidget](https://github.com/manzt/anywidget)).
 The core Python library, anywidget, is packaged and distributed via the PyPI
 and conda-forge. The front-end adapter libraries, development tooling, and
 project-template CLI are distributed through the npm registry. The Deno Jupyter
 kernel integration is published to the JavaScript Registry (JSR). Further
-documentation about the project can be found at https://anywidget.dev.
+documentation about the project can be found at [https://anywidget.dev](https://anywidget.dev).
 
 # Related work
 
