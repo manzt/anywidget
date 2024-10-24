@@ -304,6 +304,7 @@ class ReprMimeBundle:
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
         self._no_view = no_view
+        self._callbacks = []
 
         try:
             self._obj: Callable[[], object] = weakref.ref(obj, self._on_obj_deleted)
@@ -397,21 +398,27 @@ class ReprMimeBundle:
         elif data["method"] == "request_state":
             self.send_state()
 
-        # elif method == "custom":  # noqa: ERA001
-        # Handle a custom msg from the front-end.
-        # if "content" in data:
-        #     self._handle_custom_msg(data["content"], msg["buffers"])  # noqa: ERA001
-        else:  # pragma: no cover
+        elif data["method"] == "custom":
+            if "content" in data:
+                self._handle_custom_msg(data["content"], msg["buffers"])
+
+        else:
             err_msg = (
                 f"Unrecognized method: {data['method']}.  Please report this at "
                 "https://github.com/manzt/anywidget/issues"
             )
             raise ValueError(err_msg)
 
-    # def _handle_custom_msg(self, content: object, buffers: list[memoryview]):
-    #     # TODO(manzt): handle custom callbacks  # noqa: TD003
-    #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
-    #     ...
+    def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
+        # https://github.com/jupyter-widgets/ipywidgets/blob/b78de43e12ff26e4aa16e6e4c6844a7c82a8ee1c/python/ipywidgets/ipywidgets/widgets/widget.py#L186
+        for callback in self._callbacks:
+            try:
+                callback(content, buffers)
+            except Exception:
+                warnings.warn(
+                    "Error in custom message callback",
+                    stacklevel=2,
+                )
 
     def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:  # noqa: ARG002
         """Called when _repr_mimebundle_ is called on the python object."""
@@ -419,7 +426,11 @@ class ReprMimeBundle:
         # (i.e. the comm knows how to represent itself as a mimebundle)
         if self._no_view:
             return None
-        return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr(self._obj()))
+
+        repr_text = repr(self._obj())
+        if len(repr_text) > 110:
+            repr_text = repr_text[:110] + "…"
+        return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr_text)
 
     def sync_object_with_view(
         self,
@@ -484,6 +495,18 @@ class ReprMimeBundle:
         while self._disconnectors:
             with contextlib.suppress(Exception):
                 self._disconnectors.pop()()
+
+    def register_callback(
+        self, callback: Callable[[Any, Any, list[bytes]], None]
+    ) -> None:
+        self._callbacks.append(callback)
+
+    def send(
+        self, content: str | list | dict, buffers: list[memoryview] | None = None
+    ) -> None:
+        """Send a custom message to the front-end view."""
+        data = {"method": "custom", "content": content}
+        self._comm.send(data=data, buffers=buffers)  # type: ignore[arg-type]
 
 
 # ------------- Helper function --------------
