@@ -22,6 +22,11 @@ export type Props = {
 let { repo, description, stars } = Astro.props;
 let url = Astro.props.url ?? `https://github.com/${repo}`;
 let username = repo.split("/")[0];
+
+// some may have deleted their account
+let userExists = await fetch(`https://api.github.com/users/${username}`).then(
+	(res) => res.ok,
+);
 ---
 
 <div
@@ -33,7 +38,7 @@ let username = repo.split("/")[0];
 				<Image
 					class="h-6 w-6 rounded border"
 					inferSize
-					src={`https://www.github.com/${username}.png`}
+					src={userExists ? `https://www.github.com/${username}.png` : `https://github.com/identicons/manzt.png`}
 					alt={username}
 				/>
 				<div class="text-sm font-semibold">
