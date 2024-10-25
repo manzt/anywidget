@@ -7,6 +7,7 @@ import Header from "../components/Header/Header.astro";
 import LeftSidebar from "../components/LeftSidebar/LeftSidebar.astro";
 import PageContent from "../components/PageContent/PageContent.astro";
 import RightSidebar from "../components/RightSidebar/RightSidebar.astro";
+import Banner from "../components/Banner.astro";
 import * as CONSTS from "../consts";
 import { getTitle } from "../util";
 
@@ -36,7 +37,7 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 			body {
 				width: 100%;
 				display: grid;
-				grid-template-rows: var(--theme-navbar-height) 1fr;
+				grid-template-rows: auto (--theme-navbar-height) 1fr;
 				--gutter: 0.5rem;
 				--doc-padding: 2rem;
 			}
@@ -140,6 +141,7 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 	</head>
 
 	<body>
+		<Banner />
 		<Header currentPage={currentPage} />
 		<main class="layout">
 			<aside id="grid-left" class="grid-sidebar" title="Site Navigation">
