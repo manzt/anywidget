@@ -168,7 +168,6 @@ or with [uv](https://github.com/astral-sh/uv):
 
 \`\`\`sh
 uv add ${name}
-uv add --script foo.py ${name} # add to a standalone script
 \`\`\`
 
 ## Development
@@ -176,19 +175,17 @@ uv add --script foo.py ${name} # add to a standalone script
 We recommend using [uv](https://github.com/astral-sh/uv) for development.
 It will automatically manage virtual environments and dependencies for you.
 
-\`\`\`
+\`\`\`sh
 uv run jupyter lab example.ipynb
 \`\`\`
 
-You can create a .venv for your editor with \`uv sync\`.
-
-Alternatively, you can create a virtual environment and install the package in
-*editable* mode with the optional development dependencies:
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab
 \`\`\`
 
 `;
