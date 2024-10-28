@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.5
+
+### Patch Changes
+
+- Support `uv` and update project instructions ([#711](https://github.com/manzt/anywidget/pull/711))
+
 ## 0.7.4
 
 ### Patch Changes
