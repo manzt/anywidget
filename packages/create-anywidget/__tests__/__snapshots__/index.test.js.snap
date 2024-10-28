@@ -120,6 +120,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -348,6 +349,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -595,6 +597,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -783,6 +786,7 @@ in the notebook.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -1035,6 +1039,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -1296,6 +1301,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -1525,6 +1531,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -1774,6 +1781,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -1962,6 +1970,7 @@ in the notebook.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
@@ -2215,6 +2224,7 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]

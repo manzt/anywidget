@@ -75,6 +75,7 @@ let pyproject_toml = (name) =>
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project]
 name = "${name}"
 version = "0.0.0"
 dependencies = ["anywidget"]
