@@ -81,12 +81,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 `;
 
 /**
@@ -160,25 +164,45 @@ let readme = (name, type = "bundled") => {
 pip install ${name}
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ${name} in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ${name}
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
 `;
 
 	if (type === "bundled") {
 		body = body.concat(`\
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
