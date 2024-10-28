@@ -11,10 +11,26 @@ exports[`create-anywidget (Bun) > template-react 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -104,18 +120,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -215,10 +234,26 @@ exports[`create-anywidget (Bun) > template-react-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -313,18 +348,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -452,10 +490,26 @@ exports[`create-anywidget (Bun) > template-vanilla 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -541,18 +595,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -653,10 +710,26 @@ exports[`create-anywidget (Bun) > template-vanilla-deno-jsdoc 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -710,18 +783,21 @@ in the notebook.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 ",
     "path": "pyproject.toml",
   },
@@ -850,10 +926,26 @@ exports[`create-anywidget (Bun) > template-vanilla-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -943,18 +1035,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1090,10 +1185,26 @@ exports[`create-anywidget > template-react 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -1185,18 +1296,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1296,10 +1410,26 @@ exports[`create-anywidget > template-react-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -1395,18 +1525,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1534,10 +1667,26 @@ exports[`create-anywidget > template-vanilla 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -1625,18 +1774,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1737,10 +1889,26 @@ exports[`create-anywidget > template-vanilla-deno-jsdoc 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -1794,18 +1962,21 @@ in the notebook.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 ",
     "path": "pyproject.toml",
   },
@@ -1934,10 +2105,26 @@ exports[`create-anywidget > template-vanilla-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+uv add --script foo.py ipyfoo # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
@@ -2028,18 +2215,21 @@ src/ipyfoo/static
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "ipyfoo"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]

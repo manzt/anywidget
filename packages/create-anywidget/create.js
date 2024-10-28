@@ -75,18 +75,21 @@ let pyproject_toml = (name) =>
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
 name = "${name}"
 version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 `;
 
 /**
@@ -160,10 +163,26 @@ let readme = (name, type = "bundled") => {
 pip install ${name}
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ${name} in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ${name}
+uv add --script foo.py ${name} # add to a standalone script
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`
+uv run jupyter lab example.ipynb
+\`\`\`
+
+You can create a .venv for your editor with \`uv sync\`.
+
+Alternatively, you can create a virtual environment and install the package in
+*editable* mode with the optional development dependencies:
 
 \`\`\`sh
 python -m venv .venv
