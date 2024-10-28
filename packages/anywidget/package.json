@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@jupyter-widgets/base": "^6",
 		"@lukeed/uuid": "^2.0.1",
-		"solid-js": "^1.9.2"
+		"solid-js": "^1.9.3"
 	},
 	"devDependencies": {
 		"@anywidget/types": "workspace:^",
