@@ -185,17 +185,24 @@ Alternatively, create and manage your own virtual environment:
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-jupyter lab
+jupyter lab example.ipynb
 \`\`\`
 
 `;
 
 	if (type === "bundled") {
 		body = body.concat(`\
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
