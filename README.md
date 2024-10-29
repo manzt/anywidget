@@ -121,10 +121,11 @@ We'll help you get your first contribution in no time!
 
 ## Citation
 
-If you are using **anywidget** in your work, please consider citing the
-following papers:
+If you use **anywidget** in your work, please consider citing the following
+publications:
 
-1.) For the overall project and ecosystem of tools:
+Our [JOSS paper](https://joss.theoj.org/papers/10.21105/joss.06939) describing
+the overall project and vision:
 
 ```bibtex
 @article{manz2024anywidget,
@@ -141,11 +142,11 @@ following papers:
 }
 ```
 
-2.) For the motivation and implementation of Jupyter Widgets support:
+Our [SiPy paper](https://proceedings.scipy.org/articles/NRPV2311), detailing
+the motivation and approach behind Jupyter Widget ecosystem compatability:
 
 ```bibtex
 @inproceedings{manz2024notebooks,
-  address = {Tacoma, Washington},
   title = {Any notebook served: authoring and sharing reusable interactive widgets},
   copyright = {https://creativecommons.org/licenses/by/4.0/},
   url = {https://doi.curvenote.com/10.25080/NRPV2311},
