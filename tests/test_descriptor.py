@@ -1,9 +1,8 @@
-from __future__ import annotations
-
+import pathlib
 import time
 import weakref
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, ClassVar, Generator
+from typing import TYPE_CHECKING, Callable, ClassVar, Generator, Set, Union
 from unittest.mock import MagicMock, patch
 
 import anywidget._descriptor
@@ -15,14 +14,10 @@ from anywidget._descriptor import (
     ReprMimeBundle,
 )
 from anywidget._file_contents import FileContents
+from anywidget._protocols import AnywidgetProtocol
 from anywidget._util import _WIDGET_MIME_TYPE
+from ipykernel.comm import Comm
 from watchfiles import Change
-
-if TYPE_CHECKING:
-    import pathlib
-
-    from anywidget._protocols import AnywidgetProtocol
-    from ipykernel.comm import Comm
 
 
 class MockComm(MagicMock):
@@ -82,7 +77,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = val
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
         def __repr__(self) -> str:
@@ -122,7 +117,7 @@ def test_state_setter(mock_comm: MagicMock) -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {}
 
         def _set_anywidget_state(self, state) -> None:  # noqa: ANN001
@@ -142,7 +137,7 @@ def test_state_setter_binary(mock_comm: MagicMock) -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {}
 
         def _set_anywidget_state(self, state: dict) -> None:
@@ -168,7 +163,7 @@ def test_comm_cleanup() -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {}
 
     foo = Foo()
@@ -192,7 +187,7 @@ def test_detect_observer() -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor()
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {}
 
     with pytest.warns(UserWarning, match="Could not find a notifier"):
@@ -208,7 +203,7 @@ def test_descriptor_on_slots() -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     with pytest.warns(UserWarning, match=".*is not weakrefable"):
@@ -340,7 +335,7 @@ def test_infer_file_contents(mock_comm: MagicMock, tmp_path: pathlib.Path) -> No
         _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
@@ -388,7 +383,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
         _repr_mimebundle_ = MimeBundleDescriptor(bar=bar, autodetect_observer=False)
         value: int = 1
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {"value": self.value}
 
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
@@ -415,7 +410,7 @@ def test_no_view() -> None:
             autodetect_observer=False,
         )
 
-        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+        def _get_anywidget_state(self, include: Union[Set[str], None]):  # noqa: ANN202, ARG002
             return {}
 
     foo = Foo()
