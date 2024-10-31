@@ -5,14 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "anywidget"
 description = "custom jupyter widgets made easy"
-authors = [
-    { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }
-]
+authors = [{ name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }]
 license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies =  [
+dependencies = [
     "ipywidgets>=7.6.0",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
@@ -69,9 +67,7 @@ skip-if-exists = [
     "anywidget/nbextension/index.js",
     "anywidget/labextension/package.json",
 ]
-dependencies = [
-    "hatch-jupyter-builder>=0.5.0",
-]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 npm = "pnpm"
@@ -91,20 +87,24 @@ exclude = ["packages", "docs"]
 pydocstyle = { convention = "numpy" }
 select = ["ALL"]
 ignore = [
-    "D401", # First line should be in imperative mood (remove to opt in)
+    "D401",   # First line should be in imperative mood (remove to opt in)
     "COM812", # Missing trailing comma (conflicts with ruff format)
     "ISC001", # Import sorting (conflicts with ruff format)
     "FIX002", # Fixable issue
     "DOC201", # TODO(manzt) enable in follow-up PR; no doc for return type.
-    "FBT", # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
+    "FBT",    # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
-    "D",    # No docstrings in tests
-    "S101", # Use of assert
-    "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+    "D",      # No docstrings in tests
+    "S101",   # Use of assert
+    "B018",   # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
     "SLF001", # Access private member
+    "PLC2701" # Private imports
+]
+"tests/test_descriptor.py" = [
+    "FA100" # Don't add 'from __future__ import annotations' because it messes with Pydantic and ClassVar
 ]
 "docs/*.py" = ["D"]
 
@@ -131,7 +131,7 @@ exclude_lines = [
     "@overload",
     "except ImportError",
     "\\.\\.\\.",
-    "raise NotImplementedError()"
+    "raise NotImplementedError()",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
@@ -144,11 +144,11 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
+module = "anywidget.widget"    # makes heavy use of traitlets, which is not typed
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
-module = "anywidget._cellmagic"  # makes heavy use of IPython, which is not typed
+module = "anywidget._cellmagic" # makes heavy use of IPython, which is not typed
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]

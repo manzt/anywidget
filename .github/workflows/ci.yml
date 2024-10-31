@@ -24,7 +24,7 @@ jobs:
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.16"
+          version: "0.4.x"
       - run: |
           uv run ruff check
           uv run ruff format
@@ -39,7 +39,7 @@ jobs:
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.16"
+          version: "0.4.x"
       - run: uv run mypy
 
   TestPython:
@@ -55,17 +55,16 @@ jobs:
           - "3.12"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: ".python-version"
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
       - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.16"
+          version: "0.4.x"
       - name: Run tests
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
+        env:
+          UV_PYTHON: ${{ matrix.python-version }}
       - uses: codecov/codecov-action@v4
 
   LintJavaScript:
