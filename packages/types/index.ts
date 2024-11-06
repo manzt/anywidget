@@ -1,5 +1,3 @@
-import type { IWidgetManager } from "@jupyter-widgets/base";
-
 type Awaitable<T> = T | Promise<T>;
 type ObjectHash = Record<string, any>;
 type ChangeEventHandler<Payload> = (_: unknown, value: Payload) => void;
@@ -12,6 +10,13 @@ type EventHandler = (...args: any[]) => void;
  * @see https://github.com/microsoft/TypeScript/issues/29729
  */
 type LiteralUnion<T, U = string> = T | (U & {});
+
+interface WidgetManager {
+	/**
+	 * Get a promise for a model by model id.
+	 */
+	get_model<T extends ObjectHash>(model_id: string): Promise<AnyModel<T>>;
+}
 
 export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	get<K extends keyof T>(key: K): T[K];
@@ -41,7 +46,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 		callbacks?: any,
 		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
-	widget_manager: IWidgetManager;
+	widget_manager: WidgetManager;
 }
 
 export type Experimental = {

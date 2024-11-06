@@ -29,7 +29,11 @@ preferred-citation:
       family-names: "Gehlenborg"
       affiliation: "Harvard Medical School"
       orcid: "https://orcid.org/0000-0003-0327-8297"
-  doi: "10.31219/osf.io/tw9sg"
-  journal: "OSF preprint"
-  month: 6
+  doi: "10.21105/joss.06939"
+  journal: "Journal of Open Source Software"
+  volume: "9"
+  number: "102"
+  pages: "6939"
   year: 2024
+  publisher:
+    name: "The Open Journal"

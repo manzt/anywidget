@@ -11,21 +11,41 @@ exports[`create-anywidget (Bun) > template-react 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -91,7 +111,7 @@ src/ipyfoo/static
 		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.7",
+		"@anywidget/react": "0.0.8",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
@@ -110,12 +130,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -215,21 +239,41 @@ exports[`create-anywidget (Bun) > template-react-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -296,14 +340,14 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.7",
+		"@anywidget/react": "0.0.8",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.2",
-		"@types/react-dom": "^18.3.0",
-		"typescript": "^5.5.3"
+		"@types/react": "^18.3.11",
+		"@types/react-dom": "^18.3.1",
+		"typescript": "^5.6.3"
 	}
 }",
     "path": "package.json",
@@ -319,12 +363,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -452,21 +500,41 @@ exports[`create-anywidget (Bun) > template-vanilla 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -547,12 +615,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -653,15 +725,28 @@ exports[`create-anywidget (Bun) > template-vanilla-deno-jsdoc 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
 Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
@@ -716,12 +801,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 ",
     "path": "pyproject.toml",
   },
@@ -850,21 +939,41 @@ exports[`create-anywidget (Bun) > template-vanilla-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -932,8 +1041,8 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.9",
-		"typescript": "^5.5.3"
+		"@anywidget/types": "0.2.0",
+		"typescript": "^5.6.3"
 	}
 }",
     "path": "package.json",
@@ -949,12 +1058,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1090,21 +1203,41 @@ exports[`create-anywidget > template-react 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -1170,12 +1303,12 @@ src/ipyfoo/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.7",
+		"@anywidget/react": "0.0.8",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"esbuild": "^0.23.0"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -1191,12 +1324,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1296,21 +1433,41 @@ exports[`create-anywidget > template-react-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -1377,15 +1534,15 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "0.0.7",
+		"@anywidget/react": "0.0.8",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.2",
-		"@types/react-dom": "^18.3.0",
-		"typescript": "^5.5.3",
-		"esbuild": "^0.23.0"
+		"@types/react": "^18.3.11",
+		"@types/react-dom": "^18.3.1",
+		"typescript": "^5.6.3",
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -1401,12 +1558,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1534,21 +1695,41 @@ exports[`create-anywidget > template-vanilla 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -1615,7 +1796,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.23.0"
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -1631,12 +1812,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]
@@ -1737,15 +1922,28 @@ exports[`create-anywidget > template-vanilla-deno-jsdoc 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
 Open \`example.ipynb\` in JupyterLab, VS Code, or your favorite editor
@@ -1800,12 +1998,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 ",
     "path": "pyproject.toml",
   },
@@ -1934,21 +2136,41 @@ exports[`create-anywidget > template-vanilla-ts 1`] = `
 pip install ipyfoo
 \`\`\`
 
-## Development installation
+or with [uv](https://github.com/astral-sh/uv):
 
-Create a virtual environment and and install ipyfoo in *editable* mode with the
-optional development dependencies:
+\`\`\`sh
+uv add ipyfoo
+\`\`\`
+
+## Development
+
+We recommend using [uv](https://github.com/astral-sh/uv) for development.
+It will automatically manage virtual environments and dependencies for you.
+
+\`\`\`sh
+uv run jupyter lab example.ipynb
+\`\`\`
+
+Alternatively, create and manage your own virtual environment:
 
 \`\`\`sh
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+jupyter lab example.ipynb
 \`\`\`
 
-You then need to install the JavaScript dependencies and run the development server.
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
 
 \`\`\`sh
 npm install
+\`\`\`
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+\`\`\`sh
 npm run dev
 \`\`\`
 
@@ -2016,9 +2238,9 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "0.1.9",
-		"typescript": "^5.5.3",
-		"esbuild": "^0.23.0"
+		"@anywidget/types": "0.2.0",
+		"typescript": "^5.6.3",
+		"esbuild": "^0.24.0"
 	}
 }",
     "path": "package.json",
@@ -2034,12 +2256,16 @@ version = "0.0.0"
 dependencies = ["anywidget"]
 readme = "README.md"
 
+# For projects not using \`uv\`, you can install these development dependencies with:
+# \`pip install -e ".[dev]"\`
+# If you're using \`uv\` for development, feel free to remove this section.
 [project.optional-dependencies]
 dev = ["watchfiles", "jupyterlab"]
 
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+# Dependency groups (recognized by \`uv\`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
 
 
 [tool.hatch.build]

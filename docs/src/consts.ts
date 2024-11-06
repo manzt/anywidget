@@ -1,6 +1,6 @@
 export const SITE = {
 	title: "anywidget",
-	description: "custom jupyter widgets made easy",
+	description: "reusable interactive widgets made easy",
 	defaultLanguage: "en_US",
 };
 
@@ -53,6 +53,10 @@ export const SIDEBAR: Sidebar = {
 			{ text: "Community", link: "en/community" },
 		],
 		Learn: [
+			{
+				text: "Anywidget Front-End Module",
+				link: "en/afm",
+			},
 			{
 				text: "Jupyter Widgets: The Good Parts",
 				link: "en/jupyter-widgets-the-good-parts",

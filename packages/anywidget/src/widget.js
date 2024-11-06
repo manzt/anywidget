@@ -2,6 +2,11 @@ import * as uuid from "@lukeed/uuid";
 import * as solid from "solid-js";
 
 /**
+ * @template T
+ * @typedef {T | PromiseLike<T>} Awaitable
+ */
+
+/**
  * @typedef AnyWidget
  * @prop initialize {import("@anywidget/types").Initialize}
  * @prop render {import("@anywidget/types").Render}
@@ -14,7 +19,7 @@ import * as solid from "solid-js";
  */
 
 /**
- * @param {any} condition
+ * @param {unknown} condition
  * @param {string} message
  * @returns {asserts condition}
  */
@@ -192,12 +197,16 @@ function model_proxy(model, context) {
 		off(name, callback) {
 			model.off(name, callback, context);
 		},
+		// @ts-expect-error - the widget_manager type is wider than what
+		// we want to expose to developers.
+		// In a future version, we will expose a more limited API but
+		// that can wait for a minor version bump.
 		widget_manager: model.widget_manager,
 	};
 }
 
 /**
- * @param {void | (() => import('vitest').Awaitable<void>)} fn
+ * @param {void | (() => Awaitable<void>)} fn
  * @param {string} kind
  */
 async function safe_cleanup(fn, kind) {
@@ -320,7 +329,7 @@ class Runtime {
 				console.debug(`[anywidget] esm hot updated: ${id}`);
 				setEsm(model.get("_esm"));
 			});
-			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			this.#widget_result = solid.createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
@@ -355,7 +364,7 @@ class Runtime {
 	async create_view(view) {
 		let model = view.model;
 		let disposer = solid.createRoot((dispose) => {
-			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			let resource = solid.createResource(
 				this.#widget_result,

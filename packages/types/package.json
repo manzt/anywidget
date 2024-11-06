@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/types",
 	"type": "module",
-	"version": "0.1.9",
+	"version": "0.2.0",
 	"description": "utility types for anywidget",
 	"main": "./index.ts",
 	"types": "./index.ts",
@@ -13,9 +13,6 @@
 			"types": "./index.ts",
 			"import": "./index.ts"
 		}
-	},
-	"dependencies": {
-		"@jupyter-widgets/base": "^6.0.8"
 	},
 	"publishConfig": {
 		"main": "dist/index.js",

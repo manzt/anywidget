@@ -1,6 +1,7 @@
 {
 	"name": "@anywidget/deno",
 	"version": "DO NOT VERSION EDIT DIRECTLY. Set by changesets in package.json",
+	"license": "MIT",
 	"exports": {
 		".": "./src/mod.ts",
 		"./install": "./src/install.ts",

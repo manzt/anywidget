@@ -1,0 +1,35 @@
+---
+---
+<div id="announcement-banner" class="hidden bg-purple-800 py-2 px-4 pb-2.5">
+	<div class="flex items-center justify-between flex-wrap align-middle">
+		<div class="w-0 flex-1 flex items-center truncate selection:bg-white selection:bg-opacity-40 selection:text-purple-900">
+			<p class="text-white text-lg">
+				We've published research!&ensp;📚&ensp;<a class="text-white underline" href="https://github.com/manzt/anywidget#citation">How to cite →</a>&ensp;
+			</p>
+		</div>
+		<div class="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
+			<button type="button" id="dismiss" class="-mr-1 flex p-1 rounded-md bg-purple-800 hover:bg-purple-900 focus:outline-none sm:-mr-2">
+				<span class="sr-only">Dismiss</span>
+				<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+		</div>
+	</div>
+</div>
+
+<script type="module" is:inline>
+	let waitMs = 1000 * 60 * 60 * 24; // 1 day
+	let banner = document.querySelector("#announcement-banner");
+	// Uncomment to test
+	// localStorage.removeItem("bannerDismissedAt");
+	let lastDismissed = localStorage.getItem("bannerDismissedAt");
+	let timeSince = lastDismissed ?
+	   (Date.now() - parseInt(lastDismissed)) :
+	   Infinity;  // show on first visit
+	banner.classList.toggle("hidden", timeSince < waitMs);
+	banner.querySelector("#dismiss")?.addEventListener("click", () => {
+	   banner?.classList.add("hidden");
+	   localStorage.setItem('bannerDismissedAt', Date.now().toString());
+	});
+</script>
