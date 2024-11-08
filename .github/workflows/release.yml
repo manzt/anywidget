@@ -27,7 +27,7 @@ jobs:
           run_install: true
       - uses: astral-sh/setup-uv@v3
         with:
-          version: "0.4.x"
+          version: "0.5.x"
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
