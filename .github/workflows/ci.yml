@@ -65,7 +65,7 @@ jobs:
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
         env:
           UV_PYTHON: ${{ matrix.python-version }}
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
 
   LintJavaScript:
     name: JavaScript / Lint
