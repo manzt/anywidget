@@ -8,7 +8,7 @@ import create from "./widget.js";
 
 export default {
 	id: "anywidget:plugin",
-	requires: [base.IJupyterWidgetRegistry],
+	requires: [/** @type{unknown} */ (base.IJupyterWidgetRegistry)],
 	activate: (
 		/** @type {unknown} */ _app,
 		/** @type {JupyterLabRegistry} */ registry,
