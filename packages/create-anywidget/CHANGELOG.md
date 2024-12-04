@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.6
+
+### Patch Changes
+
+- Upgrade TypeScript to v5.7 ([#754](https://github.com/manzt/anywidget/pull/754))
+
 ## 0.7.5
 
 ### Patch Changes
