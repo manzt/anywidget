@@ -156,7 +156,7 @@ async function load_widget(esm, anywidget_id) {
 		warn_render_deprecation(anywidget_id);
 		return {
 			url,
-			async initialize() { },
+			async initialize() {},
 			render: mod.render,
 		};
 	}
@@ -303,7 +303,7 @@ export function invoke(model, name, msg, options = {}) {
 
 class Runtime {
 	/** @type {() => void} */
-	#disposer = () => { };
+	#disposer = () => {};
 	/** @type {Set<() => void>} */
 	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
@@ -426,7 +426,7 @@ let version = globalThis.VERSION;
  * @param {base} options
  * @returns {{ AnyModel: typeof base.DOMWidgetModel, AnyView: typeof base.DOMWidgetView }}
  */
-export default function({ DOMWidgetModel, DOMWidgetView }) {
+export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();
 
