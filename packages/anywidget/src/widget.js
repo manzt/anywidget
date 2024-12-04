@@ -1,6 +1,8 @@
 import * as uuid from "@lukeed/uuid";
 import * as solid from "solid-js";
 
+/** @import * as base from "@jupyter-widgets/base" */
+
 /**
  * @template T
  * @typedef {T | PromiseLike<T>} Awaitable
@@ -174,7 +176,7 @@ async function load_widget(esm, anywidget_id) {
 let INITIALIZE_MARKER = Symbol("anywidget.initialize");
 
 /**
- * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {base.DOMWidgetModel} model
  * @param {unknown} context
  * @return {import("@anywidget/types").AnyModel}
  *
@@ -308,7 +310,7 @@ class Runtime {
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 
-	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
+	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
 		this.#disposer = solid.createRoot((dispose) => {
 			let [css, set_css] = solid.createSignal(model.get("_css"));
@@ -358,7 +360,7 @@ class Runtime {
 	}
 
 	/**
-	 * @param {import("@jupyter-widgets/base").DOMWidgetView} view
+	 * @param {base.DOMWidgetView} view
 	 * @returns {Promise<() => void>}
 	 */
 	async create_view(view) {
@@ -420,7 +422,10 @@ class Runtime {
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
-/** @param {typeof import("@jupyter-widgets/base")} base */
+/**
+ * @param {base} options
+ * @returns {{ AnyModel: typeof base.DOMWidgetModel, AnyView: typeof base.DOMWidgetView }}
+ */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();
