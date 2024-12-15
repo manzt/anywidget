@@ -112,7 +112,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.8",
-		"react": "^18.3.1",
+		"react": "^19.0.0",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {}
@@ -341,11 +341,11 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.8",
-		"react": "^18.3.1",
+		"react": "^19.0.0",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.12",
+		"@types/react": "^19.0.1",
 		"@types/react-dom": "^18.3.1",
 		"typescript": "^5.7.2"
 	}
@@ -1304,7 +1304,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.8",
-		"react": "^18.3.1",
+		"react": "^19.0.0",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
@@ -1535,11 +1535,11 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "0.0.8",
-		"react": "^18.3.1",
+		"react": "^19.0.0",
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@types/react": "^18.3.12",
+		"@types/react": "^19.0.1",
 		"@types/react-dom": "^18.3.1",
 		"typescript": "^5.7.2",
 		"esbuild": "^0.24.0"
