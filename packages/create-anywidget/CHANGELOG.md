@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.7.7
+
+### Patch Changes
+
+- Use React 19 in React templates ([#765](https://github.com/manzt/anywidget/pull/765))
+
 ## 0.7.6
 
 ### Patch Changes
