@@ -1,5 +1,11 @@
 # @anywidget/react
 
+## 0.1.0
+
+### Minor Changes
+
+- Support React 19 ([#763](https://github.com/manzt/anywidget/pull/763))
+
 ## 0.0.8
 
 ### Patch Changes
