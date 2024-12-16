@@ -8,7 +8,7 @@ from typing import Iterator
 
 from psygnal import Signal
 
-__all__ = ["FileContents", "VirtualFileContents", "_VIRTUAL_FILES"]
+__all__ = ["_VIRTUAL_FILES", "FileContents", "VirtualFileContents"]
 
 _VIRTUAL_FILES: weakref.WeakValueDictionary[str, VirtualFileContents] = (
     weakref.WeakValueDictionary()
