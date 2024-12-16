@@ -35,7 +35,6 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(_ANYWIDGET_SEMVER_VERSION).tag(sync=True)
 
-
     def __init__(self, *args: object, **kwargs: object) -> None:
         if in_colab():
             enable_custom_widget_manager_once()
@@ -58,7 +57,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         """Coerces _esm and _css to FileContents if they are files."""
         super().__init_subclass__(**kwargs)
         for key in (_ESM_KEY, _CSS_KEY) & cls.__dict__.keys():
-            # TODO: Upgrate to := when we drop Python 3.7
+            # TODO: Upgrate to := when we drop Python 3.7  # noqa: TD002, TD003
             value = getattr(cls, key)
             if not isinstance(value, StaticAsset):
                 setattr(cls, key, StaticAsset(value))
@@ -73,9 +72,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         return repr_mimebundle(model_id=self.model_id, repr_text=plaintext)
 
 
-def _id_for(obj: typing.Any) -> str:
+def _id_for(obj: object) -> str:
     """Return a unique identifier for an object."""
-    # TODO: a better way to uniquely identify this subclasses?
+    # TODO: a better way to uniquely identify this subclasses?  # noqa: TD002, TD003
     # We use the fully-qualified name to get an id which we
     # can use to update CSS if necessary.
     return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
@@ -88,7 +87,7 @@ def _patch_get_state(
     """Patch get_state to include anywidget-specific data."""
     original_get_state = widget.get_state
 
-    def temp_get_state():
+    def temp_get_state() -> dict:
         return {
             **original_get_state(),
             **{
