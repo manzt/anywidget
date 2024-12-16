@@ -22,28 +22,17 @@ jobs:
       issues: read
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-      - run: pnpm install --frozen-lock
-
-      - uses: actions/setup-python@v5
+          run_install: true
+      - uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.11"
-      - run: |
-          python -m pip install --upgrade pip
-          pip install build twine
-
+          version: "0.5.x"
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          # this expects you to have a npm script called version that runs some logic and then calls `changeset version`.
-          version: npm run version
-          # This expects you to have a script called release which does a build for the packages and calls `changeset publish`
-          publish: npm run release
+          publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

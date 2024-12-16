@@ -5,7 +5,7 @@
 </h1>
 <samp>
   <p align="center">
-    <span>custom jupyter widgets made easy</span>
+    <span>reusable widgets made easy</span>
       <br>
       <br>
       <a href="#installation">installation</a> .
@@ -18,13 +18,14 @@
 
 ## About
 
-**anywidget** uses modern web standards to simplify authoring and distributing
-custom Jupyter Widgets.
+**anywidget** is both a [**specification**](https://anywidget.dev/en/afm) and
+**toolkit** for authoring reusable web-based widgets for interactive computing
+environments.
 
-- 🛠️ create widgets **without complicated cookiecutter templates**
+- 🛠️ create custom Jupyter Widgets **without complicated cookiecutter templates**
 - 📚 **publish to PyPI** like any other Python package
 - 🤖 prototype **within** `.ipynb` or `.py` files
-- 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, and more
+- 🚀 run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, [**marimo**](https://github.com/marimo-team/marimo) and more
 - ⚡ develop with **instant HMR**, like modern web frameworks
 
 Learn more in the
@@ -45,6 +46,8 @@ conda install -c conda-forge anywidget
 ```
 
 ## Usage
+
+The easiest way to start developing with **anywidget** is with the Python package.
 
 ```python
 import anywidget
@@ -90,7 +93,7 @@ more.
 ## Packages
 
 Beyond the primary Python package, **anywidget** provides an ecosystem of
-tooling to help you build and distribute custom Jupyter Widgets.
+tooling to help you build and distribute custom widgets.
 
 | Name                                                                                             | Description                     | Version (click for changelogs)                                                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -116,6 +119,42 @@ a [Discussion](https://github.com/manzt/anywidget/issues/new).
 Join us on [Discord](https://discord.gg/W5h4vPMbDQ) to meet other maintainers.
 We'll help you get your first contribution in no time!
 
-## License
+## Citation
 
-[MIT](https://github.com/manzt/anywidget/blob/main/LICENSE)
+If you use **anywidget** in your work, please consider citing the following
+publications:
+
+Our [JOSS paper](https://joss.theoj.org/papers/10.21105/joss.06939) describing
+the overall project and vision:
+
+```bibtex
+@article{manz2024anywidget,
+  title = {anywidget: reusable widgets for interactive analysis and visualization in computational notebooks},
+  volume = {9},
+  url = {https://doi.org/10.21105/joss.06939},
+  doi = {10.21105/joss.06939},
+  number = {102},
+  journal = {Journal of Open Source Software},
+  author = {Manz, Trevor and Abdennur, Nezar and Gehlenborg, Nils},
+  year = {2024},
+  note = {Publisher: The Open Journal},
+  pages = {6939},
+}
+```
+
+Our [SciPy paper](https://proceedings.scipy.org/articles/NRPV2311), detailing
+the motivation and approach behind Jupyter Widget ecosystem compatability:
+
+```bibtex
+@inproceedings{manz2024notebooks,
+  title = {Any notebook served: authoring and sharing reusable interactive widgets},
+  copyright = {https://creativecommons.org/licenses/by/4.0/},
+  url = {https://doi.curvenote.com/10.25080/NRPV2311},
+  doi = {10.25080/NRPV2311},
+  urldate = {2024-10-07},
+  booktitle = {Proceedings of the 23rd {Python} in {Science} {Conference}},
+  author = {Manz, Trevor and Gehlenborg, Nils and Abdennur, Nezar},
+  month = jul,
+  year = {2024},
+}
+```

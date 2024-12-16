@@ -57,7 +57,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ._protocols import CommMessage
 
     class _GetState(Protocol):
-        def __call__(self, obj: Any, include: set[str] | None) -> dict: ...
+        def __call__(self, obj: Any, include: set[str] | None) -> dict: ...  # noqa: ANN401
 
     # catch all for types that can be serialized ... too hard to actually type
     Serializable: TypeAlias = Any
@@ -85,7 +85,8 @@ _ANYWIDGET_STATE = {
 
 
 def open_comm(
-    target_name: str = _TARGET_NAME, version: str = _PROTOCOL_VERSION
+    target_name: str = _TARGET_NAME,
+    version: str = _PROTOCOL_VERSION,
 ) -> comm.base_comm.BaseComm:
     import comm
 
@@ -177,7 +178,7 @@ class MimeBundleDescriptor:
         follow_changes: bool = True,
         autodetect_observer: bool = True,
         no_view: bool = False,
-        **extra_state: Any,
+        **extra_state: object,
     ) -> None:
         extra_state.setdefault(_ESM_KEY, _DEFAULT_ESM)
         self._extra_state = extra_state
@@ -187,7 +188,8 @@ class MimeBundleDescriptor:
         self._no_view = no_view
 
         for k, v in self._extra_state.items():
-            # TODO: use := when we drop python 3.7
+            # TODO(manzt): use := when we drop python 3.7
+            # https://github.com/manzt/anywidget/pull/167
             file_contents = try_file_contents(v)
             if file_contents is not None:
                 self._extra_state[k] = file_contents
@@ -198,7 +200,7 @@ class MimeBundleDescriptor:
         In most cases, we won't *want* `name` to be anything other than
         `'_repr_mimebundle_'`.
         """
-        # TODO:  conceivably emit a warning if name != '_repr_mimebundle_'
+        # TODO(tlambert03):  conceivably emit a warning if name != '_repr_mimebundle_'  # noqa: E501, TD003
         self._name = name
 
     @overload
@@ -208,7 +210,9 @@ class MimeBundleDescriptor:
     def __get__(self, instance: object, owner: type) -> ReprMimeBundle: ...
 
     def __get__(
-        self, instance: object | None, owner: type
+        self,
+        instance: object | None,
+        owner: type,
     ) -> ReprMimeBundle | MimeBundleDescriptor:
         """Called when this descriptor's name is accessed on a class or instance.
 
@@ -293,16 +297,16 @@ class ReprMimeBundle:
         self,
         obj: object,
         autodetect_observer: bool = True,
-        extra_state: dict[str, Any] | None = None,
+        extra_state: dict[str, object] | None = None,
         no_view: bool = False,
-    ):
+    ) -> None:
         self._autodetect_observer = autodetect_observer
         self._extra_state = (extra_state or {}).copy()
         self._extra_state.setdefault(_ANYWIDGET_ID_KEY, _anywidget_id(obj))
         self._no_view = no_view
 
         try:
-            self._obj: Callable[[], Any] = weakref.ref(obj, self._on_obj_deleted)
+            self._obj: Callable[[], object] = weakref.ref(obj, self._on_obj_deleted)
         except TypeError:
             # obj is not weakrefable, so we'll just hold a strong reference to it.
             self._obj = lambda: obj
@@ -332,7 +336,7 @@ class ReprMimeBundle:
                     self._extra_state[key] = new_contents
                     self.send_state(key)
 
-    def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:
+    def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:  # noqa: ARG002
         """Called when the python object is deleted."""
         self.unsync_object_with_view()
         self._comm.close()
@@ -363,7 +367,6 @@ class ReprMimeBundle:
         if not state:
             return  # pragma: no cover
 
-        # if self._property_lock: ... # TODO
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
@@ -373,6 +376,11 @@ class ReprMimeBundle:
         """Called when a msg is received from the front-end.
 
         (assuming `sync_object_with_view` has been called.)
+
+        Raises
+        ------
+        ValueError
+            If the method in the comm message is not recognized.
         """
         obj = self._obj()
         if obj is None:
@@ -389,22 +397,23 @@ class ReprMimeBundle:
         elif data["method"] == "request_state":
             self.send_state()
 
-        # elif method == "custom":
+        # elif method == "custom":  # noqa: ERA001
         # Handle a custom msg from the front-end.
         # if "content" in data:
-        #     self._handle_custom_msg(data["content"], msg["buffers"])
+        #     self._handle_custom_msg(data["content"], msg["buffers"])  # noqa: ERA001
         else:  # pragma: no cover
-            raise ValueError(
+            err_msg = (
                 f"Unrecognized method: {data['method']}.  Please report this at "
                 "https://github.com/manzt/anywidget/issues"
             )
+            raise ValueError(err_msg)
 
-    # def _handle_custom_msg(self, content: Any, buffers: list[memoryview]):
-    #     # TODO: handle custom callbacks
+    # def _handle_custom_msg(self, content: object, buffers: list[memoryview]):
+    #     # TODO(manzt): handle custom callbacks  # noqa: TD003
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
 
-    def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:
+    def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:  # noqa: ARG002
         """Called when _repr_mimebundle_ is called on the python object."""
         # NOTE: this could conceivably be a method on a Comm subclass
         # (i.e. the comm knows how to represent itself as a mimebundle)
@@ -413,7 +422,9 @@ class ReprMimeBundle:
         return repr_mimebundle(model_id=self._comm.comm_id, repr_text=repr(self._obj()))
 
     def sync_object_with_view(
-        self, py_to_js: bool = True, js_to_py: bool = True
+        self,
+        py_to_js: bool = True,
+        js_to_py: bool = True,
     ) -> None:
         """Connect the front-end to changes in the model, and vice versa.
 
@@ -425,6 +436,11 @@ class ReprMimeBundle:
         js_to_py : bool, optional
             If True (the default), changes in the front-end will be reflected in the
             python model.
+
+        Raises
+        ------
+        RuntimeError
+            If the object has been deleted.
         """
         if js_to_py:
             # connect changes in the view to the instance
@@ -435,7 +451,8 @@ class ReprMimeBundle:
             # connect changes in the instance to the view
             obj = self._obj()
             if obj is None:
-                raise RuntimeError("Cannot sync a deleted object")
+                msg = "Cannot sync a deleted object"
+                raise RuntimeError(msg)
 
             if self._disconnectors:
                 warnings.warn("Refusing to re-sync a synced object.", stacklevel=2)
@@ -491,6 +508,11 @@ def determine_state_getter(obj: object) -> _GetState:
     -------
     state_getter : Callable[[object], dict]
         A callable that takes an object and returns a dict of its state.
+
+    Raises
+    ------
+    TypeError
+        If no state-getting method can be determined.
     """
     # check on the class for our special state getter method
     if hasattr(type(obj), _STATE_GETTER_NAME):
@@ -501,7 +523,7 @@ def determine_state_getter(obj: object) -> _GetState:
     if is_dataclass(obj):
         # caveat: if the dict is not JSON serializeable... you still need to
         # provide an API for the user to customize serialization
-        return lambda obj, include: asdict(obj)
+        return lambda obj, include: asdict(obj)  # noqa: ARG005
 
     if _is_traitlets_object(obj):
         return _get_traitlets_state
@@ -517,12 +539,13 @@ def determine_state_getter(obj: object) -> _GetState:
     # pickle protocol ... probably not type-safe enough for our purposes
     # https://docs.python.org/3/library/pickle.html#object.__getstate__
     # if hasattr(type(obj), "__getstate__"):
-    #     return type(obj).__getstate__
+    #     return type(obj).__getstate__  # noqa: ERA001
 
-    raise TypeError(  # pragma: no cover
+    msg = (
         f"Cannot determine a state-getting method for {obj!r}. "
         "Please implement a `_get_anywidget_state()` method that returns a dict."
     )
+    raise TypeError(msg)
 
 
 def _default_set_state(obj: object, state: dict) -> None:
@@ -567,7 +590,9 @@ def _get_psygnal_signal_group(obj: object) -> psygnal.SignalGroup | None:
 
     # try exhaustive search
     with contextlib.suppress(
-        AttributeError, RecursionError, TypeError
+        AttributeError,
+        RecursionError,
+        TypeError,
     ):  # pragma: no cover
         for attr in vars(obj).values():
             if isinstance(attr, psygnal.SignalGroup):
@@ -603,7 +628,7 @@ def _connect_psygnal(obj: object, send_state: Callable) -> Callable | None:
 # ------------- Traitlets support --------------
 
 
-def _is_traitlets_object(obj: Any) -> TypeGuard[traitlets.HasTraits]:
+def _is_traitlets_object(obj: object) -> TypeGuard[traitlets.HasTraits]:
     """Return `True` if an object is an instance of traitlets.HasTraits."""
     traitlets = sys.modules.get("traitlets")
     return isinstance(obj, traitlets.HasTraits) if traitlets is not None else False
@@ -614,15 +639,22 @@ def _is_traitlets_object(obj: Any) -> TypeGuard[traitlets.HasTraits]:
 _TRAITLETS_SYNC_FLAG = "sync"
 
 
-# TODO: decide about usage of "sync" being opt-in or opt-out
+# TODO(tlambert03): decide about usage of "sync" being opt-in or opt-out  # noqa: TD003
 # users of traitlets who *don't* use ipywidgets might be surprised when their
 # state isn't being synced without opting in.
 
 
 def _get_traitlets_state(
-    obj: traitlets.HasTraits, include: set[str] | None
+    obj: traitlets.HasTraits,
+    include: set[str] | None,  # noqa: ARG001
 ) -> Serializable:
-    """Get the state of a traitlets.HasTraits instance."""
+    """Get the state of a traitlets.HasTraits instance.
+
+    Returns
+    -------
+    state : dict
+        A dictionary of the state of the traitlets.HasTraits instance.
+    """
     kwargs = {_TRAITLETS_SYNC_FLAG: True}
     return obj.trait_values(**kwargs)
 
@@ -659,26 +691,38 @@ def _connect_traitlets(obj: object, send_state: Callable) -> Callable | None:
 # ------------- Pydantic support --------------
 
 
-def _is_pydantic_model(obj: Any) -> TypeGuard[pydantic.BaseModel]:
-    """Return `True` if an object is an instance of pydantic.BaseModel."""
+def _is_pydantic_model(obj: object) -> TypeGuard[pydantic.BaseModel]:
+    """Whether an object is an instance of pydantic.BaseModel.
+
+    Returns
+    -------
+        `True` if the object is an instance of pydantic.BaseModel, `False` otherwise.
+    """
     pydantic = sys.modules.get("pydantic")
     return isinstance(obj, pydantic.BaseModel) if pydantic is not None else False
 
 
 def _get_pydantic_state_v1(
-    obj: pydantic.BaseModel, include: set[str] | None
+    obj: pydantic.BaseModel,
+    include: set[str] | None,
 ) -> Serializable:
     """Get the state of a pydantic BaseModel instance.
 
     To take advantage of pydantic's support for custom encoders (with json_encoders)
     we call obj.json() here, and then cast back to a dict (which is what
     the comm expects).
+
+    Returns
+    -------
+    state : dict
+        A dictionary copy of state from the pydantic BaseModel
     """
     return json.loads(obj.json(include=include))
 
 
 def _get_pydantic_state_v2(
-    obj: pydantic.BaseModel, include: set[str] | None
+    obj: pydantic.BaseModel,
+    include: set[str] | None,
 ) -> Serializable:
     """Get the state of a pydantic (v2) BaseModel instance."""
     return obj.model_dump(mode="json", include=include)
@@ -687,17 +731,16 @@ def _get_pydantic_state_v2(
 # ------------- msgspec support --------------
 
 
-def _is_msgspec_struct(obj: Any) -> TypeGuard[msgspec.Struct]:
+def _is_msgspec_struct(obj: object) -> TypeGuard[msgspec.Struct]:
     """Return `True` if an object is an instance of msgspec.Struct."""
     msgspec = sys.modules.get("msgspec")
     return isinstance(obj, msgspec.Struct) if msgspec is not None else False
 
 
-def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> dict:
+def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> Serializable:  # noqa: ARG001
     """Get the state of a msgspec.Struct instance."""
     import msgspec
 
-    # FIXME:
-    # see discussion here:
-    # https://github.com/manzt/anywidget/pull/64/files#r1129327721
+    # TODO(manzt): comm expects a dict. ideally we could serialize with msgspec
+    # https://github.com/manzt/anywidget/pull/64#discussion_r1128986939
     return cast(dict, msgspec.to_builtins(obj))

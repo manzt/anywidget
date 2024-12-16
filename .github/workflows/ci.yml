@@ -19,67 +19,53 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      # Disable jupyter-builder build hook because not needed for linting/formatting, and requires pnpm
       - run: |
-          pip install uv
-          uv pip install --system ruff
-          ruff check
-          ruff format
+          sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "0.5.x"
+      - run: |
+          uv run ruff check
+          uv run ruff format
 
   TypecheckPython:
     name: Python / Typecheck
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-
-      # Disable jupyter-builder build hook because not needed for typechecking, and requires npm
+      # Disable jupyter-builder build hook because not needed for typechecking, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
-          cat pyproject.toml
-
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
-      - run: |
-          pip install uv
-          uv pip install --system -e '.[test,dev]'
-      - run: mypy
+          version: "0.5.x"
+      - run: uv run mypy
 
   TestPython:
     name: Python / Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
-
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-      - run: pnpm install --frozen-lock
-
-      - uses: actions/setup-python@v5
+          run_install: true
+      - uses: astral-sh/setup-uv@v4
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - if: ${{ matrix.python-version != '3.7' }}
-        run: |
-          pip install uv
-          uv pip install --system -e '.[test,dev]'
-
-      - if: ${{ matrix.python-version == '3.7' }}
-        run: |
-          pip install -e '.[test,dev]'
-
+          version: "0.5.x"
       - name: Run tests
-        run: pytest ./tests --color=yes --cov anywidget --cov-report xml
-
-      - uses: codecov/codecov-action@v4
+        run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
+        env:
+          UV_PYTHON: ${{ matrix.python-version }}
+      - uses: codecov/codecov-action@v5
 
   LintJavaScript:
     name: JavaScript / Lint
@@ -91,19 +77,15 @@ jobs:
           version: latest
       - run: biome ci .
 
-
   TypecheckJavaScript:
     name: JavaScript / Typecheck
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-      - run: |
-          pnpm install
-          pnpm typecheck
+          run_install: true
+      - run: pnpm typecheck
 
   TestJavaScript:
     name: JavaScript / Test
@@ -111,9 +93,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-      - run: |
-          pnpm install
-          pnpm test
+          run_install: true
+      - run: pnpm test

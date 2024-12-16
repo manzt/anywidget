@@ -33,7 +33,7 @@ Our recommendation? Keep it simple:
   without a framework.
 - **Dependencies**: Import from CDNs like [esm.sh](https://esm.sh/) or
   [jsDelivr](https://www.jsdelivr.com/) first and get something working. Make
-  use to use versioned URLs for stability.
+  sure to use versioned URLs for stability.
 - **Type-Safety**: While TypeScript is powerful, it requires browser
   transformation. Use TypeScript within
   [JSDoc comments](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)

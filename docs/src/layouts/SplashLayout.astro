@@ -1,4 +1,5 @@
 ---
+import Banner from "../components/Banner.astro";
 import HeadCommon from "../components/HeadCommon.astro";
 import HeadSEO from "../components/HeadSEO.astro";
 import Header from "../components/Header/Header.astro";
@@ -34,6 +35,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	</head>
 
 	<body>
+		<Banner />
 		<Header currentPage={currentPage} />
 		<main class="layout">
 			<article>

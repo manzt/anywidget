@@ -1,5 +1,43 @@
 # create-anywidget
 
+## 0.7.7
+
+### Patch Changes
+
+- Use React 19 in React templates ([#765](https://github.com/manzt/anywidget/pull/765))
+
+## 0.7.6
+
+### Patch Changes
+
+- Upgrade TypeScript to v5.7 ([#754](https://github.com/manzt/anywidget/pull/754))
+
+## 0.7.5
+
+### Patch Changes
+
+- Support `uv` and update project instructions ([#711](https://github.com/manzt/anywidget/pull/711))
+
+## 0.7.4
+
+### Patch Changes
+
+- Use esbuild v0.24.0 ([#694](https://github.com/manzt/anywidget/pull/694))
+
+## 0.7.3
+
+### Patch Changes
+
+- Bump TypeScript to 5.6 ([#680](https://github.com/manzt/anywidget/pull/680))
+
+## 0.7.2
+
+### Patch Changes
+
+- Upgrade framework bridges ([`3a5b386295d6aae7a69c5396f04b70e25c9b8f58`](https://github.com/manzt/anywidget/commit/3a5b386295d6aae7a69c5396f04b70e25c9b8f58))
+
+- Bump types versions ([#675](https://github.com/manzt/anywidget/pull/675))
+
 ## 0.7.1
 
 ### Patch Changes

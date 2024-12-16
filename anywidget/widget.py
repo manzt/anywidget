@@ -21,6 +21,8 @@ from ._util import (
 from ._version import _ANYWIDGET_SEMVER_VERSION
 from .experimental import _collect_anywidget_commands, _register_anywidget_commands
 
+_PLAIN_TEXT_MAX_LEN = 110
+
 
 class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     """Main AnyWidget base class."""
@@ -33,7 +35,8 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     _view_module = t.Unicode("anywidget").tag(sync=True)
     _view_module_version = t.Unicode(_ANYWIDGET_SEMVER_VERSION).tag(sync=True)
 
-    def __init__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
         if in_colab():
             enable_custom_widget_manager_once()
 
@@ -41,10 +44,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         for key in (_ESM_KEY, _CSS_KEY):
             if hasattr(self, key) and not self.has_trait(key):
                 self._anywidget_internal_state[key] = getattr(self, key)
-
+        # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
             self._anywidget_internal_state[_ESM_KEY] = _DEFAULT_ESM
-
         self._anywidget_internal_state[_ANYWIDGET_ID_KEY] = _id_for(self)
 
         with _patch_get_state(self, self._anywidget_internal_state):
@@ -62,9 +64,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
                 setattr(cls, key, StaticAsset(value))
         _collect_anywidget_commands(cls)
 
-    def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:
+    def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:  # noqa: ARG002
         plaintext = repr(self)
-        if len(plaintext) > 110:
+        if len(plaintext) > _PLAIN_TEXT_MAX_LEN:
             plaintext = plaintext[:110] + "…"
         if self._view_name is None:
             return None  # type: ignore[unreachable]

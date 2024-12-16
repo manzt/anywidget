@@ -5,7 +5,7 @@ from anywidget._descriptor import ReprMimeBundle
 from anywidget.experimental import MimeBundleDescriptor, dataclass, widget
 
 
-def test_decorator():
+def test_decorator() -> None:
     esm = "export default { render({ model , el }) {} }"
     css = ".foo { color: red;}"
 
@@ -17,11 +17,11 @@ def test_decorator():
 
     foo = Foo()
 
-    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
-    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
+    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore [reportAttributeAccessIssue]
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore [reportAttributeAccessIssue]
 
 
-def test_dataclass():
+def test_dataclass() -> None:
     esm = "export function render({ model , el }) {}"
     css = ".foo { color: red;}"
 
@@ -31,5 +31,5 @@ def test_dataclass():
 
     foo = Foo()
 
-    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore
-    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore
+    assert isinstance(Foo._repr_mimebundle_, MimeBundleDescriptor)  # type: ignore [reportAttributeAccessIssue]
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)  # type: ignore [reportAttributeAccessIssue]

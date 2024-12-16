@@ -7,7 +7,6 @@ const LanguageSelect: FunctionComponent<{ lang: string }> = ({ lang }) => {
 	return (
 		<div className="language-select-wrapper">
 			<svg
-				aria-hidden="true"
 				focusable="false"
 				role="img"
 				xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +14,7 @@ const LanguageSelect: FunctionComponent<{ lang: string }> = ({ lang }) => {
 				height="1.2em"
 				width="1.2em"
 			>
+				<title>Language Selector</title>
 				<path
 					fill="currentColor"
 					d="M61,24.6h7.9l18.7,51.6h-7.7l-5.4-15.5H54.3l-5.6,15.5h-7.2L61,24.6z M72.6,55l-8-22.8L56.3,55H72.6z"

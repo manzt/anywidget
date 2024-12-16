@@ -42,7 +42,7 @@ body::-webkit-scrollbar-track {
 }
 
 :root {
-	--user-font-scale: 1rem - 16px;
+	--user-font-scale: calc(1rem - 16px);
 	--max-width: calc(100% - 1rem);
 }
 
@@ -339,9 +339,8 @@ h2.heading {
 
 .header-link {
 	font-size: 1em;
-	transition:
-		border-inline-start-color 100ms ease-out,
-		background-color 200ms ease-out;
+	transition: border-inline-start-color 100ms ease-out, background-color 200ms
+		ease-out;
 	border-left: 4px solid var(--theme-divider);
 }
 

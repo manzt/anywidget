@@ -1,6 +1,6 @@
 __pycache__/
 
-*.egg-info/
+*.tsbuildinfo
 .eggs/*
 
 .ipynb_checkpoints/

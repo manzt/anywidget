@@ -1,6 +1,13 @@
 import * as uuid from "@lukeed/uuid";
 import * as solid from "solid-js";
 
+/** @import * as base from "@jupyter-widgets/base" */
+
+/**
+ * @template T
+ * @typedef {T | PromiseLike<T>} Awaitable
+ */
+
 /**
  * @typedef AnyWidget
  * @prop initialize {import("@anywidget/types").Initialize}
@@ -14,7 +21,7 @@ import * as solid from "solid-js";
  */
 
 /**
- * @param {any} condition
+ * @param {unknown} condition
  * @param {string} message
  * @returns {asserts condition}
  */
@@ -169,7 +176,7 @@ async function load_widget(esm, anywidget_id) {
 let INITIALIZE_MARKER = Symbol("anywidget.initialize");
 
 /**
- * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {base.DOMWidgetModel} model
  * @param {unknown} context
  * @return {import("@anywidget/types").AnyModel}
  *
@@ -192,12 +199,16 @@ function model_proxy(model, context) {
 		off(name, callback) {
 			model.off(name, callback, context);
 		},
+		// @ts-expect-error - the widget_manager type is wider than what
+		// we want to expose to developers.
+		// In a future version, we will expose a more limited API but
+		// that can wait for a minor version bump.
 		widget_manager: model.widget_manager,
 	};
 }
 
 /**
- * @param {void | (() => import('vitest').Awaitable<void>)} fn
+ * @param {void | (() => Awaitable<void>)} fn
  * @param {string} kind
  */
 async function safe_cleanup(fn, kind) {
@@ -365,7 +376,7 @@ class Runtime {
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 
-	/** @param {import("@jupyter-widgets/base").DOMWidgetModel} model */
+	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
 		let id = () => model.get("_anywidget_id");
 
@@ -379,7 +390,7 @@ class Runtime {
 				console.debug(`[anywidget] esm hot updated: ${id()}`);
 			});
 
-			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			this.#widget_result = solid.createResource(esm, async (update) => {
 				await safe_cleanup(cleanup, "initialize");
@@ -408,13 +419,13 @@ class Runtime {
 	}
 
 	/**
-	 * @param {import("@jupyter-widgets/base").DOMWidgetView} view
+	 * @param {base.DOMWidgetView} view
 	 * @returns {Promise<() => void>}
 	 */
 	async create_view(view) {
 		let model = view.model;
 		let disposer = solid.createRoot((dispose) => {
-			/** @type {void | (() => import("vitest").Awaitable<void>)} */
+			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			let resource = solid.createResource(
 				this.#widget_result,
@@ -486,7 +497,10 @@ let anywidget_static_asset = {
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
-/** @param {typeof import("@jupyter-widgets/base")} base */
+/**
+ * @param {base} options
+ * @returns {{ AnyModel: typeof base.DOMWidgetModel, AnyView: typeof base.DOMWidgetView }}
+ */
 export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	/** @type {WeakMap<AnyModel, Runtime>} */
 	let RUNTIMES = new WeakMap();

@@ -5,37 +5,44 @@ build-backend = "hatchling.build"
 [project]
 name = "anywidget"
 description = "custom jupyter widgets made easy"
-authors = [
-    { name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }
-]
+authors = [{ name = "Trevor Manz", email = "trevor.j.manz@gmail.com" }]
 license = { text = "MIT" }
 dynamic = ["version"]
 readme = "README.md"
-requires-python = ">=3.7"
-dependencies =  [
+requires-python = ">=3.8"
+dependencies = [
     "ipywidgets>=7.6.0",
-    "importlib-metadata; python_version < '3.8'",
     "typing-extensions>=4.2.0",
     "psygnal>=0.8.1",
 ]
-
-[project.optional-dependencies]
-test = [
-    "mypy==1.10.1; python_version > '3.7'",
-    "pydantic",
-    "pytest",
-    "pytest-cov",
-    "ruff",
-    "msgspec; python_version > '3.7'",
-    "ipython<8.13; python_version < '3.9'",
-]
-dev = [
-    "comm>=0.1.0",
-    "watchfiles>=0.18.0",
+classifiers = [
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 4",
+    "Framework :: Jupyter :: JupyterLab :: Extensions",
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
 ]
 
 [project.urls]
 homepage = "https://github.com/manzt/anywidget"
+
+[project.optional-dependencies]
+dev = ["watchfiles>=0.18.0"]
+
+[tool.uv]
+dev-dependencies = [
+    "comm>=0.1.4",
+    "jupyterlab>=4.2.4",
+    "msgspec>=0.18.6",
+    "mypy>=1.11.1",
+    "pydantic>=2.5.3",
+    "pytest>=7.4.4",
+    "ruff>=0.6.1",
+    "watchfiles>=0.23.0",
+]
 
 [tool.hatch.build.targets.wheel.shared-data]
 "anywidget/nbextension" = "share/jupyter/nbextensions/anywidget"
@@ -43,9 +50,7 @@ homepage = "https://github.com/manzt/anywidget"
 "anywidget.json" = "etc/jupyter/nbconfig/notebook.d/anywidget.json"
 
 [tool.hatch.build]
-exclude = [
-    ".github",
-]
+exclude = [".github"]
 artifacts = [
     "anywidget/nbextension/index.*",
     "anywidget/labextension/*.tgz",
@@ -62,9 +67,7 @@ skip-if-exists = [
     "anywidget/nbextension/index.js",
     "anywidget/labextension/package.json",
 ]
-dependencies = [
-    "hatch-jupyter-builder>=0.5.0",
-]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 npm = "pnpm"
@@ -74,54 +77,34 @@ build_cmd = "build"
 path = "packages/anywidget/package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
-[tool.hatch.envs.default]
-features = ["test", "dev"]
-uv = true
-
-[tool.hatch.envs.default.scripts]
-lint = [
-  "ruff check {args:.}",
-  "ruff format --check --diff {args:.}",
-]
-fmt = [
-  "ruff format {args:.}",
-  "ruff check --fix {args:.}",
-]
-typecheck = "mypy anywidget"
-test = "pytest . --cov anywidget --cov-report term-missing"
-
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 88
 src = ["anywidget", "tests"]
-exclude = ["packages"]
+exclude = ["packages", "docs"]
 
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
-select = [
-    "E",    # style errors
-    "W",    # style warnings
-    "F",    # flakes
-    "D",    # pydocstyle
-    "D417", # Missing argument descriptions in Docstrings
-    "I",    # isort
-    "UP",   # pyupgrade
-    "C4",   # flake8-comprehensions
-    "B",    # flake8-bugbear
-    "A001", # flake8-builtins
-    "RUF",  # ruff-specific rules
-    "TCH",  # flake8-type-checking
-    "TID",  # flake8-tidy-imports
-]
+select = ["ALL"]
 ignore = [
-    "D401", # First line should be in imperative mood (remove to opt in)
+    "D401",   # First line should be in imperative mood (remove to opt in)
+    "COM812", # Missing trailing comma (conflicts with ruff format)
+    "ISC001", # Import sorting (conflicts with ruff format)
+    "FIX002", # Fixable issue
+    "DOC201", # TODO(manzt) enable in follow-up PR; no doc for return type.
+    "FBT",    # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
-    "D",    # no docstrings in tests
-    "S101", # use of assert
-    "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+    "D",      # No docstrings in tests
+    "S101",   # Use of assert
+    "B018",   # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+    "SLF001", # Access private member
+    "PLC2701" # Private imports
+]
+"tests/test_descriptor.py" = [
+    "FA100" # Don't add 'from __future__ import annotations' because it messes with Pydantic and ClassVar
 ]
 "docs/*.py" = ["D"]
 
@@ -148,7 +131,7 @@ exclude_lines = [
     "@overload",
     "except ImportError",
     "\\.\\.\\.",
-    "raise NotImplementedError()"
+    "raise NotImplementedError()",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
@@ -161,11 +144,11 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
+module = "anywidget.widget"    # makes heavy use of traitlets, which is not typed
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
-module = "anywidget._cellmagic"  # makes heavy use of IPython, which is not typed
+module = "anywidget._cellmagic" # makes heavy use of IPython, which is not typed
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
