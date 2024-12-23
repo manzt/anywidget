@@ -27,10 +27,10 @@
 	"devDependencies": {
 		"@anywidget/react": "workspace:^",
 		"@anywidget/types": "workspace:^",
-		"@types/node": "^22.10.1",
-		"@types/react": "^19.0.1",
+		"@types/node": "^22.10.2",
+		"@types/react": "^19.0.2",
 		"@types/react-dom": "^19.0.2",
-		"esbuild": "^0.24.0",
+		"esbuild": "^0.24.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"typescript": "^5.7.2"
