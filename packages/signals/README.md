@@ -76,7 +76,7 @@ export default defineWidget(createSignal, {
 
 Behind the scenes, `defineWidget` creates a _signal_ for each widget attribute.
 
-> [!IMPORTANT
+> [!IMPORTANT]
 > The `model` passed into the widget lifecycle methods is _different_ from the
 > `model` without the signals bridge.
 
