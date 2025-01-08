@@ -149,7 +149,7 @@ the motivation and approach behind Jupyter Widget ecosystem compatability:
 @inproceedings{manz2024notebooks,
   title = {Any notebook served: authoring and sharing reusable interactive widgets},
   copyright = {https://creativecommons.org/licenses/by/4.0/},
-  url = {https://doi.curvenote.com/10.25080/NRPV2311},
+  url = {https://doi.org/10.25080/NRPV2311},
   doi = {10.25080/NRPV2311},
   urldate = {2024-10-07},
   booktitle = {Proceedings of the 23rd {Python} in {Science} {Conference}},
