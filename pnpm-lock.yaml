@@ -27,8 +27,8 @@ importers:
         specifier: ^0.24.2
         version: 0.24.2
       happy-dom:
-        specifier: ^15.11.7
-        version: 15.11.7
+        specifier: ^16.7.3
+        version: 16.7.3
       publint:
         specifier: ^0.3.2
         version: 0.3.2
@@ -37,7 +37,7 @@ importers:
         version: 5.7.3
       vitest:
         specifier: ^2.1.8
-        version: 2.1.8(@types/node@22.10.7)(happy-dom@15.11.7)
+        version: 2.1.8(@types/node@22.10.7)(happy-dom@16.7.3)
 
   docs:
     dependencies:
@@ -2772,8 +2772,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happy-dom@15.11.7:
-    resolution: {integrity: sha512-KyrFvnl+J9US63TEzwoiJOQzZBJY7KgBushJA8X61DMbNsH+2ONkDuLDnCnwUiPTF42tLoEmrPyoqbenVA5zrg==}
+  happy-dom@16.7.3:
+    resolution: {integrity: sha512-76uiE9jCpC849cOyYZ8YBROpPcstW/hwCKoQYd3aiZaxHeR9zdjpup4z7qYEWbt+lY8Rb3efW2gmrckyoBftKg==}
     engines: {node: '>=18.0.0'}
 
   has-flag@3.0.0:
@@ -7792,9 +7792,8 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happy-dom@15.11.7:
+  happy-dom@16.7.3:
     dependencies:
-      entities: 4.5.0
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
 
@@ -9986,7 +9985,7 @@ snapshots:
     optionalDependencies:
       vite: 5.4.9(@types/node@18.19.71)
 
-  vitest@2.1.8(@types/node@22.10.7)(happy-dom@15.11.7):
+  vitest@2.1.8(@types/node@22.10.7)(happy-dom@16.7.3):
     dependencies:
       '@vitest/expect': 2.1.8
       '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@22.10.7))
@@ -10010,7 +10009,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.10.7
-      happy-dom: 15.11.7
+      happy-dom: 16.7.3
     transitivePeerDependencies:
       - less
       - lightningcss
