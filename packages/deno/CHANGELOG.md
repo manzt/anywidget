@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.2.2
+
+### Patch Changes
+
+- Allow more flexible anywidget front-end versions ([#798](https://github.com/manzt/anywidget/pull/798))
+
 ## 0.2.1
 
 ### Patch Changes
