@@ -143,6 +143,6 @@ Deno.test("remove_buffers extracts buffers from message", () => {
 			},
 		},
 		buffers: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
-		buffer_paths: ["a", "c"],
+		buffer_paths: [["a"], ["c"]],
 	});
 });

@@ -9,16 +9,16 @@ export function remove_buffers<T extends Record<string, unknown>>(
 ): {
 	state: { [K in keyof T]: T[K] extends Uint8Array ? null : T[K] };
 	buffers: Array<Uint8Array>;
-	buffer_paths: Array<string>;
+	buffer_paths: Array<[string]>;
 } {
 	let buffers: Array<Uint8Array> = [];
-	let buffer_paths: Array<string> = [];
+	let buffer_paths: Array<[string]> = [];
 	let out: Record<string, unknown> = {};
 	for (let key in state) {
 		if (state[key] instanceof Uint8Array) {
 			out[key] = null;
 			buffers.push(state[key]);
-			buffer_paths.push(key);
+			buffer_paths.push([key]);
 		} else {
 			out[key] = state[key];
 		}
