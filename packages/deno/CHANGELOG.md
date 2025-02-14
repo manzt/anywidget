@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.2.1
+
+### Patch Changes
+
+- Change `buffer_paths` from `Array<string>` to `Array<Array<string>>` ([#797](https://github.com/manzt/anywidget/pull/797))
+
 ## 0.2.0
 
 ### Minor Changes

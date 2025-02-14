@@ -1,5 +1,11 @@
 # @anywidget/vite
 
+## 0.2.1
+
+### Patch Changes
+
+- Allow vite v6 as peerDependency ([#760](https://github.com/manzt/anywidget/pull/760))
+
 ## 0.2.0
 
 ### Minor Changes
