@@ -5,10 +5,11 @@
 
 import * as path from "@std/path";
 import { find_data_dir } from "./jupyter_paths.ts";
+import { remove_buffers } from "./utilities.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
-let DEFAULT_VERSION = "0.9.3";
+let DEFAULT_VERSION = "0.9.13";
 let DEFAULT_ANYWIDGET_VERSION: string = await find_anywidget_version().catch(
 	(err) => {
 		console.warn(`Failed to find anywidget frontend version: ${err}`);
@@ -34,13 +35,7 @@ let jupyter_broadcast: Broadcast = (() => {
 
 let init_promise_symbol = Symbol("init_promise");
 
-type Broadcast = (
-	type: string,
-	content: Record<string, unknown>,
-	extra?: {
-		metadata?: Record<string, unknown>;
-	},
-) => Promise<void>;
+type Broadcast = (typeof Deno)["jupyter"]["broadcast"];
 
 /** The Jupyter "mimebundle" for displaying the underlying widget. */
 type Mimebundle = {
@@ -132,11 +127,22 @@ class Comm {
 	}
 
 	/** Send a state update to the front end. */
-	send_state(state: object): Promise<void> {
-		return _internals.jupyter_broadcast("comm_msg", {
-			comm_id: this.id,
-			data: { method: "update", state },
-		});
+	send_state(data: Record<string, unknown>): Promise<void> {
+		let { state, buffers, buffer_paths } = remove_buffers(data);
+		return _internals.jupyter_broadcast(
+			"comm_msg",
+			{
+				comm_id: this.id,
+				data: {
+					method: "update",
+					state: state,
+					buffer_paths: buffer_paths,
+				},
+			},
+			{
+				buffers: buffers,
+			},
+		);
 	}
 
 	/** The Jupyter "mimebundle" for displaying the underlying widget. */
@@ -210,7 +216,9 @@ export type FrontEndModel<State> = Model<State> & {
 };
 
 // Requires mod user to include lib DOM in their compiler options if they want to use this type.
-type HTMLElement = typeof globalThis extends { HTMLElement: infer T }
+type HTMLElement = typeof globalThis extends {
+	HTMLElement: { new (): infer T };
+}
 	? T
 	: unknown;
 
@@ -232,7 +240,7 @@ export interface WidgetOptions<State> {
 	render: (context: {
 		model: FrontEndModel<State>;
 		el: HTMLElement;
-	}) => Awaitable<(() => Awaitable<void>) | undefined>;
+	}) => Awaitable<(() => Awaitable<void>) | void>;
 	/** The imports required for the front-end function. */
 	imports?: string;
 	/** The version of the anywidget front end to use. */

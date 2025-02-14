@@ -1,5 +1,8 @@
+import { expect } from "@std/expect";
 import * as mock from "@std/testing/mock";
+
 import { _internals, widget } from "./src/mod.ts";
+import { remove_buffers } from "./src/utilities.ts";
 
 Deno.test("widget() initializes the front end", async () => {
 	let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
@@ -41,12 +44,16 @@ Deno.test("widget() initializes the front end", async () => {
 				{
 					comm_id: _internals.get_comm(model).id,
 					data: {
+						buffer_paths: [],
 						method: "update",
 						state: {
 							value: 0,
 							_esm: "BLAH\nexport default { render: async ({ model, el })=>{} }",
 						},
 					},
+				},
+				{
+					buffers: [],
 				},
 			],
 		});
@@ -69,7 +76,10 @@ Deno.test("model.set() sends change events to the front end", async () => {
 				"comm_msg",
 				{
 					comm_id: _internals.get_comm(model).id,
-					data: { method: "update", state: { value: 1 } },
+					data: { buffer_paths: [], method: "update", state: { value: 1 } },
+				},
+				{
+					buffers: [],
 				},
 			],
 		});
@@ -108,5 +118,31 @@ Deno.test("Explicit anywidget version overrides the default", () => {
 				metadata: { version: "2.1.0" },
 			},
 		],
+	});
+});
+
+Deno.test("remove_buffers extracts buffers from message", () => {
+	let result = remove_buffers({
+		a: new Uint8Array([1, 2, 3]),
+		b: "string",
+		c: new Uint8Array([4, 5, 6]),
+		d: 42,
+		e: {
+			inner: new Uint8Array([10]),
+		},
+	});
+	expect(result).toEqual({
+		state: {
+			a: null,
+			b: "string",
+			c: null,
+			d: 42,
+			e: {
+				// not recursive
+				inner: new Uint8Array([10]),
+			},
+		},
+		buffers: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
+		buffer_paths: ["a", "c"],
 	});
 });
