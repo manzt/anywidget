@@ -30,4 +30,5 @@ jobs:
           cd ${{ matrix.directory }}
           # sync deno version with package.json
           sed -i '' 's/\"version\": \"[^\"]*\"/\"version\": \"'$(jq -r '.version' package.json)'\"/' deno.json
+          rm package.json
           deno publish --allow-dirty
