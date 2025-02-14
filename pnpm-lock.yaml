@@ -27,8 +27,8 @@ importers:
         specifier: ^0.24.2
         version: 0.24.2
       happy-dom:
-        specifier: ^16.7.3
-        version: 16.8.1
+        specifier: ^17.0.3
+        version: 17.1.0
       publint:
         specifier: ^0.3.2
         version: 0.3.5
@@ -36,8 +36,8 @@ importers:
         specifier: ^5.7.3
         version: 5.7.3
       vitest:
-        specifier: ^3.0.4
-        version: 3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(happy-dom@16.8.1)(jiti@1.21.7)(yaml@2.7.0)
+        specifier: ^3.0.5
+        version: 3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(happy-dom@17.1.0)(jiti@1.21.7)(yaml@2.7.0)
 
   docs:
     dependencies:
@@ -140,8 +140,8 @@ importers:
   packages/create-anywidget:
     dependencies:
       '@clack/prompts':
-        specifier: ^0.9.1
-        version: 0.9.1
+        specifier: ^0.10.0
+        version: 0.10.0
       just-snake-case:
         specifier: ^3.2.0
         version: 3.2.0
@@ -156,7 +156,7 @@ importers:
         specifier: workspace:^
         version: link:../types
       '@types/node':
-        specifier: ^22.10.10
+        specifier: ^22.13.0
         version: 22.13.4
       '@types/react':
         specifier: ^19.0.8
@@ -207,7 +207,7 @@ importers:
         version: link:../types
     devDependencies:
       svelte:
-        specifier: ^5.19.3
+        specifier: ^5.19.6
         version: 5.20.0
 
   packages/types: {}
@@ -605,8 +605,8 @@ packages:
   '@clack/core@0.4.1':
     resolution: {integrity: sha512-Pxhij4UXg8KSr7rPek6Zowm+5M22rbd2g1nfojHJkxp5YkFqiZ2+YLEM/XGVIzvGOcM0nqjIFxrpDwWRZYWYjA==}
 
-  '@clack/prompts@0.9.1':
-    resolution: {integrity: sha512-JIpyaboYZeWYlyP0H+OoPPxd6nqueG/CmN6ixBiNFsIDHREevjIf0n0Ohh5gr5C8pEDknzgvz+pIJ8dMhzWIeg==}
+  '@clack/prompts@0.10.0':
+    resolution: {integrity: sha512-H3rCl6CwW1NdQt9rE3n373t7o5cthPv7yUoxF2ytZvyvlJv89C5RYMJu83Hed8ODgys5vpBU0GKxIRG83jd8NQ==}
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -2522,8 +2522,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happy-dom@16.8.1:
-    resolution: {integrity: sha512-n0QrmT9lD81rbpKsyhnlz3DgnMZlaOkJPpgi746doA+HvaMC79bdWkwjrNnGJRvDrWTI8iOcJiVTJ5CdT/AZRw==}
+  happy-dom@17.1.0:
+    resolution: {integrity: sha512-9tUhXyePCjzUMycaHS/IzrIpF69xiq/laAT7golk4MtZ6t8ft5+Rv7U3lfrs2b4NMH0JTL3EhZzjfahrPmOnaQ==}
     engines: {node: '>=18.0.0'}
 
   has-flag@4.0.0:
@@ -5188,7 +5188,7 @@ snapshots:
       picocolors: 1.1.1
       sisteransi: 1.0.5
 
-  '@clack/prompts@0.9.1':
+  '@clack/prompts@0.10.0':
     dependencies:
       '@clack/core': 0.4.1
       picocolors: 1.1.1
@@ -6183,7 +6183,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 18.19.76
+      '@types/node': 22.13.4
 
   '@types/send@0.17.4':
     dependencies:
@@ -7249,7 +7249,7 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happy-dom@16.8.1:
+  happy-dom@17.1.0:
     dependencies:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
@@ -9357,7 +9357,7 @@ snapshots:
     optionalDependencies:
       vite: 5.4.14(@types/node@18.19.76)
 
-  vitest@3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(happy-dom@16.8.1)(jiti@1.21.7)(yaml@2.7.0):
+  vitest@3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(happy-dom@17.1.0)(jiti@1.21.7)(yaml@2.7.0):
     dependencies:
       '@vitest/expect': 3.0.5
       '@vitest/mocker': 3.0.5(vite@6.1.0(@types/node@22.13.4)(jiti@1.21.7)(yaml@2.7.0))
@@ -9382,7 +9382,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.13.4
-      happy-dom: 16.8.1
+      happy-dom: 17.1.0
     transitivePeerDependencies:
       - jiti
       - less

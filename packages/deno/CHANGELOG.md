@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.2.0
+
+### Minor Changes
+
+- Support dispatching binary data through the comm ([#793](https://github.com/manzt/anywidget/pull/793))
+
 ## 0.1.2
 
 ### Patch Changes
