@@ -20,9 +20,10 @@
 	},
 	"imports": {
 		"@std/cli": "jsr:@std/cli@^0.220.1",
+		"@std/expect": "jsr:@std/expect@^1.0.13",
 		"@std/fs": "jsr:@std/fs@0.220.1",
 		"@std/path": "jsr:@std/path@0.220.1",
-		"@std/testing": "jsr:@std/testing@0.220.1",
+		"@std/testing": "jsr:@std/testing@^1.0.9",
 		"unzipit": "npm:unzipit@1.4",
 		"zod": "npm:zod@3.9"
 	},
