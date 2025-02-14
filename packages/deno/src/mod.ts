@@ -3,27 +3,11 @@
  * @module
  */
 
-import * as path from "@std/path";
-import { find_data_dir } from "./jupyter_paths.ts";
 import { remove_buffers } from "./utilities.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
-let DEFAULT_VERSION = "0.9.13";
-let DEFAULT_ANYWIDGET_VERSION: string = await find_anywidget_version().catch(
-	(err) => {
-		console.warn(`Failed to find anywidget frontend version: ${err}`);
-		return DEFAULT_VERSION;
-	},
-);
-
-async function find_anywidget_version(): Promise<string> {
-	let data_dir = await find_data_dir();
-	let contents = await Deno.readTextFile(
-		path.resolve(data_dir, "labextensions/anywidget/package.json"),
-	);
-	return JSON.parse(contents).version;
-}
+const ANYWIDGET_SEMVER_VERSION: string = "~0.9.*";
 
 let jupyter_broadcast: Broadcast = (() => {
 	try {
@@ -77,7 +61,7 @@ export const _internals: TestingInternals = {
 		return model[init_promise_symbol];
 	},
 	get version() {
-		return DEFAULT_ANYWIDGET_VERSION;
+		return ANYWIDGET_SEMVER_VERSION;
 	},
 };
 
@@ -89,7 +73,7 @@ class Comm {
 
 	constructor({ anywidget_version }: { anywidget_version?: string }) {
 		this.#id = crypto.randomUUID();
-		this.#anywidget_version = anywidget_version ?? DEFAULT_ANYWIDGET_VERSION;
+		this.#anywidget_version = anywidget_version ?? ANYWIDGET_SEMVER_VERSION;
 		this.#protocol_version_major = 2;
 		this.#protocol_version_minor = 1;
 	}
