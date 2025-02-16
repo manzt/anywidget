@@ -255,6 +255,72 @@ function throw_anywidget_error(source) {
 }
 
 /**
+ * @param {unknown} v
+ * @return {v is {}}
+ */
+function is_object(v) {
+	return typeof v === "object" && v !== null;
+}
+
+/**
+ * @param {unknown} v
+ * @return {v is import("@jupyter-widgets/base").DOMWidgetModel}
+ */
+function is_model(v) {
+	return is_object(v) && "on" in v && typeof v.on === "function";
+}
+
+/**
+ * @template {"_esm" | "_css"} T
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} model
+ * @param {T} asset_name
+ * @returns {{ get(name: T): string, on(event: `change:${T}`, callback: () => void): void, off(event: `change:${T}`): void }}
+ */
+function resolve_asset_model(model, asset_name) {
+	let value = model.get(asset_name);
+	if (is_model(value)) {
+		return {
+			/** @param {T} _name */
+			get(_name) {
+				return value.get("data");
+			},
+			/**
+			 * @param {`change:${T}`} _event
+			 * @param {() => void} callback
+			 */
+			on(_event, callback) {
+				value.on("change:data", callback);
+			},
+			/**
+			 * @param {`change:${T}`} _event
+			 */
+			off(_event) {
+				return value.off("change:data");
+			},
+		};
+	}
+	return model;
+}
+
+/**
+ * @template {"_esm" | "_css"} T
+ * @param {import("@jupyter-widgets/base").DOMWidgetModel} base_model
+ * @param {T} asset_name
+ * @param {() => void} cb
+ */
+function create_asset_signal(base_model, asset_name, cb) {
+	let model = resolve_asset_model(base_model, asset_name);
+	/** @type {import("solid-js").Signal<string>} */
+	let [asset, set_asset] = solid.createSignal(model.get(asset_name));
+	model.on(`change:${asset_name}`, () => {
+		cb();
+		set_asset(model.get(asset_name));
+	});
+	solid.onCleanup(() => model.off(`change:${asset_name}`));
+	return asset;
+}
+
+/**
  * @typedef InvokeOptions
  * @prop {DataView[]} [buffers]
  * @prop {AbortSignal} [signal]
@@ -312,25 +378,18 @@ class Runtime {
 
 	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
+		let id = () => model.get("_anywidget_id");
+
 		this.#disposer = solid.createRoot((dispose) => {
-			let [css, set_css] = solid.createSignal(model.get("_css"));
-			model.on("change:_css", () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] css hot updated: ${id}`);
-				set_css(model.get("_css"));
+			let css = create_asset_signal(model, "_css", () => {
+				console.debug(`[anywidget] css hot updated: ${id()}`);
 			});
-			solid.createEffect(() => {
-				let id = model.get("_anywidget_id");
-				load_css(css(), id);
+			solid.createEffect(() => load_css(css(), id()));
+
+			let esm = create_asset_signal(model, "_esm", () => {
+				console.debug(`[anywidget] esm hot updated: ${id()}`);
 			});
 
-			/** @type {import("solid-js").Signal<string>} */
-			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
-			model.on("change:_esm", async () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] esm hot updated: ${id}`);
-				setEsm(model.get("_esm"));
-			});
 			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			this.#widget_result = solid.createResource(esm, async (update) => {
@@ -419,6 +478,22 @@ class Runtime {
 	}
 }
 
+let anywidget_static_asset = {
+	/** @param {{ model_id: string }} model */
+	serialize(model) {
+		return `anywidget-static-asset:${model.model_id}`;
+	},
+	/**
+	 * @param {string} value
+	 * @param {import("@jupyter-widgets/base").DOMWidgetModel["widget_manager"]} widget_manager
+	 */
+	async deserialize(value, widget_manager) {
+		let model_id = value.slice("anywidget-static-asset:".length);
+		let model = await widget_manager.get_model(model_id);
+		return model;
+	},
+};
+
 // @ts-expect-error - injected by bundler
 let version = globalThis.VERSION;
 
@@ -452,6 +527,12 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 			});
 			RUNTIMES.set(this, runtime);
 		}
+
+		static serializers = {
+			...DOMWidgetModel.serializers,
+			_esm: anywidget_static_asset,
+			_css: anywidget_static_asset,
+		};
 
 		/**
 		 * @param {Record<string, any>} state
