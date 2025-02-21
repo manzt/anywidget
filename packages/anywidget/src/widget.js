@@ -315,7 +315,7 @@ class Runtime {
 	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
 		/** @type {PromiseWithResolvers<void>} */
-		const {promise, resolve} = Promise.withResolvers();
+		const { promise, resolve } = Promise.withResolvers();
 		this.ready = promise;
 		this.#disposer = solid.createRoot((dispose) => {
 			let [css, set_css] = solid.createSignal(model.get("_css"));
