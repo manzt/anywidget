@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.14
+
+### Patch Changes
+
+- Comm messages sent quickly after the creation of a widget could be lost because custom widgets' models were loaded asynchronously ([#804](https://github.com/manzt/anywidget/pull/804))
+
 ## 0.9.13
 
 ### Patch Changes
