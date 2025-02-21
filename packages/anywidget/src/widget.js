@@ -310,57 +310,58 @@ class Runtime {
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 	/** @type {Promise<void>} */
-	model_created;
+	ready;
 
 	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
-		this.model_created = new Promise((resolve) => {
-			this.#disposer = solid.createRoot((dispose) => {
-				let [css, set_css] = solid.createSignal(model.get("_css"));
-				model.on("change:_css", () => {
-					let id = model.get("_anywidget_id");
-					console.debug(`[anywidget] css hot updated: ${id}`);
-					set_css(model.get("_css"));
-				});
-				solid.createEffect(() => {
-					let id = model.get("_anywidget_id");
-					load_css(css(), id);
-				});
-
-				/** @type {import("solid-js").Signal<string>} */
-				let [esm, setEsm] = solid.createSignal(model.get("_esm"));
-				model.on("change:_esm", async () => {
-					let id = model.get("_anywidget_id");
-					console.debug(`[anywidget] esm hot updated: ${id}`);
-					setEsm(model.get("_esm"));
-				});
-				/** @type {void | (() => Awaitable<void>)} */
-				let cleanup;
-				this.#widget_result = solid.createResource(esm, async (update) => {
-					await safe_cleanup(cleanup, "initialize");
-					try {
-						model.off(null, null, INITIALIZE_MARKER);
-						let widget = await load_widget(update, model.get("_anywidget_id"));
-						resolve();
-						cleanup = await widget.initialize?.({
-							model: model_proxy(model, INITIALIZE_MARKER),
-							experimental: {
-								// @ts-expect-error - bind isn't working
-								invoke: invoke.bind(null, model),
-							},
-						});
-						return ok(widget);
-					} catch (e) {
-						return error(e);
-					}
-				})[0];
-				return () => {
-					cleanup?.();
-					model.off("change:_css");
-					model.off("change:_esm");
-					dispose();
-				};
+		/** @type {PromiseWithResolvers<void>} */
+		const {promise, resolve} = Promise.withResolvers();
+		this.ready = promise;
+		this.#disposer = solid.createRoot((dispose) => {
+			let [css, set_css] = solid.createSignal(model.get("_css"));
+			model.on("change:_css", () => {
+				let id = model.get("_anywidget_id");
+				console.debug(`[anywidget] css hot updated: ${id}`);
+				set_css(model.get("_css"));
 			});
+			solid.createEffect(() => {
+				let id = model.get("_anywidget_id");
+				load_css(css(), id);
+			});
+
+			/** @type {import("solid-js").Signal<string>} */
+			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
+			model.on("change:_esm", async () => {
+				let id = model.get("_anywidget_id");
+				console.debug(`[anywidget] esm hot updated: ${id}`);
+				setEsm(model.get("_esm"));
+			});
+			/** @type {void | (() => Awaitable<void>)} */
+			let cleanup;
+			this.#widget_result = solid.createResource(esm, async (update) => {
+				await safe_cleanup(cleanup, "initialize");
+				try {
+					model.off(null, null, INITIALIZE_MARKER);
+					let widget = await load_widget(update, model.get("_anywidget_id"));
+					resolve();
+					cleanup = await widget.initialize?.({
+						model: model_proxy(model, INITIALIZE_MARKER),
+						experimental: {
+							// @ts-expect-error - bind isn't working
+							invoke: invoke.bind(null, model),
+						},
+					});
+					return ok(widget);
+				} catch (e) {
+					return error(e);
+				}
+			})[0];
+			return () => {
+				cleanup?.();
+				model.off("change:_css");
+				model.off("change:_esm");
+				dispose();
+			};
 		});
 	}
 
@@ -461,10 +462,8 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["_handle_comm_msg"]>} msg */
 		async _handle_comm_msg(...msg) {
 			const runtime = RUNTIMES.get(this);
-			if (runtime !== undefined) {
-				await runtime.model_created;
-				return super._handle_comm_msg(...msg);
-			}
+			await runtime?.ready;
+			return super._handle_comm_msg(...msg);
 		}
 
 		/**
