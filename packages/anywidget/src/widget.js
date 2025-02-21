@@ -309,9 +309,14 @@ class Runtime {
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
+	/** @type {Promise<void>} */
+	ready;
 
 	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
+		/** @type {PromiseWithResolvers<void>} */
+		const { promise, resolve } = Promise.withResolvers();
+		this.ready = promise;
 		this.#disposer = solid.createRoot((dispose) => {
 			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
@@ -338,6 +343,7 @@ class Runtime {
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
 					let widget = await load_widget(update, model.get("_anywidget_id"));
+					resolve();
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
 						experimental: {
@@ -451,6 +457,13 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 				}
 			});
 			RUNTIMES.set(this, runtime);
+		}
+
+		/** @param {Parameters<InstanceType<DOMWidgetModel>["_handle_comm_msg"]>} msg */
+		async _handle_comm_msg(...msg) {
+			const runtime = RUNTIMES.get(this);
+			await runtime?.ready;
+			return super._handle_comm_msg(...msg);
 		}
 
 		/**
