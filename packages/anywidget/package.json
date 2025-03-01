@@ -20,12 +20,12 @@
 		"build": "node scripts/build.cjs"
 	},
 	"dependencies": {
-		"@jupyter-widgets/base": "^6",
+		"@anywidget/types": "workspace:^",
 		"@lukeed/uuid": "^2.0.1",
 		"solid-js": "^1.9.4"
 	},
 	"devDependencies": {
-		"@anywidget/types": "workspace:^",
+		"@jupyter-widgets/base": "^6",
 		"@jupyter-widgets/base-manager": "^1.0.11"
 	},
 	"jupyterlab": {
