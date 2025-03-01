@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.15
+
+### Patch Changes
+
+- Move `@anywidget/types` from devDependencies to dependencies ([#812](https://github.com/manzt/anywidget/pull/812))
+
 ## 0.9.14
 
 ### Patch Changes
