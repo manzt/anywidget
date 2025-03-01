@@ -3,7 +3,7 @@
 	"scripts": {
 		"build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
 		"build:packages": "tsc --build && pnpm --filter=\"./packages/**\" -r build && pnpm publint",
-		"clean": "rm -rf anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
+		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version",
 		"release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
 		"test": "vitest --environment=happy-dom --run",
