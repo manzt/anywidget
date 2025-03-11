@@ -32,8 +32,8 @@ homepage = "https://github.com/manzt/anywidget"
 [project.optional-dependencies]
 dev = ["watchfiles>=0.18.0"]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "comm>=0.1.4",
     "jupyterlab>=4.2.4",
     "msgspec>=0.18.6",
