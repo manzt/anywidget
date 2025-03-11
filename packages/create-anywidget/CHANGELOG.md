@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.8.0
+
+### Minor Changes
+
+- Upgrade TypeScript to v5.8 ([#817](https://github.com/manzt/anywidget/pull/817))
+
 ## 0.7.7
 
 ### Patch Changes
