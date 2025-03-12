@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.8.1
+
+### Patch Changes
+
+- Import `RenderProps` instead of `RenderContext` when scaffolding vanilla TS project ([#821](https://github.com/manzt/anywidget/pull/821))
+
 ## 0.8.0
 
 ### Minor Changes
