@@ -346,7 +346,7 @@ export default { render };
 /** @param {string} name */
 let widget_vanilla_ts = (name) =>
 	`\
-import type { RenderContext } from "@anywidget/types";
+import type { RenderProps } from "@anywidget/types";
 import "./widget.css";
 
 /* Specifies attributes defined with traitlets in ../src/${name}/__init__.py */
@@ -355,7 +355,7 @@ interface WidgetModel {
 	/* Add your own */
 }
 
-function render({ model, el }: RenderContext<WidgetModel>) {
+function render({ model, el }: RenderProps<WidgetModel>) {
 	let btn = document.createElement("button");
 	btn.innerHTML = \`count is \${model.get("value")}\`;
 	btn.addEventListener("click", () => {
