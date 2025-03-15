@@ -301,6 +301,25 @@ export function invoke(model, name, msg, options = {}) {
 	});
 }
 
+/**
+ * Polyfill for {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers Promise.withResolvers}
+ *
+ * Trevor(2025-03-14): Should be able to remove once more stable across browsers.
+ *
+ * @template T
+ * @returns {PromiseWithResolvers<T>}
+ */
+function promise_with_resolvers() {
+	let resolve;
+	let reject;
+	let promise = new Promise((res, rej) => {
+		resolve = res;
+		reject = rej;
+	});
+	// @ts-expect-error - We know these types are ok
+	return { promise, resolve, reject };
+}
+
 class Runtime {
 	/** @type {() => void} */
 	#disposer = () => {};
@@ -315,7 +334,7 @@ class Runtime {
 	/** @param {base.DOMWidgetModel} model */
 	constructor(model) {
 		/** @type {PromiseWithResolvers<void>} */
-		const { promise, resolve } = Promise.withResolvers();
+		const { promise, resolve } = promise_with_resolvers();
 		this.ready = promise;
 		this.#disposer = solid.createRoot((dispose) => {
 			let [css, set_css] = solid.createSignal(model.get("_css"));
