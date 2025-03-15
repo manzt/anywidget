@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.16
+
+### Patch Changes
+
+- Fix: Use temporary polyfill for `Promise.withResolvers` for Safari compat ([#824](https://github.com/manzt/anywidget/pull/824))
+
 ## 0.9.15
 
 ### Patch Changes
