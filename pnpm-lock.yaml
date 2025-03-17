@@ -9,7 +9,7 @@ patchedDependencies:
     hash: vje3sde4bbffdedre6hy3xjgai
     path: patches/@jupyter-widgets__base.patch
   '@jupyter-widgets/base-manager':
-    hash: z674c2pxqqojqpcabxwma3x3zu
+    hash: 7ecaeqgn7td3oasivzrewtjkwi
     path: patches/@jupyter-widgets__base-manager.patch
 
 importers:
@@ -143,7 +143,7 @@ importers:
         version: 6.0.10(patch_hash=vje3sde4bbffdedre6hy3xjgai)(react@19.0.0)
       '@jupyter-widgets/base-manager':
         specifier: ^1.0.11
-        version: 1.0.11(patch_hash=z674c2pxqqojqpcabxwma3x3zu)(react@19.0.0)
+        version: 1.0.11(patch_hash=7ecaeqgn7td3oasivzrewtjkwi)(react@19.0.0)
 
   packages/create-anywidget:
     dependencies:
@@ -5738,7 +5738,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@jupyter-widgets/base-manager@1.0.11(patch_hash=z674c2pxqqojqpcabxwma3x3zu)(react@19.0.0)':
+  '@jupyter-widgets/base-manager@1.0.11(patch_hash=7ecaeqgn7td3oasivzrewtjkwi)(react@19.0.0)':
     dependencies:
       '@jupyter-widgets/base': 6.0.10(patch_hash=vje3sde4bbffdedre6hy3xjgai)(react@19.0.0)
       '@jupyterlab/services': 7.3.5(react@19.0.0)

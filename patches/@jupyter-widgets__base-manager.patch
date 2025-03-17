@@ -48,10 +48,22 @@ index 6e3781af6d3fba8c204d6927b6652b6486b73e78..b65f48daad8d0021e52ff804ee04f8c2
 -//# sourceMappingURL=manager-base.d.ts.map
 \ No newline at end of file
 diff --git a/lib/manager-base.js b/lib/manager-base.js
-index 6f39504b4521aa0f69852b003aa3a5aa1d8874f8..80d0628062ec7d818ceff5167d899426dd82f93a 100644
+index 6f39504b4521aa0f69852b003aa3a5aa1d8874f8..33ed5f7a33221828c8869f81cd8b71dacd0e2a30 100644
 --- a/lib/manager-base.js
 +++ b/lib/manager-base.js
-@@ -638,4 +638,3 @@ export function serialize_state(models, options = {}) {
+@@ -1,11 +1,9 @@
+ // Copyright (c) Jupyter Development Team.
+ // Distributed under the terms of the Modified BSD License.
+ import * as widgets from '@jupyter-widgets/base';
+-import { PromiseDelegate, } from '@lumino/coreutils';
+ import { put_buffers, remove_buffers, resolvePromisesDict, reject, uuid, PROTOCOL_VERSION, } from '@jupyter-widgets/base';
+ import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
+ import { removeMath, replaceMath } from './latex';
+-import sanitize from 'sanitize-html';
+ const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
+ /**
+  * The control comm target name.
+@@ -638,4 +636,3 @@ export function serialize_state(models, options = {}) {
      });
      return { version_major: 2, version_minor: 0, state: state };
  }
