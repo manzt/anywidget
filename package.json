@@ -7,7 +7,7 @@
 		"version": "changeset version",
 		"release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
 		"test": "vitest",
-		"typecheck": "tsc --build && vitest --typecheck.only --run",
+		"typecheck": "tsc --build",
 		"fix": "biome check --write .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
@@ -19,6 +19,7 @@
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
 		"@vitest/browser": "^3.0.9",
 		"esbuild": "^0.25.1",
+		"playwright": "^1.51.1",
 		"publint": "^0.3.9",
 		"typescript": "^5.8.2",
 		"vitest": "^3.0.9"

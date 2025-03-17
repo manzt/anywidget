@@ -9,7 +9,8 @@
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"types": ["@vitest/browser/matchers"]
 	},
 	"files": [],
 	"references": [
