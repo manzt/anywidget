@@ -6,8 +6,8 @@
 		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version",
 		"release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
-		"test": "vitest --environment=happy-dom --run",
-		"typecheck": "tsc --build && vitest --typecheck.only --run",
+		"test": "vitest",
+		"typecheck": "tsc --build",
 		"fix": "biome check --write .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
@@ -17,11 +17,18 @@
 		"@rspack/cli": "^1.2.7",
 		"@rspack/core": "^1.2.7",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
+		"@vitest/browser": "^3.0.9",
 		"esbuild": "^0.25.1",
-		"happy-dom": "^17.4.3",
+		"playwright": "^1.51.1",
 		"publint": "^0.3.9",
 		"typescript": "^5.8.2",
-		"vitest": "^3.0.8"
+		"vitest": "^3.0.9"
 	},
-	"packageManager": "pnpm@9.10.0"
+	"packageManager": "pnpm@9.10.0",
+	"pnpm": {
+		"patchedDependencies": {
+			"@jupyter-widgets/base": "patches/@jupyter-widgets__base.patch",
+			"@jupyter-widgets/base-manager": "patches/@jupyter-widgets__base-manager.patch"
+		}
+	}
 }

@@ -107,12 +107,12 @@ async function load_css(css, anywidget_id) {
 async function load_esm(esm) {
 	if (is_href(esm)) {
 		return {
-			mod: await import(/* webpackIgnore: true */ esm),
+			mod: await import(/* webpackIgnore: true */ /* @vite-ignore */ esm),
 			url: esm,
 		};
 	}
 	let url = URL.createObjectURL(new Blob([esm], { type: "text/javascript" }));
-	let mod = await import(/* webpackIgnore: true */ url);
+	let mod = await import(/* webpackIgnore: true */ /* @vite-ignore */ url);
 	URL.revokeObjectURL(url);
 	return { mod, url };
 }
@@ -321,22 +321,26 @@ function promise_with_resolvers() {
 }
 
 class Runtime {
-	/** @type {() => void} */
-	#disposer = () => {};
-	/** @type {Set<() => void>} */
-	#view_disposers = new Set();
 	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
 	/** @type {Promise<void>} */
 	ready;
+	/** @type {AbortSignal} */
+	#signal;
 
-	/** @param {base.DOMWidgetModel} model */
-	constructor(model) {
+	/**
+	 * @param {base.DOMWidgetModel} model
+	 * @param {{ signal: AbortSignal }} options
+	 */
+	constructor(model, options) {
 		/** @type {PromiseWithResolvers<void>} */
-		const { promise, resolve } = promise_with_resolvers();
-		this.ready = promise;
-		this.#disposer = solid.createRoot((dispose) => {
+		const resolvers = promise_with_resolvers();
+		this.ready = resolvers.promise;
+		this.#signal = options.signal;
+		this.#signal.throwIfAborted();
+		this.#signal.addEventListener("abort", () => dispose());
+		let dispose = solid.createRoot((dispose) => {
 			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
 				let id = model.get("_anywidget_id");
@@ -362,7 +366,7 @@ class Runtime {
 				try {
 					model.off(null, null, INITIALIZE_MARKER);
 					let widget = await load_widget(update, model.get("_anywidget_id"));
-					resolve();
+					resolvers.resolve();
 					cleanup = await widget.initialize?.({
 						model: model_proxy(model, INITIALIZE_MARKER),
 						experimental: {
@@ -386,11 +390,15 @@ class Runtime {
 
 	/**
 	 * @param {base.DOMWidgetView} view
-	 * @returns {Promise<() => void>}
+	 * @param {{ signal: AbortSignal }} options
+	 * @returns {Promise<void>}
 	 */
-	async create_view(view) {
+	async create_view(view, options) {
 		let model = view.model;
-		let disposer = solid.createRoot((dispose) => {
+		let signal = AbortSignal.any([this.#signal, options.signal]); // either model or view destroyed
+		signal.throwIfAborted();
+		signal.addEventListener("abort", () => dispose());
+		let dispose = solid.createRoot((dispose) => {
 			/** @type {void | (() => Awaitable<void>)} */
 			let cleanup;
 			let resource = solid.createResource(
@@ -428,19 +436,6 @@ class Runtime {
 				cleanup?.();
 			};
 		});
-		// Have the runtime keep track but allow the view to dispose itself.
-		this.#view_disposers.add(disposer);
-		return () => {
-			let deleted = this.#view_disposers.delete(disposer);
-			if (deleted) disposer();
-		};
-	}
-
-	dispose() {
-		// biome-ignore lint/complexity/noForEach: Easier to read than a for loop.
-		this.#view_disposers.forEach((dispose) => dispose());
-		this.#view_disposers.clear();
-		this.#disposer();
 	}
 }
 
@@ -467,10 +462,11 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["initialize"]>} args */
 		initialize(...args) {
 			super.initialize(...args);
-			let runtime = new Runtime(this);
+			let controller = new AbortController();
+			let runtime = new Runtime(this, { signal: controller.signal });
 			this.once("destroy", () => {
 				try {
-					runtime.dispose();
+					controller.abort("[anywidget] Runtime destroyed.");
 				} finally {
 					RUNTIMES.delete(this);
 				}
@@ -520,16 +516,14 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 	}
 
 	class AnyView extends DOMWidgetView {
-		/** @type {undefined | (() => void)} */
-		#dispose = undefined;
+		#controller = new AbortController();
 		async render() {
 			let runtime = RUNTIMES.get(this.model);
-			assert(runtime, "[anywidget] runtime not found.");
-			assert(!this.#dispose, "[anywidget] dispose already set.");
-			this.#dispose = await runtime.create_view(this);
+			assert(runtime, "[anywidget] Runtime not found.");
+			await runtime.create_view(this, { signal: this.#controller.signal });
 		}
 		remove() {
-			this.#dispose?.();
+			this.#controller.abort("[anywidget] View destroyed.");
 			super.remove();
 		}
 	}
