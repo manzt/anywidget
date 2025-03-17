@@ -18,10 +18,16 @@
 		"@rspack/core": "^1.2.7",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
 		"esbuild": "^0.25.1",
-		"happy-dom": "^17.4.3",
+		"happy-dom": "^17.4.4",
 		"publint": "^0.3.9",
 		"typescript": "^5.8.2",
-		"vitest": "^3.0.8"
+		"vitest": "^3.0.9"
 	},
-	"packageManager": "pnpm@9.10.0"
+	"packageManager": "pnpm@9.10.0",
+	"pnpm": {
+		"patchedDependencies": {
+			"@jupyter-widgets/base": "patches/@jupyter-widgets__base.patch",
+			"@jupyter-widgets/base-manager": "patches/@jupyter-widgets__base-manager.patch"
+		}
+	}
 }

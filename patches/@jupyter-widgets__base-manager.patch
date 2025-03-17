@@ -1,0 +1,78 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index 6121d55b3f73ebf648c599f100cbd9f953e81c62..fa2b457aa6b2ec4ecb1ecf4ba1f8791ac015f902 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -1,3 +1,2 @@
+ export * from './manager-base';
+ export * from './utils';
+-//# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/lib/index.js b/lib/index.js
+index c1a2620f397408ded4eb2c282a79eada26ea02f7..97b5da7a5c5b44092b119263fe4d4836187852cb 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -2,4 +2,3 @@
+ // Distributed under the terms of the Modified BSD License.
+ export * from './manager-base';
+ export * from './utils';
+-//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/lib/latex.d.ts b/lib/latex.d.ts
+index da15e3cb21bbd25ac3c50f5ac02e3f4b1ae401d4..10653313d1f679c68e0d7a3b46af47d592623e58 100644
+--- a/lib/latex.d.ts
++++ b/lib/latex.d.ts
+@@ -14,4 +14,3 @@ export declare function removeMath(text: string): {
+  * and clear the math array (no need to keep it around).
+  */
+ export declare function replaceMath(text: string, math: string[]): string;
+-//# sourceMappingURL=latex.d.ts.map
+\ No newline at end of file
+diff --git a/lib/latex.js b/lib/latex.js
+index 12c5c8b4a3efdb890855a36c4e33662f32ebba34..7648dc6827ee8523b8cd3b7dfa109fd7492ac236 100644
+--- a/lib/latex.js
++++ b/lib/latex.js
+@@ -178,4 +178,3 @@ function processMath(i, j, preProcess, math, blocks) {
+     math.push(block);
+     return blocks;
+ }
+-//# sourceMappingURL=latex.js.map
+\ No newline at end of file
+diff --git a/lib/manager-base.d.ts b/lib/manager-base.d.ts
+index 6e3781af6d3fba8c204d6927b6652b6486b73e78..b65f48daad8d0021e52ff804ee04f8c2b7443726 100644
+--- a/lib/manager-base.d.ts
++++ b/lib/manager-base.d.ts
+@@ -219,4 +219,3 @@ export interface IStateOptions {
+  * @jupyter-widgets/schema package.
+  */
+ export declare function serialize_state(models: WidgetModel[], options?: IStateOptions): IManagerState;
+-//# sourceMappingURL=manager-base.d.ts.map
+\ No newline at end of file
+diff --git a/lib/manager-base.js b/lib/manager-base.js
+index 6f39504b4521aa0f69852b003aa3a5aa1d8874f8..80d0628062ec7d818ceff5167d899426dd82f93a 100644
+--- a/lib/manager-base.js
++++ b/lib/manager-base.js
+@@ -638,4 +638,3 @@ export function serialize_state(models, options = {}) {
+     });
+     return { version_major: 2, version_minor: 0, state: state };
+ }
+-//# sourceMappingURL=manager-base.js.map
+\ No newline at end of file
+diff --git a/lib/utils.d.ts b/lib/utils.d.ts
+index a0b3000da24273494c72442ee0c88e654577324a..6d9397b74eb9adac68500f70076c589371065d24 100644
+--- a/lib/utils.d.ts
++++ b/lib/utils.d.ts
+@@ -14,4 +14,3 @@ export declare function bufferToBase64(buffer: ArrayBuffer): string;
+  * Convert a base64 string to an ArrayBuffer.
+  */
+ export declare function base64ToBuffer(base64: string): ArrayBuffer;
+-//# sourceMappingURL=utils.d.ts.map
+\ No newline at end of file
+diff --git a/lib/utils.js b/lib/utils.js
+index 858eab259290e5aaab57a8c1bc2add0fec1b9218..00c1c55acd1b84e43552de4144bb46d01fa2c70c 100644
+--- a/lib/utils.js
++++ b/lib/utils.js
+@@ -292,4 +292,3 @@ export function bufferToBase64(buffer) {
+ export function base64ToBuffer(base64) {
+     return toByteArray(base64).buffer;
+ }
+-//# sourceMappingURL=utils.js.map
