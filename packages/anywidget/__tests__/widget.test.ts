@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import * as widgets from "@jupyter-widgets/base";
 import * as baseManager from "@jupyter-widgets/base-manager";
@@ -6,55 +6,54 @@ import * as baseManager from "@jupyter-widgets/base-manager";
 import create_anywidget from "../src/widget.js";
 
 let anywidget = create_anywidget(widgets);
-let num_coms = 0;
-let noop = () => {};
+let num_comms = 0;
 
 class MockComm implements widgets.IClassicComm {
-	comm_id: string;
-	target_name: string;
-	_msgid = 0;
-	_on_msg: (msg: any) => void = noop;
-	_on_open: () => void = noop;
-	_on_close: () => void = noop;
+	comm_id = `mock-comm-id-${num_comms++}`;
+	target_name = "dummy";
+	_on_open: ((x?: unknown) => void) | null = null;
+	_on_msg: ((x?: unknown) => void) | null = null;
+	_on_close: ((x?: unknown) => void) | null = null;
 
-	constructor() {
-		this.comm_id = `mock-comm-id-${num_coms}`;
-		this.target_name = `mock-target-name-${num_coms}`;
-		num_coms += 1;
-	}
 	on_open(fn: () => void): void {
 		this._on_open = fn;
 	}
+
 	on_close(fn: (x: any) => void): void {
-		this._on_close = () => fn(undefined);
+		this._on_close = fn;
 	}
-	on_msg(fn: (msg: any) => void): void {
+
+	on_msg(fn: (x: any) => void): void {
 		this._on_msg = fn;
 	}
-	async _process_msg(msg: any) {
-		this._on_msg(msg);
+
+	async _process_msg(msg: any): Promise<void> {
+		if (this._on_msg) {
+			return this._on_msg(msg);
+		}
 	}
-	open() {
-		this._on_open();
-		return "dummy";
+
+	open(): string {
+		if (this._on_open) {
+			this._on_open();
+		}
+		return "";
 	}
-	close() {
-		this._on_close();
-		return "dummy";
+
+	close(): string {
+		if (this._on_close) {
+			this._on_close();
+		}
+		return "";
 	}
-	send() {
-		this._msgid += 1;
-		return this._msgid.toString();
+
+	send(): string {
+		return "";
 	}
 }
 
-class DummyManager extends baseManager.ManagerBase {
-	el: HTMLElement;
-
-	constructor() {
-		super();
-		this.el = document.createElement("div");
-	}
+class Manager extends baseManager.ManagerBase {
+	el = document.createElement("div");
 
 	async display_view(
 		_msg: unknown,
@@ -63,11 +62,9 @@ class DummyManager extends baseManager.ManagerBase {
 	) {
 		// TODO: make this a spy
 		// TODO: return an html element
-		return Promise.resolve(view).then((view) => {
-			this.el.appendChild(view.el);
-			view.on("remove", () => console.log("view removed", view));
-			return view.el;
-		});
+		this.el.appendChild(view.el);
+		view.on("remove", () => console.log("view removed", view));
+		return view.el;
 	}
 
 	async loadClass(
@@ -75,24 +72,23 @@ class DummyManager extends baseManager.ManagerBase {
 		moduleName: string,
 		_moduleVersion: string,
 	): Promise<any> {
-		let mod: Record<string, any> | undefined = {
-			"@jupyter-widgets/base": widgets,
-			anywidget: anywidget,
-		}[moduleName];
-		return (
-			mod?.[className] ??
-			(() => {
-				throw new Error(`Cannot find module ${moduleName}`);
-			})()
-		);
+		if (moduleName === "@jupyter-widgets/base" && className in widgets) {
+			// @ts-expect-error - Types can't narrow here
+			return widgets[className];
+		}
+		if (moduleName === "anywidget" && className in anywidget) {
+			// @ts-expect-error - Types can't narrow here
+			return anywidget[className];
+		}
+		throw new Error(`Cannot find module ${moduleName}`);
 	}
 
-	async _get_comm_info() {
-		return {};
+	_get_comm_info(): never {
+		throw new Error("Should not be called.");
 	}
 
-	async _create_comm() {
-		return new MockComm();
+	_create_comm(): never {
+		throw new Error("Should not be called.");
 	}
 }
 
@@ -101,12 +97,29 @@ export default { render() {} };
 `;
 
 describe("AnyModel", async () => {
+	let widget_manager = new Manager();
+	document.body.appendChild(widget_manager.el);
+	afterEach(async () => {
+		widget_manager.el.replaceChildren();
+		widget_manager.clear_state();
+	});
+
+	it("AnyModel", async () => {
+		let model = new anywidget.AnyModel(
+			{ _esm },
+			{
+				comm: new MockComm(),
+				model_id: widgets.uuid(),
+				widget_manager: widget_manager,
+			},
+		);
+		expect(model).toBeInstanceOf(anywidget.AnyModel);
+	});
+
 	// TODO: Node doesn't support importing blob URLs,
 	// which we rely on in the front end.
 	it.skip("loads", async () => {
-		let widget_manager = new DummyManager();
-
-		let model = await widget_manager.new_widget(
+		let model = await widget_manager.new_model(
 			{
 				model_name: "AnyModel",
 				model_module: "anywidget",
@@ -114,6 +127,8 @@ describe("AnyModel", async () => {
 				view_name: "AnyView",
 				view_module: "anywidget",
 				view_module_version: "0.1.0",
+				model_id: widgets.uuid(),
+				comm: new MockComm(),
 			},
 			{ _esm },
 		);

@@ -6,7 +6,7 @@
 		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
 		"version": "changeset version",
 		"release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
-		"test": "vitest --environment=happy-dom --run",
+		"test": "vitest",
 		"typecheck": "tsc --build && vitest --typecheck.only --run",
 		"fix": "biome check --write .",
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
@@ -17,8 +17,8 @@
 		"@rspack/cli": "^1.2.7",
 		"@rspack/core": "^1.2.7",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
+		"@vitest/browser": "^3.0.9",
 		"esbuild": "^0.25.1",
-		"happy-dom": "^17.4.4",
 		"publint": "^0.3.9",
 		"typescript": "^5.8.2",
 		"vitest": "^3.0.9"

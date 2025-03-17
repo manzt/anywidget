@@ -107,12 +107,12 @@ async function load_css(css, anywidget_id) {
 async function load_esm(esm) {
 	if (is_href(esm)) {
 		return {
-			mod: await import(/* webpackIgnore: true */ esm),
+			mod: await import(/* webpackIgnore: true */ /* @vite-ignore */ esm),
 			url: esm,
 		};
 	}
 	let url = URL.createObjectURL(new Blob([esm], { type: "text/javascript" }));
-	let mod = await import(/* webpackIgnore: true */ url);
+	let mod = await import(/* webpackIgnore: true */ /* @vite-ignore */ url);
 	URL.revokeObjectURL(url);
 	return { mod, url };
 }
