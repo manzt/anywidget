@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.17
+
+### Patch Changes
+
+- Refactor: Manage front-end HMR runtimes with web `AbortController` ([#826](https://github.com/manzt/anywidget/pull/826))
+
 ## 0.9.16
 
 ### Patch Changes
