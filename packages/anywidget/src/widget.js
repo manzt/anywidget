@@ -2,6 +2,7 @@ import * as uuid from "@lukeed/uuid";
 import * as solid from "solid-js";
 
 /** @import * as base from "@jupyter-widgets/base" */
+/** @import { Initialize, Render, AnyModel } from "@anywidget/types" */
 
 /**
  * @template T
@@ -10,13 +11,13 @@ import * as solid from "solid-js";
 
 /**
  * @typedef AnyWidget
- * @prop initialize {import("@anywidget/types").Initialize}
- * @prop render {import("@anywidget/types").Render}
+ * @prop initialize {Initialize}
+ * @prop render {Render}
  */
 
 /**
  *  @typedef AnyWidgetModule
- *  @prop render {import("@anywidget/types").Render=}
+ *  @prop render {Render=}
  *  @prop default {AnyWidget | (() => AnyWidget | Promise<AnyWidget>)=}
  */
 
@@ -102,19 +103,16 @@ async function load_css(css, anywidget_id) {
 
 /**
  * @param {string} esm
- * @returns {Promise<{ mod: AnyWidgetModule, url: string }>}
+ * @returns {Promise<AnyWidgetModule>}
  */
 async function load_esm(esm) {
 	if (is_href(esm)) {
-		return {
-			mod: await import(/* webpackIgnore: true */ /* @vite-ignore */ esm),
-			url: esm,
-		};
+		return await import(/* webpackIgnore: true */ /* @vite-ignore */ esm);
 	}
 	let url = URL.createObjectURL(new Blob([esm], { type: "text/javascript" }));
 	let mod = await import(/* webpackIgnore: true */ /* @vite-ignore */ url);
 	URL.revokeObjectURL(url);
-	return { mod, url };
+	return mod;
 }
 
 /** @param {string} anywidget_id */
@@ -148,14 +146,13 @@ To learn more, please see: https://github.com/manzt/anywidget/pull/395.
 /**
  * @param {string} esm
  * @param {string} anywidget_id
- * @returns {Promise<AnyWidget & { url: string }>}
+ * @returns {Promise<AnyWidget>}
  */
 async function load_widget(esm, anywidget_id) {
-	let { mod, url } = await load_esm(esm);
+	let mod = await load_esm(esm);
 	if (mod.render) {
 		warn_render_deprecation(anywidget_id);
 		return {
-			url,
 			async initialize() {},
 			render: mod.render,
 		};
@@ -166,7 +163,7 @@ async function load_widget(esm, anywidget_id) {
 	);
 	let widget =
 		typeof mod.default === "function" ? await mod.default() : mod.default;
-	return { url, ...widget };
+	return widget;
 }
 
 /**
@@ -219,18 +216,26 @@ async function safe_cleanup(fn, kind) {
 
 /**
  * @template T
- * @typedef {{ data: T, state: "ok" } | { error: any, state: "error" }} Result
+ * @typedef Ready
+ * @property {"ready"} status
+ * @property {T} data
  */
 
-/** @type {<T>(data: T) => Result<T>} */
-function ok(data) {
-	return { data, state: "ok" };
-}
+/**
+ * @typedef Pending
+ * @property {"pending"} status
+ */
 
-/** @type {(e: any) => Result<any>} */
-function error(e) {
-	return { error: e, state: "error" };
-}
+/**
+ * @typedef Errored
+ * @property {"error"} status
+ * @property {unknown} error
+ */
+
+/**
+ * @template T
+ * @typedef {Pending | Ready<T> | Errored} Result
+ */
 
 /**
  * Cleans up the stack trace at anywidget boundary.
@@ -238,9 +243,8 @@ function error(e) {
  * but the initial error message is cleaned up to be more user-friendly.
  *
  * @param {unknown} source
- * @returns {never}
  */
-function throw_anywidget_error(source) {
+function log_anywidget_error(source) {
 	if (!(source instanceof Error)) {
 		// Don't know what to do with this.
 		throw source;
@@ -251,7 +255,6 @@ function throw_anywidget_error(source) {
 		anywidget_index === -1 ? lines : lines.slice(0, anywidget_index + 1);
 	source.stack = clean_stack.join("\n");
 	console.error(source);
-	throw source;
 }
 
 /**
@@ -321,13 +324,13 @@ function promise_with_resolvers() {
 }
 
 class Runtime {
-	/** @type {import('solid-js').Resource<Result<AnyWidget & { url: string }>>} */
+	/** @type {solid.Accessor<Result<AnyWidget>>} */
 	// @ts-expect-error - Set synchronously in constructor.
 	#widget_result;
-	/** @type {Promise<void>} */
-	ready;
 	/** @type {AbortSignal} */
 	#signal;
+	/** @type {Promise<void>} */
+	ready;
 
 	/**
 	 * @param {base.DOMWidgetModel} model
@@ -335,52 +338,72 @@ class Runtime {
 	 */
 	constructor(model, options) {
 		/** @type {PromiseWithResolvers<void>} */
-		const resolvers = promise_with_resolvers();
+		let resolvers = promise_with_resolvers();
 		this.ready = resolvers.promise;
 		this.#signal = options.signal;
 		this.#signal.throwIfAborted();
 		this.#signal.addEventListener("abort", () => dispose());
+
+		AbortSignal.timeout(2000).addEventListener("abort", () => {
+			console.error("timed out");
+			resolvers.reject(new Error("[anywidget] Failed to load"));
+		});
 		let dispose = solid.createRoot((dispose) => {
+			let id = () => model.get("_anywidget_id");
 			let [css, set_css] = solid.createSignal(model.get("_css"));
 			model.on("change:_css", () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] css hot updated: ${id}`);
+				console.debug(`[anywidget] css hot updated: ${id()}`);
 				set_css(model.get("_css"));
 			});
 			solid.createEffect(() => {
-				let id = model.get("_anywidget_id");
-				load_css(css(), id);
+				css() && load_css(css(), id());
 			});
 
-			/** @type {import("solid-js").Signal<string>} */
+			/** @type {solid.Signal<string>} */
 			let [esm, setEsm] = solid.createSignal(model.get("_esm"));
 			model.on("change:_esm", async () => {
-				let id = model.get("_anywidget_id");
-				console.debug(`[anywidget] esm hot updated: ${id}`);
+				console.debug(`[anywidget] esm hot updated: ${id()}`);
 				setEsm(model.get("_esm"));
 			});
-			/** @type {void | (() => Awaitable<void>)} */
-			let cleanup;
-			this.#widget_result = solid.createResource(esm, async (update) => {
-				await safe_cleanup(cleanup, "initialize");
-				try {
-					model.off(null, null, INITIALIZE_MARKER);
-					let widget = await load_widget(update, model.get("_anywidget_id"));
-					resolvers.resolve();
-					cleanup = await widget.initialize?.({
-						model: model_proxy(model, INITIALIZE_MARKER),
-						experimental: {
-							// @ts-expect-error - bind isn't working
-							invoke: invoke.bind(null, model),
-						},
-					});
-					return ok(widget);
-				} catch (e) {
-					return error(e);
-				}
-			})[0];
+
+			let [widget_result, set_widget_result] = solid.createSignal(
+				/** @type {Result<AnyWidget>} */ ({
+					status: "pending",
+				}),
+			);
+
+			this.#widget_result = widget_result;
+
+			solid.createEffect(() => {
+				let controller = new AbortController();
+				solid.onCleanup(() => controller.abort());
+				model.off(null, null, INITIALIZE_MARKER);
+				load_widget(esm(), model.get("_anywidget_id"))
+					.then(async (widget) => {
+						if (controller.signal.aborted) {
+							return;
+						}
+						let cleanup = await widget.initialize?.({
+							model: model_proxy(model, INITIALIZE_MARKER),
+							experimental: {
+								// @ts-expect-error - bind isn't working
+								invoke: invoke.bind(null, model),
+							},
+						});
+						if (controller.signal.aborted) {
+							safe_cleanup(cleanup, "esm update");
+							return;
+						}
+						controller.signal.addEventListener("abort", () =>
+							safe_cleanup(cleanup, "esm update"),
+						);
+						set_widget_result({ status: "ready", data: widget });
+						resolvers.resolve();
+					})
+					.catch((error) => set_widget_result({ status: "error", error }));
+			});
+
 			return () => {
-				cleanup?.();
 				model.off("change:_css");
 				model.off("change:_esm");
 				dispose();
@@ -399,21 +422,23 @@ class Runtime {
 		signal.throwIfAborted();
 		signal.addEventListener("abort", () => dispose());
 		let dispose = solid.createRoot((dispose) => {
-			/** @type {void | (() => Awaitable<void>)} */
-			let cleanup;
-			let resource = solid.createResource(
-				this.#widget_result,
-				async (widget_result) => {
-					cleanup?.();
-					// Clear all previous event listeners from this hook.
-					model.off(null, null, view);
-					view.$el.empty();
-					if (widget_result.state === "error") {
-						throw_anywidget_error(widget_result.error);
-					}
-					let widget = widget_result.data;
-					try {
-						cleanup = await widget.render?.({
+			solid.createEffect(() => {
+				// Clear all previous event listeners from this hook.
+				model.off(null, null, view);
+				view.$el.empty();
+				let result = this.#widget_result();
+				if (result.status === "pending") {
+					return;
+				}
+				if (result.status === "error") {
+					log_anywidget_error(result.error);
+					return;
+				}
+				let controller = new AbortController();
+				solid.onCleanup(() => controller.abort());
+				Promise.resolve()
+					.then(async () => {
+						let cleanup = await result.data.render?.({
 							model: model_proxy(model, view),
 							el: view.el,
 							experimental: {
@@ -421,20 +446,17 @@ class Runtime {
 								invoke: invoke.bind(null, model),
 							},
 						});
-					} catch (e) {
-						throw_anywidget_error(e);
-					}
-				},
-			)[0];
-			solid.createEffect(() => {
-				if (resource.error) {
-					// TODO: Show error in the view?
-				}
+						if (controller.signal.aborted) {
+							safe_cleanup(cleanup, "dispose view - already aborted");
+							return;
+						}
+						controller.signal.addEventListener("abort", () =>
+							safe_cleanup(cleanup, "dispose view - aborted"),
+						);
+					})
+					.catch((error) => log_anywidget_error(error));
 			});
-			return () => {
-				dispose();
-				cleanup?.();
-			};
+			return () => dispose();
 		});
 	}
 }
@@ -463,21 +485,20 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
 		initialize(...args) {
 			super.initialize(...args);
 			let controller = new AbortController();
-			let runtime = new Runtime(this, { signal: controller.signal });
 			this.once("destroy", () => {
-				try {
-					controller.abort("[anywidget] Runtime destroyed.");
-				} finally {
-					RUNTIMES.delete(this);
-				}
+				controller.abort("[anywidget] Runtime destroyed.");
+				RUNTIMES.delete(this);
 			});
-			RUNTIMES.set(this, runtime);
+			RUNTIMES.set(this, new Runtime(this, { signal: controller.signal }));
 		}
 
 		/** @param {Parameters<InstanceType<DOMWidgetModel>["_handle_comm_msg"]>} msg */
 		async _handle_comm_msg(...msg) {
-			const runtime = RUNTIMES.get(this);
-			await runtime?.ready;
+			let runtime = RUNTIMES.get(this);
+			await runtime?.ready.catch(() => {
+				console.log("timed out");
+				console.log({ msg });
+			});
 			return super._handle_comm_msg(...msg);
 		}
 
