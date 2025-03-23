@@ -34,12 +34,9 @@ def test_file_contents_deleted(tmp_path: pathlib.Path) -> None:
     contents.deleted.connect(mock)
 
     def mock_file_events() -> Generator[set, None, None]:
-        changes = set()
-        changes.add((Change.deleted, str(path)))
-        yield changes
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
+        path.unlink()  # actually delete the file
+        yield {(Change.deleted, str(path))}
+        yield {(Change.modified, str(path))}
 
     with patch.object(watchfiles, "watch") as mock_watch:
         mock_watch.return_value = mock_file_events()
@@ -64,9 +61,7 @@ def test_file_contents_changed(tmp_path: pathlib.Path) -> None:
 
     def mock_file_events() -> Generator[set, None, None]:
         path.write_text(new_contents)
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
+        yield {(Change.modified, str(path))}
 
     with patch.object(watchfiles, "watch") as mock_watch:
         mock_watch.return_value = mock_file_events()
@@ -120,17 +115,13 @@ def test_background_file_contents(tmp_path: pathlib.Path) -> None:
     def mock_file_events() -> Generator[set, None, None]:
         # write to file
         path.write_text(new_contents)
-        changes = set()
-        changes.add((Change.modified, str(path)))
-        yield changes
+        yield {(Change.modified, str(path))}
         # delete the file
-        changes = set()
-        changes.add((Change.deleted, str(path)))
-        yield changes
+        path.unlink()
+        yield {(Change.deleted, str(path))}
         # "re-create the file"
         path.write_text(new_contents)
-        changes = set()
-        changes.add((Change.modified, str(path)))
+        yield {(Change.modified, str(path))}
 
     with patch.object(watchfiles, "watch") as mock_watch:
         mock_watch.return_value = mock_file_events()
