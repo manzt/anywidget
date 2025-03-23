@@ -68,32 +68,32 @@ _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
 
-_TARGET_NAME = "jupyter.widget"
-_ANYWIDGET_MODEL_NAME = "AnyModel"
-_ANYWIDGET_VIEW_NAME = "AnyView"
-_ANYWIDGET_JS_MODULE = "anywidget"
-
-_ANYWIDGET_STATE = {
-    "_model_module": _ANYWIDGET_JS_MODULE,
-    "_model_name": _ANYWIDGET_MODEL_NAME,
-    "_model_module_version": _ANYWIDGET_SEMVER_VERSION,
-    "_view_module": _ANYWIDGET_JS_MODULE,
-    "_view_name": _ANYWIDGET_VIEW_NAME,
-    "_view_module_version": _ANYWIDGET_SEMVER_VERSION,
-    "_view_count": None,
-}
-
 
 def open_comm(
-    target_name: str = _TARGET_NAME,
+    initial_state: dict,
     version: str = _PROTOCOL_VERSION,
 ) -> comm.base_comm.BaseComm:
     import comm
 
+    state, buffer_paths, buffers = remove_buffers(initial_state)
+
     return comm.create_comm(
-        target_name=target_name,
+        target_name="jupyter.widget",
         metadata={"version": version},
-        data={"state": _ANYWIDGET_STATE},
+        data={
+            "state": {
+                "_model_module": "anywidget",
+                "_model_name": "AnyModel",
+                "_model_module_version": _ANYWIDGET_SEMVER_VERSION,
+                "_view_module": "anywidget",
+                "_view_name": "AnyView",
+                "_view_module_version": _ANYWIDGET_SEMVER_VERSION,
+                "_view_count": None,
+                **state,
+            },
+            "buffer_paths": buffer_paths,
+        },
+        buffers=buffers,
     )
 
 
@@ -103,7 +103,9 @@ def open_comm(
 _COMMS: dict[int, comm.base_comm.BaseComm] = {}
 
 
-def _comm_for(obj: object) -> comm.base_comm.BaseComm:
+def _get_or_create_comm(
+    obj: object, get_state: Callable[[], dict]
+) -> comm.base_comm.BaseComm:
     """Get or create a communcation channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple
@@ -115,7 +117,7 @@ def _comm_for(obj: object) -> comm.base_comm.BaseComm:
     # after object deletion, so the "risk" seems rather minimal.
     obj_id = id(obj)
     if obj_id not in _COMMS:
-        _COMMS[obj_id] = open_comm()
+        _COMMS[obj_id] = open_comm(initial_state=get_state())
         # when the object is garbage collected, remove the comm from the cache
         with contextlib.suppress(TypeError):
             # if the object is not weakrefable, we can't do anything
@@ -317,8 +319,6 @@ class ReprMimeBundle:
                 stacklevel=2,
             )
 
-        self._comm = _comm_for(obj)
-
         # a set of callables that disconnect the connection between the python object
         # and the javascript view.
         self._disconnectors: set[Callable] = set()
@@ -335,6 +335,16 @@ class ReprMimeBundle:
                 def _on_change(new_contents: str, key: str = key) -> None:
                     self._extra_state[key] = new_contents
                     self.send_state(key)
+
+            self._comm = _get_or_create_comm(
+                obj=obj,
+                # When creating the comm, we need to send the current state
+                # immediately to prevent race conditions.
+                get_state=lambda: {
+                    **self._get_state(obj, include=None),
+                    **self._extra_state,
+                },
+            )
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:  # noqa: ARG002
         """Called when the python object is deleted."""
