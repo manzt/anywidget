@@ -328,10 +328,11 @@ function promise_with_resolvers() {
  * @template {Record<string, unknown>} T
  * @template {keyof T & string} K
  * @param {AnyModel<T>} model
- * @param {{ name: K, signal?: AbortSignal}} options
+ * @param {K} name
+ * @param {{ signal?: AbortSignal}} options
  * @returns {solid.Accessor<T[K]>}
  */
-function derived(model, { name, signal }) {
+function observe(model, name, { signal }) {
 	let [get, set] = solid.createSignal(model.get(name));
 	let update = () => set(() => model.get(name));
 	model.on(`change:${name}`, update);
@@ -372,48 +373,39 @@ class Runtime {
 			resolvers.reject(new Error("[anywidget] Failed to initialize model."));
 		});
 		let dispose = solid.createRoot((dispose) => {
-			/** @type {() => string} */
-			let id = () => model.get("_anywidget_id");
-
-			// signals
-			let css = derived(/** @type {AnyModel<State>} */ (model), {
-				name: "_css",
-				signal: this.#signal,
-			});
-			let esm = derived(/** @type {AnyModel<State>} */ (model), {
-				name: "_esm",
-				signal: this.#signal,
-			});
+			/** @type {AnyModel<State>} */
+			// @ts-expect-error - Types don't sufficiently overlap, so we cast here for type-safe access
+			let typed_model = model;
+			let id = typed_model.get("_anywidget_id");
+			let css = observe(typed_model, "_css", { signal: this.#signal });
+			let esm = observe(typed_model, "_esm", { signal: this.#signal });
 			let [widget_result, set_widget_result] = solid.createSignal(
 				/** @type {Result<AnyWidget>} */ ({ status: "pending" }),
 			);
 			this.#widget_result = widget_result;
 
-			// effects
 			solid.createEffect(
 				solid.on(
 					css,
-					() => console.debug(`[anywidget] css hot updated: ${id()}`),
+					() => console.debug(`[anywidget] css hot updated: ${id}`),
 					{ defer: true },
 				),
 			);
 			solid.createEffect(
 				solid.on(
 					esm,
-					() => console.debug(`[anywidget] esm hot updated: ${id()}`),
+					() => console.debug(`[anywidget] esm hot updated: ${id}`),
 					{ defer: true },
 				),
 			);
-
 			solid.createEffect(() => {
-				load_css(css(), id());
+				load_css(css(), id);
 			});
-
 			solid.createEffect(() => {
 				let controller = new AbortController();
 				solid.onCleanup(() => controller.abort());
 				model.off(null, null, INITIALIZE_MARKER);
-				load_widget(esm(), id())
+				load_widget(esm(), id)
 					.then(async (widget) => {
 						if (controller.signal.aborted) {
 							return;
