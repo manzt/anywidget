@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.18
+
+### Patch Changes
+
+- **experimental** Fix descriptor API to send initial state on comm creation ([#832](https://github.com/manzt/anywidget/pull/832))
+
 ## 0.9.17
 
 ### Patch Changes
