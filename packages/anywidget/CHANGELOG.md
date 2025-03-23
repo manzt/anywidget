@@ -1,5 +1,15 @@
 # anywidget
 
+## 0.9.17
+
+### Patch Changes
+
+- Refactor: Manage front-end HMR runtimes with web `AbortController` ([#826](https://github.com/manzt/anywidget/pull/826))
+
+- Improve robustness of HMR file watching ([#831](https://github.com/manzt/anywidget/pull/831))
+
+  Handles cases where atomic saves (e.g. by VS Code) temporarily delete and replace the file. The watcher now ensures the file does not exist on `Change.delete` events, preventing unexpected drops in hot reload behavior.
+
 ## 0.9.16
 
 ### Patch Changes
