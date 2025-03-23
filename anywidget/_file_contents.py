@@ -117,7 +117,7 @@ class FileContents:
 
         for changes in watch(self._path, stop_event=self._stop_event):
             for change, path in changes:
-                if change == Change.deleted:
+                if change == Change.deleted and not self._path.exists():
                     self.deleted.emit()
                     return
                 # Only getting Change.added events on macOS so we listen for either
