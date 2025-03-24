@@ -27,8 +27,8 @@
 	"devDependencies": {
 		"@anywidget/react": "workspace:^",
 		"@anywidget/types": "workspace:^",
-		"@types/node": "^22.13.10",
-		"@types/react": "^19.0.10",
+		"@types/node": "^22.13.13",
+		"@types/react": "^19.0.12",
 		"@types/react-dom": "^19.0.4",
 		"esbuild": "^0.25.1",
 		"react": "^19.0.0",
