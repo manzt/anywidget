@@ -63,7 +63,7 @@ async function gather_workspace_overrides() {
 			let pkg = await read_json(
 				path.join(__dirname, "..", dir, "package.json"),
 			);
-			return [pkg.name, pkg.version];
+			return [pkg.name, `~${pkg.version}`];
 		});
 	return Promise.all(entries).then(Object.fromEntries);
 }
