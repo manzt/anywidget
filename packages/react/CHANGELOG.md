@@ -1,5 +1,23 @@
 # @anywidget/react
 
+## 0.2.0
+
+### Minor Changes
+
+- Use `React.useSyncExternalStore` for `useModelState` hook implementation ([`34f01a3`](https://github.com/manzt/anywidget/commit/34f01a3ebf96621d460e370dfe70c191b3f71bfe))
+
+  The [`React.useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore) hook was introduced in React 18 and is designed for external sources of truth, like the anywidget `model`. It ensures a shared source within the component tree, and consistent behavior during concurrent rendering, avoiding subtle bugs present in `useEffect`-based patterns.
+
+  This is marked as a **breaking change** to signal the internal shift in behavior, though in practice it should be considered an improvement. Most users should not notice any difference, aside from more consistent updates.
+
+- Mirror `React.useState` API in `useModelState` hook ([`34f01a3`](https://github.com/manzt/anywidget/commit/34f01a3ebf96621d460e370dfe70c191b3f71bfe))
+
+  Aligns the `useModelState` hook more closely with the `React.useState` API by allowing a callback function in the state setter.
+
+### Patch Changes
+
+- Add generic type parameter to `useModel` hook ([`34f01a3`](https://github.com/manzt/anywidget/commit/34f01a3ebf96621d460e370dfe70c191b3f71bfe))
+
 ## 0.1.0
 
 ### Minor Changes
