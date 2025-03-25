@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.8.2
+
+### Patch Changes
+
+- Pin `@anywidget/react` ~v0.2 ([#837](https://github.com/manzt/anywidget/pull/837))
+
 ## 0.8.1
 
 ### Patch Changes
