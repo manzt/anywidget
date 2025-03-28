@@ -1,5 +1,11 @@
 # @anywidget/deno
 
+## 0.2.3
+
+### Patch Changes
+
+- Send initial state when opening Jupyter comm ([#839](https://github.com/manzt/anywidget/pull/839))
+
 ## 0.2.2
 
 ### Patch Changes
