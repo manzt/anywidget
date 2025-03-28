@@ -84,7 +84,8 @@ class Comm {
 	}
 
 	/** Send a message to the front end to initialize the widget. */
-	init(): Promise<void> {
+	init(data: Record<string, unknown> = {}): Promise<void> {
+		let { state, buffers, buffer_paths } = remove_buffers(data);
 		return _internals.jupyter_broadcast(
 			"comm_open",
 			{
@@ -99,10 +100,13 @@ class Comm {
 						_view_name: "AnyView",
 						_view_module_version: this.#anywidget_version,
 						_view_count: null,
+						...state,
 					},
+					buffer_paths: buffer_paths,
 				},
 			},
 			{
+				buffers: buffers,
 				metadata: {
 					version: `${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
 				},
@@ -261,11 +265,7 @@ export interface WidgetOptions<State> {
 export function widget<State>(options: WidgetOptions<State>): Model<State> {
 	let { state, render, imports, version } = options;
 	let comm = new Comm({ anywidget_version: version });
-	let init_promise = comm
-		.init()
-		.then(() =>
-			comm.send_state({ ...state, _esm: to_esm({ imports, render }) }),
-		);
+	let init_promise = comm.init({ ...state, _esm: to_esm({ imports, render }) });
 	let model = new Model(state);
 	for (let key in state) {
 		// @ts-expect-error - TS can't infer this is correctly keyof ChangeEvents<State>
