@@ -24,11 +24,5 @@
 		"typescript": "^5.8.3",
 		"vitest": "^3.1.1"
 	},
-	"packageManager": "pnpm@9.10.0",
-	"pnpm": {
-		"patchedDependencies": {
-			"@jupyter-widgets/base": "patches/@jupyter-widgets__base.patch",
-			"@jupyter-widgets/base-manager": "patches/@jupyter-widgets__base-manager.patch"
-		}
-	}
+	"packageManager": "pnpm@9.10.0"
 }
