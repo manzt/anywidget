@@ -112,8 +112,8 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {}
 }",
@@ -341,13 +341,13 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
-		"@types/react": "^19.0.12",
-		"@types/react-dom": "^19.0.4",
-		"typescript": "^5.8.2"
+		"@types/react": "^19.1.1",
+		"@types/react-dom": "^19.1.2",
+		"typescript": "^5.8.3"
 	}
 }",
     "path": "package.json",
@@ -1042,7 +1042,7 @@ src/ipyfoo/static
 	"dependencies": {},
 	"devDependencies": {
 		"@anywidget/types": "~0.2.0",
-		"typescript": "^5.8.2"
+		"typescript": "^5.8.3"
 	}
 }",
     "path": "package.json",
@@ -1304,11 +1304,11 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.1"
+		"esbuild": "^0.25.2"
 	}
 }",
     "path": "package.json",
@@ -1535,14 +1535,14 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
-		"@types/react": "^19.0.12",
-		"@types/react-dom": "^19.0.4",
-		"typescript": "^5.8.2",
-		"esbuild": "^0.25.1"
+		"@types/react": "^19.1.1",
+		"@types/react-dom": "^19.1.2",
+		"typescript": "^5.8.3",
+		"esbuild": "^0.25.2"
 	}
 }",
     "path": "package.json",
@@ -1796,7 +1796,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.25.1"
+		"esbuild": "^0.25.2"
 	}
 }",
     "path": "package.json",
@@ -2239,8 +2239,8 @@ src/ipyfoo/static
 	"dependencies": {},
 	"devDependencies": {
 		"@anywidget/types": "~0.2.0",
-		"typescript": "^5.8.2",
-		"esbuild": "^0.25.1"
+		"typescript": "^5.8.3",
+		"esbuild": "^0.25.2"
 	}
 }",
     "path": "package.json",
