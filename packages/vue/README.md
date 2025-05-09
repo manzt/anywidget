@@ -31,32 +31,65 @@ const value = useModelState("value");
 <template>
 <button :onClick="() => value++">count is {{value}}</button>
 </template>
+
+<style scoped>
+</style>
 ```
 
-## Bundling
+## Bundlers
+
+You'll need to compile the above source files into a single ESM entrypoint for
+**anywidget** with a bundler.
+
+### Vite
+
+We currently recommend using [Vite](https://vite.dev/) in [library mode](https://vite.dev/guide/build.html#library-mode).
+
+```sh
+pnpm add -D @types/node @vitejs/plugin-vue vite
+```
 
 ```javascript
 // vite.config.js
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [vue()],
+	plugins: [
+		vue(),
+	],
 	build: {
 		lib: {
-			entry: resolve(__dirname, 'src/index.js'),
+			entry: resolve(__dirname, "js/CounterWidget.ts"),
 			// the proper extensions will be added
-			fileName: 'counter-widget',
-			formats: ['es'],
+			fileName: "counter-widget",
+			formats: ["es"],
 		},
+		// minify: false, // Uncomment to make it easier to debug errors.
+	},
+	define: {
+		// DOCS: https://vite.dev/guide/build.html#css-support
+		// > In library mode, all import.meta.env.* usage are statically replaced when building for production.
+		// > However, process.env.* usage are not, so that consumers of your library can dynamically change it.
+		//
+		// The consumer of the widget is a webview, which does not have a top level process object.
+		// So we need to replace it with a static value.
+		'process.env.NODE_ENV': '"production"',
 	},
 });
 ```
+
+```sh
+vite build
+```
+
+You can read more about using Vite with **anywidget** in
+[our documentation](https://anywidget.dev/en/bundling/#vite).
 
 ## License
 
