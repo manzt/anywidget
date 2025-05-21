@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "0.0.0",
 	"description": "Vue utilities for anywidget",
+	"license": "MIT",
 	"main": "index.js",
 	"types": "dist/index.d.ts",
 	"files": [

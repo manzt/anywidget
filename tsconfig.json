@@ -19,6 +19,7 @@
 		{ "path": "packages/react" },
 		{ "path": "packages/svelte" },
 		{ "path": "packages/vite" },
+		{ "path": "packages/vue" },
 		{ "path": "packages/create-anywidget" }
 	]
 }

@@ -3,6 +3,7 @@
 	"version": "0.8.2",
 	"type": "module",
 	"author": "Trevor Manz",
+	"license": "MIT",
 	"bin": {
 		"create-anywidget": "index.js"
 	},

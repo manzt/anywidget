@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "0.2.0",
 	"description": "utility types for anywidget",
+	"license": "MIT",
 	"main": "./index.ts",
 	"types": "./index.ts",
 	"files": [
