@@ -11,7 +11,6 @@ import {
 	unref,
 } from "vue";
 
-
 /**
  * @template {Record<string, any>} T
  * @typedef RenderContext
@@ -92,14 +91,11 @@ export function useModelState(key) {
 				return model.get(unref(key));
 			},
 			set(newValue) {
-				model.set(
-					unref(key),
-					toValue(newValue),
-				);
+				model.set(unref(key), toValue(newValue));
 				model.save_changes();
 			},
-		}
-	})
+		};
+	});
 
 	const update = () => {
 		value.value = model.get(unref(key));
@@ -121,14 +117,14 @@ export function useModelState(key) {
  * @type {import("vue").DefineSetupFnComponent<RenderContext<any>>}
  */
 const WidgetWrapper = defineComponent(
-  ({ model, experimental }, ctx) => {
-    provide(RENDER_CONTEXT_KEY, { model, experimental });
-    return () => ctx.slots?.default?.();
-  },
-  {
-	props: ["model", "experimental"],
-    name: 'WidgetWrapper'
-  }
+	({ model, experimental }, ctx) => {
+		provide(RENDER_CONTEXT_KEY, { model, experimental });
+		return () => ctx.slots?.default?.();
+	},
+	{
+		props: ["model", "experimental"],
+		name: "WidgetWrapper",
+	},
 );
 
 /**
@@ -137,13 +133,7 @@ const WidgetWrapper = defineComponent(
  */
 export function createRender(Widget) {
 	return ({ el, model, experimental }) => {
-		const app = createApp(
-			h(
-				WidgetWrapper,
-				{ model, experimental },
-				h(Widget),
-			),
-		)
+		const app = createApp(h(WidgetWrapper, { model, experimental }, h(Widget)));
 		app.mount(el);
 
 		return () => app.unmount();
