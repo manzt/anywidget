@@ -1,7 +1,7 @@
 /**
  * @module
  *
- * Thie module contains an anywidget bridge to define widgets using signals.
+ * This module contains an anywidget bridge to define widgets using signals.
  *
  * @example
  * ```ts

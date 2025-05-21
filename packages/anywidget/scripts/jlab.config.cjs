@@ -54,7 +54,7 @@ module.exports = {
 							name: pkg.name,
 							version: pkg.version,
 							author: pkg.author,
-							lisence: pkg.license,
+							license: pkg.license,
 							jupyterlab: {
 								_build: {
 									load: `./static/${entry}`,

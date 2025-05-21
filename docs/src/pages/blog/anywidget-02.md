@@ -91,7 +91,7 @@ and **anywidget** will automatically read the file contents from disk for you.
 
 Now for the magic 🪄. Passing a file path not only offers a convenience to
 loading your front-end code, but also **opts in to anywidget's native HMR
-<u>during developement</u>.** **anywidget** will start listening for
+<u>during development</u>.** **anywidget** will start listening for
 modifications to the referenced files and instantly apply changes to the
 front-end, offering an integrated development experience within Jupyter like
 never before.
@@ -159,7 +159,7 @@ function render({ model, el }) {
 export default { render };
 ```
 
-The `import("@anywidget/types").Render<Model>` utilty strictly types the
+The `import("@anywidget/types").Render<Model>` utility strictly types the
 `render` function such that `model.get` and `model.set` are typed based on the
 user-defined `Model`.
 

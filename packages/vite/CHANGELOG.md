@@ -22,7 +22,7 @@
 
 ### Patch Changes
 
-- fix: Support refreshing muliple contexts ([#144](https://github.com/manzt/anywidget/pull/144))
+- fix: Support refreshing multiple contexts ([#144](https://github.com/manzt/anywidget/pull/144))
 
 ## 0.1.0
 

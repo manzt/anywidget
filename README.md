@@ -143,7 +143,7 @@ the overall project and vision:
 ```
 
 Our [SciPy paper](https://proceedings.scipy.org/articles/NRPV2311), detailing
-the motivation and approach behind Jupyter Widget ecosystem compatability:
+the motivation and approach behind Jupyter Widget ecosystem compatibility:
 
 ```bibtex
 @inproceedings{manz2024notebooks,

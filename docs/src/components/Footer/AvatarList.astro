@@ -111,7 +111,7 @@ async function removeDupsAndFindCoAuthors(arr: Commit[]) {
 		users.forEach((user) => map.set(email, user));
 	}
 
-	// finally dedupe by user id (incase separate emails for same user)
+	// finally dedupe by user id (in case separate emails for same user)
 	let deduped = new Map<string, User>();
 	for (let [_, user] of map) {
 		deduped.set(user.id, user);
