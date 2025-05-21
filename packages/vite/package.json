@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "0.2.1",
 	"description": "a vite plugin for anywidget",
+	"license": "MIT",
 	"files": [
 		"dist",
 		"index.js",

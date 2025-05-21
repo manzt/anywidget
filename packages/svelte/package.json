@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "0.0.10",
 	"description": "Svelte utilities for anywidget",
+	"license": "MIT",
 	"main": "src/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
