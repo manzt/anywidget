@@ -88,7 +88,7 @@
 
 - Relax version pinning for anywidget front end ([#521](https://github.com/manzt/anywidget/pull/521))
 
-  Adopted `~major.minor.*` notation for more flexible version compatibility in the front end, mirroring practices improve compatability in environments where bumping the front-end versions is not possible for end users (i.e., JupyterHub). This change is intended to enhance adaptability without causing disruptions. If issues arise, please report them on our issues page.
+  Adopted `~major.minor.*` notation for more flexible version compatibility in the front end, mirroring practices improve comparability in environments where bumping the front-end versions is not possible for end users (i.e., JupyterHub). This change is intended to enhance adaptability without causing disruptions. If issues arise, please report them on our issues page.
 
 ## 0.9.10
 
@@ -345,8 +345,8 @@
 
 - feat(experimental)!: Require `include` in `_get_anywidget_state` signature ([#317](https://github.com/manzt/anywidget/pull/317))
 
-  Allows implementors to avoid re-serializing fields which aren't needed to send
-  to the front end. This is a **BREAKING** change because it requires implementors
+  Allows implementers to avoid re-serializing fields which aren't needed to send
+  to the front end. This is a **BREAKING** change because it requires implementers
   of `_get_anywidget_state` to account for `include` in the function signature.
 
   ```python

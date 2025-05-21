@@ -39,7 +39,7 @@ export function useExperimental() {
  * A React Hook to use model-backed state in a component.
  *
  * Mirrors the API of `React.useState`, but synchronizes state with
- * the underlying model provded by an anywidget host.
+ * the underlying model provided by an anywidget host.
  *
  * @example
  * ```ts

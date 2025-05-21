@@ -37,7 +37,7 @@ export default defineConfig({
 				applyBaseStyles: false,
 			},
 		}),
-		// Suports components in markdown
+		// Supports components in markdown
 		mdx(),
 		sitemap(),
 	],

@@ -14,7 +14,7 @@ image:
 > [Discord](https://discord.gg/W5h4vPMbDQ) 🐣
 
 _TL;DR: **anywidget** v0.9 introduces `initialize` and `render`
-<a class="underline" href="#introducing-widget-lifecycle-hooks">lifecyle
+<a class="underline" href="#introducing-widget-lifecycle-hooks">lifecycle
 hooks</a> to allow greater control of front-end widget behavior_. _The preferred
 way to define widgets is now with a `default` object export:_
 
@@ -41,7 +41,7 @@ This update also requires developers to opt-in to
 [live development features](/blog/anywidget-02#native-hot-module-replacement-hmr),
 reducing some minor production issues for widgets.
 
-### Mimimizing Friction in Jupyter Front Ends
+### Minimizing Friction in Jupyter Front Ends
 
 **anywidget** aims to make creating and sharing Jupyter Widgets as simple as
 possible. We expose a narrower set of web-standard APIs, compared to traditional
@@ -64,7 +64,7 @@ stage would be very challenging for traditional Jupyter Widgets, **anywidget**
 can standardize certain aspects to make widget development less error-prone and
 more accessible.
 
-Despite these goals, serveral several community members highlighted specific
+Despite these goals, several several community members highlighted specific
 instances where **anywidget**'s existing API was too restrictive
 ([#266](https://github.com/manzt/anywidget/issues/266),
 [#388](https://github.com/manzt/anywidget/issues/388)), prompting us to
@@ -83,7 +83,7 @@ there are two distinct steps in a widget's lifetime:
 - _View Rendering_: Each notebook cell displaying the widget renders an
   independent view based on the model's current state.
 
-![The main parts of the widget lifecyle, including model initialization and view rendering](/widget-lifecycle.png)
+![The main parts of the widget lifecycle, including model initialization and view rendering](/widget-lifecycle.png)
 
 In **anywidget**, _view rendering_ logic is defined with `render`, but
 historically _model initialization_ was handled implicitly. While this

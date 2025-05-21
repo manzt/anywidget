@@ -97,7 +97,7 @@ def open_comm(
     )
 
 
-# cache of comms: mapp of id(obj) -> Comm.
+# cache of comms: map of id(obj) -> Comm.
 # we use id(obj) rather than WeakKeyDictionary because we can't assume that the
 # object has a __hash__ method
 _COMMS: dict[int, comm.base_comm.BaseComm] = {}
@@ -106,7 +106,7 @@ _COMMS: dict[int, comm.base_comm.BaseComm] = {}
 def _get_or_create_comm(
     obj: object, get_state: Callable[[], dict]
 ) -> comm.base_comm.BaseComm:
-    """Get or create a communcation channel for a given object.
+    """Get or create a communication channel for a given object.
 
     Comms are cached by object id, so that if the same object is used in multiple
     places, the same comm will be used. Comms are deleted when the object is garbage
@@ -371,7 +371,7 @@ class ReprMimeBundle:
         state = {**self._get_state(obj, include=include), **self._extra_state}
         if include is not None:
             # ensure that we only send the keys that were requested
-            # incase the state getter returned extra keys
+            # in case the state getter returned extra keys
             state = {k: v for k, v in state.items() if k in include}
 
         if not state:
