@@ -4,10 +4,6 @@
 
 ## Installation
 
-> **Warning** This API is currently experimental an subject to change. Our plan
-> is to migrate to [Svelte 5 with runes](https://svelte.dev/blog/runes) once
-> released.
-
 ```sh
 npm install @anywidget/svelte
 ```
@@ -16,21 +12,20 @@ npm install @anywidget/svelte
 
 ```javascript
 // index.js
-import { createRender } from "@anywidget/svelte";
+import { defineWidget } from "@anywidget/svelte";
 import Counter from "./Counter.svelte";
 
-export let render = createRender(Counter);
+export default defineWidget(Counter);
 ```
 
 ```svelte
 <!-- Counter.svelte -->
 <script>
-    import { stores } from "@anywidget/svelte";
-    // Access traitlet values as Svelte stores
-    let { count } = stores;
+  /** @type {{ bindings: { value: number }}} */
+  let { bindings } = $props();
 </script>
 
-<button on:click={() => $count += 1}>Count is {$count}</button>
+<button onclick={() => bindings.value++}>Count is {bindings.value}</button>
 ```
 
 ## Bundlers
@@ -38,55 +33,36 @@ export let render = createRender(Counter);
 You'll need to compile the above source files into a single ESM entrypoint for
 **anywidget** with a bundler.
 
-### Rollup
+### Rolldown
 
-We currently recommend using [Rollup](https://rollupjs.org/).
+We recommend using [Rolldown](https://rolldown.rs/) for bundling Svelte 5 components.
 
 ```sh
-pnpm add -D rollup @rollup/plugin-node-resolve rollup-plugin-svelte
+pnpm add -D rolldown rollup-plugin-svelte
 ```
 
 ```js
-// rollup.config.js
+// rolldown.config.js
+import { defineConfig } from "rolldown";
 import svelte from "rollup-plugin-svelte";
-import resolve from "@rollup/plugin-node-resolve";
-
-export default {
-	input: "index.js",
-	output: "bundle.js",
-	plugins: [svelte({ emitCss: false }), resolve()],
-};
-```
-
-```sh
-rollup -c rollup.config.js --watch
-```
-
-### Vite
-
-Alternatively, you can use the **anywidget** [Vite](https://vitejs.dev/) plugin.
-
-```sh
-pnpm add -D vite @sveltejs/vite-plugin-svelte @anywidget/vite
-```
-
-```js
-// vite.config.js
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import anywidget from "@anywidget/vite";
 
 export default defineConfig({
-	plugins: [anywidget(), svelte({ hot: false })],
+  input: "./index.js",
+  output: {
+    dir: "./dist/",
+  },
+  plugins: [
+    svelte({ compilerOptions: { runes: true } }),
+  ],
 });
 ```
 
 ```sh
-vite
+rolldown -c
 ```
 
-You can read more about using Vite with **anywidget** in
-[our documentation](https://anywidget.dev/en/bundling/#vite).
+See [manzt/ipyfoo-svelte](https://github.com/manzt/ipyfoo-svelte) for a
+complete example.
 
 ## Acknowledgements
 
