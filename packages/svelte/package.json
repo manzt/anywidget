@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/svelte",
 	"type": "module",
-	"version": "0.0.10",
+	"version": "0.1.0",
 	"description": "Svelte utilities for anywidget",
 	"license": "MIT",
 	"main": "src/index.js",
