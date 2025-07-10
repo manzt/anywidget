@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.8.3
+
+### Patch Changes
+
+- Upgrade `@clack/prompts` to avoid using placeholder values ([#868](https://github.com/manzt/anywidget/pull/868))
+
 ## 0.8.2
 
 ### Patch Changes
