@@ -17,12 +17,12 @@
 		}
 	},
 	"peerDependencies": {
-		"svelte": "^4.0.0"
+		"svelte": "^5.0.0"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:^"
 	},
 	"devDependencies": {
-		"svelte": "^5.28.2"
+		"svelte": "^5.35.5"
 	}
 }

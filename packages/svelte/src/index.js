@@ -1,70 +1,70 @@
-import { getContext, onDestroy } from "svelte";
-import { writable } from "svelte/store";
+// @ts-check
+import { mount, unmount } from "svelte";
+import { createSubscriber } from "svelte/reactivity";
 
-import WrapperComponent from "./WrapperComponent.svelte";
-import { MODEL_SYMBOL, STORES_SYMBOL } from "./constants.js";
-
-/**
- * @template Model
- * @typedef {{ [Key in keyof Model]: import("svelte/store").Writable<Model[Key]> }} Stores
- */
+/** @import * as svelte from "svelte" */
+/** @import { AnyWidget, AnyModel } from "@anywidget/types" */
 
 /**
- * @template T
- *
- * @param {string} key
- * @returns {import("svelte/store").Writable<T>}
+ * @template {Record<string, any>} T
+ * @param {AnyModel<T>} model
+ * @returns T
  */
-function anywriteable(key) {
-	let model = getContext(MODEL_SYMBOL);
-	let { subscribe, set } = writable(model.get(key));
-	let update = () => set(model.get(key));
-	model.on(`change:${key}`, update);
-	onDestroy(() => model.off(`change:${key}`, update));
-	return {
-		subscribe,
-		set(value) {
-			model.set(key, value);
-			model.save_changes();
+function createBindings(model) {
+	/** @type {Record<string, () => void>} */
+	let subscribes = {};
+	return new Proxy(/** @type{any} */ ({}), {
+		get(_, /** @type {string} */ name) {
+			if (!(name in subscribes)) {
+				subscribes[name] = createSubscriber((update) => {
+					model.on(`change:${name}`, update);
+					return () => model.off(`change:${name}`, update);
+				});
+			}
+			subscribes[name]();
+			return model.get(name);
 		},
-		update(updater) {
-			model.set(key, updater(model.get(key)));
+		set(_, /** @type {string} */ name, /** @type {any} */ newValue) {
+			model.set(name, newValue);
 			model.save_changes();
+			return true;
 		},
-	};
+	});
 }
 
-/** @type {import("@anywidget/types").AnyModel} */
-export let model = new Proxy(/** @type {any} */ ({}), {
-	get(_, key) {
-		return getContext(MODEL_SYMBOL)[key];
-	},
-});
-
-/** @type {Stores<Record<string, any>>} */
-export let stores = new Proxy(
-	{},
-	{
-		get(_, key) {
-			let cache = getContext(STORES_SYMBOL);
-			if (cache[key] === undefined) {
-				cache[key] = anywriteable(/** @type {string} */ (key));
-			}
-			return cache[key];
-		},
-	},
-);
-
 /**
- * @param {import("svelte").ComponentType} Widget
- * @returns {import("@anywidget/types").Render}
+ * Wraps a Svelte component as an anywidget with reactive model bindings.
+ *
+ * Sets up two-way binding between the model and Svelte's reactivity.
+ *
+ * @example
+ * ```ts
+ * import { defineWidget } from "@anywidget/svelte";
+ * import Widget from "./Widget.svelte";
+ *
+ * export default defineWidget(Widget);
+ * ```
+ *
+ * @template {Record<string, any>} T
+ * @param {svelte.Component<{ model?: AnyModel<T>, bindings?: T }>} Widget
+ * @returns {AnyWidget<T>}
  */
-export function createRender(Widget) {
-	return ({ model, el }) => {
-		let widget = new WrapperComponent({
-			target: el,
-			props: { model, Component: Widget },
-		});
-		return () => widget.$destroy();
+export function defineWidget(Widget) {
+	return () => {
+		/** @type {T | undefined} */
+		let bindings = undefined;
+		return {
+			initialize({ model }) {
+				bindings = createBindings(model);
+			},
+			/** @type {import("@anywidget/types").Render<T>} */
+			render({ model, el }) {
+				let app = mount(Widget, {
+					target: el,
+					props: { model, bindings },
+				});
+				return () => unmount(app);
+			},
+		};
 	};
 }
