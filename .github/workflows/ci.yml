@@ -18,7 +18,7 @@ jobs:
     name: Python / Lint
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Disable jupyter-builder build hook because not needed for linting/formatting, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
@@ -33,7 +33,7 @@ jobs:
     name: Python / Typecheck
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Disable jupyter-builder build hook because not needed for typechecking, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
@@ -55,7 +55,7 @@ jobs:
           - "3.12"
           - "3.13"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
@@ -72,7 +72,7 @@ jobs:
     name: JavaScript / Lint
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: biomejs/setup-biome@v2
       - run: biome ci .
 
@@ -80,7 +80,7 @@ jobs:
     name: JavaScript / Typecheck
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
@@ -90,7 +90,7 @@ jobs:
     name: JavaScript / Test
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
