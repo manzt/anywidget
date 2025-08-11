@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
       issues: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
