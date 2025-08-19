@@ -75,7 +75,7 @@ describe("AnyModel.on", () => {
 
 describe("Define AnyWidget", () => {
 	it("infers initialize and render for static widget", () => {
-		let w: AnyWidget<{ value: number }> = {
+		let _w: AnyWidget<{ value: number }> = {
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},
@@ -87,7 +87,7 @@ describe("Define AnyWidget", () => {
 	});
 
 	it("infers initialize and render for function widget", () => {
-		let w: AnyWidget<{ value: number }> = () => ({
+		let _w: AnyWidget<{ value: number }> = () => ({
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},
@@ -99,7 +99,7 @@ describe("Define AnyWidget", () => {
 	});
 
 	it("infers initialize and render for async function widget", () => {
-		let w: AnyWidget<{ value: number }> = async () => ({
+		let _w: AnyWidget<{ value: number }> = async () => ({
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},

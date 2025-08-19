@@ -1,13 +1,11 @@
 import mdx from "@astrojs/mdx";
 import preact from "@astrojs/preact";
 import react from "@astrojs/react";
-import { defineConfig } from "astro/config";
-import ipynb from "./scripts/ipynb.mjs";
-
+import sitemap from "@astrojs/sitemap";
 // TODO: remove or migrate entire to tailwind
 import tailwind from "@astrojs/tailwind";
-
-import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
+import ipynb from "./scripts/ipynb.mjs";
 
 // https://astro.build/config
 export default defineConfig({

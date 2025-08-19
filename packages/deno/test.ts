@@ -10,6 +10,7 @@ Deno.test("widget() initializes the front end", async () => {
 		let model = widget({
 			state: { value: 0 },
 			imports: "BLAH",
+			// biome-ignore lint/correctness/noUnusedFunctionParameters: Args are serialized in test
 			render: async ({ model, el }) => {},
 		});
 		let init_promise = _internals.get_init_promise(model);
@@ -67,6 +68,7 @@ Deno.test("model.set() sends change events to the front end", async () => {
 	try {
 		let model = widget({
 			state: { value: 0 },
+			// biome-ignore lint/correctness/noUnusedFunctionParameters: Args are serialized in test
 			render: async ({ model, el }) => {},
 		});
 		await _internals.get_init_promise(model);
