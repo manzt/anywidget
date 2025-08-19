@@ -1,8 +1,7 @@
-import { page, userEvent } from "@vitest/browser/context";
-import { afterEach, expect, it } from "vitest";
-
 import * as widgets from "@jupyter-widgets/base";
 import * as baseManager from "@jupyter-widgets/base-manager";
+import { page, userEvent } from "@vitest/browser/context";
+import { afterEach, expect, it } from "vitest";
 
 import create_anywidget from "../src/widget.js";
 

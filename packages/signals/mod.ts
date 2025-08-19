@@ -176,9 +176,7 @@ function resolve(
 
 // deno-lint-ignore no-explicit-any
 type WidgetDef<T extends Record<string, any>> = {
-	initialize?: (ctx: {
-		model: SignalModel<T>;
-	}) => ReturnType<aw.Initialize<T>>;
+	initialize?: (ctx: { model: SignalModel<T> }) => ReturnType<aw.Initialize<T>>;
 	render?: (ctx: {
 		model: SignalModel<T>;
 		el: HTMLElement;
