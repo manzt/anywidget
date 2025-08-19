@@ -44,11 +44,12 @@ class MockComm implements widgets.IClassicComm {
 
 class Manager extends baseManager.ManagerBase {
 	async loadClass(className: string, moduleName: string): Promise<any> {
-		if (moduleName === "@jupyter-widgets/base" && className in widgets) {
+		if (moduleName === "@jupyter-widgets/base") {
 			// @ts-expect-error - Types can't narrow here
+			// biome-ignore lint: performance/noDynamicImportAccess
 			return widgets[className];
 		}
-		if (moduleName === "anywidget" && className in anywidget) {
+		if (moduleName === "anywidget") {
 			// @ts-expect-error - Types can't narrow here
 			return anywidget[className];
 		}
