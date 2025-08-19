@@ -127,7 +127,6 @@ function create<T extends Record<string, unknown>>(
 type AnySignal = <T>(value: T) => Signal<T>;
 type PreactLikeSignal = <T>(value: T) => { value: T };
 type SolidLikeSignal = <T>(value: T) => [() => T, (value: T) => void];
-type CreateSignalFunction = AnySignal | PreactLikeSignal | SolidLikeSignal;
 
 function isPreactLikeSignal(
 	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,

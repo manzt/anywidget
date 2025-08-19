@@ -1,11 +1,12 @@
 /** @jsxImportSource preact */
 import type { FunctionalComponent } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useId, useState } from "preact/hooks";
 
-import "../Header/HeaderButton.css";
 import "./SidebarToggle.css";
+import "../Header/HeaderButton.css";
 
 const MenuToggle: FunctionalComponent = () => {
+	const id = useId();
 	const [sidebarShown, setSidebarShown] = useState(false);
 
 	useEffect(() => {
@@ -22,7 +23,7 @@ const MenuToggle: FunctionalComponent = () => {
 			type="button"
 			class="header-button"
 			aria-pressed={sidebarShown ? "true" : "false"}
-			id="menu-toggle"
+			id={id}
 			onClick={() => setSidebarShown(!sidebarShown)}
 		>
 			<svg
