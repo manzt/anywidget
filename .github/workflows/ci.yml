@@ -23,8 +23,6 @@ jobs:
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - run: |
           uv run ruff check
           uv run ruff format
@@ -38,8 +36,6 @@ jobs:
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - run: uv run mypy
 
   TestPython:
@@ -60,8 +56,6 @@ jobs:
         with:
           run_install: true
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - name: Run tests
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
         env:
