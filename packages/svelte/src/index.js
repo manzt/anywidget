@@ -52,7 +52,7 @@ function createBindings(model) {
 export function defineWidget(Widget) {
 	return () => {
 		/** @type {T | undefined} */
-		let bindings = undefined;
+		let bindings;
 		return {
 			initialize({ model }) {
 				bindings = createBindings(model);

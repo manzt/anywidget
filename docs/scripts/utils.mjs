@@ -49,7 +49,7 @@ export function getFileInfo(id, config) {
 
 	// Try to grab the file's actual URL
 	/** @type {URL | undefined} */
-	let url = undefined;
+	let url;
 	try {
 		url = new URL(`file://${id}`);
 	} catch {}

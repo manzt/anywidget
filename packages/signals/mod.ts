@@ -127,7 +127,6 @@ function create<T extends Record<string, unknown>>(
 type AnySignal = <T>(value: T) => Signal<T>;
 type PreactLikeSignal = <T>(value: T) => { value: T };
 type SolidLikeSignal = <T>(value: T) => [() => T, (value: T) => void];
-type CreateSignalFunction = AnySignal | PreactLikeSignal | SolidLikeSignal;
 
 function isPreactLikeSignal(
 	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,
@@ -176,9 +175,7 @@ function resolve(
 
 // deno-lint-ignore no-explicit-any
 type WidgetDef<T extends Record<string, any>> = {
-	initialize?: (ctx: {
-		model: SignalModel<T>;
-	}) => ReturnType<aw.Initialize<T>>;
+	initialize?: (ctx: { model: SignalModel<T> }) => ReturnType<aw.Initialize<T>>;
 	render?: (ctx: {
 		model: SignalModel<T>;
 		el: HTMLElement;
