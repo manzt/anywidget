@@ -60,7 +60,6 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 		);
 
 		// Observe all the headings in the main page content.
-		// biome-ignore lint/complexity/noForEach: This is plenty readable.
 		document
 			.querySelectorAll("article :is(h1,h2,h3)")
 			.forEach((h) => headingsObserver.observe(h));
