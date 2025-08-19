@@ -1,7 +1,7 @@
 {
 	"name": "@anywidget/svelte",
 	"type": "module",
-	"version": "0.0.10",
+	"version": "0.1.0",
 	"description": "Svelte utilities for anywidget",
 	"license": "MIT",
 	"main": "src/index.js",
@@ -17,12 +17,12 @@
 		}
 	},
 	"peerDependencies": {
-		"svelte": "^4.0.0"
+		"svelte": "^5.0.0"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:^"
 	},
 	"devDependencies": {
-		"svelte": "^5.28.2"
+		"svelte": "^5.35.5"
 	}
 }

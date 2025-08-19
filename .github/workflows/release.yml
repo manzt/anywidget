@@ -21,13 +21,11 @@ jobs:
       pull-requests: write
       issues: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1

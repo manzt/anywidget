@@ -18,13 +18,11 @@ jobs:
     name: Python / Lint
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Disable jupyter-builder build hook because not needed for linting/formatting, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - run: |
           uv run ruff check
           uv run ruff format
@@ -33,13 +31,11 @@ jobs:
     name: Python / Typecheck
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Disable jupyter-builder build hook because not needed for typechecking, and requires pnpm
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - run: uv run mypy
 
   TestPython:
@@ -55,13 +51,11 @@ jobs:
           - "3.12"
           - "3.13"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.6.x"
       - name: Run tests
         run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
         env:
@@ -72,17 +66,15 @@ jobs:
     name: JavaScript / Lint
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: biomejs/setup-biome@v2
-        with:
-          version: latest
       - run: biome ci .
 
   TypecheckJavaScript:
     name: JavaScript / Typecheck
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
@@ -92,7 +84,7 @@ jobs:
     name: JavaScript / Test
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
