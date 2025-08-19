@@ -41,7 +41,7 @@ const lang = getLanguageFromURL(currentPage);
 				<LanguageSelect lang={lang} client:idle />
 			)
 		}
-		<Search client:idle />
+		<Search client:only="react" />
 		<SidebarToggle client:idle />
 	</nav>
 </header>

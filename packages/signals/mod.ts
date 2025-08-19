@@ -90,8 +90,7 @@ function create<T extends Record<string, unknown>>(
 ): SignalModel<T> {
 	// TODO: This could be a lot more simple if we infer all the attributes from the model
 	// Instead we dynamically create signals when the are first accessed
-	// deno-lint-ignore no-explicit-any
-	let signalModel: SignalModel<T> = {} as any;
+	let signalModel: SignalModel<T> = {} as SignalModel<T>;
 	Object.defineProperty(signalModel, "host", {
 		value: new JupyterWidgetHostPlatform(model),
 		writable: false,
@@ -173,8 +172,7 @@ function resolve(
 	return fn;
 }
 
-// deno-lint-ignore no-explicit-any
-type WidgetDef<T extends Record<string, any>> = {
+type WidgetDef<T extends Record<string, unknown>> = {
 	initialize?: (ctx: { model: SignalModel<T> }) => ReturnType<aw.Initialize<T>>;
 	render?: (ctx: {
 		model: SignalModel<T>;

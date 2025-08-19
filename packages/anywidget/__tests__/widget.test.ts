@@ -12,20 +12,17 @@ class MockComm implements widgets.IClassicComm {
 	comm_id = `mock-${num_comms++}`;
 	target_name = "dummy";
 	#on_open: ((x?: unknown) => void) | null = null;
-	#on_msg: ((x?: unknown) => void) | null = null;
 	#on_close: ((x?: unknown) => void) | null = null;
 
 	on_open(fn: () => void): void {
 		this.#on_open = fn;
 	}
 
-	on_close(fn: (x: any) => void): void {
+	on_close(fn: (x: unknown) => void): void {
 		this.#on_close = fn;
 	}
 
-	on_msg(fn: (x: any) => void): void {
-		this.#on_msg = fn;
-	}
+	on_msg(): void {}
 
 	open(): string {
 		this.#on_open?.();
@@ -43,7 +40,10 @@ class MockComm implements widgets.IClassicComm {
 }
 
 class Manager extends baseManager.ManagerBase {
-	async loadClass(className: string, moduleName: string): Promise<any> {
+	async loadClass(
+		className: string,
+		moduleName: string,
+	): Promise<typeof widgets.WidgetModel | typeof widgets.WidgetView> {
 		if (moduleName === "@jupyter-widgets/base") {
 			// @ts-expect-error - Types can't narrow here
 			// biome-ignore lint: performance/noDynamicImportAccess
