@@ -12,9 +12,6 @@
 				"useShorthandFunctionType": "off",
 				"noUnusedTemplateLiteral": "off",
 				"noParameterAssign": "off"
-			},
-			"suspicious": {
-				"noExplicitAny": "off"
 			}
 		}
 	},
