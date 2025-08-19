@@ -16,10 +16,10 @@
 		}
 	},
 	"peerDependencies": {
-		"vue": "^3.5.13"
+		"vue": "^3.5.18"
 	},
 	"devDependencies": {
-		"vue": "^3.5.13"
+		"vue": "^3.5.18"
 	},
 	"dependencies": {
 		"@anywidget/types": "workspace:^"
