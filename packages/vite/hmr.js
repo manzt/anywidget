@@ -103,9 +103,15 @@ async function refresh() {
 		}
 		context.model.off();
 		emptyElement(context.el);
-		afm.initialize?.({ model: context.model });
-		let cleanup = await afm.render({ model: context.model, el: context.el });
-		context.cleanup = cleanup ?? noop;
+		let cleanupIntialize = await afm.initialize?.({ model: context.model });
+		let cleanupRender = await afm.render({
+			model: context.model,
+			el: context.el,
+		});
+		context.cleanup = () => {
+			cleanupIntialize?.();
+			cleanupRender?.();
+		};
 	}
 }
 
