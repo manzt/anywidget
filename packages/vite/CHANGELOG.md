@@ -1,5 +1,11 @@
 # @anywidget/vite
 
+## 0.2.2
+
+### Patch Changes
+
+- Normalize possible AFM inputs to an AFM object when using Vite HMR. ([#881](https://github.com/manzt/anywidget/pull/881))
+
 ## 0.2.1
 
 ### Patch Changes
