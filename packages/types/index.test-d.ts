@@ -13,6 +13,7 @@ describe("AnyModel.get", () => {
 	});
 
 	it("defers to any when model is unknown", () => {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 		expectTypeOf(model.get("foo")).toEqualTypeOf<any>();
 	});
 });
@@ -33,6 +34,7 @@ describe("AnyModel.set", () => {
 describe("AnyModel.on", () => {
 	it("infers custom message payload for untyped Model", async () => {
 		model.on("msg:custom", (msg, buffers) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 			expectTypeOf(msg).toEqualTypeOf<any>();
 			expectTypeOf(buffers).toEqualTypeOf<DataView[]>();
 		});
@@ -40,6 +42,7 @@ describe("AnyModel.on", () => {
 
 	it("infers custom message payload for typed Model", async () => {
 		typedModel.on("msg:custom", (msg, buffers) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 			expectTypeOf(msg).toEqualTypeOf<any>();
 			expectTypeOf(buffers).toEqualTypeOf<DataView[]>();
 		});
@@ -48,6 +51,7 @@ describe("AnyModel.on", () => {
 	it("infers any payload for untyped Model", async () => {
 		model.on("change:value", (context, value) => {
 			expectTypeOf(context).toEqualTypeOf<unknown>();
+			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 			expectTypeOf(value).toEqualTypeOf<any>();
 		});
 	});
@@ -62,12 +66,14 @@ describe("AnyModel.on", () => {
 	it("infers any payload for unknown field of typed Model", async () => {
 		typedModel.on("change:foo", (context, value) => {
 			expectTypeOf(context).toEqualTypeOf<unknown>();
+			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 			expectTypeOf(value).toEqualTypeOf<any>();
 		});
 	});
 
 	it("infers any for unknown event", async () => {
 		model.on("foo:bar", (...args) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
 			expectTypeOf(args).toEqualTypeOf<any[]>();
 		});
 	});
@@ -75,7 +81,7 @@ describe("AnyModel.on", () => {
 
 describe("Define AnyWidget", () => {
 	it("infers initialize and render for static widget", () => {
-		let w: AnyWidget<{ value: number }> = {
+		let _w: AnyWidget<{ value: number }> = {
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},
@@ -87,7 +93,7 @@ describe("Define AnyWidget", () => {
 	});
 
 	it("infers initialize and render for function widget", () => {
-		let w: AnyWidget<{ value: number }> = () => ({
+		let _w: AnyWidget<{ value: number }> = () => ({
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},
@@ -99,7 +105,7 @@ describe("Define AnyWidget", () => {
 	});
 
 	it("infers initialize and render for async function widget", () => {
-		let w: AnyWidget<{ value: number }> = async () => ({
+		let _w: AnyWidget<{ value: number }> = async () => ({
 			initialize({ model }) {
 				expectTypeOf(model.get("value")).toEqualTypeOf<number>();
 			},

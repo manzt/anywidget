@@ -1,12 +1,13 @@
 ---
 import * as CONSTS from "../../consts";
-import { KNOWN_LANGUAGE_CODES, getLanguageFromURL } from "../../languages";
+import { getLanguageFromURL, KNOWN_LANGUAGE_CODES } from "../../languages";
 import AnyWidgetLogo from "./AnyWidgetLogo.astro";
 import LanguageSelect from "./LanguageSelect";
 import Search from "./Search";
 import SidebarToggle from "./SidebarToggle";
 import SkipToContent from "./SkipToContent.astro";
 import ThemeToggleButton from "./ThemeToggleButton";
+
 type Props = {
 	currentPage: string;
 };
@@ -40,7 +41,7 @@ const lang = getLanguageFromURL(currentPage);
 				<LanguageSelect lang={lang} client:idle />
 			)
 		}
-		<Search client:idle />
+		<Search client:only="react" />
 		<SidebarToggle client:idle />
 	</nav>
 </header>

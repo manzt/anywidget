@@ -1,6 +1,8 @@
 type Awaitable<T> = T | Promise<T>;
+// biome-ignore lint/suspicious/noExplicitAny: Could relax if we wanted default behavior to be looser
 type ObjectHash = Record<string, any>;
 type ChangeEventHandler<Payload> = (_: unknown, value: Payload) => void;
+// biome-ignore lint/suspicious/noExplicitAny: Generic for flexible implementation
 type EventHandler = (...args: any[]) => void;
 /**
  * Autocomplete works for literal string unions, but adding a union
@@ -27,6 +29,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	): void;
 	on(
 		eventName: "msg:custom",
+		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		callback: (msg: any, buffers: DataView[]) => void,
 	): void;
 	on<K extends `change:${keyof T & string}`>(
@@ -37,12 +40,15 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 	): void;
 	on<K extends `change:${string}`>(
 		eventName: K,
+		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		callback: ChangeEventHandler<any>,
 	): void;
 	on(eventName: string, callback: EventHandler): void;
 	save_changes(): void;
 	send(
+		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		content: any,
+		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		callbacks?: any,
 		buffers?: ArrayBuffer[] | ArrayBufferView[],
 	): void;
@@ -52,6 +58,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 export type Experimental = {
 	invoke: <T>(
 		name: string,
+		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		msg?: any,
 		options?: {
 			buffers?: DataView[];

@@ -90,8 +90,7 @@ function create<T extends Record<string, unknown>>(
 ): SignalModel<T> {
 	// TODO: This could be a lot more simple if we infer all the attributes from the model
 	// Instead we dynamically create signals when the are first accessed
-	// deno-lint-ignore no-explicit-any
-	let signalModel: SignalModel<T> = {} as any;
+	let signalModel: SignalModel<T> = {} as SignalModel<T>;
 	Object.defineProperty(signalModel, "host", {
 		value: new JupyterWidgetHostPlatform(model),
 		writable: false,
@@ -127,7 +126,6 @@ function create<T extends Record<string, unknown>>(
 type AnySignal = <T>(value: T) => Signal<T>;
 type PreactLikeSignal = <T>(value: T) => { value: T };
 type SolidLikeSignal = <T>(value: T) => [() => T, (value: T) => void];
-type CreateSignalFunction = AnySignal | PreactLikeSignal | SolidLikeSignal;
 
 function isPreactLikeSignal(
 	signal: AnySignal | PreactLikeSignal | SolidLikeSignal,
@@ -174,11 +172,8 @@ function resolve(
 	return fn;
 }
 
-// deno-lint-ignore no-explicit-any
-type WidgetDef<T extends Record<string, any>> = {
-	initialize?: (ctx: {
-		model: SignalModel<T>;
-	}) => ReturnType<aw.Initialize<T>>;
+type WidgetDef<T extends Record<string, unknown>> = {
+	initialize?: (ctx: { model: SignalModel<T> }) => ReturnType<aw.Initialize<T>>;
 	render?: (ctx: {
 		model: SignalModel<T>;
 		el: HTMLElement;

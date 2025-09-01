@@ -1,8 +1,7 @@
-import { page, userEvent } from "@vitest/browser/context";
-import { afterEach, expect, it } from "vitest";
-
 import * as widgets from "@jupyter-widgets/base";
 import * as baseManager from "@jupyter-widgets/base-manager";
+import { page, userEvent } from "@vitest/browser/context";
+import { afterEach, expect, it } from "vitest";
 
 import create_anywidget from "../src/widget.js";
 
@@ -13,20 +12,17 @@ class MockComm implements widgets.IClassicComm {
 	comm_id = `mock-${num_comms++}`;
 	target_name = "dummy";
 	#on_open: ((x?: unknown) => void) | null = null;
-	#on_msg: ((x?: unknown) => void) | null = null;
 	#on_close: ((x?: unknown) => void) | null = null;
 
 	on_open(fn: () => void): void {
 		this.#on_open = fn;
 	}
 
-	on_close(fn: (x: any) => void): void {
+	on_close(fn: (x: unknown) => void): void {
 		this.#on_close = fn;
 	}
 
-	on_msg(fn: (x: any) => void): void {
-		this.#on_msg = fn;
-	}
+	on_msg(): void {}
 
 	open(): string {
 		this.#on_open?.();
@@ -44,12 +40,16 @@ class MockComm implements widgets.IClassicComm {
 }
 
 class Manager extends baseManager.ManagerBase {
-	async loadClass(className: string, moduleName: string): Promise<any> {
-		if (moduleName === "@jupyter-widgets/base" && className in widgets) {
+	async loadClass(
+		className: string,
+		moduleName: string,
+	): Promise<typeof widgets.WidgetModel | typeof widgets.WidgetView> {
+		if (moduleName === "@jupyter-widgets/base") {
 			// @ts-expect-error - Types can't narrow here
+			// biome-ignore lint: performance/noDynamicImportAccess
 			return widgets[className];
 		}
-		if (moduleName === "anywidget" && className in anywidget) {
+		if (moduleName === "anywidget") {
 			// @ts-expect-error - Types can't narrow here
 			return anywidget[className];
 		}
