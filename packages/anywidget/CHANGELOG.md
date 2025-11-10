@@ -1,5 +1,11 @@
 # anywidget
 
+## 0.9.19
+
+### Patch Changes
+
+- Exclude `docs/` and `paper/` from sdist/wheel ([#902](https://github.com/manzt/anywidget/pull/902))
+
 ## 0.9.18
 
 ### Patch Changes
