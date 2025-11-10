@@ -56,7 +56,7 @@ exclude_lines = [
 ]
 
 [tool.hatch.build]
-exclude = [".github"]
+exclude = [".github", "docs", "paper"]
 artifacts = [
   "anywidget/nbextension/index.*",
   "anywidget/labextension/*.tgz",
