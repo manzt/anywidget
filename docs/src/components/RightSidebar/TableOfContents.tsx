@@ -60,9 +60,9 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
 		);
 
 		// Observe all the headings in the main page content.
-		document
-			.querySelectorAll("article :is(h1,h2,h3)")
-			.forEach((h) => headingsObserver.observe(h));
+		document.querySelectorAll("article :is(h1,h2,h3)").forEach((h) => {
+			headingsObserver.observe(h);
+		});
 
 		// Stop observing when the component is unmounted.
 		return () => headingsObserver.disconnect();
