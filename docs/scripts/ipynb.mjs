@@ -247,7 +247,7 @@ export default function ipynb({ execute } = {}) {
 		name: "ipynb",
 		hooks: {
 			"astro:config:setup": async (options) => {
-				// @ts-ignore
+				// @ts-expect-error
 				options.addPageExtension(".ipynb");
 				options.updateConfig({
 					vite: { plugins: [vitePlugin({ execute, ...options })] },

@@ -29,7 +29,7 @@ let p = new Proxy(_p, {
 
 // https://github.com/withastro/astro/blob/fca6892f8d6a30ceb1e04213be2414dd4cb4d389/packages/create-astro/src/actions/context.ts#L110-L115
 function detect_package_manager() {
-	// @ts-ignore
+	// @ts-expect-error
 	if (typeof Bun !== "undefined") return "bun";
 	if (!process.env.npm_config_user_agent) return;
 	const specifier = process.env.npm_config_user_agent.split(" ")[0];

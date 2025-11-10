@@ -12,8 +12,7 @@
 		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.2.5",
-		"@changesets/cli": "^2.29.4",
+		"@biomejs/biome": "^2.3.4",
 		"@changesets/cli": "^2.29.7",
 		"@rspack/cli": "^1.5.8",
 		"@rspack/core": "^1.5.8",
