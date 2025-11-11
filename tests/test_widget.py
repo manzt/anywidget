@@ -342,3 +342,46 @@ def test_supresses_error_in_constructor() -> None:
 
     w = Widget()
     assert len(w._msg_callbacks.callbacks) == 1
+
+
+def test_repr_uses_object_repr_by_default() -> None:
+    """Test that __repr__ uses object.__repr__ to avoid expensive ipywidgets repr."""
+    class Widget(anywidget.AnyWidget):
+        # Create a large data trait that would be expensive to repr
+        data = t.List([1, 2, 3, 4, 5] * 1000).tag(sync=True)
+
+    w = Widget()
+    result = repr(w)
+
+    # Should use object.__repr__ format, NOT ipywidgets repr that serializes traits
+    # ipywidgets repr would be: Widget(data=[1, 2, 3, ...])
+    # object repr should be: <test_widget.Widget object at 0x...>
+    assert result.startswith("<")
+    assert "Widget object at 0x" in result
+    assert result.endswith(">")
+    # Ensure it doesn't contain the serialized data
+    assert "data=" not in result
+
+
+def test_repr_respects_custom_repr() -> None:
+    """Test that custom __repr__ methods are respected."""
+    class Widget(anywidget.AnyWidget):
+        value = t.Int(42).tag(sync=True)
+
+        def __repr__(self) -> str:
+            return f"CustomWidget(value={self.value})"
+
+    w = Widget()
+    assert repr(w) == "CustomWidget(value=42)"
+
+
+def test_repr_mimebundle_uses_repr() -> None:
+    """Test that _repr_mimebundle_ uses __repr__ for text/plain."""
+    class Widget(anywidget.AnyWidget):
+        def __repr__(self) -> str:
+            return "MyCustomRepr"
+
+    w = Widget()
+    bundle = w._repr_mimebundle_()
+    assert bundle is not None
+    assert bundle[0]["text/plain"] == "MyCustomRepr"
