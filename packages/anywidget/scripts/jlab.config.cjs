@@ -12,7 +12,7 @@ fs.rmSync(out, { recursive: true, force: true });
 module.exports = {
 	mode: "production",
 	optimization: { minimize: false },
-	devtool: "source-map",
+	devtool: "inline-source-map",
 	entry: path.resolve(root, "src/index.js"),
 	output: {
 		filename: "[name].[contenthash:8].js",
