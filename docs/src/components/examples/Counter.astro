@@ -9,21 +9,21 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = """
     function render({ model, el }) {
-      let count = () => model.get("value");
+      let count = () => model.get("count");
       let btn = document.createElement("button");
       btn.innerHTML = \`count is \${count()}\`;
       btn.addEventListener("click", () => {
-        model.set("value", count() + 1);
+        model.set("count", count() + 1);
         model.save_changes();
       });
-      model.on("change:value", () => {
+      model.on("change:count", () => {
         btn.innerHTML = \`count is \${count()}\`;
       });
       el.appendChild(btn);
     }
     export default { render };
     """
-    value = traitlets.Int(0).tag(sync=True)
+    count = traitlets.Int(0).tag(sync=True)
 `;
 
 let notebookCode = `\
@@ -56,7 +56,7 @@ counter`;
 		</div>
 
 		<button id="input-2" class="hover:border-gray-50 w-full rounded border border-solid border-gray-400 text-left text-sm bg-transparent">
-			<code class="py-2 text-left whitespace-pre text-gray-200 bg-transparent">counter.value</code>
+			<code class="py-2 text-left whitespace-pre text-gray-200 bg-transparent">counter.count</code>
 		</button>
 
 		<pre id="output-2" class="text-xs bg-transparent pl-1 py-0"></pre>
