@@ -60,9 +60,9 @@ class CounterWidget(anywidget.AnyWidget):
     .counter-widget button { color: white; font-size: 1.75rem; background-color: #ea580c; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; }
     .counter-widget button:hover { background-color: #9a3412; }
     """
-    count = traitlets.Int(0).tag(sync=True)
+    value = traitlets.Int(0).tag(sync=True)
 
-CounterWidget(count=42)
+CounterWidget(value=42)
 ```
 
 <CounterButton size={"lg"} initialValue={42} />
