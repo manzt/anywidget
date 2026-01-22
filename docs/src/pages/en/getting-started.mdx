@@ -69,7 +69,7 @@ CounterWidget(count=42)
 
 What's going on here:
 
-- `value` is a stateful property that both the client JavaScript and Python have access to.
+- `count` is a stateful property that both the client JavaScript and Python have access to.
   Shared state is defined via [traitlets](https://traitlets.readthedocs.io/en/stable/) with the `sync=True`
   keyword argument.
 
@@ -112,7 +112,7 @@ import traitlets
 class CounterWidget(anywidget.AnyWidget):
     _esm = "index.js"
     _css = "index.css"
-    value = traitlets.Int(0).tag(sync=True)
+    count = traitlets.Int(0).tag(sync=True)
 ```
 
 This is both easier to read and allows you to use your favorite editor/IDE for your front-end code.
@@ -148,7 +148,7 @@ allowing real-time updates to your widget during development (below).
 > class CounterWidget(anywidget.AnyWidget):
 >     _esm = pathlib.Path(__file__).parent / "index.js"
 >     _css = pathlib.Path(__file__).parent / "index.css"
->     value = traitlets.Int(0).tag(sync=True)
+>     count = traitlets.Int(0).tag(sync=True)
 > ```
 
 ## Watch & Learn
