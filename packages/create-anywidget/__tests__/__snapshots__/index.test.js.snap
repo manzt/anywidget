@@ -112,8 +112,8 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.0",
-		"react-dom": "^19.2.0"
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {}
 }",
@@ -341,12 +341,12 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.0",
-		"react-dom": "^19.2.0"
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
-		"@types/react": "^19.2.0",
-		"@types/react-dom": "^19.2.0",
+		"@types/react": "^19.2.9",
+		"@types/react-dom": "^19.2.3",
 		"typescript": "^5.9.3"
 	}
 }",
@@ -1314,11 +1314,11 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.0",
-		"react-dom": "^19.2.0"
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.10"
+		"esbuild": "^0.27.2"
 	}
 }",
     "path": "package.json",
@@ -1545,14 +1545,14 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.0",
-		"react-dom": "^19.2.0"
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
-		"@types/react": "^19.2.0",
-		"@types/react-dom": "^19.2.0",
+		"@types/react": "^19.2.9",
+		"@types/react-dom": "^19.2.3",
 		"typescript": "^5.9.3",
-		"esbuild": "^0.25.10"
+		"esbuild": "^0.27.2"
 	}
 }",
     "path": "package.json",
@@ -1811,7 +1811,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.25.10"
+		"esbuild": "^0.27.2"
 	}
 }",
     "path": "package.json",
@@ -2255,7 +2255,7 @@ src/ipyfoo/static
 	"devDependencies": {
 		"@anywidget/types": "~0.3.0",
 		"typescript": "^5.9.3",
-		"esbuild": "^0.25.10"
+		"esbuild": "^0.27.2"
 	}
 }",
     "path": "package.json",
