@@ -189,7 +189,6 @@ function model_proxy(model, context) {
 		set: model.set.bind(model),
 		save_changes: model.save_changes.bind(model),
 		send: model.send.bind(model),
-		// @ts-expect-error
 		on(name, callback) {
 			model.on(name, callback, context);
 		},

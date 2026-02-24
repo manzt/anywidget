@@ -1,7 +1,6 @@
 type Awaitable<T> = T | Promise<T>;
 // biome-ignore lint/suspicious/noExplicitAny: Could relax if we wanted default behavior to be looser
 type ObjectHash = Record<string, any>;
-type ChangeEventHandler<Payload> = (_: unknown, value: Payload) => void;
 // biome-ignore lint/suspicious/noExplicitAny: Generic for flexible implementation
 type EventHandler = (...args: any[]) => void;
 /**
@@ -32,17 +31,7 @@ export interface AnyModel<T extends ObjectHash = ObjectHash> {
 		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
 		callback: (msg: any, buffers: DataView[]) => void,
 	): void;
-	on<K extends `change:${keyof T & string}`>(
-		eventName: K,
-		callback: K extends `change:${infer Key}`
-			? ChangeEventHandler<T[Key]>
-			: never,
-	): void;
-	on<K extends `change:${string}`>(
-		eventName: K,
-		// biome-ignore lint/suspicious/noExplicitAny: could make default more strict with `unknown` but would be breaking
-		callback: ChangeEventHandler<any>,
-	): void;
+	on(eventName: `change:${string}`, callback: () => void): void;
 	on(eventName: string, callback: EventHandler): void;
 	save_changes(): void;
 	send(

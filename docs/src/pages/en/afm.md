@@ -158,9 +158,9 @@ interface AnyModel {
   /**
    * Add an event listener for property changes
    * @param eventName The name of the event, in the format "change:propertyName"
-   * @param callback The function to call when the property changes
+   * @param callback The function to call when the property changes (no arguments)
    */
-  on(eventName: `change: ${string}`, callback: Function): void;
+  on(eventName: `change:${string}`, callback: () => void): void;
   /**
    * Commit changes to sync with the backend
    */
@@ -174,6 +174,21 @@ interface AnyModel {
   send(content: any, callbacks?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): void;
 }
 ```
+
+**Note:** The `change:` event callback takes **no arguments**. To get the
+current value of a property within a callback, use `model.get()`:
+
+```js
+model.on("change:count", () => {
+  let count = model.get("count");
+  console.log("count changed to", count);
+});
+```
+
+Some host platforms (e.g., Jupyter) may pass extra arguments to the callback
+due to underlying framework details (Backbone.js), but these are **not** part
+of the AFM specification. Widget authors should not rely on callback arguments
+to ensure portability across host platforms.
 
 This interface can be implemented without any dependencies and does not need to
 extend from [Jupyter Widget's patch of

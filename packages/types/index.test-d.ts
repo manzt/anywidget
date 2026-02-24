@@ -48,27 +48,16 @@ describe("AnyModel.on", () => {
 		});
 	});
 
-	it("infers any payload for untyped Model", async () => {
-		model.on("change:value", (context, value) => {
-			expectTypeOf(context).toEqualTypeOf<unknown>();
-			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
-			expectTypeOf(value).toEqualTypeOf<any>();
-		});
+	it("accepts no-argument callback for untyped Model", async () => {
+		model.on("change:value", () => {});
 	});
 
-	it("infers typed payload for typed Model", async () => {
-		typedModel.on("change:value", (context, value) => {
-			expectTypeOf(context).toEqualTypeOf<unknown>();
-			expectTypeOf(value).toEqualTypeOf<number>();
-		});
+	it("accepts no-argument callback for typed Model", async () => {
+		typedModel.on("change:value", () => {});
 	});
 
-	it("infers any payload for unknown field of typed Model", async () => {
-		typedModel.on("change:foo", (context, value) => {
-			expectTypeOf(context).toEqualTypeOf<unknown>();
-			// biome-ignore lint/suspicious/noExplicitAny: Needed to check type
-			expectTypeOf(value).toEqualTypeOf<any>();
-		});
+	it("accepts no-argument callback for unknown field of typed Model", async () => {
+		typedModel.on("change:foo", () => {});
 	});
 
 	it("infers any for unknown event", async () => {
