@@ -499,3 +499,46 @@ Here are some general recommendations for being productive with **anywidget**:
   useful domain-specific integration, **anywidget** can also be used as a
   learning tool to poke around with the front end - or yet another way to
   [_Rick Roll_ your friends](https://twitter.com/rrherr/status/1616508764907241472).
+
+## Little Things to Know
+
+Here are some helpful things to know when working with widgets that aren't
+always obvious.
+
+### Always specify `names` when using `observe`
+
+When observing changes to a widget in Python, it's tempting to write:
+
+```python
+widget = MyWidget()
+widget.observe(on_change)
+```
+
+This fires `on_change` for _every_ traitlet change — including internal ones
+you don't care about. Since multiple traits often update together, your callback
+may fire several times per logical change, causing glitchy behavior.
+
+Instead, always specify which trait(s) you care about:
+
+```python
+widget.observe(on_change, names=["value"])
+```
+
+### Use `ipywidgets.Output` to see errors
+
+Errors raised inside `observe` callbacks in Jupyter environments are swallowed
+silently. Wrap your logic with an `Output` widget to surface them:
+
+```python
+import ipywidgets
+
+out = ipywidgets.Output()
+
+@out.capture()
+def on_change(change):
+    # errors will now display in `out`
+    print(change.new)
+
+widget.observe(on_change, names=["value"])
+ipywidgets.VBox([widget, out])
+```
