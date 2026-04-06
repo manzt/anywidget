@@ -27,7 +27,7 @@ class AnyWidgetMagics(Magics):
     def vfile(self, line: str, cell: str) -> None:
         """Create a virtual file with the contents of the cell."""
         args = parse_argstring(AnyWidgetMagics.vfile, line)
-        name = f"vfile:{typing.cast(str, args.file_name)}"
+        name = f"vfile:{typing.cast('str', args.file_name)}"
         shell = typing.cast("InteractiveShell", self.shell)
         code = shell.transform_cell(cell)
         if name in self._files:

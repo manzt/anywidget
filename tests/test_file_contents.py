@@ -1,7 +1,7 @@
 import pathlib
 import time
 from collections import deque
-from typing import Generator
+from collections.abc import Generator
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest

@@ -4,7 +4,7 @@ import json
 import pathlib
 import sys
 import time
-from typing import Generator, NoReturn
+from typing import TYPE_CHECKING, NoReturn
 from unittest.mock import MagicMock, patch
 
 import anywidget
@@ -16,6 +16,9 @@ from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
 from anywidget.experimental import command
 from traitlets import traitlets
 from watchfiles import Change
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 SELF_DIR = pathlib.Path(__file__).parent
 

@@ -4,7 +4,7 @@ import os
 import pathlib
 import re
 import sys
-from functools import lru_cache
+from functools import cache
 from typing import Any
 
 from ._file_contents import _VIRTUAL_FILES, FileContents, VirtualFileContents
@@ -134,7 +134,7 @@ def put_buffers(
     ...except here we modify the existing dict/lists.
     Modifying should be fine, since this is used when state comes from the wire.
     """
-    for buffer_path, buffer in zip(buffer_paths, buffers):
+    for buffer_path, buffer in zip(buffer_paths, buffers, strict=False):
         # we'd like to set say sync_data['x'][0]['y'] = buffer
         # where buffer_path in this example would be ['x', 0, 'y']
         obj = state
@@ -148,7 +148,7 @@ def in_colab() -> bool:
     return "google.colab.output" in sys.modules
 
 
-@lru_cache(maxsize=None)
+@cache
 def enable_custom_widget_manager_once() -> None:
     """Enables Google Colab's custom widget manager so third-party widgets display.
 
@@ -196,9 +196,9 @@ def _should_start_thread(path: pathlib.Path) -> bool:
         return False
 
     try:
-        import watchfiles  # noqa: F401
+        import watchfiles  # noqa: F401, PLC0415
     except ImportError:
-        import warnings
+        import warnings  # noqa: PLC0415
 
         warnings.warn(
             "anywidget: Live-reloading feature is disabled."

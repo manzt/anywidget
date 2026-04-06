@@ -4,9 +4,12 @@ import pathlib
 import threading
 import weakref
 from collections import deque
-from typing import Iterator
+from typing import TYPE_CHECKING
 
 from psygnal import Signal
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 __all__ = ["_VIRTUAL_FILES", "FileContents", "VirtualFileContents"]
 
@@ -105,7 +108,7 @@ class FileContents:
             An iterator that yields any time the file changes until the file is deleted.
         """
         try:
-            from watchfiles import Change, watch
+            from watchfiles import Change, watch  # noqa: PLC0415
         except ImportError as exc:
             msg = (
                 "watchfiles is required to watch for file changes during development. "
