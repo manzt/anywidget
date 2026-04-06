@@ -1,5 +1,13 @@
 # anywidget
 
+## 0.10.0
+
+### Minor Changes
+
+- Drop Python 3.8 and 3.9 support, require Python >=3.10 ([#949](https://github.com/manzt/anywidget/pull/949))
+
+  Python 3.8 and 3.9 have reached end-of-life. Bumping the minimum to 3.10 aligns anywidget with the broader ecosystem and allows us to upgrade dependencies (like `watchfiles`) that have already dropped older Python support, which is needed for Python 3.14 compatibility.
+
 ## 0.9.22
 
 ### Patch Changes
@@ -307,6 +315,7 @@
   ```
 
   These methods introduce lifecycle hooks for widget developers:
+
   - `initialize`: is executed once in the lifetime of a widget. It has access to
     the only the `model` to setup non-view event handlers or state to share across
     views.
