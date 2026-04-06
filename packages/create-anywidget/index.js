@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as fs from "node:fs";
 import * as path from "node:path";
+import * as process from "node:process";
 
 import * as _p from "@clack/prompts";
 import { bold, cyan, grey } from "kleur/colors";

@@ -8,8 +8,7 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "checkJs": true,
-    "types": []
+    "checkJs": true
   },
   "files": [],
   "references": [
