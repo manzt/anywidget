@@ -67,21 +67,6 @@ build_cmd = "build"
 path = "packages/anywidget/package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
-# https://docs.pytest.org/en/latest/customize.html
-[tool.pytest]
-minversion = "9.0"
-testpaths = ["tests"]
-filterwarnings = [
-  # this line turns warnings coming from anywidget into test errors
-  # best practice is to use pytest.warns to actually assert warnings happen
-  "error:::anywidget",
-  "ignore:Jupyter is migrating its paths:DeprecationWarning",
-  "ignore:Deprecated in traitlets 4.1, use the instance .metadata:DeprecationWarning",
-]
-log_cli_level = "INFO"
-xfail_strict = true
-addopts = ["-ra", "--strict-markers", "--strict-config"]
-
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 src = ["anywidget", "tests"]
