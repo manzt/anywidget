@@ -1,5 +1,6 @@
 {
   "name": "@anywidget/monorepo",
+  "type": "module",
   "scripts": {
     "build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
     "build:packages": "tsgo --build && pnpm --filter=\"./packages/**\" -r build && pnpm publint",
