@@ -111,7 +111,7 @@ src/ipyfoo/static
 		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.0",
+		"@anywidget/react": "~0.2.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
@@ -340,7 +340,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.0",
+		"@anywidget/react": "~0.2.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
@@ -457,6 +457,11 @@ export default { render };
 }
 ",
     "path": "js/widget.css",
+  },
+  {
+    "content": "declare module "*.css";
+",
+    "path": "js/css.d.ts",
   },
   {
     "content": "{
@@ -1041,7 +1046,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "~0.2.0",
+		"@anywidget/types": "~0.3.0",
 		"typescript": "^5.9.3"
 	}
 }",
@@ -1160,6 +1165,11 @@ export default { render };
 }
 ",
     "path": "js/widget.css",
+  },
+  {
+    "content": "declare module "*.css";
+",
+    "path": "js/css.d.ts",
   },
   {
     "content": "{
@@ -1303,7 +1313,7 @@ src/ipyfoo/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.0",
+		"@anywidget/react": "~0.2.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
@@ -1534,7 +1544,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.0",
+		"@anywidget/react": "~0.2.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
@@ -1652,6 +1662,11 @@ export default { render };
 }
 ",
     "path": "js/widget.css",
+  },
+  {
+    "content": "declare module "*.css";
+",
+    "path": "js/css.d.ts",
   },
   {
     "content": "{
@@ -2238,7 +2253,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "~0.2.0",
+		"@anywidget/types": "~0.3.0",
 		"typescript": "^5.9.3",
 		"esbuild": "^0.25.10"
 	}
@@ -2358,6 +2373,11 @@ export default { render };
 }
 ",
     "path": "js/widget.css",
+  },
+  {
+    "content": "declare module "*.css";
+",
+    "path": "js/css.d.ts",
   },
   {
     "content": "{
