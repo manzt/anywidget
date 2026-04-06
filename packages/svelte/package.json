@@ -2,6 +2,7 @@
 	"name": "@anywidget/svelte",
 	"type": "module",
 	"version": "0.1.1",
+	"repository": "https://github.com/manzt/anywidget",
 	"description": "Svelte utilities for anywidget",
 	"license": "MIT",
 	"main": "src/index.js",

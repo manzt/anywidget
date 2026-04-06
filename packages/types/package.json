@@ -2,6 +2,7 @@
 	"name": "@anywidget/types",
 	"type": "module",
 	"version": "0.3.0",
+	"repository": "https://github.com/manzt/anywidget",
 	"description": "utility types for anywidget",
 	"license": "MIT",
 	"main": "./index.ts",

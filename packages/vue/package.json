@@ -2,6 +2,7 @@
 	"name": "@anywidget/vue",
 	"type": "module",
 	"version": "0.1.1",
+	"repository": "https://github.com/manzt/anywidget",
 	"description": "Vue utilities for anywidget",
 	"license": "MIT",
 	"main": "index.js",

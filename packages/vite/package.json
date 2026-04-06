@@ -2,6 +2,7 @@
 	"name": "@anywidget/vite",
 	"type": "module",
 	"version": "0.2.2",
+	"repository": "https://github.com/manzt/anywidget",
 	"description": "a vite plugin for anywidget",
 	"license": "MIT",
 	"files": [
