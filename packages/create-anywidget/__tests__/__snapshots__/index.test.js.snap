@@ -112,8 +112,8 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4"
+		"react": "catalog:",
+		"react-dom": "catalog:"
 	},
 	"devDependencies": {}
 }",
@@ -341,13 +341,13 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4"
+		"react": "catalog:",
+		"react-dom": "catalog:"
 	},
 	"devDependencies": {
-		"@types/react": "^19.2.9",
-		"@types/react-dom": "^19.2.3",
-		"typescript": "^5.9.3"
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"typescript": "catalog:"
 	}
 }",
     "path": "package.json",
@@ -1047,7 +1047,7 @@ src/ipyfoo/static
 	"dependencies": {},
 	"devDependencies": {
 		"@anywidget/types": "~0.3.0",
-		"typescript": "^5.9.3"
+		"typescript": "catalog:"
 	}
 }",
     "path": "package.json",
@@ -1314,11 +1314,11 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4"
+		"react": "catalog:",
+		"react-dom": "catalog:"
 	},
 	"devDependencies": {
-		"esbuild": "^0.28.0"
+		"esbuild": "catalog:"
 	}
 }",
     "path": "package.json",
@@ -1545,14 +1545,14 @@ src/ipyfoo/static
 	},
 	"dependencies": {
 		"@anywidget/react": "~0.2.1",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4"
+		"react": "catalog:",
+		"react-dom": "catalog:"
 	},
 	"devDependencies": {
-		"@types/react": "^19.2.9",
-		"@types/react-dom": "^19.2.3",
-		"typescript": "^5.9.3",
-		"esbuild": "^0.28.0"
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"typescript": "catalog:",
+		"esbuild": "catalog:"
 	}
 }",
     "path": "package.json",
@@ -1811,7 +1811,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"esbuild": "^0.28.0"
+		"esbuild": "catalog:"
 	}
 }",
     "path": "package.json",
@@ -2254,8 +2254,8 @@ src/ipyfoo/static
 	"dependencies": {},
 	"devDependencies": {
 		"@anywidget/types": "~0.3.0",
-		"typescript": "^5.9.3",
-		"esbuild": "^0.28.0"
+		"typescript": "catalog:",
+		"esbuild": "catalog:"
 	}
 }",
     "path": "package.json",

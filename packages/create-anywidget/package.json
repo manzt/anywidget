@@ -25,13 +25,13 @@
   "devDependencies": {
     "@anywidget/react": "workspace:^",
     "@anywidget/types": "workspace:^",
-    "@types/node": "^25.5.2",
-    "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.2.3",
-    "esbuild": "^0.28.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "esbuild": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"

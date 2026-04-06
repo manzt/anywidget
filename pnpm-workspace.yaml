@@ -6,6 +6,13 @@ catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: latest
+  esbuild: ^0.28.0
+  typescript: ^6.0.2
+  react: ^19.2.4
+  react-dom: ^19.2.4
+  "@types/react": ^19.2.9
+  "@types/react-dom": ^19.2.3
+  "@types/node": ^25.5.2
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
