@@ -42,24 +42,7 @@ Entry points to be aware of:
 ## Making changes
 
 Once your environment is set up, you can start making changes to the codebase.
-We recommend using the classic Jupyter Notebook or Jupyter Lab for development.
-
-If you are using the classic Jupyter Notebook (<v7) you need to install the local
-nbextension:
-
-```bash
-uv run jupyter nbextension install --py --symlink --sys-prefix anywidget
-uv run jupyter nbextension enable --py --sys-prefix anywidget
-```
-
-Note for developers:
-
-- the `-e` pip option allows one to modify the Python code in-place. Restart the
-  kernel in order to see the changes.
-- the `--symlink` argument on Linux or OS X allows one to modify the JavaScript
-  code in-place. This feature is not available with Windows.
-
-For developing with JupyterLab:
+We recommend using Jupyter Lab for development:
 
 ```bash
 uv run jupyter labextension develop --overwrite anywidget
