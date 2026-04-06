@@ -67,6 +67,39 @@ __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
+_WIDGET_REF_PREFIX = "anywidget:"
+
+
+def _try_get_model_id(obj: object) -> str | None:
+    """Get model_id from an anywidget object, or None if not an anywidget."""
+    # ipywidgets-based AnyWidget has model_id directly
+    if hasattr(obj, "model_id") and isinstance(obj.model_id, str):
+        return obj.model_id
+    # Protocol objects: access _repr_mimebundle_ to force comm creation
+    bundle = getattr(obj, _REPR_ATTR, None)
+    if isinstance(bundle, MimeBundleDescriptor):
+        # Force creation of ReprMimeBundle (and its comm)
+        bundle = bundle.__get__(obj, type(obj))
+    if isinstance(bundle, ReprMimeBundle):
+        return bundle.model_id
+    return None
+
+
+def _replace_widget_refs(obj: dict) -> dict:
+    """Recursively replace anywidget objects with 'anywidget:<model_id>' strings."""
+
+    def _replace(v: object) -> object:
+        if model_id := _try_get_model_id(v):
+            return f"{_WIDGET_REF_PREFIX}{model_id}"
+        if isinstance(v, dict):
+            return {k: _replace(val) for k, val in v.items()}
+        if isinstance(v, list):
+            return [_replace(item) for item in v]
+        if isinstance(v, tuple):
+            return tuple(_replace(item) for item in v)
+        return v
+
+    return {k: _replace(v) for k, v in obj.items()}
 
 
 def open_comm(
@@ -75,6 +108,7 @@ def open_comm(
 ) -> comm.base_comm.BaseComm:
     import comm  # noqa: PLC0415
 
+    initial_state = _replace_widget_refs(initial_state)
     state, buffer_paths, buffers = remove_buffers(initial_state)
 
     return comm.create_comm(
@@ -377,6 +411,7 @@ class ReprMimeBundle:
         if not state:
             return  # pragma: no cover
 
+        state = _replace_widget_refs(state)
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
@@ -425,6 +460,11 @@ class ReprMimeBundle:
     #     # TODO(manzt): handle custom callbacks  # noqa: TD003
     #     # https://github.com/jupyter-widgets/ipywidgets/blob/6547f840edc1884c75e60386ec7fb873ba13f21c/python/ipywidgets/ipywidgets/widgets/widget.py#L662
     #     ...
+
+    @property
+    def model_id(self) -> str:
+        """The unique model identifier for this widget."""
+        return self._comm.comm_id
 
     def __call__(self, **kwargs: Sequence[str]) -> tuple[dict, dict] | None:  # noqa: ARG002
         """Called when _repr_mimebundle_ is called on the python object."""

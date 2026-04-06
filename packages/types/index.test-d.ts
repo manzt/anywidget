@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from "vite-plus/test";
 
-import type { AnyModel, AnyWidget } from "./index.js";
+import type { AnyModel, AnyWidget, Host } from "./index.js";
 
 declare let model: AnyModel;
 declare let typedModel: AnyModel<{ value: number; name: string }>;
@@ -68,37 +68,91 @@ describe("AnyModel.on", () => {
 describe("Define AnyWidget", () => {
   it("infers initialize and render for static widget", () => {
     let _w: AnyWidget<{ value: number }> = {
-      initialize({ model }) {
+      initialize({ model, signal }) {
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
       },
-      render({ model, el }) {
+      render({ model, el, signal, host }) {
         expectTypeOf(el).toEqualTypeOf<HTMLElement>();
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
+        expectTypeOf(host).toEqualTypeOf<Host>();
       },
     };
   });
 
   it("infers initialize and render for function widget", () => {
     let _w: AnyWidget<{ value: number }> = () => ({
-      initialize({ model }) {
+      initialize({ model, signal }) {
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
       },
-      render({ model, el }) {
+      render({ model, el, signal, host }) {
         expectTypeOf(el).toEqualTypeOf<HTMLElement>();
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
+        expectTypeOf(host).toEqualTypeOf<Host>();
       },
     });
   });
 
   it("infers initialize and render for async function widget", () => {
     let _w: AnyWidget<{ value: number }> = async () => ({
-      initialize({ model }) {
+      initialize({ model, signal }) {
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
       },
-      render({ model, el }) {
+      render({ model, el, signal, host }) {
         expectTypeOf(el).toEqualTypeOf<HTMLElement>();
         expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+        expectTypeOf(signal).toEqualTypeOf<AbortSignal>();
+        expectTypeOf(host).toEqualTypeOf<Host>();
       },
     });
+  });
+
+  it("allows initialize to return exports object", () => {
+    let _w: AnyWidget<{ value: number }> = {
+      initialize() {
+        return { getValue: () => 42 };
+      },
+    };
+  });
+
+  it("allows initialize to return cleanup function", () => {
+    let _w: AnyWidget<{ value: number }> = {
+      initialize() {
+        return () => {};
+      },
+    };
+  });
+
+  it("allows initialize to return void", () => {
+    let _w: AnyWidget<{ value: number }> = {
+      initialize() {},
+    };
+  });
+});
+
+describe("Host", () => {
+  // @ts-expect-error - type-only tests
+  let host: Host = {};
+
+  it("resolves widget with typed exports", async () => {
+    let widget = await host.getWidget<{ getValue(): number }>("anywidget:abc");
+    expectTypeOf(widget.exports.getValue()).toEqualTypeOf<number>();
+    expectTypeOf(widget.render.bind(widget)).toEqualTypeOf<
+      (opts: { el: HTMLElement; signal?: AbortSignal }) => Promise<void>
+    >();
+  });
+
+  it("resolves model", async () => {
+    let model = await host.getModel<{ value: number }>("anywidget:abc");
+    expectTypeOf(model.get("value")).toEqualTypeOf<number>();
+  });
+
+  it("defaults exports to unknown", async () => {
+    let widget = await host.getWidget("anywidget:abc");
+    expectTypeOf(widget.exports).toEqualTypeOf<unknown>();
   });
 });

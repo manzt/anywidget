@@ -170,6 +170,19 @@ async function load_widget(esm, anywidget_id) {
  */
 let INITIALIZE_MARKER = Symbol("anywidget.initialize");
 
+let WIDGET_REF_PREFIX = "anywidget:";
+
+/**
+ * @param {string} ref
+ * @returns {string}
+ */
+function parse_widget_ref(ref) {
+  if (typeof ref === "string" && ref.startsWith(WIDGET_REF_PREFIX)) {
+    return ref.slice(WIDGET_REF_PREFIX.length);
+  }
+  throw new Error(`[anywidget] Invalid widget reference: ${ref}`);
+}
+
 /**
  * @param {DOMWidgetModel} model
  * @param {unknown} context
@@ -341,6 +354,137 @@ function observe(model, name, { signal }) {
  * @property {string | undefined} _css
  */
 
+class WidgetBinding {
+  /** @type {AbortController | undefined} */
+  #controller;
+  /** @type {AnyWidget | undefined} */
+  #widget_def;
+  /** @type {unknown} */
+  #exports;
+  /** @type {DOMWidgetModel} */
+  #model;
+  /** @type {Promise<unknown>} */
+  ready;
+  /** @type {PromiseWithResolvers<unknown>} */
+  #resolvers;
+
+  /** @param {DOMWidgetModel} model */
+  constructor(model) {
+    this.#model = model;
+    this.#resolvers = promise_with_resolvers();
+    this.ready = this.#resolvers.promise;
+  }
+
+  /**
+   * @param {AnyWidget} widget_def
+   * @param {{ experimental: import("@anywidget/types").Experimental }} options
+   */
+  async bind(widget_def, { experimental }) {
+    if (this.#widget_def === widget_def) return;
+
+    if (this.#widget_def && this.#widget_def !== widget_def) {
+      this.#controller?.abort();
+      this.#resolvers = promise_with_resolvers();
+      this.ready = this.#resolvers.promise;
+    }
+
+    this.#widget_def = widget_def;
+    this.#controller = new AbortController();
+    let signal = this.#controller.signal;
+    let model = this.#model;
+
+    model.off(null, null, INITIALIZE_MARKER);
+
+    let result = await widget_def.initialize?.({
+      model: model_proxy(model, INITIALIZE_MARKER),
+      signal,
+      experimental,
+    });
+
+    if (signal.aborted) {
+      // @ts-expect-error - TS can't narrow Function to () => Awaitable<void>
+      await safe_cleanup(typeof result === "function" ? result : undefined, "esm update");
+      return;
+    }
+
+    if (typeof result === "function") {
+      // @ts-expect-error - TS can't narrow Function to () => Awaitable<void>
+      signal.addEventListener("abort", () => safe_cleanup(result, "esm update"));
+      this.#exports = undefined;
+    } else if (typeof result === "object" && result !== null) {
+      this.#exports = result;
+    } else {
+      this.#exports = undefined;
+    }
+
+    this.#resolvers.resolve(this.#exports);
+  }
+
+  /**
+   * @param {DOMWidgetView} view
+   * @param {{ signal: AbortSignal, experimental: import("@anywidget/types").Experimental, host: import("@anywidget/types").Host }} options
+   */
+  async create_view(view, { signal, experimental, host }) {
+    await this.ready;
+    if (!this.#widget_def?.render) return;
+    let controller = new AbortController();
+    let combined = AbortSignal.any([signal, controller.signal]);
+    let cleanup = await this.#widget_def.render({
+      model: model_proxy(this.#model, view),
+      el: view.el,
+      signal: combined,
+      host,
+      experimental,
+    });
+    if (combined.aborted) {
+      return safe_cleanup(cleanup, "dispose view - already aborted");
+    }
+    combined.addEventListener("abort", () => safe_cleanup(cleanup, "dispose view - aborted"));
+    return () => controller.abort();
+  }
+
+  get exports() {
+    return this.#exports;
+  }
+
+  destroy() {
+    this.#controller?.abort();
+    this.#controller = undefined;
+    this.#widget_def = undefined;
+  }
+}
+
+class BindingManager {
+  /** @type {Map<DOMWidgetModel, WidgetBinding>} */
+  #bindings = new Map();
+
+  /** @param {DOMWidgetModel} model */
+  get_or_create(model) {
+    let binding = this.#bindings.get(model);
+    if (!binding) {
+      binding = new WidgetBinding(model);
+      this.#bindings.set(model, binding);
+    }
+    return binding;
+  }
+
+  /** @param {DOMWidgetModel} model */
+  get(model) {
+    return this.#bindings.get(model);
+  }
+
+  /** @param {DOMWidgetModel} model */
+  destroy(model) {
+    let binding = this.#bindings.get(model);
+    if (binding) {
+      binding.destroy();
+      this.#bindings.delete(model);
+    }
+  }
+}
+
+let BINDINGS = new BindingManager();
+
 class Runtime {
   /** @type {solid.Accessor<Result<AnyWidget>>} */
   // @ts-expect-error - Set synchronously in constructor.
@@ -364,6 +508,12 @@ class Runtime {
     AbortSignal.timeout(2000).addEventListener("abort", () => {
       resolvers.reject(new Error("[anywidget] Failed to initialize model."));
     });
+    let binding = BINDINGS.get_or_create(model);
+    /** @type {import("@anywidget/types").Experimental} */
+    let experimental = {
+      // @ts-expect-error - invoke.bind loses generic type parameter
+      invoke: invoke.bind(null, model),
+    };
     let dispose = solid.createRoot((dispose) => {
       /** @type {AnyModel<State>} */
       // @ts-expect-error - Types don't sufficiently overlap, so we cast here for type-safe access
@@ -386,25 +536,9 @@ class Runtime {
         return load_css(css(), id);
       });
       solid.createEffect(() => {
-        let controller = new AbortController();
-        solid.onCleanup(() => controller.abort());
-        model.off(null, null, INITIALIZE_MARKER);
         load_widget(esm(), id)
           .then(async (widget) => {
-            if (controller.signal.aborted) {
-              return;
-            }
-            let cleanup = await widget.initialize?.({
-              model: model_proxy(model, INITIALIZE_MARKER),
-              experimental: {
-                // @ts-expect-error - bind isn't working
-                invoke: invoke.bind(null, model),
-              },
-            });
-            if (controller.signal.aborted) {
-              return safe_cleanup(cleanup, "esm update");
-            }
-            controller.signal.addEventListener("abort", () => safe_cleanup(cleanup, "esm update"));
+            await binding.bind(widget, { experimental });
             set_widget_result({ status: "ready", data: widget });
             resolvers.resolve();
           })
@@ -425,6 +559,65 @@ class Runtime {
     let signal = AbortSignal.any([this.#signal, options.signal]); // either model or view destroyed
     signal.throwIfAborted();
     signal.addEventListener("abort", () => dispose());
+    let binding = BINDINGS.get(model);
+    assert(binding, "[anywidget] WidgetBinding not found.");
+    /** @type {import("@anywidget/types").Experimental} */
+    let experimental = {
+      // @ts-expect-error - invoke.bind loses generic type parameter
+      invoke: invoke.bind(null, model),
+    };
+    /** @type {import("@anywidget/types").Host} */
+    let host = {
+      // @ts-expect-error - widget_manager.get_model returns WidgetModel, not AnyModel<T>
+      async getModel(ref) {
+        let model_id = parse_widget_ref(ref);
+        return model.widget_manager.get_model(model_id);
+      },
+      // @ts-expect-error - generic T is erased at runtime, exports typed as unknown
+      async getWidget(ref) {
+        let model_id = parse_widget_ref(ref);
+        let child_model = await model.widget_manager.get_model(model_id);
+        let child_binding = BINDINGS.get(child_model);
+        if (!child_binding) {
+          throw new Error(`[anywidget] No binding found for widget ${model_id}`);
+        }
+        let exports = await Promise.race([
+          child_binding.ready,
+          new Promise((_, reject) =>
+            AbortSignal.timeout(10000).addEventListener("abort", () =>
+              reject(
+                new Error(`[anywidget] Timed out waiting for widget ${model_id} to initialize`),
+              ),
+            ),
+          ),
+        ]);
+        return {
+          exports,
+          async render({ el, signal: view_signal }) {
+            let child_view_signal = view_signal ?? signal;
+            // Create a minimal view-like object for the binding
+            // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- intentionally creating a partial DOMWidgetView for child rendering
+            let child_view = /** @type {DOMWidgetView} */ ({
+              model: child_model,
+              el,
+              $el: {
+                empty() {
+                  el.innerHTML = "";
+                },
+              },
+            });
+            await child_binding.create_view(child_view, {
+              signal: child_view_signal,
+              experimental: {
+                // @ts-expect-error - bind isn't working
+                invoke: invoke.bind(null, child_model),
+              },
+              host,
+            });
+          },
+        };
+      },
+    };
     let dispose = solid.createRoot((dispose) => {
       solid.createEffect(() => {
         // Clear all previous event listeners from this hook.
@@ -441,22 +634,13 @@ class Runtime {
         let controller = new AbortController();
         solid.onCleanup(() => controller.abort());
         Promise.resolve()
-          .then(async () => {
-            let cleanup = await result.data.render?.({
-              model: model_proxy(model, view),
-              el: view.el,
-              experimental: {
-                // @ts-expect-error - bind isn't working
-                invoke: invoke.bind(null, model),
-              },
-            });
-            if (controller.signal.aborted) {
-              return safe_cleanup(cleanup, "dispose view - already aborted");
-            }
-            controller.signal.addEventListener("abort", () =>
-              safe_cleanup(cleanup, "dispose view - aborted"),
-            );
-          })
+          .then(() =>
+            binding.create_view(view, {
+              signal: AbortSignal.any([signal, controller.signal]),
+              experimental,
+              host,
+            }),
+          )
           .catch((error) => throw_anywidget_error(error));
       });
       return () => dispose();
@@ -493,6 +677,7 @@ export default function ({ DOMWidgetModel, DOMWidgetView }) {
       let controller = new AbortController();
       this.once("destroy", () => {
         controller.abort("[anywidget] Runtime destroyed.");
+        BINDINGS.destroy(this);
         RUNTIMES.delete(this);
       });
       RUNTIMES.set(this, new Runtime(this, { signal: controller.signal }));

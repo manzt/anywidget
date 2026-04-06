@@ -43,9 +43,21 @@ export type Experimental = {
   ) => Promise<[T, DataView[]]>;
 };
 
+export interface ResolvedWidget<T = unknown> {
+  exports: T;
+  render(opts: { el: HTMLElement; signal?: AbortSignal }): Promise<void>;
+}
+
+export interface Host {
+  getWidget<T = unknown>(ref: string): Promise<ResolvedWidget<T>>;
+  getModel<T extends ObjectHash = ObjectHash>(ref: string): Promise<AnyModel<T>>;
+}
+
 export interface RenderProps<T extends ObjectHash = ObjectHash> {
   model: AnyModel<T>;
   el: HTMLElement;
+  signal: AbortSignal;
+  host: Host;
   experimental: Experimental;
 }
 
@@ -55,11 +67,12 @@ export interface Render<T extends ObjectHash = ObjectHash> {
 
 export interface InitializeProps<T extends ObjectHash = ObjectHash> {
   model: AnyModel<T>;
+  signal: AbortSignal;
   experimental: Experimental;
 }
 
 export interface Initialize<T extends ObjectHash = ObjectHash> {
-  (props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>)>;
+  (props: InitializeProps<T>): Awaitable<void | (() => Awaitable<void>) | object>;
 }
 
 interface WidgetDef<T extends ObjectHash = ObjectHash> {

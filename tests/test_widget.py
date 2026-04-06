@@ -380,6 +380,92 @@ def test_repr_respects_custom_repr() -> None:
     assert repr(w) == "CustomWidget(value=42)"
 
 
+def test_widget_trait_accepts_anywidget() -> None:
+    """Test that WidgetTrait accepts AnyWidget instances."""
+
+    class Child(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
+    child = Child()
+    parent = Parent(child=child)
+    assert parent.child is child
+
+
+def test_widget_trait_accepts_none_by_default() -> None:
+    """Test that WidgetTrait allows None by default."""
+
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
+    parent = Parent()
+    assert parent.child is None
+
+
+def test_widget_trait_rejects_non_widget() -> None:
+    """Test that WidgetTrait rejects non-widget values."""
+
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
+    parent = Parent()
+    with pytest.raises(t.TraitError):
+        parent.child = "not a widget"
+
+    with pytest.raises(t.TraitError):
+        parent.child = 42
+
+
+def test_widget_trait_accepts_protocol_object() -> None:
+    """Test that WidgetTrait accepts protocol objects with model_id."""
+
+    class FakeWidget:
+        model_id = "fake-id"
+
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
+    parent = Parent()
+    fake = FakeWidget()
+    parent.child = fake
+    assert parent.child is fake
+
+
+def test_trait_to_json_with_anywidget_instance() -> None:
+    """Test that _trait_to_json serializes AnyWidget instances to widget refs."""
+
+    class Child(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+
+    child = Child()
+    result = anywidget.AnyWidget._trait_to_json(child, None)
+    assert result == f"anywidget:{child.model_id}"
+
+
+def test_trait_to_json_with_plain_values() -> None:
+    """Test that _trait_to_json passes through non-widget values."""
+    assert anywidget.AnyWidget._trait_to_json(42, None) == 42  # noqa: PLR2004
+    assert anywidget.AnyWidget._trait_to_json("hello", None) == "hello"
+    assert anywidget.AnyWidget._trait_to_json(None, None) is None
+    assert anywidget.AnyWidget._trait_to_json([1, 2], None) == [1, 2]
+
+
+def test_trait_to_json_with_protocol_object() -> None:
+    """Test that _trait_to_json handles protocol objects with model_id."""
+
+    class FakeWidget:
+        model_id = "protocol-id-456"
+
+    result = anywidget.AnyWidget._trait_to_json(FakeWidget(), None)
+    assert result == "anywidget:protocol-id-456"
+
+
 def test_repr_mimebundle_uses_repr() -> None:
     """Test that _repr_mimebundle_ uses __repr__ for text/plain."""
 

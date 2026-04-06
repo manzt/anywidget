@@ -76,7 +76,7 @@ import.meta.hot.accept("__ANYWIDGET_HMR_SRC__", async (newModule) => {
   await refresh();
 });
 
-async function render({ model, el }) {
+async function render({ model, el, signal, host }) {
   if (import.meta.hot.data.afm == null) {
     let m = await import("__ANYWIDGET_HMR_SRC__");
     import.meta.hot.data.afm = await getAFM(m);
@@ -84,7 +84,7 @@ async function render({ model, el }) {
   if (import.meta.hot.data.contexts == null) {
     import.meta.hot.data.contexts = [];
   }
-  import.meta.hot.data.contexts.push({ cleanup: noop, model, el });
+  import.meta.hot.data.contexts.push({ cleanup: noop, model, el, signal, host });
   await refresh();
 }
 
@@ -99,14 +99,24 @@ async function refresh() {
     }
     context.model.off();
     emptyElement(context.el);
-    let cleanupIntialize = await afm.initialize?.({ model: context.model });
+    let controller = new AbortController();
+    let signal = context.signal
+      ? AbortSignal.any([context.signal, controller.signal])
+      : controller.signal;
+    let cleanupInitialize = await afm.initialize?.({
+      model: context.model,
+      signal,
+    });
     let cleanupRender = await afm.render({
       model: context.model,
       el: context.el,
+      signal,
+      host: context.host,
     });
     context.cleanup = () => {
-      cleanupIntialize?.();
-      cleanupRender?.();
+      controller.abort();
+      if (typeof cleanupInitialize === "function") cleanupInitialize();
+      if (typeof cleanupRender === "function") cleanupRender();
     };
   }
 }

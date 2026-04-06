@@ -11,8 +11,11 @@ import pytest
 import watchfiles
 from anywidget._descriptor import (
     _COMMS,
+    _WIDGET_REF_PREFIX,
     MimeBundleDescriptor,
     ReprMimeBundle,
+    _replace_widget_refs,
+    _try_get_model_id,
 )
 from anywidget._file_contents import FileContents
 from anywidget._protocols import AnywidgetProtocol
@@ -393,6 +396,203 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
 
     foo = Foo()
     assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()
+
+
+def test_model_id_property(mock_comm: MagicMock) -> None:
+    """Test that ReprMimeBundle exposes model_id from the comm."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+        value: int = 1
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {"value": self.value}
+
+    foo = Foo()
+    repr_obj = foo._repr_mimebundle_
+    assert isinstance(repr_obj, ReprMimeBundle)
+    assert repr_obj.model_id == mock_comm.comm_id
+
+
+def test_try_get_model_id_protocol_object(mock_comm: MagicMock) -> None:
+    """Test _try_get_model_id for protocol objects with MimeBundleDescriptor."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    # Before accessing _repr_mimebundle_, the descriptor hasn't created a comm yet.
+    # _try_get_model_id should force creation via __get__.
+    model_id = _try_get_model_id(foo)
+    assert model_id == mock_comm.comm_id
+
+
+def test_try_get_model_id_with_repr_mimebundle(mock_comm: MagicMock) -> None:
+    """Test _try_get_model_id when _repr_mimebundle_ is already a ReprMimeBundle."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    foo._repr_mimebundle_  # force creation
+    # Now _repr_mimebundle_ is a ReprMimeBundle instance on the object
+    assert isinstance(foo._repr_mimebundle_, ReprMimeBundle)
+    assert _try_get_model_id(foo) == mock_comm.comm_id
+
+
+def test_try_get_model_id_with_model_id_attr() -> None:
+    """Test for objects with a model_id attribute (e.g. ipywidgets)."""
+
+    class FakeWidget:
+        model_id = "abc123"
+
+    assert _try_get_model_id(FakeWidget()) == "abc123"
+
+
+def test_try_get_model_id_returns_none_for_plain_objects() -> None:
+    """Test _try_get_model_id returns None for non-widget objects."""
+    assert _try_get_model_id(42) is None
+    assert _try_get_model_id("hello") is None
+    assert _try_get_model_id({"key": "value"}) is None
+    assert _try_get_model_id(None) is None
+
+
+def test_try_get_model_id_returns_none_for_non_anywidget_repr() -> None:
+    """Test returns None for objects with _repr_mimebundle_ that isn't anywidget."""
+
+    class NotAWidget:
+        def _repr_mimebundle_(self, **kwargs):  # noqa: ANN003, ANN202, ARG002
+            return {"text/plain": "hello"}, {}
+
+    assert _try_get_model_id(NotAWidget()) is None
+
+
+def test_replace_widget_refs_top_level(mock_comm: MagicMock) -> None:
+    """Test replaces top-level widget objects."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    foo._repr_mimebundle_  # force comm creation
+
+    state = {"child": foo, "value": 42}
+    result = _replace_widget_refs(state)
+    assert result["child"] == f"{_WIDGET_REF_PREFIX}{mock_comm.comm_id}"
+    assert result["value"] == 42  # noqa: PLR2004
+
+
+def test_replace_widget_refs_nested_dict(mock_comm: MagicMock) -> None:
+    """Test _replace_widget_refs replaces widgets nested in dicts."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    foo._repr_mimebundle_
+
+    state = {"config": {"widget": foo, "name": "test"}}
+    result = _replace_widget_refs(state)
+    assert result["config"]["widget"] == f"{_WIDGET_REF_PREFIX}{mock_comm.comm_id}"
+    assert result["config"]["name"] == "test"
+
+
+def test_replace_widget_refs_in_list(mock_comm: MagicMock) -> None:
+    """Test _replace_widget_refs replaces widgets in lists."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    foo._repr_mimebundle_
+
+    state = {"children": [foo, "other"]}
+    result = _replace_widget_refs(state)
+    assert result["children"][0] == f"{_WIDGET_REF_PREFIX}{mock_comm.comm_id}"
+    assert result["children"][1] == "other"
+
+
+def test_replace_widget_refs_in_tuple(mock_comm: MagicMock) -> None:
+    """Test _replace_widget_refs replaces widgets in tuples."""
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    foo = Foo()
+    foo._repr_mimebundle_
+
+    state = {"items": (foo, 1, 2)}
+    result = _replace_widget_refs(state)
+    assert isinstance(result["items"], tuple)
+    assert result["items"][0] == f"{_WIDGET_REF_PREFIX}{mock_comm.comm_id}"
+    assert result["items"][1] == 1
+
+
+def test_replace_widget_refs_no_widgets() -> None:
+    """Test _replace_widget_refs passes through state without widgets."""
+    state = {"value": 42, "name": "test", "nested": {"a": 1}}
+    result = _replace_widget_refs(state)
+    assert result == state
+
+
+def test_replace_widget_refs_with_model_id_attr() -> None:
+    """Test _replace_widget_refs handles objects with model_id (ipywidgets-like)."""
+
+    class FakeWidget:
+        model_id = "fake-id-123"
+
+    state = {"widget": FakeWidget()}
+    result = _replace_widget_refs(state)
+    assert result["widget"] == f"{_WIDGET_REF_PREFIX}fake-id-123"
+
+
+def test_send_state_replaces_widget_refs(mock_comm: MagicMock) -> None:
+    """Test that send_state serializes widget refs before sending."""
+
+    class Child:
+        model_id = "child-model-id"
+
+    class Parent:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+        child: object = None
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {"child": self.child}
+
+    parent = Parent()
+    parent.child = Child()
+    parent._repr_mimebundle_  # force comm creation
+
+    mock_comm.send.reset_mock()
+    mock_comm.kernel = True  # send_state checks for kernel
+    parent._repr_mimebundle_.send_state({"child"})
+
+    mock_comm.send.assert_called_once_with(
+        data={
+            "method": "update",
+            "state": {"child": f"{_WIDGET_REF_PREFIX}child-model-id"},
+            "buffer_paths": [],
+        },
+        buffers=[],
+    )
 
 
 def test_no_view() -> None:
