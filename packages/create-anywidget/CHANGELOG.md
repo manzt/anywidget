@@ -1,5 +1,11 @@
 # create-anywidget
 
+## 0.8.4
+
+### Patch Changes
+
+- fix(create-anywidget): add CSS type declaration to Typescript templates ([#943](https://github.com/manzt/anywidget/pull/943))
+
 ## 0.8.3
 
 ### Patch Changes

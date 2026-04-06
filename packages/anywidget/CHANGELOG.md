@@ -1,5 +1,12 @@
 # anywidget
 
+## 0.9.22
+
+### Patch Changes
+
+- Updated dependencies [[`88298fd`](https://github.com/manzt/anywidget/commit/88298fd856bfa81cb24f2decf30ff2fdf8afbd01)]:
+  - @anywidget/types@0.3.0
+
 ## 0.9.21
 
 ### Patch Changes

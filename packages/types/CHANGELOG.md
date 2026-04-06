@@ -1,5 +1,13 @@
 # @anywidget/types
 
+## 0.3.0
+
+### Minor Changes
+
+- Clarify `change:` event callback signature as `() => void` ([#938](https://github.com/manzt/anywidget/pull/938))
+
+  The `on("change:...")` callback now takes no arguments. Use `model.get()` inside the callback to read the current value. The previous signature with `(_: unknown, value: Payload)` leaked Backbone.js implementation details from ipywidgets that are not portable across host platforms.
+
 ## 0.2.0
 
 ### Minor Changes
