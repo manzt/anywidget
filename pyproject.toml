@@ -40,17 +40,6 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# https://coverage.readthedocs.io/en/6.4/config.html
-[tool.coverage.report]
-exclude_lines = [
-  "pragma: no cover",
-  "if TYPE_CHECKING:",
-  "@overload",
-  "except ImportError",
-  "\\.\\.\\.",
-  "raise NotImplementedError()",
-]
-
 [tool.hatch.build]
 exclude = [".github", "docs", "paper"]
 artifacts = [
@@ -124,4 +113,4 @@ ignore = [
 "docs/*.py" = ["D"]
 
 [tool.uv]
-required-version = ">=0.8.0"
+required-version = ">=0.11.0"

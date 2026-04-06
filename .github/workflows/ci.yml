@@ -56,10 +56,9 @@ jobs:
           run_install: true
       - uses: astral-sh/setup-uv@v7
       - name: Run tests
-        run: uv run --with pytest-cov pytest ./tests --color=yes --cov anywidget --cov-report xml
+        run: uv run pytest ./tests --color=yes
         env:
           UV_PYTHON: ${{ matrix.python-version }}
-      - uses: codecov/codecov-action@v5
 
   CheckJavaScript:
     name: JavaScript / Check
