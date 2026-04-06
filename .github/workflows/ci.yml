@@ -51,7 +51,7 @@ jobs:
           - "3.14"
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           run_install: true
       - uses: astral-sh/setup-uv@v7
@@ -65,7 +65,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           run_install: true
       - run: pnpm check
@@ -75,7 +75,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           run_install: true
       - run: |
