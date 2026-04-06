@@ -51,15 +51,15 @@ export default {
     // Set up shared state or event handlers.
     return () => {
       // Optional: Called when the widget is destroyed.
-    } 
+    };
   },
   render({ model, el }) {
     // Render the widget's view into the el HTMLElement.
     return () => {
       // Optional: Called when the view is destroyed.
-    }
-  }
-}
+    };
+  },
+};
 ```
 
 A host platform is expected to:
@@ -79,20 +79,20 @@ The widget lifecycle in AFM follows a Model-View pattern, consisting of two
 main phases:
 
 - **Model Initialization**: Occurs when a widget is first created, setting up
-the model and any shared state.
+  the model and any shared state.
 - **View Rendering**: Happens each time a widget needs to be displayed,
-potentially multiple times for a single widget instance.
+  potentially multiple times for a single widget instance.
 
 AFM exports methods that correspond to these lifecycle phases. The default
 export object specifies one or more widget lifecycle hooks:
 
 - `initialize({ model })`: Executed once per widget instance during model
-initialization. It has access to `model` to setup non-view event handlers or
-state to share across views.
+  initialization. It has access to `model` to setup non-view event handlers or
+  state to share across views.
 
 - `render({ model, el })`: Executed once per view during view rendering. It has
-access to both the `model` and an `el` DOM element. Used to setup event
-handlers or access state specific to that view.
+  access to both the `model` and an `el` DOM element. Used to setup event
+  handlers or access state specific to that view.
 
 Each method MAY return a **cleanup function** which will be called when the
 widget is destroyed or the view is removed.
@@ -107,10 +107,14 @@ of the widget:
 export default async () => {
   let extraState = {};
   return {
-    initialize({ model }) { /* ... */ },
-    render({ model, el }) { /* ... */ },
-  }
-}
+    initialize({ model }) {
+      /* ... */
+    },
+    render({ model, el }) {
+      /* ... */
+    },
+  };
+};
 ```
 
 Here, `initialize` and `render` both will have access to `extraState` during the
@@ -209,9 +213,9 @@ Instead of baking framework support into the specification, we envision support
 for UI frameworks through:
 
 - **Framework bridges**: Libraries that provide idiomatic APIs for popular
-frameworks while adhering to the AFM specification.
+  frameworks while adhering to the AFM specification.
 - **Developer tooling**: Simple build processes that can compile
-framework-specific code into standard AFM.
+  framework-specific code into standard AFM.
 
 This approach gives anywidget developers the option to use their preferred
 tools and frameworks while ensuring that the final output is a web-standard
@@ -230,7 +234,7 @@ function Counter() {
 }
 
 export default {
-  render: createRender(Counter)
+  render: createRender(Counter),
 };
 ```
 

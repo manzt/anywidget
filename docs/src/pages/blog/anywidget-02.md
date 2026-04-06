@@ -146,14 +146,14 @@ the associated widget code may also define the expected types on the Model
 
 /** @type {import("@anywidget/types").Render<Model>} */
 function render({ model, el }) {
-	let value = model.get("value");
-	//^? number
+  let value = model.get("value");
+  //^? number
 
-	model.get("nope");
-	// type error, `nope` is not defined on Model
+  model.get("nope");
+  // type error, `nope` is not defined on Model
 
-	model.set("value", "not a number");
-	//^? type error, must be a number
+  model.set("value", "not a number");
+  //^? type error, must be a number
 }
 
 export default { render };
@@ -182,10 +182,10 @@ flexible and more declarative way to ensure proper cleanup when needed:
 
 ```javascript
 function render({ model, el }) {
-	// Create DOM elements and set up subscribers
-	return () => {
-		// Optionally cleanup
-	};
+  // Create DOM elements and set up subscribers
+  return () => {
+    // Optionally cleanup
+  };
 }
 
 export default { render };
@@ -200,13 +200,13 @@ import * as React from "https://esm.sh/react@18";
 import * as ReactDOM from "https://esm.sh/react-dom@18/client";
 
 function App(props) {
-	return <h1>Hello, world</h1>;
+  return <h1>Hello, world</h1>;
 }
 
 function render({ model, el }) {
-	let root = ReactDOM.createRoot(el);
-	root.render(<App />);
-	return () => root.unmount();
+  let root = ReactDOM.createRoot(el);
+  root.render(<App />);
+  return () => root.unmount();
 }
 
 export default { render };
@@ -220,20 +220,20 @@ Another common scenario requiring proper cleanup is when using
 
 ```javascript
 export default {
-	render({ model, el }) {
-		const canvasEl = document.createElement("canvas");
-		let requestId = requestAnimationFrame(step);
+  render({ model, el }) {
+    const canvasEl = document.createElement("canvas");
+    let requestId = requestAnimationFrame(step);
 
-		function step() {
-			/* ...custom rendering goes here... */
-			requestId = requestAnimationFrame(step);
-		}
-		el.appendChild(canvasEl);
+    function step() {
+      /* ...custom rendering goes here... */
+      requestId = requestAnimationFrame(step);
+    }
+    el.appendChild(canvasEl);
 
-		return () => {
-			cancelAnimationFrame(requestId);
-		};
-	},
+    return () => {
+      cancelAnimationFrame(requestId);
+    };
+  },
 };
 ```
 

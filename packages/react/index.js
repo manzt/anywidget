@@ -9,15 +9,16 @@ import * as ReactDOM from "react-dom/client";
  */
 
 /** @type {React.Context<RenderContext<any>>} */
+// oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- React.createContext requires a default value
 let RenderContext = React.createContext(/** @type {any} */ (null));
 
 /**
  * @returns {RenderContext<any>}
  */
 function useRenderContext() {
-	let ctx = React.useContext(RenderContext);
-	if (!ctx) throw new Error("RenderContext not found");
-	return ctx;
+  let ctx = React.useContext(RenderContext);
+  if (!ctx) throw new Error("RenderContext not found");
+  return ctx;
 }
 
 /**
@@ -25,14 +26,14 @@ function useRenderContext() {
  * @returns {import("@anywidget/types").AnyModel<T>}
  */
 export function useModel() {
-	let ctx = useRenderContext();
-	return ctx.model;
+  let ctx = useRenderContext();
+  return ctx.model;
 }
 
 /** @returns {import("@anywidget/types").Experimental} */
 export function useExperimental() {
-	let ctx = useRenderContext();
-	return ctx.experimental;
+  let ctx = useRenderContext();
+  return ctx.experimental;
 }
 
 /**
@@ -62,27 +63,27 @@ export function useExperimental() {
  * @returns {[S, React.Dispatch<React.SetStateAction<S>>]}
  */
 export function useModelState(key) {
-	let model = useModel();
-	let value = React.useSyncExternalStore(
-		(update) => {
-			model.on(`change:${key}`, update);
-			return () => model.off(`change:${key}`, update);
-		},
-		() => model.get(key),
-	);
-	/** @type {React.Dispatch<React.SetStateAction<S>>} */
-	let setValue = React.useCallback(
-		(value) => {
-			model.set(
-				key,
-				// @ts-expect-error - TS cannot correctly narrow type
-				typeof value === "function" ? value(model.get(key)) : value,
-			);
-			model.save_changes();
-		},
-		[model, key],
-	);
-	return [value, setValue];
+  let model = useModel();
+  let value = React.useSyncExternalStore(
+    (update) => {
+      model.on(`change:${key}`, update);
+      return () => model.off(`change:${key}`, update);
+    },
+    () => model.get(key),
+  );
+  /** @type {React.Dispatch<React.SetStateAction<S>>} */
+  let setValue = React.useCallback(
+    (value) => {
+      model.set(
+        key,
+        // @ts-expect-error - TS cannot correctly narrow type
+        typeof value === "function" ? value(model.get(key)) : value,
+      );
+      model.save_changes();
+    },
+    [model, key],
+  );
+  return [value, setValue];
 }
 
 /**
@@ -90,19 +91,19 @@ export function useModelState(key) {
  * @returns {import("@anywidget/types").Render}
  */
 export function createRender(Widget) {
-	return ({ el, model, experimental }) => {
-		let root = ReactDOM.createRoot(el);
-		root.render(
-			React.createElement(
-				React.StrictMode,
-				null,
-				React.createElement(
-					RenderContext.Provider,
-					{ value: { model, experimental } },
-					React.createElement(Widget),
-				),
-			),
-		);
-		return () => root.unmount();
-	};
+  return ({ el, model, experimental }) => {
+    let root = ReactDOM.createRoot(el);
+    root.render(
+      React.createElement(
+        React.StrictMode,
+        null,
+        React.createElement(
+          RenderContext.Provider,
+          { value: { model, experimental } },
+          React.createElement(Widget),
+        ),
+      ),
+    );
+    return () => root.unmount();
+  };
 }

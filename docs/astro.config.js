@@ -5,41 +5,42 @@ import sitemap from "@astrojs/sitemap";
 // TODO: remove or migrate entire to tailwind
 import tailwind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
+
 import ipynb from "./scripts/ipynb.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-	site: `https://anywidget.dev/`,
-	prefetch: true,
-	markdown: {
-		shikiConfig: {
-			theme: "poimandres",
-		},
-	},
-	integrations: [
-		// Enable Preact to support Preact JSX components.
-		preact({
-			exclude: ["./src/components/Header/Search.tsx"],
-		}),
-		// Enable React for the Algolia search component.
-		react({
-			include: ["./src/components/Header/Search.tsx"],
-		}),
-		// Support .ipynb pages
-		ipynb({
-			execute: false,
-		}),
-		// Added for custom landing page
-		tailwind({
-			config: {
-				applyBaseStyles: false,
-			},
-		}),
-		// Supports components in markdown
-		mdx(),
-		sitemap(),
-	],
-	image: {
-		remotePatterns: [{ protocol: "https" }],
-	},
+  site: `https://anywidget.dev/`,
+  prefetch: true,
+  markdown: {
+    shikiConfig: {
+      theme: "poimandres",
+    },
+  },
+  integrations: [
+    // Enable Preact to support Preact JSX components.
+    preact({
+      exclude: ["./src/components/Header/Search.tsx"],
+    }),
+    // Enable React for the Algolia search component.
+    react({
+      include: ["./src/components/Header/Search.tsx"],
+    }),
+    // Support .ipynb pages
+    ipynb({
+      execute: false,
+    }),
+    // Added for custom landing page
+    tailwind({
+      config: {
+        applyBaseStyles: false,
+      },
+    }),
+    // Supports components in markdown
+    mdx(),
+    sitemap(),
+  ],
+  image: {
+    remotePatterns: [{ protocol: "https" }],
+  },
 });

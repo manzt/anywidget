@@ -1,6 +1,5 @@
 version: 2
 updates:
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -18,13 +17,13 @@ updates:
       dev-dependencies:
         dependency-type: "development"
         update-types:
-        - "patch"
-        - "minor"
+          - "patch"
+          - "minor"
       prod-dependencies:
         dependency-type: "production"
         update-types:
-        - "patch"
-        - "minor"
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "pip"
     directory: "/"

@@ -1,10 +1,12 @@
 {
-	"name": "@anywidget/signals",
-	"version": "0.0.4",
-	"description": "A stub-package for making releases of the jsr:@anywidget/signals with changesets",
-	"scripts": {
-		"prepublish": "mv README.md tmp.md && mv npm.README.md README.md",
-		"postpublish": "mv README.md npm.README.md && mv tmp.md README.md"
-	},
-	"files": ["README.md"]
+  "name": "@anywidget/signals",
+  "version": "0.0.4",
+  "description": "A stub-package for making releases of the jsr:@anywidget/signals with changesets",
+  "files": [
+    "README.md"
+  ],
+  "scripts": {
+    "prepublish": "mv README.md tmp.md && mv npm.README.md README.md",
+    "postpublish": "mv README.md npm.README.md && mv tmp.md README.md"
+  }
 }

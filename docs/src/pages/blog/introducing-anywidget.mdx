@@ -7,13 +7,17 @@ image: {
 	alt: "anywidget logo and counter example using API",
 }
 ---
+
 import CounterButton from "../../components/CounterButton.astro";
 import ConfettiButton from "../../components/ConfettiButton.astro";
 
 > **EDIT**(2024-01-31): Since v0.9, it is preferred to use
-> <a href="/blog/a-year-with-anywidget#introducing-widget-lifecycle-hooks">anywidget lifecycle hooks</a>
-> to define custom widgets. The JavaScript in the code
-> snippets below have been updated to reflect this usage.
+>
+> <a href="/blog/a-year-with-anywidget#introducing-widget-lifecycle-hooks">
+>   anywidget lifecycle hooks
+> </a>
+> to define custom widgets. The JavaScript in the code snippets below have been updated to reflect
+> this usage.
 
 _TL;DR: [**anywidget**](https://github.com/manzt/anywidget) is a new Python library that <u>greatly</u>
 simplifies creating and publishing custom Jupyter Widgets. Unlike the traditional
@@ -357,8 +361,8 @@ With ESM, the following code runs in all major browsers without modifications:
 import * as d3 from "https://esm.sh/d3@7";
 
 export function currentDate() {
-	let formatTime = d3.timeFormat("%B %d, %Y");
-	console.log(`Today is ${formatTime(new Date())}`);
+  let formatTime = d3.timeFormat("%B %d, %Y");
+  console.log(`Today is ${formatTime(new Date())}`);
 }
 
 currentDate(); // Today is January 18, 2023
@@ -438,9 +442,7 @@ class ExampleWidget(anywidget.AnyWidget):
 ExampleWidget()
 ```
 
-<div style="background-color: lightseagreen; padding: 0px 2px;">
-	Hello, World
-</div>
+<div style="background-color: lightseagreen; padding: 0px 2px;">Hello, World</div>
 
 ... and each subclass specifies:
 
@@ -451,7 +453,7 @@ ExampleWidget()
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
 function render({ model, el }) {
-	// Render model contents and setup dynamic updates
+  // Render model contents and setup dynamic updates
 }
 export default { render }; // export for anywidget
 ```

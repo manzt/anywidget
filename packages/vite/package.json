@@ -1,28 +1,25 @@
 {
-	"name": "@anywidget/vite",
-	"type": "module",
-	"version": "0.2.2",
-	"repository": "https://github.com/manzt/anywidget",
-	"description": "a vite plugin for anywidget",
-	"license": "MIT",
-	"files": [
-		"dist",
-		"index.js",
-		"hmr.js"
-	],
-	"scripts": {
-		"build": "tsc"
-	},
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./index.js"
-		}
-	},
-	"devDependencies": {
-		"vite": "^7.3.1"
-	},
-	"peerDependencies": {
-		"vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
-	}
+  "name": "@anywidget/vite",
+  "version": "0.2.2",
+  "description": "a vite plugin for anywidget",
+  "license": "MIT",
+  "repository": "https://github.com/manzt/anywidget",
+  "files": [
+    "dist",
+    "index.js",
+    "hmr.js"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
+  }
 }

@@ -1,29 +1,29 @@
 {
-	"name": "@anywidget/svelte",
-	"type": "module",
-	"version": "0.1.1",
-	"repository": "https://github.com/manzt/anywidget",
-	"description": "Svelte utilities for anywidget",
-	"license": "MIT",
-	"main": "src/index.js",
-	"types": "dist/index.d.ts",
-	"files": [
-		"dist",
-		"src"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./src/index.js"
-		}
-	},
-	"peerDependencies": {
-		"svelte": "^5.0.0"
-	},
-	"dependencies": {
-		"@anywidget/types": "workspace:^"
-	},
-	"devDependencies": {
-		"svelte": "^5.48.2"
-	}
+  "name": "@anywidget/svelte",
+  "version": "0.1.1",
+  "description": "Svelte utilities for anywidget",
+  "license": "MIT",
+  "repository": "https://github.com/manzt/anywidget",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "main": "src/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "dependencies": {
+    "@anywidget/types": "workspace:^"
+  },
+  "devDependencies": {
+    "svelte": "^5.48.2"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
 }

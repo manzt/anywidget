@@ -15,11 +15,7 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
 ]
-dependencies = [
-  "ipywidgets>=7.6.0",
-  "psygnal>=0.8.1",
-  "typing-extensions>=4.2.0",
-]
+dependencies = ["ipywidgets>=7.6.0", "psygnal>=0.8.1", "typing-extensions>=4.2.0"]
 dynamic = ["version"]
 
 [project.urls]
@@ -70,14 +66,8 @@ artifacts = [
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = [
-  "anywidget/nbextension/index.js",
-  "anywidget/labextension/package.json",
-]
-skip-if-exists = [
-  "anywidget/nbextension/index.js",
-  "anywidget/labextension/package.json",
-]
+ensured-targets = ["anywidget/nbextension/index.js", "anywidget/labextension/package.json"]
+skip-if-exists = ["anywidget/nbextension/index.js", "anywidget/labextension/package.json"]
 dependencies = ["hatch-jupyter-builder>=0.5.0"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
@@ -112,24 +102,24 @@ exclude = ["packages", "docs"]
 pydocstyle = { convention = "numpy" }
 select = ["ALL"]
 ignore = [
-  "D401",  # First line should be in imperative mood (remove to opt in)
-  "COM812",  # Missing trailing comma (conflicts with ruff format)
-  "ISC001",  # Import sorting (conflicts with ruff format)
-  "FIX002",  # Fixable issue
-  "DOC201",  # TODO(manzt) enable in follow-up PR; no doc for return type.
-  "FBT",  # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
+  "D401", # First line should be in imperative mood (remove to opt in)
+  "COM812", # Missing trailing comma (conflicts with ruff format)
+  "ISC001", # Import sorting (conflicts with ruff format)
+  "FIX002", # Fixable issue
+  "DOC201", # TODO(manzt) enable in follow-up PR; no doc for return type.
+  "FBT", # TODO(manzt): enable in follow-up PR; require bool options to be keyword-only.
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
-  "D",  # No docstrings in tests
-  "S101",  # Use of assert
-  "B018",  # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
-  "SLF001",  # Access private member
-  "PLC2701",  # Private imports
+  "D", # No docstrings in tests
+  "S101", # Use of assert
+  "B018", # "useless expression", for accessing the Foo._repr_mimbundle_ descriptor
+  "SLF001", # Access private member
+  "PLC2701", # Private imports
 ]
 "tests/test_descriptor.py" = [
-  "FA100",  # Don't add 'from __future__ import annotations' because it messes with Pydantic and ClassVar
+  "FA100", # Don't add 'from __future__ import annotations' because it messes with Pydantic and ClassVar
 ]
 "docs/*.py" = ["D"]
 

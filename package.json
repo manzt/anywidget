@@ -1,28 +1,31 @@
 {
-	"name": "@anywidget/monorepo",
-	"scripts": {
-		"build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
-		"build:packages": "tsc --build && pnpm --filter=\"./packages/**\" -r build && pnpm publint",
-		"clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
-		"version": "changeset version",
-		"release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
-		"test": "vitest",
-		"typecheck": "tsc --build",
-		"fix": "biome check --write .",
-		"publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.3.13",
-		"@changesets/cli": "^2.29.8",
-		"@rspack/cli": "^1.7.3",
-		"@rspack/core": "^1.7.3",
-		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
-		"@vitest/browser": "^3.2.4",
-		"esbuild": "^0.27.2",
-		"playwright": "^1.58.0",
-		"publint": "^0.3.17",
-		"typescript": "^5.9.3",
-		"vitest": "^3.2.4"
-	},
-	"packageManager": "pnpm@9.10.0"
+  "name": "@anywidget/monorepo",
+  "scripts": {
+    "build": "rspack build -c ./packages/anywidget/scripts/jlab.config.cjs",
+    "build:packages": "tsgo --build && pnpm --filter=\"./packages/**\" -r build && pnpm publint",
+    "clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
+    "version": "changeset version",
+    "release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
+    "test": "vitest",
+    "fix": "oxfmt --write . && oxlint --fix",
+    "check": "oxlint --type-aware --type-check && oxfmt --check .",
+    "publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.8",
+    "@rspack/cli": "^1.7.3",
+    "@rspack/core": "^1.7.3",
+    "@svitejs/changesets-changelog-github-compact": "^1.2.0",
+    "@typescript/native-preview": "7.0.0-dev.20260406.1",
+    "@vitest/browser": "^3.2.4",
+    "esbuild": "^0.27.2",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0",
+    "oxlint-tsgolint": "^0.20.0",
+    "playwright": "^1.58.0",
+    "publint": "^0.3.17",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@9.10.0"
 }

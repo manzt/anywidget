@@ -11,25 +11,29 @@ import { createSubscriber } from "svelte/reactivity";
  * @returns T
  */
 function createBindings(model) {
-	/** @type {Record<string, () => void>} */
-	let subscribes = {};
-	return new Proxy(/** @type{any} */ ({}), {
-		get(_, /** @type {string} */ name) {
-			if (!(name in subscribes)) {
-				subscribes[name] = createSubscriber((update) => {
-					model.on(`change:${name}`, update);
-					return () => model.off(`change:${name}`, update);
-				});
-			}
-			subscribes[name]();
-			return model.get(name);
-		},
-		set(_, /** @type {string} */ name, /** @type {any} */ newValue) {
-			model.set(name, newValue);
-			model.save_changes();
-			return true;
-		},
-	});
+  /** @type {Record<string, () => void>} */
+  let subscribes = {};
+  return new Proxy(
+    // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- Proxy target is intentionally untyped
+    /** @type{any} */ ({}),
+    {
+      get(_, /** @type {string} */ name) {
+        if (!(name in subscribes)) {
+          subscribes[name] = createSubscriber((update) => {
+            model.on(`change:${name}`, update);
+            return () => model.off(`change:${name}`, update);
+          });
+        }
+        subscribes[name]();
+        return model.get(name);
+      },
+      set(_, /** @type {string} */ name, /** @type {any} */ newValue) {
+        model.set(name, newValue);
+        model.save_changes();
+        return true;
+      },
+    },
+  );
 }
 
 /**
@@ -50,21 +54,21 @@ function createBindings(model) {
  * @returns {AnyWidget<T>}
  */
 export function defineWidget(Widget) {
-	return () => {
-		/** @type {T | undefined} */
-		let bindings;
-		return {
-			initialize({ model }) {
-				bindings = createBindings(model);
-			},
-			/** @type {import("@anywidget/types").Render<T>} */
-			render({ model, el }) {
-				let app = mount(Widget, {
-					target: el,
-					props: { model, bindings },
-				});
-				return () => unmount(app);
-			},
-		};
-	};
+  return () => {
+    /** @type {T | undefined} */
+    let bindings;
+    return {
+      initialize({ model }) {
+        bindings = createBindings(model);
+      },
+      /** @type {import("@anywidget/types").Render<T>} */
+      render({ model, el }) {
+        let app = mount(Widget, {
+          target: el,
+          props: { model, bindings },
+        });
+        return () => unmount(app);
+      },
+    };
+  };
 }

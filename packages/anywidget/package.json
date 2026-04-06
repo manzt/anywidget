@@ -1,36 +1,36 @@
 {
-	"name": "anywidget",
-	"type": "module",
-	"version": "0.9.22",
-	"repository": "https://github.com/manzt/anywidget",
-	"author": "Trevor Manz",
-	"license": "MIT",
-	"main": "dist/index.js",
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": "./dist/index.js",
-		"./types": {
-			"types": "./dist/types.d.ts",
-			"import": "./dist/types.mjs",
-			"require": "./dist/types.cjs"
-		}
-	},
-	"scripts": {
-		"build": "node scripts/build.cjs"
-	},
-	"dependencies": {
-		"@anywidget/types": "workspace:^",
-		"@lukeed/uuid": "^2.0.1",
-		"solid-js": "^1.9.11"
-	},
-	"devDependencies": {
-		"@jupyter-widgets/base": "^6",
-		"@jupyter-widgets/base-manager": "^1.0.12"
-	},
-	"jupyterlab": {
-		"extension": "./src/plugin.js",
-		"outputDir": "../../anywidget/labextension"
-	}
+  "name": "anywidget",
+  "version": "0.9.22",
+  "license": "MIT",
+  "author": "Trevor Manz",
+  "repository": "https://github.com/manzt/anywidget",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.cjs"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.cjs"
+  },
+  "dependencies": {
+    "@anywidget/types": "workspace:^",
+    "@lukeed/uuid": "^2.0.1",
+    "solid-js": "^1.9.11"
+  },
+  "devDependencies": {
+    "@jupyter-widgets/base": "^6",
+    "@jupyter-widgets/base-manager": "^1.0.12"
+  },
+  "jupyterlab": {
+    "extension": "./src/plugin.js",
+    "outputDir": "../../anywidget/labextension"
+  }
 }

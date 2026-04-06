@@ -3,6 +3,7 @@ title: "Jupyter Widgets: The Good Parts"
 description: "Distilling core Jupyter Widgets concepts for anywidget authors"
 layout: ../../layouts/MainLayout.astro
 ---
+
 _This page is largely adapted from
 ["Building a Custom Widget"](https://ipywidgets.readthedocs.io/en/8.0.2/examples/Widget%20Custom.html)
 in the Jupyter Widgets documentation. I'd hoped to avoid separately documenting
@@ -22,7 +23,8 @@ publishing a package on PyPI.
   src="https://www.youtube.com/embed/oZhyilx3gqI?si=vFhviCebYi6FBuWN"
   title="YouTube video player"
   frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
   allowfullscreen
 ></iframe>
 
@@ -48,9 +50,7 @@ Hooks correspond to specific stages in the lifetime of a widget:
 - _View Rendering_: Each notebook cell displaying the widget renders an
   independent view based on the model's current state.
 
-
 ![The main parts of the widget lifecycle, including model initialization and view rendering](../../../public/widget-lifecycle.png)
-
 
 The `initialize` hook is similar to
 [`DOMWidgetModel.initialize`](https://github.com/jupyter-widgets/ipywidgets/blob/b2531796d414b0970f18050d6819d932417b9953/packages/base/src/widget.ts#L150),
@@ -65,15 +65,15 @@ Concretely, custom widgets are traditionally defined like:
 import { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 
 class CustomModel extends DOMWidgetModel {
-	/* ... */
+  /* ... */
 }
 
 class CustomView extends DOMWidgetView {
-	render() {
-		let el = this.el;
-		let model = this.model;
-		/* view logic */
-	}
+  render() {
+    let el = this.el;
+    let model = this.model;
+    /* view logic */
+  }
 }
 
 export { CustomModel, CustomView };
@@ -87,9 +87,9 @@ In **anywidget**, the above code simplifies to:
 ```javascript
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
 function render(context) {
-	let el = context.el;
-	let model = context.model;
-	/* view logic */
+  let el = context.el;
+  let model = context.model;
+  /* view logic */
 }
 
 export default { render };
@@ -125,14 +125,14 @@ initialization_ logic:
 ```js
 /** @param {{ model: DOMWidgetModel }} context */
 function initialize({ model }) {
-	/* (optional) model initialization logic */
+  /* (optional) model initialization logic */
 }
 
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
 function render(context) {
-	let el = context.el;
-	let model = context.model;
-	/* view logic */
+  let el = context.el;
+  let model = context.model;
+  /* view logic */
 }
 
 export default { initialize, render };
@@ -180,7 +180,7 @@ end. The `render` function now has the ability to:
 ```javascript
 // index.js
 function render({ model, el }) {
-	let my_value = model.get("my_value");
+  let my_value = model.get("my_value");
 }
 export default { render };
 ```
@@ -190,8 +190,8 @@ export default { render };
 ```javascript
 // index.js
 function render({ model, el }) {
-	model.set("my_value", 42);
-	model.save_changes(); // required to send update to Python
+  model.set("my_value", 42);
+  model.save_changes(); // required to send update to Python
 }
 export default { render };
 ```
@@ -201,11 +201,11 @@ export default { render };
 ```javascript
 // index.js
 function render({ model, el }) {
-	function on_change() {
-		let new_my_value = model.get("my_value");
-		console.log(`The 'my_value' changed to: ${new_my_value}`);
-	}
-	model.on("change:my_value", on_change);
+  function on_change() {
+    let new_my_value = model.get("my_value");
+    console.log(`The 'my_value' changed to: ${new_my_value}`);
+  }
+  model.on("change:my_value", on_change);
 }
 export default { render };
 ```
@@ -277,7 +277,7 @@ widget.send({ "type": "my-event", "foo": "bar" })
 executed (i.e., the widget is displayed **before** sending messages). Changing the order of calls in
 the snippet above:
 
-<br/>
+<br />
 
 ```python
 widget = CustomMessageWidget()
@@ -290,7 +290,6 @@ widget
 ```
 
 </blockquote>
-
 
 ## Data Types
 
@@ -305,20 +304,20 @@ end without additional overhead (e.g., converting to JSON or base64 encoding).
 
 Here's a summary of how Python data types are mapped to JavaScript types (and vice versa):
 
-| Python                                                                                                                                                                                                                 | JavaScript                                                                                              |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| [`str`](https://docs.python.org/3/library/stdtypes.html#str)                                                                                                                                                           | [`string`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)         |
-| [`float`](https://docs.python.org/3/library/stdtypes.html#float)                                                                                                                                                       | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
-| [`int`](https://docs.python.org/3/library/stdtypes.html#int)                                                                                                                                                           | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
-| [`bool`](https://docs.python.org/3/library/stdtypes.html#bool)                                                                                                                                                         | [`boolean`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)       |
-| [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)                                                                                                                                                         | [`object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)     |
-| [`list`](https://docs.python.org/3/library/stdtypes.html#list) \| [`set`](https://docs.python.org/3/library/stdtypes.html#set)                                                                                           | [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)       |
+| Python                                                                                                                                                                                                                     | JavaScript                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [`str`](https://docs.python.org/3/library/stdtypes.html#str)                                                                                                                                                               | [`string`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)         |
+| [`float`](https://docs.python.org/3/library/stdtypes.html#float)                                                                                                                                                           | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
+| [`int`](https://docs.python.org/3/library/stdtypes.html#int)                                                                                                                                                               | [`number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)         |
+| [`bool`](https://docs.python.org/3/library/stdtypes.html#bool)                                                                                                                                                             | [`boolean`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)       |
+| [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)                                                                                                                                                             | [`object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)     |
+| [`list`](https://docs.python.org/3/library/stdtypes.html#list) \| [`set`](https://docs.python.org/3/library/stdtypes.html#set)                                                                                             | [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)       |
 | [`bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) \| [`bytearray`](https://docs.python.org/3/library/stdtypes.html#bytearray) \| [`memoryview`](https://docs.python.org/3/library/stdtypes.html#memoryview) | [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) |
 
 You might be curious how `traitlets` come into play with data types. Although
 `ipywidgets` are deeply tied to `traitlets`, it's just a library to help with
 validation and custom serialization if necessary. Ultimately, all data sent to
-the frontend must match a Python data type in the table above. 
+the frontend must match a Python data type in the table above.
 
 ```python
 class Widget(anywidget.AnyWidget):
@@ -456,42 +455,36 @@ Here are some general recommendations for being productive with **anywidget**:
   enable you to quickly debug your widgets.
 
   <center>
-  <div
-    class="my-3 px-1 w-11/12 max-w-lg pb-1 bg-primary-400/50 rounded border border-primary-400/50 shadow-md shadow-primary-500/50"
-  >
-  <div
-    class="flex items-center"
-    aria-hidden="true"
-  >
-    <div class="flex space-x-1 px-2">
-      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
-      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
-      <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+    <div class="my-3 px-1 w-11/12 max-w-lg pb-1 bg-primary-400/50 rounded border border-primary-400/50 shadow-md shadow-primary-500/50">
+      <div class="flex items-center" aria-hidden="true">
+        <div class="flex space-x-1 px-2">
+          <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+          <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+          <div class="rounded-full w-2.5 h-2.5 bg-primary-400"></div>
+        </div>
+        <div class="overflow-x-hidden flex grow items-center mr-4 space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            preserveAspectRatio="xMidYMid meet"
+            viewBox="0 0 32 32"
+          >
+            <path
+              fill="currentColor"
+              d="M24 14h-2V8a6 6 0 0 0-12 0v6H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM12 8a4 4 0 0 1 8 0v6h-8Zm12 20H8V16h16Z"
+            ></path>
+          </svg>
+          <span>localhost:8080/notebooks/Example.ipynb</span>
+        </div>
+      </div>
+      <img
+        class="rounded"
+        alt="Jupyter notebook with the browser console open, logging 'Hello from anywidget' from the custom widget"
+        inferSize
+        src="https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png"
+      />
     </div>
-    <div
-      class="overflow-x-hidden flex grow items-center mr-4 space-x-2 col-span-4 rounded text-xs m-1 p-1 bg-white text-neutral-500 select-none"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="1em"
-        height="1em"
-        preserveAspectRatio="xMidYMid meet"
-        viewBox="0 0 32 32"
-        ><path
-          fill="currentColor"
-          d="M24 14h-2V8a6 6 0 0 0-12 0v6H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM12 8a4 4 0 0 1 8 0v6h-8Zm12 20H8V16h16Z"
-        ></path></svg
-      >
-      <span>localhost:8080/notebooks/Example.ipynb</span>
-    </div>
-  </div>
-  <img
-    class="rounded"
-    alt="Jupyter notebook with the browser console open, logging 'Hello from anywidget' from the custom widget"
-    inferSize
-    src="https://user-images.githubusercontent.com/24403730/213878698-6c4cdf4f-ecc0-4f91-b947-49a5847279aa.png"
-  />
-  </div>
   </center>
 
 - **Have fun**. A primary goal of **anywidget** is to make it simple and

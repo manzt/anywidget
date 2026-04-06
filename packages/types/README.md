@@ -18,20 +18,20 @@ npm install @anywidget/types
 
 /** @type {import("@anywidget/types").AnyWidget<Model>} */
 export default {
-	initialize({ model }) {
-		let value = model.get("value");
-		//^? number
-	},
-	render({ model, el }) {
-		let value = model.get("value");
-		//^? number
+  initialize({ model }) {
+    let value = model.get("value");
+    //^? number
+  },
+  render({ model, el }) {
+    let value = model.get("value");
+    //^? number
 
-		model.get("nope");
-		// type error, `nope` is not defined on Model
+    model.get("nope");
+    // type error, `nope` is not defined on Model
 
-		model.set("value", "not a number");
-		//^? type error, must be a number
-	},
+    model.set("value", "not a number");
+    //^? type error, must be a number
+  },
 };
 ```
 

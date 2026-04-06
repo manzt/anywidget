@@ -1,39 +1,39 @@
 {
-	"name": "create-anywidget",
-	"version": "0.8.4",
-	"type": "module",
-	"author": "Trevor Manz",
-	"license": "MIT",
-	"bin": {
-		"create-anywidget": "index.js"
-	},
-	"files": [
-		"index.js",
-		"create.js",
-		"template-*"
-	],
-	"engines": {
-		"node": "^14.18.0 || >=16.0.0"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/manzt/anywidget.git",
-		"directory": "packages/create-anywidget"
-	},
-	"dependencies": {
-		"@clack/prompts": "^0.11.0",
-		"just-snake-case": "^3.2.0",
-		"kleur": "^4.1.5"
-	},
-	"devDependencies": {
-		"@anywidget/react": "workspace:^",
-		"@anywidget/types": "workspace:^",
-		"@types/node": "^24.7.0",
-		"@types/react": "^19.2.9",
-		"@types/react-dom": "^19.2.3",
-		"esbuild": "^0.27.2",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"typescript": "^5.9.3"
-	}
+  "name": "create-anywidget",
+  "version": "0.8.4",
+  "license": "MIT",
+  "author": "Trevor Manz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manzt/anywidget.git",
+    "directory": "packages/create-anywidget"
+  },
+  "bin": {
+    "create-anywidget": "index.js"
+  },
+  "files": [
+    "index.js",
+    "create.js",
+    "template-*"
+  ],
+  "type": "module",
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "just-snake-case": "^3.2.0",
+    "kleur": "^4.1.5"
+  },
+  "devDependencies": {
+    "@anywidget/react": "workspace:^",
+    "@anywidget/types": "workspace:^",
+    "@types/node": "^24.7.0",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.27.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  }
 }

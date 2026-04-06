@@ -1,9 +1,9 @@
 import * as path from "@std/path";
 
 function assert(condition: unknown, message: string): asserts condition {
-	if (!condition) {
-		throw new Error(message);
-	}
+  if (!condition) {
+    throw new Error(message);
+  }
 }
 
 // Adapted from https://github.com/nteract/jupyter-paths/blob/main/index.js#L175
@@ -14,24 +14,19 @@ function assert(condition: unknown, message: string): asserts condition {
  * Looks for a python executable in the PATH, and uses the directory.
  */
 async function guess_sys_prefix(): Promise<string | undefined> {
-	let dirs = (Deno.env.get("PATH") ?? "").split(":");
-	let pathext =
-		Deno.build.os === "windows"
-			? (Deno.env.get("PATHEXT") ?? "").split(";")
-			: [""];
-	for (let dir of dirs) {
-		for (let ext of pathext) {
-			let bin = path.join(dir, `python${ext}`);
-			let stat = await Deno.stat(bin).catch(() => {});
-			if (stat?.isFile) {
-				return Deno.realPath(
-					Deno.build.os === "windows"
-						? path.dirname(bin)
-						: path.dirname(path.dirname(bin)),
-				);
-			}
-		}
-	}
+  let dirs = (Deno.env.get("PATH") ?? "").split(":");
+  let pathext = Deno.build.os === "windows" ? (Deno.env.get("PATHEXT") ?? "").split(";") : [""];
+  for (let dir of dirs) {
+    for (let ext of pathext) {
+      let bin = path.join(dir, `python${ext}`);
+      let stat = await Deno.stat(bin).catch(() => {});
+      if (stat?.isFile) {
+        return Deno.realPath(
+          Deno.build.os === "windows" ? path.dirname(bin) : path.dirname(path.dirname(bin)),
+        );
+      }
+    }
+  }
 }
 
 /**
@@ -43,19 +38,19 @@ async function guess_sys_prefix(): Promise<string | undefined> {
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
 export function user_data_dir(): string {
-	if (Deno.build.os === "windows") {
-		let appdata = Deno.env.get("APPDATA");
-		assert(appdata, "APPDATA environment variable not set");
-		return path.resolve(appdata, "jupyter");
-	}
-	if (Deno.build.os === "darwin") {
-		let home = Deno.env.get("HOME");
-		assert(home, "HOME environment variable not set");
-		return path.resolve(home, "Library", "Jupyter");
-	}
-	let home = Deno.env.get("XDG_DATA_HOME") ?? Deno.env.get("HOME");
-	assert(home, "HOME environment variable not set");
-	return path.resolve(home, ".local", "share", "jupyter");
+  if (Deno.build.os === "windows") {
+    let appdata = Deno.env.get("APPDATA");
+    assert(appdata, "APPDATA environment variable not set");
+    return path.resolve(appdata, "jupyter");
+  }
+  if (Deno.build.os === "darwin") {
+    let home = Deno.env.get("HOME");
+    assert(home, "HOME environment variable not set");
+    return path.resolve(home, "Library", "Jupyter");
+  }
+  let home = Deno.env.get("XDG_DATA_HOME") ?? Deno.env.get("HOME");
+  assert(home, "HOME environment variable not set");
+  return path.resolve(home, ".local", "share", "jupyter");
 }
 
 /**
@@ -64,12 +59,12 @@ export function user_data_dir(): string {
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
 export function system_data_dirs(): Array<string> {
-	if (Deno.build.os === "windows") {
-		let programdata = Deno.env.get("PROGRAMDATA");
-		assert(programdata, "PROGRAMDATA environment variable not set");
-		return [path.resolve(programdata, "jupyter")];
-	}
-	return ["/usr/local/share/jupyter", "/usr/share/jupyter"];
+  if (Deno.build.os === "windows") {
+    let programdata = Deno.env.get("PROGRAMDATA");
+    assert(programdata, "PROGRAMDATA environment variable not set");
+    return [path.resolve(programdata, "jupyter")];
+  }
+  return ["/usr/local/share/jupyter", "/usr/share/jupyter"];
 }
 
 /**
@@ -83,18 +78,18 @@ export function system_data_dirs(): Array<string> {
  * 3. Otherwise, use the system data directory.
  */
 export async function find_data_dir(): Promise<string> {
-	let sys_prefix = await guess_sys_prefix();
-	if (sys_prefix) {
-		return path.resolve(sys_prefix, "share", "jupyter");
-	}
-	let user_dir = user_data_dir();
-	try {
-		let stat = await Deno.stat(user_dir);
-		if (stat.isDirectory) {
-			return user_dir;
-		}
-	} catch {
-		// Fine, we'll use the system data directory.
-	}
-	return system_data_dirs()[0];
+  let sys_prefix = await guess_sys_prefix();
+  if (sys_prefix) {
+    return path.resolve(sys_prefix, "share", "jupyter");
+  }
+  let user_dir = user_data_dir();
+  try {
+    let stat = await Deno.stat(user_dir);
+    if (stat.isDirectory) {
+      return user_dir;
+    }
+  } catch {
+    // Fine, we'll use the system data directory.
+  }
+  return system_data_dirs()[0];
 }

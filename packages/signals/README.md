@@ -15,7 +15,7 @@ import { defineWidget } from "@anywidget/signals";
 export default defineWidget(signal, {
   render({ model, el }) {
     let btn = document.createElement("button");
-    btn.addEventListener("click", () => model.value += 1);
+    btn.addEventListener("click", () => (model.value += 1));
     effect(() => {
       btn.innerText = `Count is ${model.value}`;
     });
@@ -47,7 +47,7 @@ import { defineWidget } from "@anywidget/signals";
 export default defineWidget(signal, {
   render({ model, el }) {
     let btn = document.createElement("button");
-    btn.addEventListener("click", () => model.value += 1);
+    btn.addEventListener("click", () => (model.value += 1));
     effect(() => {
       btn.innerText = `Count is ${model.value}`;
     });
@@ -65,7 +65,7 @@ import { defineWidget } from "@anywidget/signals";
 export default defineWidget(createSignal, {
   render({ model, el }) {
     let btn = document.createElement("button");
-    btn.addEventListener("click", () => model.value += 1);
+    btn.addEventListener("click", () => (model.value += 1));
     createEffect(() => {
       btn.innerText = `Count is ${model.value}`;
     });
@@ -108,7 +108,7 @@ export default defineWidget(signal, {
     let doubled = computed(() => model.value * 2);
 
     let btn = document.createElement("button");
-    btn.addEventListener("click", () => model.value += 1);
+    btn.addEventListener("click", () => (model.value += 1));
     effect(() => {
       btn.innerText = `Count is ${model.value}, doubled is ${doubled.value}`;
     });

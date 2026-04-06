@@ -24,12 +24,12 @@ pip install --upgrade "anywidget[dev]"
 
 ```js
 export default {
-	initialize({ model }) {
-		/* ... */
-	},
-	render({ model, el }) {
-		/* ... */
-	},
+  initialize({ model }) {
+    /* ... */
+  },
+  render({ model, el }) {
+    /* ... */
+  },
 };
 ```
 
@@ -107,12 +107,12 @@ hooks_</u>:
 
 ```js
 export default {
-	initialize({ model }) {
-		/* ... */
-	},
-	render({ model, el }) {
-		/* ... */
-	},
+  initialize({ model }) {
+    /* ... */
+  },
+  render({ model, el }) {
+    /* ... */
+  },
 };
 ```
 
@@ -132,21 +132,21 @@ widget.
 
 ```js
 export default () => {
-	// Create a history of all the changes to the "value" trait
-	let valueHistory = [];
-	return {
-		initialize({ model }) {
-			// Push the new changes to history
-			model.on("change:value", () => valueHistory.push(model.get("value")));
-		},
-		render({ model, el }) {
-			el.innerText = `The history is ${valueHistory}`;
-			// Update each view to display the current history
-			model.on("change:value", () => {
-				el.innerText = `The history is ${valueHistory}`;
-			});
-		},
-	};
+  // Create a history of all the changes to the "value" trait
+  let valueHistory = [];
+  return {
+    initialize({ model }) {
+      // Push the new changes to history
+      model.on("change:value", () => valueHistory.push(model.get("value")));
+    },
+    render({ model, el }) {
+      el.innerText = `The history is ${valueHistory}`;
+      // Update each view to display the current history
+      model.on("change:value", () => {
+        el.innerText = `The history is ${valueHistory}`;
+      });
+    },
+  };
 };
 ```
 
@@ -165,13 +165,17 @@ The new API comes with a deprecation notice for existing named `render` exports.
 To migrate, please replace:
 
 ```js
-export function render({ model, el }) {/* ... */}
+export function render({ model, el }) {
+  /* ... */
+}
 ```
 
 with:
 
 ```js
-function render({ model, el }) {/* ... */}
+function render({ model, el }) {
+  /* ... */
+}
 
 export default { render };
 ```

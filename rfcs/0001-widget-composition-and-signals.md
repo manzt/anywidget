@@ -40,12 +40,18 @@ New widgets should prefer `signal` over return callbacks for cleanup. Return cal
 ```js
 export default {
   render({ model, el, signal }) {
-    el.addEventListener("click", () => {
-      model.set("count", model.get("count") + 1);
-      model.save_changes();
-    }, { signal });
+    el.addEventListener(
+      "click",
+      () => {
+        model.set("count", model.get("count") + 1);
+        model.save_changes();
+      },
+      { signal },
+    );
 
-    let update = () => { el.textContent = model.get("count"); };
+    let update = () => {
+      el.textContent = model.get("count");
+    };
     update();
     model.on("change:count", update);
     signal.addEventListener("abort", () => model.off("change:count", update));
@@ -85,11 +91,11 @@ export default () => {
 
 **Backward compatibility** — the return type of `initialize` is overloaded:
 
-| Return value | Interpretation |
-|---|---|
-| `void` | No exports, no cleanup (existing) |
-| `() => void` | Cleanup callback (existing) |
-| `object` | Widget exports (new; use `signal` for cleanup) |
+| Return value | Interpretation                                 |
+| ------------ | ---------------------------------------------- |
+| `void`       | No exports, no cleanup (existing)              |
+| `() => void` | Cleanup callback (existing)                    |
+| `object`     | Widget exports (new; use `signal` for cleanup) |
 
 The host distinguishes these via `typeof ret === "function"`. Widgets that do not return an object have `exports: undefined` when resolved. No implicit default — exports are strictly opt-in.
 
@@ -181,9 +187,14 @@ Passing the parent's `signal` to `child.render` ties their lifecycles — aborti
 
 ```ts
 type Experimental = {
-  invoke<T>(name: string, msg?: any, options?: {
-    buffers?: DataView[]; signal?: AbortSignal;
-  }): Promise<[T, DataView[]]>;
+  invoke<T>(
+    name: string,
+    msg?: any,
+    options?: {
+      buffers?: DataView[];
+      signal?: AbortSignal;
+    },
+  ): Promise<[T, DataView[]]>;
   getWidget(traitName: string): Promise<ResolvedWidget>;
 };
 
@@ -238,25 +249,39 @@ Dashboard(control=slider)  # just pass the widget directly
 ```
 
 **slider.js**
+
 ```js
 export default () => ({
   initialize({ model, signal }) {
     return {
       getValue: () => model.get("value"),
-      setValue: (v) => { model.set("value", v); model.save_changes(); },
-      onChange: (cb) => { model.on("change:value", cb); },
+      setValue: (v) => {
+        model.set("value", v);
+        model.save_changes();
+      },
+      onChange: (cb) => {
+        model.on("change:value", cb);
+      },
     };
   },
   render({ model, el, signal }) {
     let input = Object.assign(document.createElement("input"), {
-      type: "range", min: model.get("min"),
-      max: model.get("max"), value: model.get("value"),
+      type: "range",
+      min: model.get("min"),
+      max: model.get("max"),
+      value: model.get("value"),
     });
-    input.addEventListener("input", () => {
-      model.set("value", parseFloat(input.value));
-      model.save_changes();
-    }, { signal });
-    model.on("change:value", () => { input.value = model.get("value"); });
+    input.addEventListener(
+      "input",
+      () => {
+        model.set("value", parseFloat(input.value));
+        model.save_changes();
+      },
+      { signal },
+    );
+    model.on("change:value", () => {
+      input.value = model.get("value");
+    });
     signal.addEventListener("abort", () => model.off("change:value"));
     el.appendChild(input);
   },
@@ -264,6 +289,7 @@ export default () => ({
 ```
 
 **dashboard.ts**
+
 ```ts
 interface SliderExports {
   getValue(): number;
@@ -272,9 +298,11 @@ interface SliderExports {
 }
 
 function isSliderExports(exports: unknown): exports is SliderExports {
-  return exports != null
-    && typeof (exports as any).getValue === "function"
-    && typeof (exports as any).setValue === "function";
+  return (
+    exports != null &&
+    typeof (exports as any).getValue === "function" &&
+    typeof (exports as any).setValue === "function"
+  );
 }
 
 export default {

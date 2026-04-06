@@ -155,13 +155,13 @@ Create a `vite.config.js` file with the following configuration:
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	build: {
-		outDir: "hello_widget/static",
-		lib: {
-			entry: ["src/index.js"],
-			formats: ["es"],
-		},
-	},
+  build: {
+    outDir: "hello_widget/static",
+    lib: {
+      entry: ["src/index.js"],
+      formats: ["es"],
+    },
+  },
 });
 ```
 

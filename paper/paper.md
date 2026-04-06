@@ -1,5 +1,5 @@
 ---
-title: 'anywidget: reusable widgets for interactive analysis and visualization in computational notebooks'
+title: "anywidget: reusable widgets for interactive analysis and visualization in computational notebooks"
 tags:
   - Computational notebooks
   - Jupyter
@@ -100,13 +100,13 @@ export default {
     // Add instance-specific event listeners
     return () => {
       // Clean up event listeners
-    }
+    };
   },
   render({ model, el }) {
     // Render the widget
     return () => {
       // Clean up event listeners
-    }
+    };
   },
 };
 ```

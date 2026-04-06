@@ -3,6 +3,7 @@ title: Getting Started
 description: Docs getting started
 layout: ../../layouts/MainLayout.astro
 ---
+
 import CounterButton from "../../components/CounterButton.astro";
 
 ![anywidget visualizations inside a JupyterLab notebook](../../../public/teaser.png)
@@ -17,7 +18,6 @@ specification, as well as a Python library that simplifies creating and
 publishing custom [Jupyter
 Widgets](https://ipywidgets.readthedocs.io/en/latest/).
 
-
 ## Highlights
 
 - 🛠️ Create widgets **without complicated cookiecutter templates**
@@ -25,7 +25,6 @@ Widgets](https://ipywidgets.readthedocs.io/en/latest/).
 - 🤖 Prototype **within** `.ipynb` or `.py` files
 - 🚀 Run in **Jupyter**, **JupyterLab**, **Google Colab**, **VSCode**, **marimo**, and more
 - ⚡ Develop with **instant HMR**, like modern web frameworks
-
 
 ## Example
 
@@ -89,8 +88,8 @@ import * as d3 from "https://esm.sh/d3@7";
 
 /** @param {{ model: DOMWidgetModel, el: HTMLElement }} context */
 function render({ model, el }) {
-	let selection = d3.select(el);
-	/* ... */
+  let selection = d3.select(el);
+  /* ... */
 }
 export default { render };
 ```
@@ -125,6 +124,7 @@ allowing real-time updates to your widget during development (below).
 > ```py
 > %env ANYWIDGET_HMR=1
 > ```
+>
 > or when launching a Jupyter session:
 >
 > ```sh
@@ -163,7 +163,8 @@ and publishing a package on PyPI.
   src="https://www.youtube.com/embed/oZhyilx3gqI?si=vFhviCebYi6FBuWN"
   title="YouTube video player"
   frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
   allowfullscreen
 ></iframe>
 

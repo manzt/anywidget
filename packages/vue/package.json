@@ -1,28 +1,28 @@
 {
-	"name": "@anywidget/vue",
-	"type": "module",
-	"version": "0.1.1",
-	"repository": "https://github.com/manzt/anywidget",
-	"description": "Vue utilities for anywidget",
-	"license": "MIT",
-	"main": "index.js",
-	"types": "dist/index.d.ts",
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./index.js"
-		}
-	},
-	"peerDependencies": {
-		"vue": "^3.5.27"
-	},
-	"devDependencies": {
-		"vue": "^3.5.27"
-	},
-	"dependencies": {
-		"@anywidget/types": "workspace:^"
-	}
+  "name": "@anywidget/vue",
+  "version": "0.1.1",
+  "description": "Vue utilities for anywidget",
+  "license": "MIT",
+  "repository": "https://github.com/manzt/anywidget",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "dependencies": {
+    "@anywidget/types": "workspace:^"
+  },
+  "devDependencies": {
+    "vue": "^3.5.27"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.27"
+  }
 }

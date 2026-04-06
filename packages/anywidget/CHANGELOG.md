@@ -307,7 +307,6 @@
   ```
 
   These methods introduce lifecycle hooks for widget developers:
-
   - `initialize`: is executed once in the lifetime of a widget. It has access to
     the only the `model` to setup non-view event handlers or state to share across
     views.

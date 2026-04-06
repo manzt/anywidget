@@ -6,7 +6,7 @@ import matter from "gray-matter";
  * @returns {err is import('astro').SSRError}
  */
 function isAstroSsrError(err) {
-	return err?.name === "YAMLException";
+  return err?.name === "YAMLException";
 }
 
 /**
@@ -15,26 +15,26 @@ function isAstroSsrError(err) {
  * @see https://github.com/withastro/astro/blob/c53b1fca073136e1e1a6f5d0b32d7c023e98c675/packages/integrations/mdx/src/utils.ts#L45-L63
  */
 export function parseFrontmatter(code, id) {
-	try {
-		return matter(code);
-	} catch (err) {
-		if (isAstroSsrError(err)) {
-			err.id = id;
-			err.loc = {
-				file: err.id,
-				line: err.mark.line + 1,
-				column: err.mark.column,
-			};
-			err.message = err.reason;
-			throw err;
-		}
-		throw err;
-	}
+  try {
+    return matter(code);
+  } catch (err) {
+    if (isAstroSsrError(err)) {
+      err.id = id;
+      err.loc = {
+        file: err.id,
+        line: err.mark.line + 1,
+        column: err.mark.column,
+      };
+      err.message = err.reason;
+      throw err;
+    }
+    throw err;
+  }
 }
 
 /** @param {string} path */
 function appendForwardSlash(path) {
-	return path.endsWith("/") ? path : `${path}/`;
+  return path.endsWith("/") ? path : `${path}/`;
 }
 
 /**
@@ -43,35 +43,33 @@ function appendForwardSlash(path) {
  * @returns {{ fileId: string, fileUrl: string}}
  */
 export function getFileInfo(id, config) {
-	const sitePathname = appendForwardSlash(
-		config.site ? new URL(config.base, config.site).pathname : config.base,
-	);
+  const sitePathname = appendForwardSlash(
+    config.site ? new URL(config.base, config.site).pathname : config.base,
+  );
 
-	// Try to grab the file's actual URL
-	/** @type {URL | undefined} */
-	let url;
-	try {
-		url = new URL(`file://${id}`);
-	} catch {}
+  // Try to grab the file's actual URL
+  /** @type {URL | undefined} */
+  let url;
+  try {
+    url = new URL(`file://${id}`);
+  } catch {}
 
-	const fileId = id.split("?")[0];
-	/** @type {string} */
-	let fileUrl;
-	const isPage = fileId.includes("/pages/");
-	if (isPage) {
-		fileUrl = fileId
-			.replace(/^.*?\/pages\//, sitePathname)
-			.replace(/(\/index)?\.mdx$/, "");
-	} else if (url?.pathname.startsWith(config.root.pathname)) {
-		fileUrl = url.pathname.slice(config.root.pathname.length);
-	} else {
-		fileUrl = fileId;
-	}
+  const fileId = id.split("?")[0];
+  /** @type {string} */
+  let fileUrl;
+  const isPage = fileId.includes("/pages/");
+  if (isPage) {
+    fileUrl = fileId.replace(/^.*?\/pages\//, sitePathname).replace(/(\/index)?\.mdx$/, "");
+  } else if (url?.pathname.startsWith(config.root.pathname)) {
+    fileUrl = url.pathname.slice(config.root.pathname.length);
+  } else {
+    fileUrl = fileId;
+  }
 
-	if (fileUrl && config.trailingSlash === "always") {
-		fileUrl = appendForwardSlash(fileUrl);
-	}
-	return { fileId, fileUrl };
+  if (fileUrl && config.trailingSlash === "always") {
+    fileUrl = appendForwardSlash(fileUrl);
+  }
+  return { fileId, fileUrl };
 }
 
 /**
@@ -87,17 +85,17 @@ export function getFileInfo(id, config) {
 // adapted from https://github.com/withastro/astro/blob/main/packages/astro/src/vite-plugin-markdown/index.ts
 /** @param {AstroComponentOptions} options */
 export function createAstroComponentString({
-	frontmatter = {},
-	fileId,
-	fileUrl,
-	raw,
-	headings,
-	html,
+  frontmatter = {},
+  fileId,
+  fileUrl,
+  raw,
+  headings,
+  html,
 }) {
-	let { layout } = frontmatter;
+  let { layout } = frontmatter;
 
-	// deno-fmt-ignore
-	return `
+  // deno-fmt-ignore
+  return `
 	import { Fragment, jsx as h } from 'astro/jsx-runtime';
 	${layout ? `import Layout from ${JSON.stringify(layout)};` : ""}
 	const html = ${JSON.stringify(html)};
@@ -121,8 +119,8 @@ export function createAstroComponentString({
 		content.astro = {};
 		const contentFragment = h(Fragment, { 'set:html': html });
 		return ${
-			layout
-				? `h(Layout, {
+      layout
+        ? `h(Layout, {
 			file,
 			url,
 			content,
@@ -133,8 +131,8 @@ export function createAstroComponentString({
 			'server:root': true,
 			children: contentFragment
 		})`
-				: `contentFragment`
-		};
+        : `contentFragment`
+    };
 	}
 	Content[Symbol.for('astro.needsHeadRendering')] = ${layout ? "false" : "true"};
 	export default Content;

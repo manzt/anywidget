@@ -5,18 +5,11 @@ import * as fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
-import {
-	createAstroComponentString,
-	getFileInfo,
-	parseFrontmatter,
-} from "./utils.mjs";
 
-let WIDGET_VIEW_MIMETYPE = /** @type {const} */ (
-	"application/vnd.jupyter.widget-view+json"
-);
-let WIDGET_STATE_MIMETYPE = /** @type {const} */ (
-	"application/vnd.jupyter.widget-state+json"
-);
+import { createAstroComponentString, getFileInfo, parseFrontmatter } from "./utils.mjs";
+
+let WIDGET_VIEW_MIMETYPE = /** @type {const} */ ("application/vnd.jupyter.widget-view+json");
+let WIDGET_STATE_MIMETYPE = /** @type {const} */ ("application/vnd.jupyter.widget-state+json");
 
 /**
  * @typedef CellOutput
@@ -69,16 +62,16 @@ let WIDGET_STATE_MIMETYPE = /** @type {const} */ (
  * @returns {Promise<JupyterNotebook>}
  */
 async function executeAndReadNotebookFromStdout(fileId) {
-	let file = fileURLToPath(new URL("./render.py", import.meta.url));
-	return new Promise((resolve, reject) => {
-		child_process.execFile(file, [fileId], (err, stdout) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(JSON.parse(stdout));
-			}
-		});
-	});
+  let file = fileURLToPath(new URL("./render.py", import.meta.url));
+  return new Promise((resolve, reject) => {
+    child_process.execFile(file, [fileId], (err, stdout) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(JSON.parse(stdout));
+      }
+    });
+  });
 }
 
 /**
@@ -87,22 +80,22 @@ async function executeAndReadNotebookFromStdout(fileId) {
  * @returns {Promise<JupyterNotebook>}
  */
 async function readNotebook(fileId, execute = false) {
-	if (execute) return executeAndReadNotebookFromStdout(fileId);
-	return fs.readFile(fileId, { encoding: "utf-8" }).then(JSON.parse);
+  if (execute) return executeAndReadNotebookFromStdout(fileId);
+  return fs.readFile(fileId, { encoding: "utf-8" }).then(JSON.parse);
 }
 
 /** @param {Cell | undefined} cell */
 function extractCellSource(cell) {
-	if (!cell) return "";
-	return Array.isArray(cell.source) ? cell.source.join("") : cell.source;
+  if (!cell) return "";
+  return Array.isArray(cell.source) ? cell.source.join("") : cell.source;
 }
 
 /** @param {Cell} cell */
 function extractMarkdownContent(cell) {
-	let source = extractCellSource(cell);
-	if (cell.cell_type === "markdown") return source;
-	if (cell.cell_type === "raw") return `\`\`\`\n${source}\n\`\`\`\n`;
-	return `\`\`\`python\n${source}\n\`\`\`\n`;
+  let source = extractCellSource(cell);
+  if (cell.cell_type === "markdown") return source;
+  if (cell.cell_type === "raw") return `\`\`\`\n${source}\n\`\`\`\n`;
+  return `\`\`\`python\n${source}\n\`\`\`\n`;
 }
 
 /**
@@ -110,12 +103,12 @@ function extractMarkdownContent(cell) {
  * @param {WidgetStateData | undefined} widgetState
  */
 function outputHtml(output, widgetState) {
-	let widgetStateIds = new Set(Object.keys(widgetState?.state ?? {}));
-	let widgetData = output.data[WIDGET_VIEW_MIMETYPE];
+  let widgetStateIds = new Set(Object.keys(widgetState?.state ?? {}));
+  let widgetData = output.data[WIDGET_VIEW_MIMETYPE];
 
-	if (widgetData && widgetStateIds.has(widgetData.model_id)) {
-		let uuid = crypto.randomUUID();
-		return `\
+  if (widgetData && widgetStateIds.has(widgetData.model_id)) {
+    let uuid = crypto.randomUUID();
+    return `\
 		<div id="${uuid}" class="jupyter-widgets jp-OutputArea-output jp-OutputArea-executeResult">
 			<script type="text/javascript">
 				var element = document.getElementById("${uuid}");
@@ -125,23 +118,23 @@ function outputHtml(output, widgetState) {
 			</script>
 		</div>
 		`;
-	}
+  }
 
-	if (output.data["text/plain"]) {
-		return `<pre>${output.data["text/plain"]}</pre>`;
-	}
+  if (output.data["text/plain"]) {
+    return `<pre>${output.data["text/plain"]}</pre>`;
+  }
 
-	return "";
+  return "";
 }
 
 /** @param {WidgetStateData} widgetState */
 function widgetClientHtml(widgetState) {
-	return `\
+  return `\
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 	<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>\n
 	<script type="application/vnd.jupyter.widget-state+json">${JSON.stringify(
-		widgetState,
-	)}</script>\n`;
+    widgetState,
+  )}</script>\n`;
 }
 
 /**
@@ -149,33 +142,33 @@ function widgetClientHtml(widgetState) {
  * @param {{ fileId: string, config: import('astro').AstroConfig, frontmatter: Record<string, any>, widgetState?: WidgetStateData }} options
  */
 async function renderCellsMarkdown(nb, options) {
-	let processor = await createMarkdownProcessor(options.config.markdown);
-	/** @param {string} content */
-	function _renderMarkdown(content) {
-		return processor.render(content, {
-			// fileURL: new URL(`file://${options.fileId}`),
-			// contentDir: new URL("./content/", options.config.srcDir),
-			frontmatter: options.frontmatter,
-		});
-	}
-	let raw = "";
-	let html = "";
-	let headings;
+  let processor = await createMarkdownProcessor(options.config.markdown);
+  /** @param {string} content */
+  function _renderMarkdown(content) {
+    return processor.render(content, {
+      // fileURL: new URL(`file://${options.fileId}`),
+      // contentDir: new URL("./content/", options.config.srcDir),
+      frontmatter: options.frontmatter,
+    });
+  }
+  let raw = "";
+  let html = "";
+  let headings;
 
-	for (let cell of nb.cells) {
-		let content = extractMarkdownContent(cell);
-		let renderResult = await _renderMarkdown(content);
-		if (!headings) headings = renderResult.metadata.headings;
-		raw += content;
-		html += renderResult.code;
+  for (let cell of nb.cells) {
+    let content = extractMarkdownContent(cell);
+    let renderResult = await _renderMarkdown(content);
+    if (!headings) headings = renderResult.metadata.headings;
+    raw += content;
+    html += renderResult.code;
 
-		if (cell.cell_type === "code") {
-			for (let output of cell.outputs) {
-				html += outputHtml(output, options.widgetState);
-			}
-		}
-	}
-	return { raw, html, headings };
+    if (cell.cell_type === "code") {
+      for (let output of cell.outputs) {
+        html += outputHtml(output, options.widgetState);
+      }
+    }
+  }
+  return { raw, html, headings };
 }
 
 /**
@@ -183,59 +176,59 @@ async function renderCellsMarkdown(nb, options) {
  * @returns {import('vite').Plugin}
  */
 function vitePlugin(options) {
-	return {
-		name: "ipynb",
-		enforce: "pre",
-		async transform(_, id) {
-			if (!id.endsWith(".ipynb")) return;
-			let { fileId, fileUrl } = getFileInfo(id, options.config);
+  return {
+    name: "ipynb",
+    enforce: "pre",
+    async transform(_, id) {
+      if (!id.endsWith(".ipynb")) return;
+      let { fileId, fileUrl } = getFileInfo(id, options.config);
 
-			let nb = await readNotebook(fileId, options.execute);
+      let nb = await readNotebook(fileId, options.execute);
 
-			let frontmatter = {};
+      let frontmatter = {};
 
-			if (nb.cells[0].cell_type === "raw") {
-				let rawSource = extractCellSource(nb.cells.shift());
-				frontmatter = parseFrontmatter(rawSource, id).data;
-			}
+      if (nb.cells[0].cell_type === "raw") {
+        let rawSource = extractCellSource(nb.cells.shift());
+        frontmatter = parseFrontmatter(rawSource, id).data;
+      }
 
-			let widgetState = nb.metadata?.widgets?.[WIDGET_STATE_MIMETYPE];
+      let widgetState = nb.metadata?.widgets?.[WIDGET_STATE_MIMETYPE];
 
-			let { raw, html, headings } = await renderCellsMarkdown(nb, {
-				fileId,
-				frontmatter,
-				widgetState,
-				config: options.config,
-			});
+      let { raw, html, headings } = await renderCellsMarkdown(nb, {
+        fileId,
+        frontmatter,
+        widgetState,
+        config: options.config,
+      });
 
-			if (widgetState) {
-				html = widgetClientHtml(widgetState) + html;
-			}
+      if (widgetState) {
+        html = widgetClientHtml(widgetState) + html;
+      }
 
-			return {
-				code: createAstroComponentString({
-					raw,
-					html,
-					headings,
-					frontmatter,
-					fileId,
-					fileUrl,
-				}),
-				meta: {
-					astro: {
-						hydratedComponents: [],
-						clientOnlyComponents: [],
-						scripts: [],
-						propagation: "none",
-						pageOptions: {},
-					},
-					vite: {
-						lang: "ts",
-					},
-				},
-			};
-		},
-	};
+      return {
+        code: createAstroComponentString({
+          raw,
+          html,
+          headings,
+          frontmatter,
+          fileId,
+          fileUrl,
+        }),
+        meta: {
+          astro: {
+            hydratedComponents: [],
+            clientOnlyComponents: [],
+            scripts: [],
+            propagation: "none",
+            pageOptions: {},
+          },
+          vite: {
+            lang: "ts",
+          },
+        },
+      };
+    },
+  };
 }
 
 /**
@@ -243,16 +236,16 @@ function vitePlugin(options) {
  * @return {import('astro').AstroIntegration}
  */
 export default function ipynb({ execute } = {}) {
-	return {
-		name: "ipynb",
-		hooks: {
-			"astro:config:setup": async (options) => {
-				// @ts-expect-error
-				options.addPageExtension(".ipynb");
-				options.updateConfig({
-					vite: { plugins: [vitePlugin({ execute, ...options })] },
-				});
-			},
-		},
-	};
+  return {
+    name: "ipynb",
+    hooks: {
+      "astro:config:setup": async (options) => {
+        // @ts-expect-error
+        options.addPageExtension(".ipynb");
+        options.updateConfig({
+          vite: { plugins: [vitePlugin({ execute, ...options })] },
+        });
+      },
+    },
+  };
 }

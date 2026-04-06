@@ -51,9 +51,7 @@ export default defineConfig({
   output: {
     dir: "./dist/",
   },
-  plugins: [
-    svelte({ compilerOptions: { runes: true } }),
-  ],
+  plugins: [svelte({ compilerOptions: { runes: true } })],
 });
 ```
 

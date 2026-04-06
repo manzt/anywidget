@@ -1,33 +1,33 @@
 {
-	"name": "@anywidget/deno",
-	"version": "DO NOT VERSION EDIT DIRECTLY. Set by changesets in package.json",
-	"license": "MIT",
-	"exports": {
-		".": "./src/mod.ts",
-		"./install": "./src/install.ts",
-		"./uninstall": "./src/uninstall.ts"
-	},
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": ["prefer-const"]
-		}
-	},
-	"compilerOptions": {
-		"lib": ["deno.window", "deno.unstable"]
-	},
-	"imports": {
-		"@std/cli": "jsr:@std/cli@^0.220.1",
-		"@std/expect": "jsr:@std/expect@^1.0.13",
-		"@std/fs": "jsr:@std/fs@0.220.1",
-		"@std/path": "jsr:@std/path@0.220.1",
-		"@std/testing": "jsr:@std/testing@^1.0.9",
-		"unzipit": "npm:unzipit@1.4",
-		"zod": "npm:zod@3.9"
-	},
-	"publish": {
-		"exclude": ["npm.README.md"]
-	}
+  "name": "@anywidget/deno",
+  "version": "DO NOT VERSION EDIT DIRECTLY. Set by changesets in package.json",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/mod.ts",
+    "./install": "./src/install.ts",
+    "./uninstall": "./src/uninstall.ts"
+  },
+  "fmt": {
+    "useTabs": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["prefer-const"]
+    }
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"]
+  },
+  "imports": {
+    "@std/cli": "jsr:@std/cli@^0.220.1",
+    "@std/expect": "jsr:@std/expect@^1.0.13",
+    "@std/fs": "jsr:@std/fs@0.220.1",
+    "@std/path": "jsr:@std/path@0.220.1",
+    "@std/testing": "jsr:@std/testing@^1.0.9",
+    "unzipit": "npm:unzipit@1.4",
+    "zod": "npm:zod@3.9"
+  },
+  "publish": {
+    "exclude": ["npm.README.md"]
+  }
 }
