@@ -17,7 +17,7 @@
     "@rspack/core": "^1.7.3",
     "@svitejs/changesets-changelog-github-compact": "^1.2.0",
     "@typescript/native-preview": "7.0.0-dev.20260406.1",
-    "@vitest/browser": "^3.2.4",
+    "@vitest/browser-playwright": "^4.1.2",
     "esbuild": "^0.28.0",
     "oxfmt": "^0.43.0",
     "oxlint": "^1.58.0",
@@ -25,7 +25,7 @@
     "playwright": "^1.58.0",
     "publint": "^0.3.17",
     "typescript": "^6.0.2",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.2"
   },
   "packageManager": "pnpm@9.10.0"
 }
