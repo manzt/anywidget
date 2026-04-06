@@ -1,4 +1,5 @@
 import { KNOWN_LANGUAGE_CODES, KNOWN_LANGUAGES } from "./consts";
+
 export { KNOWN_LANGUAGE_CODES, KNOWN_LANGUAGES };
 
 export const langPathRegex = /\/([a-z]{2}-?[A-Z]{0,2})\//;
