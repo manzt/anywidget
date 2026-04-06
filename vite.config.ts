@@ -1,7 +1,26 @@
-import { playwright } from "@vitest/browser-playwright";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite-plus";
+import { playwright } from "vite-plus/test/browser-playwright";
 
 export default defineConfig({
+  fmt: {
+    experimentalSortImports: {},
+  },
+  lint: {
+    plugins: ["typescript", "import"],
+    ignorePatterns: ["packages/deno", "packages/signals"],
+    categories: {
+      correctness: "error",
+      suspicious: "error",
+    },
+    rules: {
+      "import/no-unassigned-import": [
+        "error",
+        { allow: ["**/*.css", "**/*.scss", "@docsearch/css"] },
+      ],
+      "no-shadow": "off",
+    },
+    options: { typeAware: true, typeCheck: true },
+  },
   test: {
     projects: [
       {

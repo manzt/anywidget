@@ -1,5 +1,5 @@
 // @ts-check
-import { beforeAll, describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vite-plus/test";
 
 import { gather_files } from "../create.js";
 

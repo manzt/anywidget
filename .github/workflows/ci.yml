@@ -51,9 +51,9 @@ jobs:
           - "3.14"
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          run_install: true
+          cache: true
       - uses: astral-sh/setup-uv@v7
       - name: Run tests
         run: uv run pytest ./tests --color=yes
@@ -65,19 +65,19 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          run_install: true
-      - run: pnpm check
+          cache: true
+      - run: vp check
 
   TestJavaScript:
     name: JavaScript / Test
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          run_install: true
+          cache: true
       - run: |
-          pnpm exec playwright install 
-          pnpm vitest --run
+          vp dlx playwright install
+          vp test

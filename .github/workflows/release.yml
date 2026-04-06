@@ -23,13 +23,12 @@ jobs:
       issues: read
     steps:
       - uses: actions/checkout@v6
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
       - uses: actions/setup-node@v6
         with:
           registry-url: https://registry.npmjs.org/
-      - run: npm install -g npm@latest
-      - uses: pnpm/action-setup@v5
-        with:
-          run_install: true
       - uses: astral-sh/setup-uv@v7
       - name: Create Release Pull Request or Publish
         id: changesets

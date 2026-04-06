@@ -30,7 +30,7 @@
     "sharp": "^0.33.4",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "vite": "catalog:"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

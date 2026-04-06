@@ -6,9 +6,9 @@
     "clean": "rm -rf dist anywidget/nbextension/index.js anywidget/labextension && pnpm -r exec rm -rf dist",
     "version": "changeset version",
     "release": "pnpm build:packages && uv build && changeset publish && uvx twine upload --skip-existing dist/*",
-    "test": "vitest",
-    "fix": "oxfmt --write . && oxlint --fix",
-    "check": "oxlint --type-aware --type-check && oxfmt --check .",
+    "test": "vp test",
+    "fix": "vp check --fix",
+    "check": "vp check",
     "publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
   },
   "devDependencies": {
@@ -17,15 +17,12 @@
     "@rspack/core": "^1.7.3",
     "@svitejs/changesets-changelog-github-compact": "^1.2.0",
     "@typescript/native-preview": "7.0.0-dev.20260406.1",
-    "@vitest/browser-playwright": "^4.1.2",
     "esbuild": "^0.28.0",
-    "oxfmt": "^0.43.0",
-    "oxlint": "^1.58.0",
-    "oxlint-tsgolint": "^0.20.0",
     "playwright": "^1.58.0",
     "publint": "^0.3.17",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
   },
   "packageManager": "pnpm@9.10.0"
 }

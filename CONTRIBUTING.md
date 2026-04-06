@@ -3,17 +3,16 @@
 ## Preparing
 
 This is a monorepo, meaning the repo holds multiple packages. Since the project
-contains both JavaScript and Python components, it requires dual package
-managers:
+contains both JavaScript and Python components, it requires:
 
-- [pnpm](https://pnpm.io) for JavaScript
+- [vp](https://github.com/nicolo-ribaudo/vite-plus) for JavaScript (linting, formatting, testing, and package management)
 - [uv](https://github.com/astral-sh/uv) for Python
 
-You can [install pnpm](https://pnpm.io/installation) and
+You can [install vp](https://github.com/nicolo-ribaudo/vite-plus) and
 [install uv](https://github.com/astral-sh/uv) with:
 
 ```bash
-npm i -g pnpm
+npx vp@latest # or see vp docs for global install
 curl -LsSf https://astral.sh/uv/install.sh | sh # for Linux and macOS, see link for Windows
 ```
 
@@ -69,7 +68,7 @@ uv run jupyter labextension develop --overwrite anywidget
 > **Note** If you make changes to the Python code, you'll need to restart the
 > Jupyter kernel and re-execute the cells to see the changes. If you modify the
 > JavaScript widget code (`packages/anywidget/src/*`), you will need to rebuild
-> the JavaScript using `pnpm build`.
+> the JavaScript using `vp run build`.
 
 ## Sending PRs
 
@@ -84,14 +83,19 @@ There are a few guidelines we follow:
 Commands to know:
 
 ```sh
-uv run ruff check # linting
+# JavaScript
+vp check      # linting, formatting, and typechecking
+vp check --fix # auto-fix issues
+
+# Python
+uv run ruff check  # linting
 uv run ruff format # formatting
-uv run ty check # typechecking
+uv run ty check    # typechecking
 ```
 
 ### Generating changelogs
 
-For changes to be reflected in package changelogs, run `npx changeset` and
+For changes to be reflected in package changelogs, run `vp dlx changeset` and
 follow the prompts.
 
 > **Note** not every PR requires a changeset. Since changesets are focused on
