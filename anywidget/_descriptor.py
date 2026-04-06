@@ -380,7 +380,10 @@ class ReprMimeBundle:
         state, buffer_paths, buffers = remove_buffers(state)
         if getattr(self._comm, "kernel", None):
             msg = {"method": "update", "state": state, "buffer_paths": buffer_paths}
-            self._comm.send(data=msg, buffers=buffers)  # type: ignore[arg-type]
+            self._comm.send(
+                data=msg,
+                buffers=buffers,  # ty:ignore[invalid-argument-type]
+            )
 
     def _handle_msg(self, msg: CommMessage) -> None:
         """Called when a msg is received from the front-end.
@@ -454,7 +457,7 @@ class ReprMimeBundle:
         """
         if js_to_py:
             # connect changes in the view to the instance
-            self._comm.on_msg(self._handle_msg)  # type: ignore[arg-type]
+            self._comm.on_msg(self._handle_msg)  # ty:ignore[invalid-argument-type]
             self.send_state()
 
         if py_to_js and self._autodetect_observer:
@@ -727,7 +730,7 @@ def _get_pydantic_state_v1(
     state : dict
         A dictionary copy of state from the pydantic BaseModel
     """
-    return json.loads(obj.json(include=include))
+    return json.loads(obj.json(include=include))  # ty:ignore[deprecated]
 
 
 def _get_pydantic_state_v2(
@@ -753,4 +756,4 @@ def _get_msgspec_state(obj: msgspec.Struct, include: set[str] | None) -> Seriali
 
     # TODO(manzt): comm expects a dict. ideally we could serialize with msgspec
     # https://github.com/manzt/anywidget/pull/64#discussion_r1128986939
-    return cast(dict, msgspec.to_builtins(obj))
+    return cast("dict", msgspec.to_builtins(obj))

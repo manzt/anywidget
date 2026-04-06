@@ -33,10 +33,10 @@ dev = [
   "comm>=0.1.4",
   "jupyterlab>=4.2.4",
   "msgspec>=0.18.6",
-  "mypy>=1.11.1",
   "pydantic>=2.5.3",
   "pytest>=7.4.4",
   "ruff>=0.6.1",
+  "ty>=0.0.29",
   "watchfiles>=0.23.0",
 ]
 
@@ -88,28 +88,6 @@ build_cmd = "build"
 path = "packages/anywidget/package.json"
 pattern = "\"version\": \"(?P<version>.+?)\""
 
-# https://mypy.readthedocs.io/en/stable/config_file.html
-[tool.mypy]
-files = "anywidget/**/*.py"
-strict = true
-# this one is cumbersome, and not always that useful
-disallow_any_generics = false
-enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
-warn_unreachable = true
-
-[[tool.mypy.overrides]]
-module = "anywidget.widget"  # makes heavy use of traitlets, which is not typed
-disallow_untyped_calls = false
-
-[[tool.mypy.overrides]]
-module = "anywidget._cellmagic"  # makes heavy use of IPython, which is not typed
-disallow_untyped_calls = false
-
-[[tool.mypy.overrides]]
-# this might be missing in pre-commit, but they aren't typed anyway
-module = ["ipywidgets", "traitlets.*", "comm", "IPython.*"]
-ignore_missing_imports = true
-
 # https://docs.pytest.org/en/latest/customize.html
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -127,7 +105,6 @@ addopts = ["-ra", "--strict-markers", "--strict-config"]
 
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
-line-length = 88
 src = ["anywidget", "tests"]
 exclude = ["packages", "docs"]
 

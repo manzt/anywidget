@@ -86,7 +86,7 @@ Commands to know:
 ```sh
 uv run ruff check # linting
 uv run ruff format # formatting
-uv run mypy # typechecking
+uv run ty check # typechecking
 ```
 
 ### Generating changelogs

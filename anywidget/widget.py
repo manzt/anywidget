@@ -60,7 +60,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
 
         self.add_traits(**anywidget_traits)
         super().__init__(*args, **kwargs)
-        _register_anywidget_commands(self)
+        _register_anywidget_commands(self)  # ty:ignore[invalid-argument-type]
 
     def __init_subclass__(cls, **kwargs: dict) -> None:
         """Coerces _esm and _css to FileContents if they are files."""

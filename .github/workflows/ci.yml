@@ -36,7 +36,7 @@ jobs:
       - run: |
           sed -i '' 's/\[tool.hatch.build.hooks.\(.*\)\]/\[_tool.hatch.build.hooks.\1\]/' pyproject.toml
       - uses: astral-sh/setup-uv@v7
-      - run: uv run mypy
+      - run: uv run ty check
 
   TestPython:
     name: Python / Test

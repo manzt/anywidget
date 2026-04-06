@@ -346,6 +346,7 @@ def test_supresses_error_in_constructor() -> None:
 
 def test_repr_uses_object_repr_by_default() -> None:
     """Test that __repr__ uses object.__repr__ to avoid expensive ipywidgets repr."""
+
     class Widget(anywidget.AnyWidget):
         # Create a large data trait that would be expensive to repr
         data = t.List([1, 2, 3, 4, 5] * 1000).tag(sync=True)
@@ -365,6 +366,7 @@ def test_repr_uses_object_repr_by_default() -> None:
 
 def test_repr_respects_custom_repr() -> None:
     """Test that custom __repr__ methods are respected."""
+
     class Widget(anywidget.AnyWidget):
         value = t.Int(42).tag(sync=True)
 
@@ -377,6 +379,7 @@ def test_repr_respects_custom_repr() -> None:
 
 def test_repr_mimebundle_uses_repr() -> None:
     """Test that _repr_mimebundle_ uses __repr__ for text/plain."""
+
     class Widget(anywidget.AnyWidget):
         def __repr__(self) -> str:
             return "MyCustomRepr"

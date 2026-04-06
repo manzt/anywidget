@@ -60,7 +60,7 @@ def _send_value(comm: Comm, value: int) -> int:
 
 def _assert_sends_update(wdg: AnywidgetProtocol, comm: MagicMock, expect: int) -> None:
     # test that the comm sends update messages
-    wdg._repr_mimebundle_.send_state({"value"})
+    wdg._repr_mimebundle_.send_state({"value"})  # ty:ignore[unresolved-attribute]
     comm.send.assert_called_with(
         data={"method": "update", "state": {"value": expect}, "buffer_paths": []},
         buffers=[],
@@ -95,7 +95,7 @@ def test_descriptor(mock_comm: MagicMock) -> None:
     assert len(bundle[1]) == 0
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, val)
+    _assert_sends_update(foo, mock_comm, val)  # ty:ignore[invalid-argument-type]
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
@@ -262,7 +262,7 @@ def test_descriptor_with_pydantic(mock_comm: MagicMock) -> None:
     foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, val)
+    _assert_sends_update(foo, mock_comm, val)  # ty:ignore[invalid-argument-type]
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
@@ -287,7 +287,7 @@ def test_descriptor_with_msgspec(mock_comm: MagicMock) -> None:
     foo._repr_mimebundle_  # create the comm
 
     # test that the comm sends update messages
-    _assert_sends_update(foo, mock_comm, val)
+    _assert_sends_update(foo, mock_comm, val)  # ty:ignore[invalid-argument-type]
 
     # test that the object responds to incoming messages
     assert _send_value(mock_comm, 3) == foo.value
@@ -388,7 +388,7 @@ def test_explicit_file_contents(tmp_path: pathlib.Path) -> None:
 
     file_contents = Foo._repr_mimebundle_._extra_state["bar"]
     assert file_contents == bar
-    assert file_contents._background_thread is None
+    assert file_contents._background_thread is None  # ty:ignore[unresolved-attribute]
 
     foo = Foo()
     assert foo._repr_mimebundle_._extra_state["bar"] == path.read_text()
