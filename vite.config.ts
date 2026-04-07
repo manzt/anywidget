@@ -4,6 +4,7 @@ import { playwright } from "vite-plus/test/browser-playwright";
 export default defineConfig({
   fmt: {
     experimentalSortImports: {},
+    ignorePatterns: ["CHANGELOG.md"],
   },
   lint: {
     plugins: ["typescript", "import"],
