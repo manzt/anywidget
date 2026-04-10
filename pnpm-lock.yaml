@@ -10,7 +10,7 @@ catalogs:
       specifier: ^25.5.2
       version: 25.5.2
     '@types/react':
-      specifier: ^19.2.9
+      specifier: ^19.2.14
       version: 19.2.14
     '@types/react-dom':
       specifier: ^19.2.3
@@ -19,8 +19,8 @@ catalogs:
       specifier: ^0.28.0
       version: 0.28.0
     react:
-      specifier: ^19.2.4
-      version: 19.2.4
+      specifier: ^19.2.5
+      version: 19.2.5
     react-dom:
       specifier: ^19.2.4
       version: 19.2.4
@@ -168,10 +168,10 @@ importers:
     devDependencies:
       '@jupyter-widgets/base':
         specifier: ^6
-        version: 6.0.11(react@19.2.4)
+        version: 6.0.11(react@19.2.5)
       '@jupyter-widgets/base-manager':
         specifier: ^1.0.12
-        version: 1.0.12(react@19.2.4)
+        version: 1.0.12(react@19.2.5)
 
   packages/create-anywidget:
     dependencies:
@@ -205,10 +205,10 @@ importers:
         version: 0.28.0
       react:
         specifier: 'catalog:'
-        version: 19.2.4
+        version: 19.2.5
       react-dom:
         specifier: 'catalog:'
-        version: 19.2.4(react@19.2.4)
+        version: 19.2.4(react@19.2.5)
       typescript:
         specifier: 'catalog:'
         version: 6.0.2
@@ -229,10 +229,10 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       react:
         specifier: 'catalog:'
-        version: 19.2.4
+        version: 19.2.5
       react-dom:
         specifier: 'catalog:'
-        version: 19.2.4(react@19.2.4)
+        version: 19.2.4(react@19.2.5)
 
   packages/signals: {}
 
@@ -4419,8 +4419,8 @@ packages:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
 
-  react@19.2.4:
-    resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+  react@19.2.5:
+    resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
     engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
@@ -6502,10 +6502,10 @@ snapshots:
       '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
       tslib: 2.8.1
 
-  '@jupyter-widgets/base-manager@1.0.12(react@19.2.4)':
+  '@jupyter-widgets/base-manager@1.0.12(react@19.2.5)':
     dependencies:
-      '@jupyter-widgets/base': 6.0.11(react@19.2.4)
-      '@jupyterlab/services': 7.4.0(react@19.2.4)
+      '@jupyter-widgets/base': 6.0.11(react@19.2.5)
+      '@jupyterlab/services': 7.4.0(react@19.2.5)
       '@lumino/coreutils': 2.2.1
       base64-js: 1.5.1
       sanitize-html: 2.16.0
@@ -6514,9 +6514,9 @@ snapshots:
       - react
       - utf-8-validate
 
-  '@jupyter-widgets/base@6.0.11(react@19.2.4)':
+  '@jupyter-widgets/base@6.0.11(react@19.2.5)':
     dependencies:
-      '@jupyterlab/services': 7.4.0(react@19.2.4)
+      '@jupyterlab/services': 7.4.0(react@19.2.5)
       '@lumino/coreutils': 2.2.1
       '@lumino/messaging': 2.0.3
       '@lumino/widgets': 2.7.0
@@ -6552,12 +6552,12 @@ snapshots:
     dependencies:
       '@lumino/coreutils': 2.2.1
 
-  '@jupyterlab/services@7.4.0(react@19.2.4)':
+  '@jupyterlab/services@7.4.0(react@19.2.5)':
     dependencies:
       '@jupyter/ydoc': 3.0.3
       '@jupyterlab/coreutils': 6.4.0
       '@jupyterlab/nbformat': 4.4.0
-      '@jupyterlab/settingregistry': 4.4.0(react@19.2.4)
+      '@jupyterlab/settingregistry': 4.4.0(react@19.2.5)
       '@jupyterlab/statedb': 4.4.0
       '@lumino/coreutils': 2.2.1
       '@lumino/disposable': 2.1.4
@@ -6570,7 +6570,7 @@ snapshots:
       - react
       - utf-8-validate
 
-  '@jupyterlab/settingregistry@4.4.0(react@19.2.4)':
+  '@jupyterlab/settingregistry@4.4.0(react@19.2.5)':
     dependencies:
       '@jupyterlab/nbformat': 4.4.0
       '@jupyterlab/statedb': 4.4.0
@@ -6578,10 +6578,10 @@ snapshots:
       '@lumino/coreutils': 2.2.1
       '@lumino/disposable': 2.1.4
       '@lumino/signaling': 2.1.4
-      '@rjsf/utils': 5.24.8(react@19.2.4)
+      '@rjsf/utils': 5.24.8(react@19.2.5)
       ajv: 8.17.1
       json5: 2.2.3
-      react: 19.2.4
+      react: 19.2.5
 
   '@jupyterlab/statedb@4.4.0':
     dependencies:
@@ -6950,13 +6950,13 @@ snapshots:
 
   '@publint/pack@0.1.4': {}
 
-  '@rjsf/utils@5.24.8(react@19.2.4)':
+  '@rjsf/utils@5.24.8(react@19.2.5)':
     dependencies:
       json-schema-merge-allof: 0.8.1
       jsonpointer: 5.0.1
       lodash: 4.17.21
       lodash-es: 4.17.21
-      react: 19.2.4
+      react: 19.2.5
       react-is: 18.3.1
 
   '@rollup/pluginutils@4.2.1':
@@ -9967,9 +9967,9 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@19.2.4(react@19.2.4):
+  react-dom@19.2.4(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
       scheduler: 0.27.0
 
   react-is@18.3.1: {}
@@ -9980,7 +9980,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  react@19.2.4: {}
+  react@19.2.5: {}
 
   read-cache@1.0.0:
     dependencies:
