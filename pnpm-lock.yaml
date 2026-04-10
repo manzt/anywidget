@@ -57,7 +57,7 @@ importers:
         specifier: 7.0.0-dev.20260410.1
         version: 7.0.0-dev.20260410.1
       esbuild:
-        specifier: 'catalog:'
+        specifier: ^0.28.0
         version: 0.28.0
       playwright:
         specifier: ^1.58.0
