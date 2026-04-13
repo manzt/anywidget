@@ -5,10 +5,10 @@
 This is a monorepo, meaning the repo holds multiple packages. Since the project
 contains both JavaScript and Python components, it requires:
 
-- [vp](https://github.com/nicolo-ribaudo/vite-plus) for JavaScript (linting, formatting, testing, and package management)
+- [vp](https://github.com/voidzero-dev/vite-plus) for JavaScript (linting, formatting, testing, and package management)
 - [uv](https://github.com/astral-sh/uv) for Python
 
-You can [install vp](https://github.com/nicolo-ribaudo/vite-plus) and
+You can [install vp](https://github.com/voidzero-dev/vite-plus) and
 [install uv](https://github.com/astral-sh/uv) with:
 
 ```bash
