@@ -1,7 +1,7 @@
 // @ts-check
 import { beforeAll, describe, expect, test } from "vite-plus/test";
 
-import { gather_files } from "../create.js";
+import { gatherFiles } from "../create.js";
 
 describe("create-anywidget", () => {
   test.each(
@@ -13,9 +13,9 @@ describe("create-anywidget", () => {
       "template-react-ts",
     ]),
   )(`%s`, async (template) => {
-    const files = await gather_files(template, {
+    const files = await gatherFiles(template, {
       name: "ipyfoo",
-      pkg_manager: "npm",
+      pkgManager: "npm",
     });
     expect(files).toMatchSnapshot();
   });
@@ -39,9 +39,9 @@ describe("create-anywidget (Bun)", () => {
       "template-react-ts",
     ]),
   )(`%s`, async (template) => {
-    const files = await gather_files(template, {
+    const files = await gatherFiles(template, {
       name: "ipyfoo",
-      pkg_manager: "bun",
+      pkgManager: "bun",
     });
     expect(files).toMatchSnapshot();
   });

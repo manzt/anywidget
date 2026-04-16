@@ -2,24 +2,24 @@ import { expect } from "@std/expect";
 import * as mock from "@std/testing/mock";
 
 import { _internals, widget } from "./src/mod.ts";
-import { remove_buffers } from "./src/utilities.ts";
+import { removeBuffers } from "./src/utilities.ts";
 
 Deno.test("widget() initializes the front end", async () => {
-  let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
+  let jupyterBroadcast = mock.spy(_internals, "jupyterBroadcast");
   try {
     let model = widget({
       state: { value: 0 },
       imports: "BLAH",
       render: async ({ model: _model, el: _el }) => {},
     });
-    let init_promise = _internals.get_init_promise(model);
-    await init_promise;
-    mock.assertSpyCalls(jupyter_broadcast, 2);
-    mock.assertSpyCall(jupyter_broadcast, 0, {
+    let initPromise = _internals.getInitPromise(model);
+    await initPromise;
+    mock.assertSpyCalls(jupyterBroadcast, 2);
+    mock.assertSpyCall(jupyterBroadcast, 0, {
       args: [
         "comm_open",
         {
-          comm_id: _internals.get_comm(model).id,
+          comm_id: _internals.getComm(model).id,
           target_name: "jupyter.widget",
           data: {
             state: {
@@ -38,11 +38,11 @@ Deno.test("widget() initializes the front end", async () => {
         },
       ],
     });
-    mock.assertSpyCall(jupyter_broadcast, 1, {
+    mock.assertSpyCall(jupyterBroadcast, 1, {
       args: [
         "comm_msg",
         {
-          comm_id: _internals.get_comm(model).id,
+          comm_id: _internals.getComm(model).id,
           data: {
             buffer_paths: [],
             method: "update",
@@ -58,24 +58,24 @@ Deno.test("widget() initializes the front end", async () => {
       ],
     });
   } finally {
-    jupyter_broadcast.restore();
+    jupyterBroadcast.restore();
   }
 });
 
 Deno.test("model.set() sends change events to the front end", async () => {
-  let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
+  let jupyterBroadcast = mock.spy(_internals, "jupyterBroadcast");
   try {
     let model = widget({
       state: { value: 0 },
       render: async ({ model: _model, el: _el }) => {},
     });
-    await _internals.get_init_promise(model);
+    await _internals.getInitPromise(model);
     model.set("value", 1);
-    mock.assertSpyCall(jupyter_broadcast, 2, {
+    mock.assertSpyCall(jupyterBroadcast, 2, {
       args: [
         "comm_msg",
         {
-          comm_id: _internals.get_comm(model).id,
+          comm_id: _internals.getComm(model).id,
           data: { buffer_paths: [], method: "update", state: { value: 1 } },
         },
         {
@@ -84,23 +84,23 @@ Deno.test("model.set() sends change events to the front end", async () => {
       ],
     });
   } finally {
-    jupyter_broadcast.restore();
+    jupyterBroadcast.restore();
   }
 });
 
 Deno.test("Explicit anywidget version overrides the default", () => {
-  let jupyter_broadcast = mock.spy(_internals, "jupyter_broadcast");
+  let jupyterBroadcast = mock.spy(_internals, "jupyterBroadcast");
   let version = "VERSION";
   let model = widget({
     state: { value: 0 },
     render: async () => {},
     version: version,
   });
-  mock.assertSpyCall(jupyter_broadcast, 0, {
+  mock.assertSpyCall(jupyterBroadcast, 0, {
     args: [
       "comm_open",
       {
-        comm_id: _internals.get_comm(model).id,
+        comm_id: _internals.getComm(model).id,
         target_name: "jupyter.widget",
         data: {
           state: {
@@ -121,8 +121,8 @@ Deno.test("Explicit anywidget version overrides the default", () => {
   });
 });
 
-Deno.test("remove_buffers extracts buffers from message", () => {
-  let result = remove_buffers({
+Deno.test("removeBuffers extracts buffers from message", () => {
+  let result = removeBuffers({
     a: new Uint8Array([1, 2, 3]),
     b: "string",
     c: new Uint8Array([4, 5, 6]),
@@ -143,6 +143,6 @@ Deno.test("remove_buffers extracts buffers from message", () => {
       },
     },
     buffers: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
-    buffer_paths: [["a"], ["c"]],
+    bufferPaths: [["a"], ["c"]],
   });
 });

@@ -7,12 +7,12 @@ import snakecase from "just-snake-case";
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /** @param {any} obj */
-function json_dumps(obj) {
+function jsonDumps(obj) {
   return JSON.stringify(obj, null, "\t");
 }
 
 /** @param {string} path */
-async function read_json(path) {
+async function readJson(path) {
   return fs.readFile(path, "utf-8").then(JSON.parse);
 }
 
@@ -20,22 +20,22 @@ async function read_json(path) {
  * pnpm will help us keep package versions in sync over time, along with dependabot,
  * so we lookup the version from `package.json` to use for those in our templates.
  *
- * @param {{ dependencies: string[], dev_dependencies: string[]}} template
+ * @param {{ dependencies: string[], devDependencies: string[]}} template
  */
-async function get_dependency_versions(template) {
-  let rook_pkg = await read_json(path.join(__dirname, "package.json"));
-  let lookup = rook_pkg.devDependencies;
+async function getDependencyVersions(template) {
+  let rootPkg = await readJson(path.join(__dirname, "package.json"));
+  let lookup = rootPkg.devDependencies;
 
   // The "workspace:" is not published to npm, so if present, we are working locally.
   if (Object.values(lookup).some((v) => /^workspace:/.test(String(v)))) {
-    let overrides = await gather_workspace_overrides();
+    let overrides = await gatherWorkspaceOverrides();
     for (let name of Object.keys(lookup)) {
       lookup[name] = overrides[name] ?? lookup[name];
     }
   }
 
   /** @param {string[]} deps */
-  function create_pkg_entry(deps) {
+  function createPkgEntry(deps) {
     /** @type {Record<string, string>} */
     let entry = {};
     for (let dep of deps) {
@@ -48,25 +48,25 @@ async function get_dependency_versions(template) {
     return entry;
   }
   return {
-    dependencies: create_pkg_entry(template.dependencies),
-    devDependencies: create_pkg_entry(template.dev_dependencies),
+    dependencies: createPkgEntry(template.dependencies),
+    devDependencies: createPkgEntry(template.devDependencies),
   };
 }
 
 /** @returns {Promise<Record<string, string>>} */
-async function gather_workspace_overrides() {
+async function gatherWorkspaceOverrides() {
   let dirs = await fs.readdir(path.join(__dirname, ".."));
   let entries = dirs
     .filter((dir) => dir !== "create-anywidget")
     .map(async (dir) => {
-      let pkg = await read_json(path.join(__dirname, "..", dir, "package.json"));
+      let pkg = await readJson(path.join(__dirname, "..", dir, "package.json"));
       return [pkg.name, `~${pkg.version}`];
     });
   return Promise.all(entries).then(Object.fromEntries);
 }
 
 /** @param {string} name */
-let pyproject_toml = (name) =>
+let pyprojectToml = (name) =>
   `\
 [build-system]
 requires = ["hatchling"]
@@ -94,8 +94,8 @@ dev = ["watchfiles", "jupyterlab"]
  * @param {string} name
  * @param {string} npm
  */
-let pyproject_toml_with_hatch_jupyter_builder = (name, npm) =>
-  `${pyproject_toml(name)}\n
+let pyprojectTomlWithHatchJupyterBuilder = (name, npm) =>
+  `${pyprojectToml(name)}\n
 [tool.hatch.build]
 only-packages = true
 artifacts = ["src/${name}/static/*"]
@@ -218,7 +218,7 @@ in the notebook.
 
 /** @param {string} name */
 let notebook = (name) =>
-  json_dumps({
+  jsonDumps({
     cells: [
       {
         cell_type: "code",
@@ -273,7 +273,7 @@ let styles = (name) =>
 `;
 
 /** @param {string} name */
-let widget_react_ts = (name) =>
+let widgetReactTs = (name) =>
   `\
 import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
@@ -294,7 +294,7 @@ export default { render };
 `;
 
 /** @param {string} name */
-let widget_react = (name) =>
+let widgetReact = (name) =>
   `\
 import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
@@ -315,7 +315,7 @@ export default { render };
 `;
 
 /** @param {string} name */
-let widget_vanilla = (name) =>
+let widgetVanilla = (name) =>
   `\
 import "./widget.css";
 
@@ -337,7 +337,7 @@ export default { render };
 `;
 
 /** @param {string} name */
-let widget_vanilla_ts = (name) =>
+let widgetVanillaTs = (name) =>
   `\
 import type { RenderProps } from "@anywidget/types";
 import "./widget.css";
@@ -365,12 +365,12 @@ function render({ model, el }: RenderProps<WidgetModel>) {
 export default { render };
 `;
 
-function css_declaration() {
+function cssDeclaration() {
   return `declare module "*.css";\n`;
 }
 
-function get_tsconfig() {
-  return json_dumps({
+function getTsconfig() {
+  return jsonDumps({
     include: ["js"],
     compilerOptions: {
       target: "ES2020",
@@ -395,72 +395,72 @@ function get_tsconfig() {
   });
 }
 
-/** @type {Record<string, { entry_point: string, files: { path: string, render: (name: string) => string }[], dependencies: string[], dev_dependencies: string[] }>} */
-const bundled_templates = {
+/** @type {Record<string, { entryPoint: string, files: { path: string, render: (name: string) => string }[], dependencies: string[], devDependencies: string[] }>} */
+const bundledTemplates = {
   "template-react": {
-    entry_point: "js/widget.jsx",
+    entryPoint: "js/widget.jsx",
     files: [
-      { path: "js/widget.jsx", render: widget_react },
+      { path: "js/widget.jsx", render: widgetReact },
       { path: "js/widget.css", render: styles },
     ],
     dependencies: ["@anywidget/react", "react", "react-dom"],
-    dev_dependencies: [],
+    devDependencies: [],
   },
   "template-react-ts": {
-    entry_point: "js/widget.tsx",
+    entryPoint: "js/widget.tsx",
     files: [
-      { path: "js/widget.tsx", render: widget_react_ts },
+      { path: "js/widget.tsx", render: widgetReactTs },
       { path: "js/widget.css", render: styles },
-      { path: "js/css.d.ts", render: css_declaration },
-      { path: "tsconfig.json", render: get_tsconfig },
+      { path: "js/css.d.ts", render: cssDeclaration },
+      { path: "tsconfig.json", render: getTsconfig },
     ],
     dependencies: ["@anywidget/react", "react", "react-dom"],
-    dev_dependencies: ["@types/react", "@types/react-dom", "typescript"],
+    devDependencies: ["@types/react", "@types/react-dom", "typescript"],
   },
   "template-vanilla": {
-    entry_point: "js/widget.js",
+    entryPoint: "js/widget.js",
     files: [
-      { path: "js/widget.js", render: widget_vanilla },
+      { path: "js/widget.js", render: widgetVanilla },
       { path: "js/widget.css", render: styles },
     ],
     dependencies: [],
-    dev_dependencies: [],
+    devDependencies: [],
   },
   "template-vanilla-ts": {
-    entry_point: "js/widget.ts",
+    entryPoint: "js/widget.ts",
     files: [
-      { path: "js/widget.ts", render: widget_vanilla_ts },
+      { path: "js/widget.ts", render: widgetVanillaTs },
       { path: "js/widget.css", render: styles },
-      { path: "js/css.d.ts", render: css_declaration },
-      { path: "tsconfig.json", render: get_tsconfig },
+      { path: "js/css.d.ts", render: cssDeclaration },
+      { path: "tsconfig.json", render: getTsconfig },
     ],
     dependencies: [],
-    dev_dependencies: ["@anywidget/types", "typescript"],
+    devDependencies: ["@anywidget/types", "typescript"],
   },
 };
 
 /**
- * @param {(typeof bundled_templates)[keyof typeof bundled_templates]} template
- * @param {{ build_dir: string, typecheck: boolean, pkg_manager: string }} options
+ * @param {(typeof bundledTemplates)[keyof typeof bundledTemplates]} template
+ * @param {{ buildDir: string, typecheck: boolean, pkgManager: string }} options
  */
-async function generate_package_json(template, { build_dir, typecheck, pkg_manager }) {
+async function generatePackageJson(template, { buildDir, typecheck, pkgManager }) {
   /** @type {Record<string, string>} */
   let scripts = {
     dev: "npm run build -- --sourcemap=inline --watch",
   };
 
   /** @type {string[]} */
-  let dev_extra = [];
-  if (pkg_manager === "bun") {
-    scripts.build = `bun build ${template.entry_point} --minify --format=esm --outdir=${build_dir} --asset-naming=[name].[ext]`;
+  let devExtra = [];
+  if (pkgManager === "bun") {
+    scripts.build = `bun build ${template.entryPoint} --minify --format=esm --outdir=${buildDir} --asset-naming=[name].[ext]`;
   } else {
-    scripts.build = `esbuild ${template.entry_point} --minify --format=esm --bundle --outdir=${build_dir}`;
-    dev_extra.push("esbuild");
+    scripts.build = `esbuild ${template.entryPoint} --minify --format=esm --bundle --outdir=${buildDir}`;
+    devExtra.push("esbuild");
   }
 
-  let { dependencies, devDependencies } = await get_dependency_versions({
+  let { dependencies, devDependencies } = await getDependencyVersions({
     dependencies: template.dependencies,
-    dev_dependencies: [...template.dev_dependencies, ...dev_extra],
+    devDependencies: [...template.devDependencies, ...devExtra],
   });
 
   if (typecheck) {
@@ -470,16 +470,16 @@ async function generate_package_json(template, { build_dir, typecheck, pkg_manag
 }
 
 /**
- * @param {(typeof bundled_templates)[keyof typeof bundled_templates]} template
- * @param {{ name: string, pkg_manager: string }} options
+ * @param {(typeof bundledTemplates)[keyof typeof bundledTemplates]} template
+ * @param {{ name: string, pkgManager: string }} options
  */
-async function render_template(template, { name, pkg_manager }) {
-  let build_dir = `src/${name}/static`;
+async function renderTemplate(template, { name, pkgManager }) {
+  let buildDir = `src/${name}/static`;
   let tsconfig = template.files.find((file) => file.path.includes("tsconfig.json"));
-  let package_json = await generate_package_json(template, {
-    build_dir,
+  let packageJson = await generatePackageJson(template, {
+    buildDir,
     typecheck: !!tsconfig,
-    pkg_manager,
+    pkgManager,
   });
   let files = template.files.map((file) => ({
     path: file.path,
@@ -490,17 +490,17 @@ async function render_template(template, { name, pkg_manager }) {
     { path: `example.ipynb`, content: notebook(name) },
 
     { path: `.gitignore`, content: gitignore([`src/${name}/static`]) },
-    { path: `package.json`, content: json_dumps(package_json) },
+    { path: `package.json`, content: jsonDumps(packageJson) },
     {
       path: `pyproject.toml`,
-      content: pyproject_toml_with_hatch_jupyter_builder(name, pkg_manager),
+      content: pyprojectTomlWithHatchJupyterBuilder(name, pkgManager),
     },
     { path: `src/${name}/__init__.py`, content: __init__(name) },
     ...files,
   ];
 }
 
-let deno_json = {
+let denoJson = {
   lock: false,
   compilerOptions: {
     checkJs: true,
@@ -516,7 +516,7 @@ let deno_json = {
 };
 
 /** @param {string} name */
-let widget_esm = (name) =>
+let widgetEsm = (name) =>
   `\
 import confetti from "https://esm.sh/canvas-confetti@1";
 
@@ -543,39 +543,39 @@ export default { render };
 
 /**
  * @param {TemplateType} type
- * @param {{ name: string, pkg_manager: string }} options
+ * @param {{ name: string, pkgManager: string }} options
  */
-export async function gather_files(type, { name, pkg_manager }) {
+export async function gatherFiles(type, { name, pkgManager }) {
   if (type === "template-vanilla-deno-jsdoc") {
     return [
       { path: `README.md`, content: readme(name, type) },
       { path: `example.ipynb`, content: notebook(name) },
-      { path: `pyproject.toml`, content: pyproject_toml(name) },
-      { path: `deno.json`, content: json_dumps(deno_json) },
+      { path: `pyproject.toml`, content: pyprojectToml(name) },
+      { path: `deno.json`, content: jsonDumps(denoJson) },
       { path: `.gitignore`, content: gitignore() },
       { path: `src/${name}/__init__.py`, content: __init__(name) },
-      { path: `src/${name}/static/widget.js`, content: widget_esm(name) },
+      { path: `src/${name}/static/widget.js`, content: widgetEsm(name) },
       { path: `src/${name}/static/widget.css`, content: styles(name) },
     ];
   }
-  if (type in bundled_templates) {
-    return render_template(bundled_templates[type], { name, pkg_manager });
+  if (type in bundledTemplates) {
+    return renderTemplate(bundledTemplates[type], { name, pkgManager });
   }
   throw new Error(`Unknown template type: ${String(type)}`);
 }
 
 /** @typedef {{ content: string, path: string }} File */
-// oxlint-disable-next-line typescript-eslint/no-redundant-type-constituents -- template-vanilla-deno-jsdoc is not in bundled_templates
-/** @typedef {keyof typeof bundled_templates | "template-vanilla-deno-jsdoc"} TemplateType */
+// oxlint-disable-next-line typescript-eslint/no-redundant-type-constituents -- template-vanilla-deno-jsdoc is not in bundledTemplates
+/** @typedef {keyof typeof bundledTemplates | "template-vanilla-deno-jsdoc"} TemplateType */
 
 /**
  * @param {string} target
- * @param {{ name: string, template: TemplateType, pkg_manager: string }} options
+ * @param {{ name: string, template: TemplateType, pkgManager: string }} options
  */
 export async function create(target, options) {
-  const files = await gather_files(options.template, {
+  const files = await gatherFiles(options.template, {
     name: snakecase(options.name),
-    pkg_manager: options.pkg_manager,
+    pkgManager: options.pkgManager,
   });
   const promises = files.map(async (file) => {
     let location = path.resolve(target, file.path);

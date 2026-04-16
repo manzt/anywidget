@@ -3,34 +3,34 @@ import * as baseManager from "@jupyter-widgets/base-manager";
 import { afterEach, expect, it } from "vitest";
 import { page, userEvent } from "vitest/browser";
 
-import create_anywidget from "../src/widget.js";
+import createAnywidget from "../src/widget.js";
 
-let anywidget = create_anywidget(widgets);
-let num_comms = 0;
+let anywidget = createAnywidget(widgets);
+let numComms = 0;
 
 class MockComm implements widgets.IClassicComm {
-  comm_id = `mock-${num_comms++}`;
+  comm_id = `mock-${numComms++}`;
   target_name = "dummy";
-  #on_open: ((x?: unknown) => void) | null = null;
-  #on_close: ((x?: unknown) => void) | null = null;
+  #onOpen: ((x?: unknown) => void) | null = null;
+  #onClose: ((x?: unknown) => void) | null = null;
 
   on_open(fn: () => void): void {
-    this.#on_open = fn;
+    this.#onOpen = fn;
   }
 
   on_close(fn: (x: unknown) => void): void {
-    this.#on_close = fn;
+    this.#onClose = fn;
   }
 
   on_msg(): void {}
 
   open(): string {
-    this.#on_open?.();
+    this.#onOpen?.();
     return "";
   }
 
   close(): string {
-    this.#on_close?.();
+    this.#onClose?.();
     return "";
   }
 
@@ -84,13 +84,13 @@ export default { render };
 `;
 
 async function createWidget(options: {
-  widget_manager: Manager;
+  widgetManager: Manager;
   esm: string;
   css?: string;
   state?: Record<string, unknown>;
 }): Promise<InstanceType<typeof anywidget.AnyModel>> {
-  let { widget_manager, esm, css, state = {} } = options;
-  let model_options = {
+  let { widgetManager, esm, css, state = {} } = options;
+  let modelOptions = {
     model_name: "AnyModel",
     model_module: "anywidget",
     model_module_version: "0.1.0",
@@ -98,18 +98,18 @@ async function createWidget(options: {
     view_module: "anywidget",
     view_module_version: "0.1.0",
   } as const;
-  let model = await widget_manager.new_widget(
+  let model = await widgetManager.new_widget(
     {
-      ...model_options,
+      ...modelOptions,
       model_id: widgets.uuid(),
     },
     {
-      _model_name: model_options.model_name,
-      _model_module: model_options.model_module,
-      _model_module_version: model_options.model_module_version,
-      _view_name: model_options.view_name,
-      _view_module: model_options.view_module,
-      _view_module_version: model_options.view_module_version,
+      _model_name: modelOptions.model_name,
+      _model_module: modelOptions.model_module,
+      _model_module_version: modelOptions.model_module_version,
+      _view_name: modelOptions.view_name,
+      _view_module: modelOptions.view_module,
+      _view_module_version: modelOptions.view_module_version,
       _esm: esm,
       _anywidget_id: "anywidget-test",
       ...(css ? { _css: css } : {}),
@@ -125,9 +125,9 @@ afterEach(() => {
 });
 
 it("creates an anywidget", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: _esm,
   });
   expect(model).toBeInstanceOf(anywidget.AnyModel);
@@ -136,7 +136,7 @@ it("creates an anywidget", async () => {
 });
 
 it("renders view", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let esm = `\
 function render({ model, el }) {
 	el.innerText = "Hello, world";
@@ -144,16 +144,16 @@ function render({ model, el }) {
 export default { render };
 	`;
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: esm,
   });
-  let view = await widget_manager.create_view(model);
+  let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("Hello, world")).toBeInTheDocument();
 });
 
 it("renders view with styles", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let esm = `\
 function render({ model, el }) {
 	el.classList.add("basic-test");
@@ -167,11 +167,11 @@ export default { render };
 }
 `;
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: esm,
     css: css,
   });
-  let view = await widget_manager.create_view(model);
+  let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("Hello, world")).toBeInTheDocument();
   expect(
@@ -180,7 +180,7 @@ export default { render };
 });
 
 it("updates view on model changes", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let esm = `\
 function render({ model, el }) {
 	let button = document.createElement("button");
@@ -197,11 +197,11 @@ function render({ model, el }) {
 export default { render };
 `;
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: esm,
     state: { value: 0 },
   });
-  let view = await widget_manager.create_view(model);
+  let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("count is 0")).toBeInTheDocument();
   model.set("value", 10);
@@ -212,7 +212,7 @@ export default { render };
 });
 
 it("performs HMR update for _esm", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let esm = `\
 function render({ model, el }) {
 	el.innerText = "hello. " + model.get("value");
@@ -223,11 +223,11 @@ function render({ model, el }) {
 export default { render };
 `;
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: esm,
     state: { value: 0 },
   });
-  let view = await widget_manager.create_view(model);
+  let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("hello. 0")).toBeInTheDocument();
   model.set("value", 10);
@@ -245,7 +245,7 @@ export default { render };
 });
 
 it("performs HMR update for _css", async () => {
-  let widget_manager = new Manager();
+  let widgetManager = new Manager();
   let esm = `\
 function render({ model, el }) {
 	el.classList.add("anywidget-hmr-test")
@@ -254,11 +254,11 @@ function render({ model, el }) {
 export default { render };
 `;
   let model = await createWidget({
-    widget_manager,
+    widgetManager,
     esm: esm,
     css: `.anywidget-hmr-test { background-color: lightgreen }`,
   });
-  let view = await widget_manager.create_view(model);
+  let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("hi")).toBeInTheDocument();
   expect(

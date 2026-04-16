@@ -86,7 +86,7 @@ export default function ({
     async render(): Promise<void> {
       let runtime = RUNTIMES.get(this.model);
       assert(runtime, "[anywidget] Runtime not found.");
-      await runtime.create_view(this, { signal: this.#controller.signal });
+      await runtime.createView(this, { signal: this.#controller.signal });
     }
     remove(): void {
       this.#controller.abort("[anywidget] View destroyed.");

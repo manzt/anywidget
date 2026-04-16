@@ -13,7 +13,7 @@ function assert(condition: unknown, message: string): asserts condition {
  *
  * Looks for a python executable in the PATH, and uses the directory.
  */
-async function guess_sys_prefix(): Promise<string | undefined> {
+async function guessSysPrefix(): Promise<string | undefined> {
   let dirs = (Deno.env.get("PATH") ?? "").split(":");
   let pathext = Deno.build.os === "windows" ? (Deno.env.get("PATHEXT") ?? "").split(";") : [""];
   for (let dir of dirs) {
@@ -37,7 +37,7 @@ async function guess_sys_prefix(): Promise<string | undefined> {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-export function user_data_dir(): string {
+export function userDataDir(): string {
   if (Deno.build.os === "windows") {
     let appdata = Deno.env.get("APPDATA");
     assert(appdata, "APPDATA environment variable not set");
@@ -58,7 +58,7 @@ export function user_data_dir(): string {
  *
  * @ref https://test-jupyter.readthedocs.io/en/rtd-theme/projects/system.html#data-files
  */
-export function system_data_dirs(): Array<string> {
+export function systemDataDirs(): Array<string> {
   if (Deno.build.os === "windows") {
     let programdata = Deno.env.get("PROGRAMDATA");
     assert(programdata, "PROGRAMDATA environment variable not set");
@@ -77,19 +77,19 @@ export function system_data_dirs(): Array<string> {
  * 2. Otherwise, use the user data directory.
  * 3. Otherwise, use the system data directory.
  */
-export async function find_data_dir(): Promise<string> {
-  let sys_prefix = await guess_sys_prefix();
-  if (sys_prefix) {
-    return path.resolve(sys_prefix, "share", "jupyter");
+export async function findDataDir(): Promise<string> {
+  let sysPrefix = await guessSysPrefix();
+  if (sysPrefix) {
+    return path.resolve(sysPrefix, "share", "jupyter");
   }
-  let user_dir = user_data_dir();
+  let userDir = userDataDir();
   try {
-    let stat = await Deno.stat(user_dir);
+    let stat = await Deno.stat(userDir);
     if (stat.isDirectory) {
-      return user_dir;
+      return userDir;
     }
   } catch {
     // Fine, we'll use the system data directory.
   }
-  return system_data_dirs()[0];
+  return systemDataDirs()[0];
 }

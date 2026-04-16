@@ -31,7 +31,7 @@ let p = new Proxy(_p, {
 });
 
 // https://github.com/withastro/astro/blob/fca6892f8d6a30ceb1e04213be2414dd4cb4d389/packages/create-astro/src/actions/context.ts#L110-L115
-function detect_package_manager() {
+function detectPackageManager() {
   // @ts-expect-error
   if (typeof Bun !== "undefined") return "bun";
   if (!process.env.npm_config_user_agent) return;
@@ -98,8 +98,8 @@ if (p.isCancel(framework)) {
   process.exit(1);
 }
 
-let pkg_manager = detect_package_manager() ?? "npm";
-let bundler = pkg_manager === "bun" ? "bun" : "esbuild";
+let pkgManager = detectPackageManager() ?? "npm";
+let bundler = pkgManager === "bun" ? "bun" : "esbuild";
 
 /** @type {string | symbol} */
 let template = await p.select({
@@ -144,7 +144,7 @@ if (p.isCancel(template)) {
 await create(cwd, {
   name: path.basename(path.resolve(cwd)),
   template,
-  pkg_manager,
+  pkgManager,
 }).catch((err) => {
   console.error("Error writing files:", err);
   process.exit(1);
@@ -161,7 +161,7 @@ if (relative !== "") {
 }
 
 if (template !== "template-vanilla-deno-jsdoc") {
-  console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} install`))}`);
+  console.log(`  ${i++}: ${bold(cyan(`${pkgManager} install`))}`);
 }
 
 console.log(
@@ -169,7 +169,7 @@ console.log(
 );
 
 if (template !== "template-vanilla-deno-jsdoc") {
-  console.log(`  ${i++}: ${bold(cyan(`${pkg_manager} run dev`))}`);
+  console.log(`  ${i++}: ${bold(cyan(`${pkgManager} run dev`))}`);
   console.log(`\nTo close the dev server, hit ${bold(cyan("Ctrl-C"))}`);
 }
 

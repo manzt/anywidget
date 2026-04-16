@@ -3,13 +3,13 @@
  * @module
  */
 
-import { remove_buffers } from "./utilities.ts";
+import { removeBuffers } from "./utilities.ts";
 
 let COMMS = new WeakMap<object, Comm>();
 // TODO: We need to get this version from somewhere. Needs to match packages/anywidget/package.json#version
 const ANYWIDGET_SEMVER_VERSION: string = "~0.9.*";
 
-let jupyter_broadcast: Broadcast = (() => {
+let jupyterBroadcast: Broadcast = (() => {
   try {
     return Deno.jupyter.broadcast;
   } catch {
@@ -17,7 +17,7 @@ let jupyter_broadcast: Broadcast = (() => {
   }
 })();
 
-let init_promise_symbol = Symbol("init_promise");
+let INIT_PROMISE_SYMBOL = Symbol("init_promise");
 
 type Broadcast = (typeof Deno)["jupyter"]["broadcast"];
 
@@ -37,28 +37,28 @@ type Mimebundle = {
  */
 interface TestingInternals {
   /** Broadcast a message to the front end. Stubbed in testing. */
-  jupyter_broadcast: Broadcast;
+  jupyterBroadcast: Broadcast;
   /** Get the comm for a model */
-  get_comm(model: object): Comm;
+  getComm(model: object): Comm;
   /** Get the init promise for a model */
-  get_init_promise(model: Model<unknown>): Promise<void> | undefined;
+  getInitPromise(model: Model<unknown>): Promise<void> | undefined;
   /** The version of anywidget used. */
   version: string;
 }
 
 /** @private */
 export const _internals: TestingInternals = {
-  jupyter_broadcast,
-  get_comm(model: object): Comm {
+  jupyterBroadcast,
+  getComm(model: object): Comm {
     let comm = COMMS.get(model);
     if (!comm) {
       throw new Error("No comm found for model");
     }
     return comm;
   },
-  get_init_promise(model: Model<unknown>): Promise<void> | undefined {
+  getInitPromise(model: Model<unknown>): Promise<void> | undefined {
     // @ts-expect-error - We have tagged this symbol onto the model privately
-    return model[init_promise_symbol];
+    return model[INIT_PROMISE_SYMBOL];
   },
   get version() {
     return ANYWIDGET_SEMVER_VERSION;
@@ -67,15 +67,15 @@ export const _internals: TestingInternals = {
 
 class Comm {
   #id: string;
-  #anywidget_version: string;
-  #protocol_version_major: number;
-  #protocol_version_minor: number;
+  #anywidgetVersion: string;
+  #protocolVersionMajor: number;
+  #protocolVersionMinor: number;
 
-  constructor({ anywidget_version }: { anywidget_version?: string }) {
+  constructor({ anywidgetVersion }: { anywidgetVersion?: string }) {
     this.#id = crypto.randomUUID();
-    this.#anywidget_version = anywidget_version ?? ANYWIDGET_SEMVER_VERSION;
-    this.#protocol_version_major = 2;
-    this.#protocol_version_minor = 1;
+    this.#anywidgetVersion = anywidgetVersion ?? ANYWIDGET_SEMVER_VERSION;
+    this.#protocolVersionMajor = 2;
+    this.#protocolVersionMinor = 1;
   }
 
   /** The id of the comm. */
@@ -85,8 +85,8 @@ class Comm {
 
   /** Send a message to the front end to initialize the widget. */
   init(data: Record<string, unknown> = {}): Promise<void> {
-    let { state, buffers, buffer_paths } = remove_buffers(data);
-    return _internals.jupyter_broadcast(
+    let { state, buffers, bufferPaths } = removeBuffers(data);
+    return _internals.jupyterBroadcast(
       "comm_open",
       {
         comm_id: this.id,
@@ -95,36 +95,36 @@ class Comm {
           state: {
             _model_module: "anywidget",
             _model_name: "AnyModel",
-            _model_module_version: this.#anywidget_version,
+            _model_module_version: this.#anywidgetVersion,
             _view_module: "anywidget",
             _view_name: "AnyView",
-            _view_module_version: this.#anywidget_version,
+            _view_module_version: this.#anywidgetVersion,
             _view_count: null,
             ...state,
           },
-          buffer_paths: buffer_paths,
+          buffer_paths: bufferPaths,
         },
       },
       {
         buffers: buffers,
         metadata: {
-          version: `${this.#protocol_version_major}.${this.#protocol_version_minor}.0`,
+          version: `${this.#protocolVersionMajor}.${this.#protocolVersionMinor}.0`,
         },
       },
     );
   }
 
   /** Send a state update to the front end. */
-  send_state(data: Record<string, unknown>): Promise<void> {
-    let { state, buffers, buffer_paths } = remove_buffers(data);
-    return _internals.jupyter_broadcast(
+  sendState(data: Record<string, unknown>): Promise<void> {
+    let { state, buffers, bufferPaths } = removeBuffers(data);
+    return _internals.jupyterBroadcast(
       "comm_msg",
       {
         comm_id: this.id,
         data: {
           method: "update",
           state: state,
-          buffer_paths: buffer_paths,
+          buffer_paths: bufferPaths,
         },
       },
       {
@@ -137,8 +137,8 @@ class Comm {
   mimebundle(): Mimebundle {
     return {
       "application/vnd.jupyter.widget-view+json": {
-        version_major: this.#protocol_version_major,
-        version_minor: this.#protocol_version_minor,
+        version_major: this.#protocolVersionMajor,
+        version_minor: this.#protocolVersionMinor,
         model_id: this.id,
       },
     };
@@ -206,7 +206,7 @@ type HTMLElement = typeof globalThis extends {
   : unknown;
 
 // TODO: more robust serialization of render function (with context?)
-function to_esm<State>({ imports = "", render }: Pick<WidgetOptions<State>, "imports" | "render">) {
+function toEsm<State>({ imports = "", render }: Pick<WidgetOptions<State>, "imports" | "render">) {
   return `${imports}\nexport default { render: ${render.toString()} }`;
 }
 
@@ -256,23 +256,23 @@ export interface WidgetOptions<State> {
  */
 export function widget<State>(options: WidgetOptions<State>): Model<State> {
   let { state, render, imports, version } = options;
-  let comm = new Comm({ anywidget_version: version });
-  let init_promise = comm.init({ ...state, _esm: to_esm({ imports, render }) });
+  let comm = new Comm({ anywidgetVersion: version });
+  let initPromise = comm.init({ ...state, _esm: toEsm({ imports, render }) });
   let model = new Model(state);
   for (let key in state) {
     // @ts-expect-error - TS can't infer this is correctly keyof ChangeEvents<State>
     model.on(`change:${key}`, () => {
-      comm.send_state({ [key]: model.get(key) });
+      comm.sendState({ [key]: model.get(key) });
     });
   }
   let obj = new Proxy(model, {
     get(target, prop, receiver) {
-      if (prop === init_promise_symbol) {
-        return init_promise;
+      if (prop === INIT_PROMISE_SYMBOL) {
+        return initPromise;
       }
       if (prop === Symbol.for("Jupyter.display")) {
         return async () => {
-          await init_promise;
+          await initPromise;
           return comm.mimebundle();
         };
       }
