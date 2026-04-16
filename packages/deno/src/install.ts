@@ -15,7 +15,7 @@ import * as path from "@std/path";
 import * as unzipit from "unzipit";
 import * as z from "zod";
 
-import { find_data_dir, system_data_dirs, user_data_dir } from "./jupyter_paths.ts";
+import { findDataDir, systemDataDirs, userDataDir } from "./jupyter-paths.ts";
 
 let ReleaseSchema = z.object({
   packagetype: z.string(),
@@ -28,13 +28,13 @@ let PackageSchema = z.object({
   urls: z.array(ReleaseSchema),
 });
 
-async function fetch_package_info(name: string) {
+async function fetchPackageInfo(name: string) {
   let response = await fetch(`https://pypi.org/pypi/${name}/json`);
   let json = await response.json();
   return PackageSchema.parse(json);
 }
 
-async function fetch_wheel(
+async function fetchWheel(
   info: z.infer<typeof PackageSchema>,
   version?: string,
 ): Promise<{ version: string; wheel: unzipit.ZipInfo }> {
@@ -54,27 +54,27 @@ async function fetch_wheel(
   };
 }
 
-function extract_data_files(zip: unzipit.ZipInfo): Promise<[string, Uint8Array][]> {
-  let data_prefix = /^.*\.data\/data\/share\/jupyter\//;
+function extractDataFiles(zip: unzipit.ZipInfo): Promise<[string, Uint8Array][]> {
+  let dataPrefix = /^.*\.data\/data\/share\/jupyter\//;
   return Promise.all(
     Object.entries(zip.entries)
-      .filter(([name]) => data_prefix.test(name))
+      .filter(([name]) => dataPrefix.test(name))
       .map(async ([name, reader]) => {
-        return [name.replace(data_prefix, ""), new Uint8Array(await reader.arrayBuffer())];
+        return [name.replace(dataPrefix, ""), new Uint8Array(await reader.arrayBuffer())];
       }),
   );
 }
 
-async function write_files(files: [string, Uint8Array][], out_dir: string) {
-  for (let [data_file_path, bytes] of files) {
-    let file_path = path.resolve(out_dir, data_file_path);
-    await fs.ensureFile(file_path);
-    await Deno.writeFile(file_path, bytes);
+async function writeFiles(files: [string, Uint8Array][], outDir: string) {
+  for (let [dataFilePath, bytes] of files) {
+    let filePath = path.resolve(outDir, dataFilePath);
+    await fs.ensureFile(filePath);
+    await Deno.writeFile(filePath, bytes);
   }
 }
 
-async function has_jupyter_widgets() {
-  for (let dir of [out_dir, user_data_dir(), ...system_data_dirs()]) {
+async function hasJupyterWidgets() {
+  for (let dir of [outDir, userDataDir(), ...systemDataDirs()]) {
     let contains = await Deno.stat(path.resolve(dir, "@jupyter-widgets"))
       .then((stat) => stat.isDirectory)
       .catch(() => false);
@@ -86,17 +86,17 @@ async function has_jupyter_widgets() {
 }
 
 let args = cli.parseArgs(Deno.args);
-let out_dir = await find_data_dir();
+let outDir = await findDataDir();
 
 {
-  let info = await fetch_package_info("anywidget");
-  let { version, wheel } = await fetch_wheel(info, args.version);
-  let data_files = await extract_data_files(wheel);
-  await write_files(data_files, out_dir);
-  console.log(`✅ Installed anywidget ${version} in ${out_dir}`);
+  let info = await fetchPackageInfo("anywidget");
+  let { version, wheel } = await fetchWheel(info, args.version);
+  let dataFiles = await extractDataFiles(wheel);
+  await writeFiles(dataFiles, outDir);
+  console.log(`✅ Installed anywidget ${version} in ${outDir}`);
 }
 
-if (!(await has_jupyter_widgets())) {
+if (!(await hasJupyterWidgets())) {
   /**
    * NB: The anywidget front-end code relies on @jupyter-widgets/base,
    * which is supplied by the _python_ `jupyterlab_widgets` package.
@@ -111,9 +111,9 @@ if (!(await has_jupyter_widgets())) {
    * For now, we get that latest data files from `jupyterlab_widgets`
    * if `@jupyter-widgets` is not present in any of the Jupyter data dirs.
    */
-  let info = await fetch_package_info("jupyterlab_widgets");
-  let { version, wheel } = await fetch_wheel(info);
-  let data_files = await extract_data_files(wheel);
-  await write_files(data_files, out_dir);
-  console.log(`✅ Installed jupyterlab_widgets ${version} in ${out_dir}`);
+  let info = await fetchPackageInfo("jupyterlab_widgets");
+  let { version, wheel } = await fetchWheel(info);
+  let dataFiles = await extractDataFiles(wheel);
+  await writeFiles(dataFiles, outDir);
+  console.log(`✅ Installed jupyterlab_widgets ${version} in ${outDir}`);
 }

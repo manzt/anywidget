@@ -8,7 +8,9 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "checkJs": true
+    "checkJs": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true
   },
   "files": [],
   "references": [

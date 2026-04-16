@@ -1,6 +1,6 @@
-import { describe, expectTypeOf, it } from "vite-plus/test";
+import { describe, expectTypeOf, it } from "vitest";
 
-import type { AnyModel, AnyWidget, Host } from "./index.js";
+import type { AnyModel, AnyWidget, Host } from "./index.ts";
 
 declare let model: AnyModel;
 declare let typedModel: AnyModel<{ value: number; name: string }>;

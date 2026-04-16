@@ -1,6 +1,6 @@
 import * as base from "@jupyter-widgets/base";
 
-import create from "./widget.js";
+import create from "./widget.ts";
 
 /**
  * @typedef JupyterLabRegistry

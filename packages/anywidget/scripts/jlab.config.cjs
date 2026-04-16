@@ -18,6 +18,14 @@ module.exports = {
     filename: "[name].[contenthash:8].js",
     path: path.resolve(out, "static"),
   },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        loader: "builtin:swc-loader",
+      },
+    ],
+  },
   plugins: [
     new rspack.DefinePlugin({
       "globalThis.VERSION": JSON.stringify(pkg.version),
