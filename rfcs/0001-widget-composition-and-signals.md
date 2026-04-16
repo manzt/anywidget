@@ -11,9 +11,9 @@ Three additions to the AFM specification:
 
 1. **`signal`** — `AbortSignal` for lifecycle cleanup in `initialize` and `render`.
 2. **Widget exports** — `initialize` MAY return an object that becomes the widget's public interface for composition.
-3. **`experimental.getWidget`** — resolve a child widget by trait name, get its exports and `render`.
+3. **`host`** — a new prop on `render` with `getWidget(ref)` and `getModel(ref)` to resolve a child widget (its exports and `render`) or its underlying model.
 
-Python side: any object that adheres to the **anywidget protocol** (`MimeBundleDescriptor`) or extends `anywidget.AnyWidget` is automatically serializable as a widget reference. No wrapper type needed.
+Python side: any object that adheres to the **anywidget protocol** (`MimeBundleDescriptor`) or extends `anywidget.AnyWidget` is automatically serializable as a widget reference. A `WidgetTrait` traitlet validates anywidget-compatible values, and `anywidget.Widget` is exported as a type alias for annotations.
 
 All changes are backward compatible.
 
@@ -59,7 +59,7 @@ export default {
 };
 ```
 
-When both a return callback and `signal` are present, the host MUST invoke the return callback first, then abort the signal.
+When both a return callback and `signal` are present, the host MUST wire the return callback to run as part of the signal's `abort` event — i.e., signal abort triggers the cleanup callback.
 
 ### 2. `initialize` MAY return exports
 
@@ -104,57 +104,51 @@ The host distinguishes these via `typeof ret === "function"`. Widgets that do no
 
 ### 3. Widget references (Python)
 
-Any object that implements the anywidget protocol (has a `MimeBundleDescriptor` at `_repr_mimebundle_`) or extends `anywidget.AnyWidget` can be used directly as a widget reference. The serialization layer auto-detects these objects in top-level state values and produces the appropriate wire format. This mirrors how `remove_buffers` already auto-detects binary types (`bytes`, `memoryview`) without explicit declaration.
+Any object that implements the anywidget protocol (has a `MimeBundleDescriptor` at `_repr_mimebundle_`) or extends `anywidget.AnyWidget` (which exposes `model_id`) can be used directly as a widget reference. The serialization layer auto-detects these objects when building the state payload and replaces them with a ref string. This mirrors how `remove_buffers` already auto-detects binary types (`bytes`, `memoryview`) without explicit declaration.
 
-Detection is top-level only — the serializer does not recurse into nested structures. Nested and list-valued slots are deferred to a future RFC.
+Detection recurses into nested dicts, lists, and tuples so that widgets can live anywhere in the state tree.
 
 ```python
+import anywidget
+
 class Dashboard(anywidget.AnyWidget):
     _esm = "dashboard.js"
-    # traitlets — just use Instance(AnyWidget)
-    header = traitlets.Instance(anywidget.AnyWidget).tag(sync=True)
+    # WidgetTrait validates that the value is anywidget-compatible
+    header = anywidget.WidgetTrait().tag(sync=True)
 
 # dataclass / pydantic / msgspec — just use the type annotation
 @dataclass
 class Dashboard:
     _repr_mimebundle_ = anywidget.MimeBundleDescriptor(...)
-    header: anywidget.AnyWidget | None = None
+    header: anywidget.Widget | None = None
 ```
 
-For type-checking purposes, `anywidget.Slot` MAY be used as a type alias for "any object adhering to the anywidget protocol." It has no runtime behavior — it is purely for annotation:
+`anywidget.WidgetTrait` is a traitlet that accepts any anywidget-compatible object (or `None` by default). `anywidget.Widget` is exported as a type alias (the `AnywidgetProtocol`) for type annotations — it has no runtime effect beyond typing.
 
-```python
-from anywidget import Slot
-
-@dataclass
-class Dashboard:
-    _repr_mimebundle_ = anywidget.MimeBundleDescriptor(...)
-    header: Slot | None = None  # accepts any anywidget-compatible object
-```
-
-**Wire format** — widget references are separated from regular state into a dedicated `_anywidget_slots_` key. They travel in the same `update` messages as all other state, so existing broadcast infrastructure handles them. Slot keys MUST NOT appear in the top-level state — they exist only inside `_anywidget_slots_`:
+**Wire format** — widget references are serialized as plain strings of the form `"anywidget:<model_id>"` and embedded directly in the state at the position the object occupied. No separate bucket, no reserved key:
 
 ```json
 {
   "state": {
     "value": 42,
-    "_anywidget_slots_": {
-      "header": "<comm_id>",
-      "sidebar": "<comm_id>"
-    }
+    "header": "anywidget:aaa...",
+    "layout": { "left": "anywidget:bbb...", "right": null }
   }
 }
 ```
 
-`_anywidget_slots_` is a reserved key. `model.get()` does not return slot references — `getWidget()` is the only way to access them.
+`model.get("header")` on the JS side returns the ref string directly; `host.getWidget(ref)` (§4) resolves it to a `{ exports, render }` handle. This keeps state flat, round-trips through existing `update` / `buffer_paths` infrastructure unchanged, and works for nested positions without special-casing.
 
-### 4. `experimental.getWidget`
+### 4. `host.getWidget` / `host.getModel`
 
-Resolves a child widget by trait name. Async — waits for the child's `initialize` to complete before resolving.
+A new `host` prop on `render` exposes two methods for resolving widget references. Both are async and take a ref string (the value read from `model.get(key)` for a synced widget trait).
+
+- `host.getWidget(ref)` — waits for the child's `initialize` to complete, then returns `{ exports, render }`.
+- `host.getModel(ref)` — returns the child's underlying `AnyModel` for lower-level access (event subscriptions, `.get`/`.set`, `.send`).
 
 ```js
-async render({ model, el, signal, experimental }) {
-  let child = await experimental.getWidget("header");
+async render({ model, el, signal, host }) {
+  let child = await host.getWidget(model.get("header"));
 
   // child.exports is `unknown` — use a type guard to narrow
   if (child.exports && typeof child.exports.setValue === "function") {
@@ -178,10 +172,13 @@ interface ResolvedWidget<T = unknown> {
 
 Passing the parent's `signal` to `child.render` ties their lifecycles — aborting the parent's signal cascades to the child's view teardown.
 
-> **Intent:** `getWidget` lives on `experimental` to validate the design. The
-> long-term goal is `model.getWidget` as a first-class `AnyModel` method.
+`host` is only available on `render`, not `initialize`. Composition is a view-time concern, and withholding `host` from `initialize` avoids ordering dependencies between parent/child `initialize` calls (see Open Questions in the original draft).
 
-**Slot reassignment.** When a slot value changes at runtime (e.g., Python reassigns `dashboard.header = different_widget`), `change:header` fires on the model. The parent should re-resolve via `getWidget` and clean up previous child views via its own signal/abort logic.
+> **Intent:** `host` is a new namespace (separate from `experimental`) to validate
+> the composition API. The long-term goal is to promote `getWidget` / `getModel`
+> to first-class `AnyModel` methods (e.g., `model.getWidget`).
+
+**Slot reassignment.** When a widget-valued trait changes at runtime (e.g., Python reassigns `dashboard.header = different_widget`), `change:header` fires on the model with a new ref string. The parent should re-resolve via `host.getWidget` and clean up previous child views via its own signal/abort logic.
 
 ## Updated Types
 
@@ -195,8 +192,17 @@ type Experimental = {
       signal?: AbortSignal;
     },
   ): Promise<[T, DataView[]]>;
-  getWidget(traitName: string): Promise<ResolvedWidget>;
 };
+
+interface ResolvedWidget<T = unknown> {
+  exports: T;
+  render(opts: { el: HTMLElement; signal?: AbortSignal }): Promise<void>;
+}
+
+interface Host {
+  getWidget<T = unknown>(ref: string): Promise<ResolvedWidget<T>>;
+  getModel<T extends ObjectHash = ObjectHash>(ref: string): Promise<AnyModel<T>>;
+}
 
 interface InitializeProps<T extends ObjectHash = ObjectHash> {
   model: AnyModel<T>;
@@ -208,6 +214,7 @@ interface RenderProps<T extends ObjectHash = ObjectHash> {
   model: AnyModel<T>;
   el: HTMLElement;
   signal: AbortSignal;
+  host: Host;
   experimental: Experimental;
 }
 
@@ -222,11 +229,6 @@ interface Render<T extends ObjectHash = ObjectHash> {
 type AnyWidget<T extends ObjectHash = ObjectHash> =
   | { initialize?: Initialize<T>; render?: Render<T> }
   | (() => Awaitable<{ initialize?: Initialize<T>; render?: Render<T> }>);
-
-interface ResolvedWidget<T = unknown> {
-  exports: T;
-  render(opts: { el: HTMLElement; signal?: AbortSignal }): Promise<void>;
-}
 ```
 
 ## Example
@@ -242,7 +244,7 @@ class Slider(anywidget.AnyWidget):
 
 class Dashboard(anywidget.AnyWidget):
     _esm = "dashboard.js"
-    control = traitlets.Instance(anywidget.AnyWidget).tag(sync=True)
+    control = anywidget.WidgetTrait().tag(sync=True)
 
 slider = Slider(value=50, min=0, max=100)
 Dashboard(control=slider)  # just pass the widget directly
@@ -306,8 +308,8 @@ function isSliderExports(exports: unknown): exports is SliderExports {
 }
 
 export default {
-  async render({ model, el, signal, experimental }) {
-    let control = await experimental.getWidget("control");
+  async render({ model, el, signal, host }) {
+    let control = await host.getWidget(model.get("control"));
     // control.exports is `unknown` — narrow with the type guard
     if (isSliderExports(control.exports)) {
       control.exports.onChange(() => console.log("value:", control.exports.getValue()));
@@ -321,19 +323,21 @@ export default {
 
 ## Design Decisions
 
-**Why `signal` over return callbacks?** Collapses setup/teardown, composes with browser APIs. Return callbacks still work for backward compat. When both present, return callback fires first, then signal aborts.
+**Why `signal` over return callbacks?** Collapses setup/teardown, composes with browser APIs. Return callbacks still work for backward compat — they are wired as `abort` listeners on the signal, so cleanup runs when the signal fires.
 
 **Why `initialize` returns exports (not `render`)?** `initialize` runs once per instance; `render` runs per view. Exports are per-instance. `render` accesses shared state via closures (factory pattern).
 
 **Why freeform exports?** VS Code proves duck-typed extension APIs scale. No schema validation — widget authors define interfaces, consumers type-check at the boundary.
 
-**Why `experimental.getWidget` (for now)?** Long-term home is `model.getWidget`. Shipping on `experimental` first to validate before committing to `AnyModel`.
+**Why a `host` namespace (for now)?** Composition is a new capability that touches lifecycle, rendering, and cross-widget coordination. A dedicated `host` prop makes the surface legible — `experimental` is for unstable pre-AFM APIs, `host` is for capabilities the host runtime provides to a widget. The long-term goal is to promote `getWidget` / `getModel` to `AnyModel` methods once the design settles.
 
-**Why trait name, not raw ID?** Abstracts the wire format. Widget code never sees comm IDs or `_anywidget_slots_` internals.
+**Why ref string, not trait name?** `model.get(key)` already returns the ref string — forwarding that value to `host.getWidget` keeps the JS API uniform with every other synced trait. Widgets never have to know that a particular key is "special." It also means a widget can resolve refs that live anywhere in state (including nested positions, values in dicts/lists), not just top-level traits.
 
-**Why no list slots?** `children: list[Slot]` requires diffing, keying, efficient updates. Deferred.
+**Why `getModel` alongside `getWidget`?** `getWidget` waits for `initialize` and returns a rendered handle — the right API for view composition. `getModel` is the escape hatch for widgets that need raw model access (subscribing to events, reading state) without participating in rendering. Both are thin wrappers over the same ref-string resolution.
 
-**Why auto-detect instead of an explicit wrapper type?** Objects that adhere to the anywidget protocol (have a `MimeBundleDescriptor`) or extend `AnyWidget` already carry enough information for serialization. The serialization layer can detect these objects directly, mirroring how `remove_buffers` auto-detects binary types. `Slot` is provided only as a type alias for annotations.
+**Why no list slots?** `children: list[Widget]` on the wire works today (auto-detection recurses), but the JS-side ergonomics (diffing, keying, efficient updates) are unresolved. Deferred to a future RFC that focuses on that problem.
+
+**Why auto-detect instead of an explicit wrapper type?** Objects that adhere to the anywidget protocol (have a `MimeBundleDescriptor`) or extend `AnyWidget` already carry enough information for serialization. The serialization layer detects these objects directly, mirroring how `remove_buffers` auto-detects binary types. `WidgetTrait` is provided for traitlets validation (so assigning a non-widget raises at assignment time), and `anywidget.Widget` is a type alias for annotations.
 
 **Circular resolution** deadlocks. Documented limitation — circular deps are a design smell.
 
@@ -341,17 +345,18 @@ export default {
 
 ## Host Requirements
 
-1. Maintain a registry of widget models by comm ID.
-2. Auto-detect anywidget-protocol objects in top-level state and serialize them into `_anywidget_slots_`.
-3. Map trait names to comm IDs when `getWidget` is called.
-4. Wait for the child's `initialize` to complete before resolving `getWidget`.
+1. Maintain a registry of widget bindings keyed by model (comm ID).
+2. Auto-detect anywidget-protocol objects anywhere in state (recursing into dicts, lists, and tuples) and serialize each one as the string `"anywidget:<model_id>"` at its position in the state tree.
+3. Parse ref strings passed to `host.getWidget` / `host.getModel` and look up the corresponding model.
+4. Wait for the child's `initialize` to complete before resolving `host.getWidget`.
 5. Create an `AbortController` per view; cascade abort when a parent view is torn down.
-6. Hosts that do not support widget composition should reject `getWidget` with a descriptive error.
+6. Hosts that do not support widget composition should reject `host.getWidget` with a descriptive error.
 
 ## Open Questions
 
-1. **Framework bridges** — `useSlot()` hook, `<Slot>` component, etc. Separate RFC.
-2. **List-valued slots** — diffing, keying, updates. Future RFC.
+1. **Framework bridges** — `useWidget()` hook, `<Widget>` component, etc. Separate RFC.
+2. **List-valued slots** — diffing, keying, updates. The wire format already supports widget refs in lists; the open question is the JS-side ergonomics. Future RFC.
 3. **`requires` declaration** — module declares needed host capabilities. Deferred.
-4. **Cleanup ordering** — return callback before signal abort, or vice versa?
-5. **`getWidget` in `initialize`** — should parents be able to resolve children during `initialize` (e.g., to subscribe to a child's exports)? This works but creates ordering dependencies between `initialize` calls. Needs guidance.
+4. **Cleanup ordering** — return callback before signal abort, or vice versa? Current implementation wires the return callback as an `abort` listener on the signal, so they fire together as part of the same event.
+5. ~~**`getWidget` in `initialize`**~~ — resolved: `host` is only available on `render`, so children cannot be resolved during `initialize`. This sidesteps the parent/child `initialize` ordering problem.
+6. **Promoting `host` to `model`** — once the design settles, promote `getWidget` / `getModel` to `AnyModel` methods (`model.getWidget(ref)`), and potentially drop the `host` prop.
