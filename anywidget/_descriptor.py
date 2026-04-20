@@ -71,7 +71,19 @@ _WIDGET_REF_PREFIX = "anywidget:"
 
 
 def _try_get_model_id(obj: object) -> str | None:
-    """Get model_id from an anywidget object, or None if not an anywidget."""
+    """Get model_id from an anywidget object, or None if not an anywidget.
+
+    .. note::
+       For protocol objects backed by a ``MimeBundleDescriptor`` (e.g.
+       dataclasses), this forces the descriptor's ``__get__`` to run, which
+       opens the object's comm. ``ipywidgets``-based widgets open their comm
+       eagerly in ``__init__``, so the ``hasattr(obj, "model_id")`` branch
+       short-circuits without side effects for them. The descriptor-driven
+       side effect only matters if a protocol-based widget is assigned to a
+       ``WidgetTrait`` (or otherwise inspected) and its parent is never
+       displayed — otherwise the comm would have opened at display time
+       anyway.
+    """
     # ipywidgets-based AnyWidget has model_id directly
     if hasattr(obj, "model_id") and isinstance(obj.model_id, str):
         return obj.model_id
@@ -89,7 +101,8 @@ def _replace_widget_refs(obj: dict) -> dict:
     """Recursively replace anywidget objects with 'anywidget:<model_id>' strings."""
 
     def _replace(v: object) -> object:
-        if model_id := _try_get_model_id(v):
+        model_id = _try_get_model_id(v)
+        if model_id is not None:
             return f"{_WIDGET_REF_PREFIX}{model_id}"
         if isinstance(v, dict):
             return {k: _replace(val) for k, val in v.items()}

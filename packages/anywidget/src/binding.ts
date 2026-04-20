@@ -1,9 +1,18 @@
 import type { Experimental, Host } from "@anywidget/types";
-import type { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
+import type { DOMWidgetModel } from "@jupyter-widgets/base";
 
 import type { AnyWidget } from "./load.ts";
 import { INITIALIZE_MARKER, model_proxy } from "./model-proxy.ts";
 import { type Awaitable, promise_with_resolvers, safe_cleanup } from "./util.ts";
+
+/**
+ * The minimal surface `create_view` needs from a view-like object. The object
+ * identity is used as the listener context for `model_proxy`, and `el` is the
+ * render target.
+ */
+export interface ViewTarget {
+  el: HTMLElement;
+}
 
 function is_safe_cleanup_function(x: unknown): x is () => Awaitable<void> {
   return typeof x === "function";
@@ -66,25 +75,32 @@ export class WidgetBinding {
   }
 
   async create_view(
-    view: DOMWidgetView,
+    target: ViewTarget,
     { signal, experimental, host }: { signal: AbortSignal; experimental: Experimental; host: Host },
   ): Promise<(() => void) | undefined> {
     await this.ready;
     if (!this.#widget_def?.render) return;
     let controller = new AbortController();
     let combined = AbortSignal.any([signal, controller.signal]);
+    let model = this.#model;
     let cleanup = await this.#widget_def.render({
-      model: model_proxy(this.#model, view),
-      el: view.el,
+      model: model_proxy(model, target),
+      el: target.el,
       signal: combined,
       host,
       experimental,
     });
+    let dispose_view = (reason: string): void => {
+      // Clear listeners keyed to this target. For ephemeral `{el}` targets
+      // (host.getWidget().render), this prevents leaks across re-renders.
+      model.off(null, null, target);
+      void safe_cleanup(cleanup, reason);
+    };
     if (combined.aborted) {
-      await safe_cleanup(cleanup, "dispose view - already aborted");
+      dispose_view("dispose view - already aborted");
       return;
     }
-    combined.addEventListener("abort", () => safe_cleanup(cleanup, "dispose view - aborted"));
+    combined.addEventListener("abort", () => dispose_view("dispose view - aborted"));
     return () => controller.abort();
   }
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 import ipywidgets
 import traitlets.traitlets as t
 
-from ._descriptor import _WIDGET_REF_PREFIX, _try_get_model_id
 from ._file_contents import FileContents, VirtualFileContents
 from ._util import (
     _ANYWIDGET_ID_KEY,
@@ -77,13 +76,6 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
     def __repr__(self) -> str:
         """Return a simple repr to avoid expensive ipywidgets trait serialization."""
         return object.__repr__(self)
-
-    @staticmethod
-    def _trait_to_json(x: object, self: object) -> object:  # noqa: ARG004
-        """Convert a trait value to json, handling anywidget references."""
-        if model_id := _try_get_model_id(x):
-            return f"{_WIDGET_REF_PREFIX}{model_id}"
-        return x
 
     def _repr_mimebundle_(self, **kwargs: dict) -> tuple[dict, dict] | None:  # noqa: ARG002
         if self._view_name is None:

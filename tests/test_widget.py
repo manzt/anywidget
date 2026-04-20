@@ -437,33 +437,31 @@ def test_widget_trait_accepts_protocol_object() -> None:
     assert parent.child is fake
 
 
-def test_trait_to_json_with_anywidget_instance() -> None:
-    """Test that _trait_to_json serializes AnyWidget instances to widget refs."""
+def test_widget_trait_serializes_to_ref_string() -> None:
+    """WidgetTrait values sync to the wire as 'anywidget:<model_id>' strings."""
 
     class Child(anywidget.AnyWidget):
         _esm = "export default { render() {} }"
 
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
     child = Child()
-    result = anywidget.AnyWidget._trait_to_json(child, None)
-    assert result == f"anywidget:{child.model_id}"
+    parent = Parent(child=child)
+    state = parent.get_state(key=["child"])
+    assert state == {"child": f"anywidget:{child.model_id}"}
 
 
-def test_trait_to_json_with_plain_values() -> None:
-    """Test that _trait_to_json passes through non-widget values."""
-    assert anywidget.AnyWidget._trait_to_json(42, None) == 42  # noqa: PLR2004
-    assert anywidget.AnyWidget._trait_to_json("hello", None) == "hello"
-    assert anywidget.AnyWidget._trait_to_json(None, None) is None
-    assert anywidget.AnyWidget._trait_to_json([1, 2], None) == [1, 2]
+def test_widget_trait_serializes_none() -> None:
+    """A None-valued WidgetTrait passes through as None."""
 
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
 
-def test_trait_to_json_with_protocol_object() -> None:
-    """Test that _trait_to_json handles protocol objects with model_id."""
-
-    class FakeWidget:
-        model_id = "protocol-id-456"
-
-    result = anywidget.AnyWidget._trait_to_json(FakeWidget(), None)
-    assert result == "anywidget:protocol-id-456"
+    state = Parent().get_state(key=["child"])
+    assert state == {"child": None}
 
 
 def test_repr_mimebundle_uses_repr() -> None:
