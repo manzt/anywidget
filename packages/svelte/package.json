@@ -21,7 +21,7 @@
     "@anywidget/types": "workspace:^"
   },
   "devDependencies": {
-    "svelte": "^5.55.3"
+    "svelte": "^5.55.5"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
