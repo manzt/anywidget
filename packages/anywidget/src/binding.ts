@@ -40,8 +40,14 @@ export class WidgetBinding {
 
     if (this.#widgetDef && this.#widgetDef !== widgetDef) {
       this.#controller?.abort();
+      // Settle the old promise so any awaiter that captured `this.ready`
+      // (e.g. a parent's `host.getWidget` snapshot) unblocks instead of
+      // hanging until the host's 10s timeout. No-op if already resolved.
+      let prevResolvers = this.#resolvers;
       this.#resolvers = promiseWithResolvers();
       this.ready = this.#resolvers.promise;
+      prevResolvers.promise.catch(() => {});
+      prevResolvers.reject(new Error("[anywidget] widget bind aborted by re-bind"));
     }
 
     this.#widgetDef = widgetDef;
