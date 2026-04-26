@@ -58,13 +58,23 @@ export class Runtime {
         return loadCss(css(), id);
       });
       solid.createEffect(() => {
+        // Per-effect controller so a stale loadWidget resolution from a
+        // previous _esm value cannot overwrite a newer one. Solid fires
+        // onCleanup before re-running the effect, aborting the prior load.
+        let controller = new AbortController();
+        solid.onCleanup(() => controller.abort());
         loadWidget(esm(), id)
           .then(async (widget) => {
+            if (controller.signal.aborted) return;
             await binding.bind(widget, { experimental });
+            if (controller.signal.aborted) return;
             setWidgetResult({ status: "ready", data: widget });
             resolvers.resolve();
           })
-          .catch((error) => setWidgetResult({ status: "error", error }));
+          .catch((error) => {
+            if (controller.signal.aborted) return;
+            setWidgetResult({ status: "error", error });
+          });
       });
 
       return dispose;
