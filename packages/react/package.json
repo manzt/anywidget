@@ -1,6 +1,6 @@
 {
   "name": "@anywidget/react",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "React utilities for anywidget",
   "license": "MIT",
   "repository": "https://github.com/manzt/anywidget",
