@@ -111,7 +111,7 @@ src/ipyfoo/static
 		"build": "bun build js/widget.jsx --minify --format=esm --outdir=src/ipyfoo/static --asset-naming=[name].[ext]"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.1",
+		"@anywidget/react": "~0.2.2",
 		"react": "catalog:",
 		"react-dom": "catalog:"
 	},
@@ -340,7 +340,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.1",
+		"@anywidget/react": "~0.2.2",
 		"react": "catalog:",
 		"react-dom": "catalog:"
 	},
@@ -1046,7 +1046,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "~0.3.0",
+		"@anywidget/types": "~0.4.0",
 		"typescript": "catalog:"
 	}
 }",
@@ -1313,7 +1313,7 @@ src/ipyfoo/static
 		"build": "esbuild js/widget.jsx --minify --format=esm --bundle --outdir=src/ipyfoo/static"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.1",
+		"@anywidget/react": "~0.2.2",
 		"react": "catalog:",
 		"react-dom": "catalog:"
 	},
@@ -1544,7 +1544,7 @@ src/ipyfoo/static
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@anywidget/react": "~0.2.1",
+		"@anywidget/react": "~0.2.2",
 		"react": "catalog:",
 		"react-dom": "catalog:"
 	},
@@ -2253,7 +2253,7 @@ src/ipyfoo/static
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@anywidget/types": "~0.3.0",
+		"@anywidget/types": "~0.4.0",
 		"typescript": "catalog:",
 		"esbuild": "catalog:"
 	}
