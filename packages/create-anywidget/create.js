@@ -561,7 +561,7 @@ export async function gatherFiles(type, { name, pkgManager }) {
   if (type in bundledTemplates) {
     return renderTemplate(bundledTemplates[type], { name, pkgManager });
   }
-  throw new Error(`Unknown template type: ${String(type)}`);
+  throw new Error(`Unknown template type: ${type}`);
 }
 
 /** @typedef {{ content: string, path: string }} File */

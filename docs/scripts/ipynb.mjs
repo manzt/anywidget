@@ -205,6 +205,7 @@ function vitePlugin(options) {
         html = widgetClientHtml(widgetState) + html;
       }
 
+      // oxlint-disable-next-line typescript-eslint/consistent-return
       return {
         code: createAstroComponentString({
           raw,

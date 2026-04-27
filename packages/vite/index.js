@@ -20,12 +20,14 @@ export default function () {
       if (id.startsWith(namespace)) {
         return `\0${id}`;
       }
+      return undefined;
     },
     async load(id) {
       if (id.startsWith(resolvedNamespace)) {
         let src = id.split(":")[1];
         return hmrTemplate.replaceAll("__ANYWIDGET_HMR_SRC__", src);
       }
+      return undefined;
     },
     configureServer(server) {
       server.middlewares.use((req, _res, next) => {

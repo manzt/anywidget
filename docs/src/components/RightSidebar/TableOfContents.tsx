@@ -9,9 +9,7 @@ type ItemOffsets = {
   topOffset: number;
 };
 
-const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
-  headings = [],
-}) => {
+const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({ headings }) => {
   const toc = useRef<HTMLUListElement>(null);
   const onThisPageID = "on-this-page-heading";
   const itemOffsets = useRef<ItemOffsets[]>([]);
@@ -62,6 +60,7 @@ const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
     });
 
     // Stop observing when the component is unmounted.
+    // oxlint-disable-next-line typescript-eslint/consistent-return
     return () => headingsObserver.disconnect();
   }, []);
 

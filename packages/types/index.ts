@@ -20,6 +20,7 @@ interface WidgetManager {
 export interface AnyModel<T extends ObjectHash = ObjectHash> {
   get<K extends keyof T>(key: K): T[K];
   set<K extends keyof T>(key: K, value: T[K]): void;
+  // oxlint-disable-next-line typescript-eslint/no-unnecessary-type-parameters
   off<K extends keyof T>(
     eventName?: LiteralUnion<`change:${K & string}` | "msg:custom"> | null,
     callback?: EventHandler | null,

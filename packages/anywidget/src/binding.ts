@@ -83,7 +83,7 @@ export class WidgetBinding {
   async createView(
     target: ViewTarget,
     { signal, experimental, host }: { signal: AbortSignal; experimental: Experimental; host: Host },
-  ): Promise<(() => void) | undefined> {
+  ): Promise<undefined> {
     await this.ready;
     if (!this.#widgetDef?.render) return;
     let controller = new AbortController();
@@ -107,7 +107,6 @@ export class WidgetBinding {
       return;
     }
     combined.addEventListener("abort", () => disposeView("dispose view - aborted"));
-    return () => controller.abort();
   }
 
   get exports(): unknown {
