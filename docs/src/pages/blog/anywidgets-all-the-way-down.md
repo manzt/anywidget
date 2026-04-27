@@ -47,7 +47,7 @@ The library works, and the community has been expanding on both ends (more host
 platforms and more widgets shipped on top of it.
 
 A stretch of stability also tends to surface what's still missing. One pattern
-that kept coming up was a different *kind* of widget than the AFM had been
+that kept coming up was a different _kind_ of widget than the AFM had been
 designed around
 ([#28](https://github.com/manzt/anywidget/issues/28),
 [#193](https://github.com/manzt/anywidget/issues/193),
@@ -67,7 +67,7 @@ mo.hstack([widget_a, widget_b])           # marimo
 ```
 
 This is fine for end users, but it means a widget author who wants to ship
-their *own* layout primitive (a tabbed container, a draggable panel, a kanban
+their _own_ layout primitive (a tabbed container, a draggable panel, a kanban
 board) had no way to do it within **anywidget** itself. _Container widgets_,
 widgets agnostic to their children that perform a layout, were not expressible
 in the AFM.
@@ -250,12 +250,18 @@ export default () => ({
       max: model.get("max"),
       value: model.get("value"),
     });
-    input.addEventListener("input", () => {
-      model.set("value", parseFloat(input.value));
-      model.save_changes();
-    }, { signal });
+    input.addEventListener(
+      "input",
+      () => {
+        model.set("value", parseFloat(input.value));
+        model.save_changes();
+      },
+      { signal },
+    );
 
-    let onChange = () => { input.value = model.get("value"); };
+    let onChange = () => {
+      input.value = model.get("value");
+    };
     model.on("change:value", onChange);
     signal.addEventListener("abort", () => model.off("change:value", onChange));
 
