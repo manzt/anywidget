@@ -7,7 +7,7 @@ catalog:
   vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: latest
   esbuild: ^0.28.0
-  typescript: ^6.0.2
+  typescript: ^6.0.3
   react: ^19.2.5
   react-dom: ^19.2.5
   "@types/react": ^19.2.14
