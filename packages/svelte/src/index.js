@@ -50,7 +50,7 @@ function createBindings(model) {
  * ```
  *
  * @template {Record<string, any>} T
- * @param {svelte.Component<{ model?: AnyModel<T>, bindings?: T }>} Widget
+ * @param {svelte.Component<{ model: AnyModel<T>, bindings: T }>} Widget
  * @returns {AnyWidget<T>}
  */
 export function defineWidget(Widget) {
@@ -63,9 +63,13 @@ export function defineWidget(Widget) {
       },
       /** @type {import("@anywidget/types").Render<T>} */
       render({ model, el }) {
+        if (bindings === undefined) {
+          throw new Error("Widget bindings were not initialized.");
+        }
+        let initializedBindings = bindings;
         let app = mount(Widget, {
           target: el,
-          props: { model, bindings },
+          props: { model, bindings: initializedBindings },
         });
         return () => unmount(app);
       },
