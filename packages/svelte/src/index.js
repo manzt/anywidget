@@ -50,7 +50,7 @@ function createBindings(model) {
  * ```
  *
  * @template {Record<string, any>} T
- * @param {svelte.Component<{ model?: AnyModel<T>, bindings?: T }>} Widget
+ * @param {svelte.Component<{ model: AnyModel<T>, bindings: T }>} Widget
  * @returns {AnyWidget<T>}
  */
 export function defineWidget(Widget) {
