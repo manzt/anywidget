@@ -19,8 +19,8 @@
     "@svitejs/changesets-changelog-github-compact": "^1.2.0",
     "@typescript/native-preview": "7.0.0-dev.20260421.2",
     "esbuild": "catalog:",
-    "playwright": "^1.58.0",
-    "publint": "^0.3.17",
+    "playwright": "^1.61.1",
+    "publint": "^0.3.21",
     "typescript": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
