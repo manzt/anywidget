@@ -1,0 +1,10 @@
+---
+type Props = {
+	path: string;
+};
+
+const { path } = Astro.props as Props;
+const commitsUrl = `https://github.com/manzt/anywidget/commits/main/docs/${path}`;
+---
+
+<a href={commitsUrl}>View this page’s contributors</a>

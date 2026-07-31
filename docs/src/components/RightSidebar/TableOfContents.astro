@@ -1,0 +1,63 @@
+---
+import type { MarkdownHeading } from "astro";
+import {
+  sidebarHeadingClass,
+  sidebarItemClass,
+  sidebarLinkClass,
+} from "./styles";
+
+type Props = {
+  headings: MarkdownHeading[];
+};
+
+const { headings } = Astro.props as Props;
+---
+
+<div data-table-of-contents>
+  <h2 class={sidebarHeadingClass}>On this page</h2>
+  <ul>
+    {
+      headings
+        .filter(({ depth }) => depth > 1 && depth < 4)
+        .map((heading) => (
+          <li
+            class:list={[
+              sidebarItemClass,
+              "[&.current-header-link]:bg-[var(--theme-bg-accent)] [&.current-header-link]:outline [&.current-header-link]:outline-1 [&.current-header-link]:outline-transparent [&.current-header-link_a]:text-[var(--theme-text)]",
+              heading.depth === 3 && "ps-8",
+              heading.depth === 4 && "ps-12",
+            ]}
+            data-heading={heading.slug}
+          >
+            <a class={sidebarLinkClass} href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))
+    }
+  </ul>
+</div>
+
+<script>
+  const links = document.querySelectorAll<HTMLElement>("[data-table-of-contents] [data-heading]");
+
+  function setCurrent(id: string) {
+    for (const link of links) {
+      link.classList.toggle("current-header-link", link.dataset.heading === id);
+    }
+  }
+
+  for (const link of links) {
+    link.querySelector("a")?.addEventListener("click", () => {
+      if (link.dataset.heading) setCurrent(link.dataset.heading);
+    });
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.find((entry) => entry.isIntersecting);
+      if (visible?.target.id) setCurrent(visible.target.id);
+    },
+    { rootMargin: "-100px 0% -66%", threshold: 1 },
+  );
+
+  document.querySelectorAll("article :is(h1,h2,h3)").forEach((heading) => observer.observe(heading));
+</script>

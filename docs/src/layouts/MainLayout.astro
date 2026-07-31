@@ -14,13 +14,15 @@ import { getTitle } from "../util";
 type Props = {
 	frontmatter: CONSTS.Frontmatter;
 	headings: MarkdownHeading[];
-	file: string;
+	file?: string;
+	sourcePath?: string;
 };
 
-const { frontmatter, headings } = Astro.props as Props;
+const { frontmatter, headings, file, sourcePath } = Astro.props as Props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const currentPage = Astro.url.pathname.replace(/\/$/, "");
-const currentFile = Astro.props.file.split(/\/(?=src\/pages\/)/)[1];
+const currentFile = sourcePath ?? file?.split(/\/(?=src\/pages\/)/)[1];
+if (!currentFile) throw new Error("MainLayout requires a source file path");
 const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 ---
 
@@ -33,121 +35,16 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
 		<title>{getTitle(frontmatter)}</title>
-		<style is:global>
-			body {
-				width: 100%;
-				display: grid;
-				grid-template-rows: auto (--theme-navbar-height) 1fr;
-				--gutter: 0.5rem;
-				--doc-padding: 2rem;
-			}
-
-			.layout {
-				display: grid;
-				grid-auto-flow: column;
-				grid-template-columns:
-					minmax(var(--gutter), 1fr)
-					minmax(0, var(--max-width))
-					minmax(var(--gutter), 1fr);
-				overflow-x: hidden;
-			}
-
-			.grid-sidebar {
-				height: 100vh;
-				position: sticky;
-				top: 0;
-				padding: 0;
-			}
-
-			#grid-left {
-				position: fixed;
-				background-color: var(--theme-bg);
-				z-index: 10;
-				display: none;
-			}
-
-			#grid-main {
-				padding: var(--doc-padding) var(--gutter);
-				grid-column: 2;
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-			}
-
-			#grid-right {
-				display: none;
-			}
-
-			@media (min-width: 50em) {
-				.layout {
-					overflow: initial;
-					grid-template-columns: 20rem minmax(0, var(--max-width));
-					gap: 1em;
-				}
-
-				#grid-left {
-					display: flex;
-					padding-left: 2rem;
-					position: sticky;
-					grid-column: 1;
-				}
-			}
-
-			@media (min-width: 72em) {
-				.layout {
-					grid-template-columns: 20rem minmax(0, var(--max-width)) 18rem;
-					padding-left: 0;
-					padding-right: 0;
-					margin: 0 auto;
-				}
-
-				#grid-right {
-					grid-column: 3;
-					display: flex;
-				}
-			}
-		</style>
-		<style is:global>
-			.layout > * {
-				width: 100%;
-				height: 100%;
-			}
-
-			.mobile-sidebar-toggle {
-				overflow: hidden;
-			}
-
-			.mobile-sidebar-toggle #grid-left {
-				display: block;
-				top: 2rem;
-			}
-
-			table,
-			pre {
-				padding-right: calc(var(--padding-inline) * 2);
-				margin-left: calc(var(--padding-inline) * -1);
-				margin-right: calc(var(--padding-inline) * -1);
-			}
-
-			@media (min-width: 37.75em) {
-				pre {
-					--padding-inline: 1.25rem;
-					border-radius: 8px;
-					margin-left: 0;
-					margin-right: 0;
-				}
-			}
-		</style>
 	</head>
 
-	<body>
+	<body class="docs-layout grid w-full grid-rows-[auto_var(--theme-navbar-height)_1fr] [--doc-padding:2rem] [--gutter:0.5rem] [&.mobile-sidebar-toggle]:overflow-hidden">
 		<Banner />
-		<Header currentPage={currentPage} />
-		<main class="layout">
-			<aside id="grid-left" class="grid-sidebar" title="Site Navigation">
+		<Header />
+		<main class="grid grid-flow-col grid-cols-[minmax(var(--gutter),1fr)_minmax(0,var(--max-width))_minmax(var(--gutter),1fr)] overflow-x-hidden [&>*]:h-full [&>*]:w-full min-[50em]:grid-cols-[20rem_minmax(0,var(--max-width))] min-[50em]:gap-4 min-[50em]:overflow-visible min-[72em]:mx-auto min-[72em]:grid-cols-[20rem_minmax(0,var(--max-width))_18rem]">
+			<aside id="grid-left" class="fixed top-0 z-10 hidden h-screen bg-[var(--theme-bg)] p-0 [.mobile-sidebar-toggle_&]:top-8 [.mobile-sidebar-toggle_&]:block min-[50em]:sticky min-[50em]:col-start-1 min-[50em]:flex min-[50em]:pl-8" title="Site Navigation">
 				<LeftSidebar currentPage={currentPage} />
 			</aside>
-			<div id="grid-main">
+			<div id="grid-main" class="col-start-2 flex h-full flex-col p-[var(--doc-padding)_var(--gutter)]">
 				<PageContent
 					frontmatter={frontmatter}
 					headings={headings}
@@ -156,7 +53,7 @@ const githubEditUrl = `${CONSTS.GITHUB_EDIT_URL}/${currentFile}`;
 					<slot />
 				</PageContent>
 			</div>
-			<aside id="grid-right" class="grid-sidebar" title="Table of Contents">
+			<aside id="grid-right" class="sticky top-0 hidden h-screen p-0 min-[72em]:col-start-3 min-[72em]:flex" title="Table of Contents">
 				<RightSidebar headings={headings} githubEditUrl={githubEditUrl} />
 			</aside>
 		</main>

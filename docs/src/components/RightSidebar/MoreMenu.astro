@@ -1,5 +1,10 @@
 ---
 import * as CONSTS from "../../consts";
+import {
+	sidebarHeadingClass,
+	sidebarItemClass,
+	sidebarLinkClass,
+} from "./styles";
 
 type Props = {
 	editHref: string;
@@ -9,12 +14,12 @@ const { editHref } = Astro.props as Props;
 const showMoreSection = true;
 ---
 
-{showMoreSection && <h2 class="heading">More</h2>}
+{showMoreSection && <h2 class={sidebarHeadingClass}>More</h2>}
 <ul>
 	{
 		editHref && (
-			<li class={`header-link depth-2`}>
-				<a class="edit-on-github" href={editHref} target="_blank">
+			<li class={sidebarItemClass}>
+				<a class={sidebarLinkClass} href={editHref} target="_blank" rel="noreferrer">
 					<svg
 						aria-hidden="true"
 						focusable="false"
@@ -39,8 +44,8 @@ const showMoreSection = true;
 	}
 	{
 		CONSTS.COMMUNITY_INVITE_URL && (
-			<li class={`header-link depth-2`}>
-				<a href={CONSTS?.COMMUNITY_INVITE_URL} target="_blank">
+			<li class={sidebarItemClass}>
+				<a class={sidebarLinkClass} href={CONSTS?.COMMUNITY_INVITE_URL} target="_blank" rel="noreferrer">
 					<svg
 						aria-hidden="true"
 						focusable="false"
@@ -63,8 +68,8 @@ const showMoreSection = true;
 			</li>
 		)
 	}
-	<li class={`header-link depth-2`}>
-		<a href={CONSTS.GITHUB_URL} target="_blank">
+	<li class={sidebarItemClass}>
+		<a class={sidebarLinkClass} href={CONSTS.GITHUB_URL} target="_blank" rel="noreferrer">
 			<svg
 				aria-hidden="true"
 				focusable="false"
@@ -86,12 +91,3 @@ const showMoreSection = true;
 		</a>
 	</li>
 </ul>
-
-<style>
-	.edit-on-github {
-		text-decoration: none;
-		font: inherit;
-		color: inherit;
-		font-size: 1rem;
-	}
-</style>

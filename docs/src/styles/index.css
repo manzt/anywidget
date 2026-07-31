@@ -1,38 +1,137 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer theme, base, components, utilities;
 
-* {
-  box-sizing: border-box;
-  margin: 0;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+  --breakpoint-xs: 26.25rem;
+
+  --color-primary-50: var(--color-teal-50);
+  --color-primary-100: var(--color-teal-100);
+  --color-primary-200: var(--color-teal-200);
+  --color-primary-300: var(--color-teal-300);
+  --color-primary-400: var(--color-teal-400);
+  --color-primary-500: var(--color-teal-500);
+  --color-primary-600: var(--color-teal-600);
+  --color-primary-700: var(--color-teal-700);
+  --color-primary-800: var(--color-teal-800);
+  --color-primary-900: var(--color-teal-900);
+  --color-primary-950: var(--color-teal-950);
+
+  --color-secondary-50: var(--color-orange-50);
+  --color-secondary-100: var(--color-orange-100);
+  --color-secondary-200: var(--color-orange-200);
+  --color-secondary-300: var(--color-orange-300);
+  --color-secondary-400: var(--color-orange-400);
+  --color-secondary-500: var(--color-orange-500);
+  --color-secondary-600: var(--color-orange-600);
+  --color-secondary-700: var(--color-orange-700);
+  --color-secondary-800: var(--color-orange-800);
+  --color-secondary-900: var(--color-orange-900);
+  --color-secondary-950: var(--color-orange-950);
+
+  --color-accent-50: var(--color-sky-50);
+  --color-accent-100: var(--color-sky-100);
+  --color-accent-200: var(--color-sky-200);
+  --color-accent-300: var(--color-sky-300);
+  --color-accent-400: var(--color-sky-400);
+  --color-accent-500: var(--color-sky-500);
+  --color-accent-600: var(--color-sky-600);
+  --color-accent-700: var(--color-sky-700);
+  --color-accent-800: var(--color-sky-800);
+  --color-accent-900: var(--color-sky-900);
+  --color-accent-950: var(--color-sky-950);
+}
+
+:root {
+  --font-fallback:
+    -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji;
+  --font-body: system-ui, var(--font-fallback);
+  --font-mono:
+    "IBM Plex Mono", Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console",
+    "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono",
+    "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+
+  --color-base-white: 0, 0%;
+  --color-base-gray: 214, 14%;
+  --color-base-teal: 180, 100%;
+
+  --color-gray-5: var(--color-base-gray), 5%;
+  --color-gray-10: var(--color-base-gray), 10%;
+  --color-gray-30: var(--color-base-gray), 30%;
+  --color-gray-40: var(--color-base-gray), 40%;
+  --color-gray-70: var(--color-base-gray), 70%;
+  --color-gray-80: var(--color-base-gray), 80%;
+  --color-gray-90: var(--color-base-gray), 90%;
+  --color-gray-95: var(--color-base-gray), 95%;
+
+  --color-teal: var(--color-base-teal), 30%;
+
+  color-scheme: light;
+  --theme-accent: hsla(var(--color-teal), 1);
+  --theme-text-accent: hsla(var(--color-teal), 1);
+  --theme-accent-opacity: 0.15;
+  --theme-accent-secondary: hsla(var(--color-teal), 1);
+  --theme-divider: hsla(var(--color-teal), var(--theme-accent-opacity));
+  --theme-shade-subtle: hsla(var(--color-teal), 0.3);
+  --theme-text: hsla(var(--color-gray-10), 1);
+  --theme-text-light: hsla(var(--color-gray-30), 1);
+  --theme-text-lighter: hsla(var(--color-gray-40), 1);
+  --theme-bg: hsla(var(--color-base-white), 100%, 1);
+  --theme-bg-offset: hsla(var(--color-gray-90), 1);
+  --theme-bg-accent: hsla(var(--color-teal), var(--theme-accent-opacity));
+  --theme-code-inline-bg: hsla(var(--color-teal), var(--theme-accent-opacity));
+  --theme-code-inline-text: var(--theme-text);
+  --theme-code-bg: hsla(217, 19%, 27%, 1);
+  --theme-code-text: hsla(var(--color-gray-95), 1);
+  --theme-navbar-bg: hsla(var(--color-base-white), 100%, 1);
+  --theme-navbar-height: 6rem;
+  --theme-selection-color: hsla(var(--color-teal), 1);
+  --theme-selection-bg: hsla(var(--color-teal), var(--theme-accent-opacity));
+  --docsearch-primary-color: var(--theme-accent);
+  --docsearch-logo-color: var(--theme-text);
+}
+
+:root.theme-dark {
+  color-scheme: dark;
+  --theme-accent-opacity: 0.15;
+  --theme-accent: hsla(var(--color-teal), 1);
+  --theme-text-accent: hsla(var(--color-teal), 1);
+  --theme-divider: hsla(var(--color-gray-10), 1);
+  --theme-shade-subtle: hsla(var(--color-gray-95), 0.4);
+  --theme-text: hsla(var(--color-gray-90), 1);
+  --theme-text-light: hsla(var(--color-gray-80), 1);
+  --theme-text-lighter: hsla(var(--color-gray-70), 1);
+  --theme-bg: hsla(215, 28%, 17%, 1);
+  --theme-bg-offset: hsla(var(--color-gray-5), 1);
+  --theme-code-inline-bg: hsla(var(--color-gray-10), 1);
+  --theme-code-inline-text: hsla(var(--color-base-white), 100%, 1);
+  --theme-code-bg: hsla(var(--color-gray-5), 1);
+  --theme-code-text: hsla(var(--color-base-white), 100%, 1);
+  --theme-navbar-bg: hsla(215, 28%, 17%, 1);
+  --theme-selection-color: hsla(var(--color-base-white), 100%, 1);
+  --theme-selection-bg: hsla(var(--color-teal), var(--theme-accent-opacity));
+  --docsearch-modal-background: var(--theme-bg);
+  --docsearch-searchbox-focus-background: var(--theme-divider);
+  --docsearch-footer-background: var(--theme-divider);
+  --docsearch-text-color: var(--theme-text);
+  --docsearch-hit-background: var(--theme-divider);
+  --docsearch-hit-shadow: none;
+  --docsearch-hit-color: var(--theme-text);
+  --docsearch-footer-shadow: inset 0 2px 10px #000;
+  --docsearch-modal-shadow: inset 0 0 8px #000;
+}
+
+::selection {
+  color: var(--theme-selection-color);
+  background-color: var(--theme-selection-bg);
 }
 
 /* Global focus outline reset */
 *:focus:not(:focus-visible) {
   outline: none;
-}
-
-/* Firefox */
-* {
-  scrollbar-color: var(--theme-dim-light) transparent;
-}
-
-/* Webkit */
-/* Make scrollbars transparent except for main page scrollbar. */
-::-webkit-scrollbar,
-::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-body::-webkit-scrollbar,
-body::-webkit-scrollbar-track {
-  background: var(--theme-bg-gradient);
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--theme-dim-light);
-  border: 4px solid transparent;
-  background-clip: content-box;
-  border-radius: 10px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -53,8 +152,6 @@ body::-webkit-scrollbar-track {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   font-family: var(--font-body);
   font-size: clamp(0.9rem, 0.75rem + 0.375vw + var(--user-font-scale), 1rem);
@@ -142,8 +239,7 @@ p,
   color: var(--theme-text-light);
 }
 
-small,
-.text_small {
+small {
   font-size: 0.833rem;
 }
 
@@ -274,7 +370,7 @@ tr:nth-of-type(odd) {
 }
 th {
   background: var(--color-black);
-  color: var(--theme-color);
+  color: var(--theme-code-text);
   font-weight: bold;
 }
 td,
@@ -300,6 +396,21 @@ blockquote code {
   }
 }
 
+/* Markdown tables and code blocks escape the narrow content gutter on docs pages. */
+.docs-layout :is(table, pre) {
+  padding-right: calc(var(--padding-inline) * 2);
+  margin-left: calc(var(--padding-inline) * -1);
+  margin-right: calc(var(--padding-inline) * -1);
+}
+
+@media (min-width: 37.75em) {
+  .docs-layout pre {
+    border-radius: 8px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 blockquote {
   margin: 2rem 0;
   padding: 1.25em 1.5rem;
@@ -307,10 +418,6 @@ blockquote {
   background-color: var(--theme-bg-offset);
   border-radius: 0 0.25rem 0.25rem 0;
   line-height: 1.7;
-}
-
-img {
-  max-width: 100%;
 }
 
 button {
@@ -327,101 +434,8 @@ button {
   background-color: var(--theme-bg);
 }
 
-h2.heading {
-  font-size: 1rem;
-  padding: 0.1rem 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.header-link {
-  font-size: 1em;
-  transition:
-    border-inline-start-color 100ms ease-out,
-    background-color 200ms ease-out;
-  border-left: 4px solid var(--theme-divider);
-}
-
-.header-link a {
-  display: inline-flex;
-  gap: 0.5em;
-  width: 100%;
-  font: inherit;
-  padding: 0.4rem 0;
-  line-height: 1.3;
-  text-decoration: none;
-  unicode-bidi: plaintext;
-  color: var(--theme-text-lighter);
-}
-
-@media (min-width: 50em) {
-  .header-link a {
-    padding: 0.275rem 0;
-  }
-}
-
-.header-link:hover,
-.header-link:focus,
-.header-link:focus-within {
-  border-inline-start-color: var(--theme-accent-secondary);
-}
-
-.header-link:hover a,
-.header-link a:focus {
-  color: var(--theme-text);
-  text-decoration: underline;
-}
-.header-link svg {
-  opacity: 0.6;
-}
-.header-link:hover svg {
-  opacity: 0.8;
-}
-
-/* Add line and padding on the left side */
-.header-link {
-  padding-inline-start: 1rem;
-}
-.header-link.depth-3 {
-  padding-inline-start: 2rem;
-}
-.header-link.depth-4 {
-  padding-inline-start: 3rem;
-}
-
-/* Screenreader Only Text */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.focus\:not-sr-only:focus,
-.focus\:not-sr-only:focus-visible {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 0;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-
 :target {
   scroll-margin: calc(var(--theme-sidebar-offset, 5rem) + 2rem) 0 2rem;
-}
-
-/* Highlight TOC header link matching the current scroll position */
-.current-header-link {
-  background-color: var(--theme-bg-accent);
-  /* Indicates the current heading for forced colors users in older browsers */
-  outline: 1px solid transparent;
 }
 
 @media (forced-colors: active) {
@@ -430,6 +444,56 @@ h2.heading {
   }
 }
 
-.current-header-link a {
+/* DocSearch owns this markup, so these selectors cannot be expressed in templates. */
+#docsearch {
+  display: flex;
+}
+
+#docsearch .DocSearch-Button {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.33em 0.67em;
+  color: var(--theme-text-light);
+  background: var(--theme-bg);
+  border: 1px solid var(--theme-shade-subtle);
+  border-radius: 99em;
+  box-shadow: none;
+}
+
+#docsearch .DocSearch-Button:hover,
+#docsearch .DocSearch-Button:focus {
   color: var(--theme-text);
+  background: var(--theme-bg);
+  border-color: var(--theme-text-light);
+  box-shadow: none;
+}
+
+#docsearch .DocSearch-Search-Icon {
+  width: 1em;
+  height: 1em;
+  color: currentColor;
+}
+
+#docsearch .DocSearch-Button-Placeholder,
+#docsearch .DocSearch-Button-Keys {
+  display: none;
+}
+
+@media (min-width: 50em) {
+  #docsearch .DocSearch-Button {
+    width: 16.5rem;
+    max-width: 100%;
+    padding-inline: 1rem;
+  }
+
+  #docsearch .DocSearch-Button-Placeholder,
+  #docsearch .DocSearch-Button-Keys {
+    display: flex;
+  }
+}
+
+.DocSearch-Modal .DocSearch-Hit a {
+  border: 1px solid var(--theme-accent);
+  box-shadow: none;
 }

@@ -1,5 +1,5 @@
 ---
-import AvatarList from "./AvatarList.astro";
+import ContributorsLink from "./ContributorsLink.astro";
 
 type Props = {
 	path: string;
@@ -7,14 +7,6 @@ type Props = {
 const { path } = Astro.props as Props;
 ---
 
-<footer>
-	<AvatarList path={path} />
+<footer class="mt-auto border-t-[3px] border-[var(--theme-divider)] p-8">
+	<ContributorsLink path={path} />
 </footer>
-
-<style>
-	footer {
-		margin-top: auto;
-		padding: 2rem;
-		border-top: 3px solid var(--theme-divider);
-	}
-</style>

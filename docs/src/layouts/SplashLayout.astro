@@ -11,7 +11,6 @@ type Props = {
 };
 
 const { frontmatter } = Astro.props as Props;
-const currentPage = Astro.url.pathname;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -24,20 +23,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<HeadCommon />
 		<HeadSEO frontmatter={frontmatter} canonicalUrl={canonicalURL} />
 		<title>{getTitle(frontmatter)}</title>
-		<style>
-			.layout {
-				height: calc(100vh - var(--theme-navbar-height));
-			}
-			:global(#menu-toggle) {
-				display: none;
-			}
-		</style>
 	</head>
 
-	<body>
+	<body class="flex min-h-screen flex-col">
 		<Banner />
-		<Header currentPage={currentPage} />
-		<main class="layout">
+		<Header hideMenu />
+		<main class="h-[calc(100vh-var(--theme-navbar-height))]">
 			<article>
 				<slot />
 			</article>

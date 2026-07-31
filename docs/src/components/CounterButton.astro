@@ -1,6 +1,12 @@
 ---
+import {
+	buttonClass,
+	buttonSizeClass,
+	type ButtonSize,
+} from "./buttonStyles";
+
 type Props = {
-	size?: "xs" | "sm" | "lg" | "sm";
+	size?: ButtonSize;
 	initialValue?: number;
 };
 
@@ -9,8 +15,8 @@ let { size = "xs", initialValue = 0 } = Astro.props as Props;
 
 <button
 	class:list={[
-		`text-${size}`,
-		"text-white py-2 px-4 hover:bg-secondary-800 bg-secondary-600 rounded shadow",
+		buttonSizeClass[size],
+		buttonClass,
 	]}
 	id="btn"
 	data-initial-value={initialValue}

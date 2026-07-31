@@ -1,0 +1,23 @@
+---
+import "@docsearch/css";
+---
+
+<div id="docsearch"></div>
+
+<script>
+  import docsearch from "@docsearch/js";
+  import { ALGOLIA } from "../../consts";
+
+  docsearch({
+    container: "#docsearch",
+    ...ALGOLIA,
+    keyboardShortcuts: { "Ctrl/Cmd+K": false, "/": true },
+    transformItems(items) {
+      return items.map((item) => {
+        const url = new URL(item.url);
+        const hash = url.hash === "#overview" ? "" : url.hash;
+        return { ...item, url: `${url.pathname}${hash}` };
+      });
+    },
+  });
+</script>

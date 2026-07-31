@@ -1,6 +1,12 @@
 ---
+import {
+	buttonClass,
+	buttonSizeClass,
+	type ButtonSize,
+} from "./buttonStyles";
+
 type Props = {
-	size?: "xs" | "sm" | "lg" | "sm";
+	size?: ButtonSize;
 };
 
 let { size = "xs" } = Astro.props as Props;
@@ -8,8 +14,8 @@ let { size = "xs" } = Astro.props as Props;
 
 <button
 	class:list={[
-		`text-${size}`,
-		"text-white py-2 px-4 hover:bg-secondary-800 bg-secondary-600 rounded shadow",
+		buttonSizeClass[size],
+		buttonClass,
 	]}
 	id="btn-confetti"
 >

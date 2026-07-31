@@ -2,7 +2,7 @@
 import type { MarkdownHeading } from "astro";
 import type { Frontmatter } from "../../consts";
 import MoreMenu from "../RightSidebar/MoreMenu.astro";
-import TableOfContents from "../RightSidebar/TableOfContents";
+import TableOfContents from "../RightSidebar/TableOfContents.astro";
 
 type Props = {
 	frontmatter: Omit<Frontmatter, "layout">;
@@ -19,41 +19,16 @@ const formatter = new Intl.ListFormat("en", {
 const authors = frontmatter.authors && formatter.format(frontmatter.authors);
 ---
 
-<article id="article" class="content">
-	<section class="main-section">
+<article id="article" class="content flex h-full w-full max-w-[75ch] flex-col p-0">
+	<section class="mb-16">
 		<h1 class="content-title" id="overview">{frontmatter.title}</h1>
 		{authors && <p>By {authors}</p>}
-		<nav class="block sm:hidden">
-			<TableOfContents client:media="(max-width: 50em)" headings={headings} />
+		<nav class="block min-[50em]:hidden">
+			<TableOfContents headings={headings} />
 		</nav>
 		<slot />
 	</section>
-	<nav class="block sm:hidden">
+	<nav class="block min-[50em]:hidden">
 		<MoreMenu editHref={githubEditUrl} />
 	</nav>
 </article>
-
-<style>
-	.content {
-		padding: 0;
-		max-width: 75ch;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.content > section {
-		margin-bottom: 4rem;
-	}
-
-	.block {
-		display: block;
-	}
-
-	@media (min-width: 50em) {
-		.sm\:hidden {
-			display: none;
-		}
-	}
-</style>
