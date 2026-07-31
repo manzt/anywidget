@@ -1,21 +1,26 @@
 verifyDepsBeforeRun: install
+minimumReleaseAge: 1440
 packages:
   - "packages/*"
   - "docs/**"
+allowBuilds:
+  esbuild: true
+  sharp: true
+packageExtensions:
+  "@preact/preset-vite@2.8.2":
+    dependencies:
+      "@babel/code-frame": ^7.0.0
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
-  vite-plus: latest
-  esbuild: ^0.28.0
-  typescript: ^6.0.2
-  react: ^19.2.5
-  react-dom: ^19.2.5
-  "@types/react": ^19.2.14
+  vite: npm:@voidzero-dev/vite-plus-core@^0.2.6
+  vitest: ^4.1.10
+  vite-plus: ^0.2.6
+  esbuild: ^0.28.1
+  typescript: ^7.0.2
+  react: ^19.2.8
+  react-dom: ^19.2.8
+  "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
-  "@types/node": ^25.6.0
-overrides:
-  vite: "catalog:"
-  vitest: "catalog:"
+  "@types/node": ^26.1.2
 peerDependencyRules:
   allowAny:
     - vite

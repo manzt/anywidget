@@ -2,6 +2,7 @@ import * as docsearch from "@docsearch/react";
 /** @jsxImportSource react */
 import { useCallback, useRef, useState } from "react";
 import "@docsearch/css";
+
 import "./HeaderButton.css";
 import "./Search.css";
 import { createPortal } from "react-dom";
