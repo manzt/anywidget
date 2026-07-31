@@ -1,5 +1,11 @@
 # @anywidget/svelte
 
+## 0.1.3
+
+### Patch Changes
+
+- [#1002](https://github.com/manzt/anywidget/pull/1002) [`6390fe9`](https://github.com/manzt/anywidget/commit/6390fe936ace8ac74660633957e6baf247e63c5d) Thanks [@sanmaxdev](https://github.com/sanmaxdev)! - Tighten Svelte widget component props so `model` and `bindings` are required.
+
 ## 0.1.2
 
 ### Patch Changes
