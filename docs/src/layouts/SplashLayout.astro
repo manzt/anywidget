@@ -11,7 +11,6 @@ type Props = {
 };
 
 const { frontmatter } = Astro.props as Props;
-const currentPage = Astro.url.pathname;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -36,7 +35,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 	<body>
 		<Banner />
-		<Header currentPage={currentPage} />
+		<Header />
 		<main class="layout">
 			<article>
 				<slot />

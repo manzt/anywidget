@@ -1,77 +1,118 @@
----
-import { z } from "astro:content";
-import GitHubCard from "./GitHubCard.astro";
-
-let base = new URL(
-	"https://manzt.github.io/built-with-anywidget/manifest-complete.json",
-);
-
-let RepoSchema = z.object({
-	repo: z.string(),
-	description: z.string(),
-	stars: z.number(),
-	image: z.string().optional(),
-	gif: z.string().optional(),
-});
-
-let response = await fetch(base);
-let raw = await response.json();
-let repos = z.array(RepoSchema).parse(raw);
-repos.sort((a, b) => b.stars - a.stars);
-
-let reposWithImages = repos
-	.filter((repo) => repo.image)
-	.map((repo) => ({
-		...repo,
-		image: repo.image ? new URL(repo.image, base).href : undefined,
-		gif: repo.gif ? new URL(repo.gif, base).href : undefined,
-	}));
-
-let reposWithoutImages = repos.filter((repo) => !repo.image);
----
-
-
-<div class="gallery" id="gallery">
-  {reposWithImages.map((d) => <GitHubCard {...d} />)}
+<div class="gallery" id="widget-gallery" aria-live="polite">
+  <p data-gallery-status>Loading community widgets…</p>
 </div>
 
-<br />
+<script>
+  type Repo = {
+    repo: string;
+    description: string;
+    stars: number;
+    image?: string;
+    gif?: string;
+  };
 
-<div class="gallery">
-  {reposWithoutImages.map((d) => <GitHubCard {...d} />)}
-</div>
+  const manifestUrl = new URL(
+    "https://manzt.github.io/built-with-anywidget/manifest-complete.json",
+  );
+  const gallery = document.querySelector<HTMLElement>("#widget-gallery");
 
-<script is:inline>
-	let observer = new IntersectionObserver((entries) => {
-		for (let entry of entries) {
-			if (!entry.isIntersecting) {
-				continue;
-			}
-			let image = entry.target.querySelector(".image-preview");
-			let gifUrl = image?.dataset.gif;
-			if (!gifUrl) {
-				continue;
-			}
-			Object.assign(new Image, {
-				src: gifUrl,
-				onload: () => { image.src = gifUrl; },
-			});
-		}
-	}, {
-		root: null,
-		rootMargin: "0px",
-		threshold: 0.1,
-	});
+  function formatStars(stars: number) {
+    if (stars < 1000) return String(stars);
+    return stars % 1000 === 0 ? `${Math.floor(stars / 1000)}k` : `${(stars / 1000).toFixed(1)}k`;
+  }
 
-	for (let item of document.querySelector("#gallery").children) {
-		observer.observe(item);
-	}
+  function createCard(item: Repo) {
+    const url = `https://github.com/${item.repo}`;
+    const card = document.createElement("article");
+    card.className =
+      "group flex max-h-64 w-full flex-col justify-between overflow-hidden rounded-lg border border-teal-200 bg-teal-50";
+
+    const content = document.createElement("div");
+    content.className = "px-3 py-2";
+
+    const heading = document.createElement("div");
+    heading.className = "flex items-center justify-between gap-3";
+
+    const link = document.createElement("a");
+    link.className = "truncate text-sm font-semibold text-gray-600 hover:text-gray-700";
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = item.repo;
+    heading.append(link);
+
+    if (item.stars) {
+      const stars = document.createElement("a");
+      stars.className = "shrink-0 text-sm text-gray-500 hover:text-gray-600";
+      stars.href = `${url}/stargazers`;
+      stars.target = "_blank";
+      stars.rel = "noreferrer";
+      stars.textContent = `★ ${formatStars(item.stars)}`;
+      heading.append(stars);
+    }
+
+    const description = document.createElement("p");
+    description.className = "line-clamp-2 text-sm text-gray-600 group-hover:line-clamp-none";
+    description.textContent = item.description;
+    content.append(heading, description);
+    card.append(content);
+
+    if (item.image) {
+      const imageLink = document.createElement("a");
+      imageLink.href = url;
+      imageLink.target = "_blank";
+      imageLink.rel = "noreferrer";
+      imageLink.ariaLabel = `View ${item.repo} on GitHub`;
+
+      const image = document.createElement("img");
+      image.className = "image-preview w-full";
+      image.loading = "lazy";
+      image.src = new URL(item.image, manifestUrl).href;
+      image.alt = `Preview of ${item.repo}`;
+      if (item.gif) image.dataset.gif = new URL(item.gif, manifestUrl).href;
+      imageLink.append(image);
+      card.append(imageLink);
+    }
+
+    return card;
+  }
+
+  async function loadGallery() {
+    if (!gallery) return;
+    try {
+      const response = await fetch(manifestUrl);
+      if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
+      const repos = (await response.json()) as Repo[];
+      repos.sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)) || b.stars - a.stars);
+      gallery.replaceChildren(...repos.map(createCard));
+
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const image = entry.target.querySelector<HTMLImageElement>(".image-preview");
+          if (image?.dataset.gif) image.src = image.dataset.gif;
+          observer.unobserve(entry.target);
+        }
+      });
+      gallery.querySelectorAll("article").forEach((card) => observer.observe(card));
+    } catch {
+      const message = document.createElement("p");
+      message.append("The gallery could not be loaded. ");
+      const link = document.createElement("a");
+      link.href = "https://manzt.github.io/built-with-anywidget/";
+      link.textContent = "Browse it directly.";
+      message.append(link);
+      gallery.replaceChildren(message);
+    }
+  }
+
+  void loadGallery();
 </script>
 
 <style>
-	.gallery {
-		display: grid;
-		gap: 1rem;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-	}
+  .gallery {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
 </style>

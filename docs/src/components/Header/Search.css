@@ -1,71 +1,57 @@
-/** Style Algolia */
 :root {
   --docsearch-primary-color: var(--theme-accent);
   --docsearch-logo-color: var(--theme-text);
 }
-.search-input {
-  position: relative;
+
+#docsearch {
   display: flex;
-  place-items: center;
-  gap: 0.25em;
 }
-.search-input:hover,
-.search-input:focus {
+
+#docsearch .DocSearch-Button {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.33em 0.67em;
+  color: var(--theme-text-light);
+  background: var(--theme-bg);
+  border: 1px solid var(--theme-shade-subtle);
+  border-radius: 99em;
+  box-shadow: none;
+}
+
+#docsearch .DocSearch-Button:hover,
+#docsearch .DocSearch-Button:focus {
   color: var(--theme-text);
+  background: var(--theme-bg);
   border-color: var(--theme-text-light);
+  box-shadow: none;
 }
-.search-input:hover::placeholder,
-.search-input:focus::placeholder {
-  color: var(--theme-text-light);
+
+#docsearch .DocSearch-Search-Icon {
+  width: 1em;
+  height: 1em;
+  color: currentColor;
 }
-.search-input::placeholder {
-  color: var(--theme-text-light);
-}
-.search-placeholder {
-  text-align: initial;
-  margin-inline-start: 0.25rem;
-  margin-inline-end: 3rem;
+
+#docsearch .DocSearch-Button-Placeholder,
+#docsearch .DocSearch-Button-Keys {
   display: none;
-}
-.search-hint {
-  position: absolute;
-  inset-inline-end: 0.75rem;
-  padding: 3px 5px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-family: var(--font-mono);
-  letter-spacing: 0.125rem;
-  line-height: 14px;
-  pointer-events: none;
-  border-color: var(--theme-shade-subtle);
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 0.25rem;
 }
 
 @media (min-width: 50em) {
-  .search-input {
-    border-radius: 9e9px;
+  #docsearch .DocSearch-Button {
+    width: 16.5rem;
+    max-width: 100%;
     padding-inline: 1rem;
-    width: min(16.5rem, 100%);
   }
 
-  .search-hint {
-    display: flex;
-  }
-
-  .search-placeholder {
+  #docsearch .DocSearch-Button-Placeholder,
+  #docsearch .DocSearch-Button-Keys {
     display: flex;
   }
 }
 
-/* ------------------------------------------------------------ *\
-	DocSearch (Algolia)
-\* ------------------------------------------------------------ */
-
 .DocSearch-Modal .DocSearch-Hit a {
-  box-shadow: none;
   border: 1px solid var(--theme-accent);
+  box-shadow: none;
 }

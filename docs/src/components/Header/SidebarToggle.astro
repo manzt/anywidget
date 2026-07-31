@@ -1,0 +1,33 @@
+---
+import "./HeaderButton.css";
+import "./SidebarToggle.css";
+---
+
+<button type="button" class="header-button" aria-expanded="false" id="menu-toggle">
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+  <span class="sr-only">Toggle sidebar</span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("#menu-toggle");
+  button?.addEventListener("click", () => {
+    const expanded = button.getAttribute("aria-expanded") !== "true";
+    button.setAttribute("aria-expanded", String(expanded));
+    document.body.classList.toggle("mobile-sidebar-toggle", expanded);
+  });
+</script>
