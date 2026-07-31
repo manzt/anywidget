@@ -18,6 +18,7 @@ export default defineConfig({
         "error",
         { allow: ["**/*.css", "**/*.scss", "@docsearch/css"] },
       ],
+      "no-underscore-dangle": "off",
       "no-shadow": "off",
     },
     options: { typeAware: true, typeCheck: true },

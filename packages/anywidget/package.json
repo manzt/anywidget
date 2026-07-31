@@ -21,13 +21,14 @@
     "build": "node scripts/build.cjs"
   },
   "dependencies": {
-    "@anywidget/types": "workspace:^",
-    "@lukeed/uuid": "^2.0.1",
-    "solid-js": "^1.9.12"
+    "@anywidget/types": "workspace:^"
   },
   "devDependencies": {
     "@jupyter-widgets/base": "^6",
-    "@jupyter-widgets/base-manager": "^1.0.12"
+    "@jupyter-widgets/base-manager": "^1.0.12",
+    "@lukeed/uuid": "^2.0.1",
+    "esbuild": "catalog:",
+    "solid-js": "^1.9.14"
   },
   "jupyterlab": {
     "extension": "./src/plugin.js",
