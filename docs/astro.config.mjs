@@ -13,9 +13,6 @@ export default defineConfig({
     },
   },
   integrations: [mdx(), sitemap()],
-  image: {
-    remotePatterns: [{ protocol: "https" }],
-  },
   vite: {
     plugins: [tailwindcss()],
   },

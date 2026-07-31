@@ -1,4 +1,4 @@
-<div class="gallery" id="widget-gallery" aria-live="polite">
+<div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4" id="widget-gallery" aria-live="polite">
   <p data-gallery-status>Loading community widgets…</p>
 </div>
 
@@ -108,11 +108,3 @@
 
   void loadGallery();
 </script>
-
-<style>
-  .gallery {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  }
-</style>

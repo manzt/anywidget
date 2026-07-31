@@ -26,17 +26,17 @@ const {
 
 	{
 		showGrid && (
-			<div class="grid-lines col-start-1 row-start-1 col-span-full row-span-full -z-10">
-				<div class="right-1/4 vertical" />
-				<div class="right-1/2 vertical" />
-				<div class="right-3/4 vertical" />
-				<div class="top-1/2 horizontal" />
-				<div class="right-0 vertical" />
-				<div class="bottom-0 horizontal" />
-				<div class="left-0 vertical" />
-				<div class="top-0 horizontal" />
-				<div class="-right-[25%] vertical outer" />
-				<div class="-left-[25%] vertical outer" />
+			<div class="col-start-1 row-start-1 col-span-full row-span-full -z-10 transform-[perspective(1000px)_translate3d(0,0,-40px)] [&>div]:absolute [&>div]:-z-10 [&>div]:from-accent-300/0 [&>div]:via-accent-300 [&>div]:to-accent-300/0 [&>.outer]:via-accent-300/50">
+				<div class="absolute -top-1/2 right-1/4 -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute -top-1/2 right-1/2 -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute -top-1/2 right-3/4 -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute top-1/2 -left-1/2 -z-10 h-px w-[200%] bg-gradient-to-r from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute -top-1/2 right-0 -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute bottom-0 -left-1/2 -z-10 h-px w-[200%] bg-gradient-to-r from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute -top-1/2 left-0 -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="absolute top-0 -left-1/2 -z-10 h-px w-[200%] bg-gradient-to-r from-accent-300/0 via-accent-300 to-accent-300/0" />
+				<div class="outer absolute -top-1/2 -right-[25%] -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300/50 to-accent-300/0" />
+				<div class="outer absolute -top-1/2 -left-[25%] -z-10 h-[200%] w-px bg-gradient-to-b from-accent-300/0 via-accent-300/50 to-accent-300/0" />
 			</div>
 		)
 	}
@@ -86,7 +86,7 @@ const {
 
 	<!-- Code sample window -->
 	<section
-		class="-mt-5 sm:mt-0 code-sample rounded overflow-hidden col-start-2 sm:col-start-4 col-span-8 sm:col-span-6 row-span-5 row-start-3 sm:row-span-full opacity-95 flex flex-col justify-items-stretch border border-primary-400/50 bg-neutral-900 shadow-2xl shadow-primary-500/50"
+		class="-mt-5 sm:mt-0 rounded overflow-hidden col-start-2 sm:col-start-4 col-span-8 sm:col-span-6 row-span-5 row-start-3 sm:row-span-full opacity-95 flex flex-col justify-items-stretch border border-primary-400/50 bg-neutral-900 shadow-2xl shadow-primary-500/50"
 	>
 		<h3
 			class="text-center mb-0 text-xs p-1 w-full whitespace-nowrap bg-black text-neutral-50/80 border-b border-primary-400/30"
@@ -98,26 +98,3 @@ const {
 		</div>
 	</section>
 </figure>
-
-<style>
-	@reference "../styles/index.css";
-
-	.code-sample :global(> pre) {
-		@apply text-sm px-4 py-2 h-full;
-	}
-	.grid-lines {
-		transform: perspective(1000px) translate3d(0, 0, -40px);
-	}
-	.grid-lines > div {
-		@apply absolute from-accent-300/0 via-accent-300 to-accent-300/0 -z-10;
-	}
-	.grid-lines > .vertical {
-		@apply w-px -top-1/2 h-[200%] bg-gradient-to-b;
-	}
-	.grid-lines > .horizontal {
-		@apply h-px -left-1/2 w-[200%] bg-gradient-to-r;
-	}
-	.grid-lines > .outer {
-		@apply via-accent-300/50;
-	}
-</style>
