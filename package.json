@@ -15,11 +15,11 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.1",
-    "@rspack/cli": "^2.1.7",
-    "@rspack/core": "^2.1.7",
+    "@rspack/cli": "^2.1.8",
+    "@rspack/core": "^2.1.8",
     "@vitest/browser-playwright": "^4.1.10",
     "playwright": "^1.62.1",
-    "publint": "^0.3.22",
+    "publint": "^0.3.23",
     "typescript": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
