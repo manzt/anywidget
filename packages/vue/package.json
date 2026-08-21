@@ -20,7 +20,7 @@
     "@anywidget/types": "workspace:^"
   },
   "devDependencies": {
-    "vue": "^3.5.40"
+    "vue": "^3.5.41"
   },
   "peerDependencies": {
     "vue": "^3.5.33"
