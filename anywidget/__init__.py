@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from ._descriptor import get_model_id, is_widget
 from ._protocols import AnywidgetProtocol as Widget
 from ._traits import WidgetTrait
 from ._version import __version__
 from .widget import AnyWidget
 
-__all__ = ["AnyWidget", "Widget", "WidgetTrait", "__version__"]
+__all__ = ["AnyWidget", "Widget", "WidgetTrait", "get_model_id", "is_widget", "__version__"]
 
 
 def _jupyter_labextension_paths() -> list[dict]:

@@ -16,6 +16,8 @@ from anywidget._descriptor import (
     ReprMimeBundle,
     _replace_widget_refs,
     _try_get_model_id,
+    get_model_id,
+    is_widget,
 )
 from anywidget._file_contents import FileContents
 from anywidget._protocols import AnywidgetProtocol
@@ -616,3 +618,13 @@ def test_no_view() -> None:
 
     foo = Foo()
     assert foo._repr_mimebundle_() is None
+
+
+def test_public_widget_protocol_helpers(mock_comm: MagicMock) -> None:
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
+
+    foo = Foo()
+    assert isinstance(get_model_id(foo), str)
+    assert is_widget(foo)
+    assert not is_widget(object())
