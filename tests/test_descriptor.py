@@ -624,7 +624,11 @@ def test_public_widget_protocol_helpers(mock_comm: MagicMock) -> None:
     class Foo:
         _repr_mimebundle_ = MimeBundleDescriptor(autodetect_observer=False)
 
+        def _get_anywidget_state(self, include=None):
+            return {}
+
     foo = Foo()
-    assert isinstance(get_model_id(foo), str)
+    assert get_model_id(foo) is mock_comm.comm_id
     assert is_widget(foo)
     assert not is_widget(object())
+    del foo
