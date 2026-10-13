@@ -487,8 +487,8 @@ For example, using the `@anywidget/react` bridge looks like this:
 
 ```jsx
 // index.jsx
-import * as React from "react";
 import { useModelState, createRender } from "@anywidget/react";
+import * as React from "react";
 
 function Counter() {
   let [count, setCount] = useModelState("count");

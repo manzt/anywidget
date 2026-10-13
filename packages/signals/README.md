@@ -9,8 +9,8 @@ Use [signals](https://github.com/tc39/proposal-signals) with
 ## Usage
 
 ```javascript
-import { effect, signal } from "@preact/signals-core";
 import { defineWidget } from "@anywidget/signals";
+import { effect, signal } from "@preact/signals-core";
 
 export default defineWidget(signal, {
   render({ model, el }) {
@@ -41,8 +41,8 @@ class Counter(anywidget.Widget):
 With `@preact/signals-core`:
 
 ```typescript
-import { effect, signal } from "@preact/signals-core";
 import { defineWidget } from "@anywidget/signals";
+import { effect, signal } from "@preact/signals-core";
 
 export default defineWidget(signal, {
   render({ model, el }) {
@@ -59,8 +59,8 @@ export default defineWidget(signal, {
 With `solid-js`:
 
 ```typescript
-import { createEffect, createSignal } from "solid-js";
 import { defineWidget } from "@anywidget/signals";
+import { createEffect, createSignal } from "solid-js";
 
 export default defineWidget(createSignal, {
   render({ model, el }) {
@@ -100,8 +100,8 @@ _compose_ signals with the effect system of your choice. For example, we can
 create derived signals:
 
 ```typescript
-import { signal, computed, effect } from "@preact/signals-core";
 import { defineWidget } from "@anywidget/signals";
+import { signal, computed, effect } from "@preact/signals-core";
 
 export default defineWidget(signal, {
   render({ model, el }) {

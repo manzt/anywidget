@@ -11,9 +11,9 @@ packageExtensions:
     dependencies:
       "@babel/code-frame": ^7.0.0
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@^0.2.6
-  vitest: ^4.1.10
-  vite-plus: ^0.2.6
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vitest: 5.0.3
+  vite-plus: 1.1.0
   esbuild: ^0.28.1
   typescript: ^7.0.2
   react: ^19.2.8
@@ -21,6 +21,7 @@ catalog:
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
   "@types/node": ^26.1.2
+  "@vitest/browser-playwright": 5.0.3
 peerDependencyRules:
   allowAny:
     - vite
@@ -28,3 +29,17 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+overrides:
+  vite@*: "catalog:"
+  vitest@*: "catalog:"
+minimumReleaseAgeExclude:
+  - vite-plus
+  - "@voidzero-dev/*"
+  - oxlint
+  - "@oxlint/*"
+  - oxlint-tsgolint
+  - "@oxlint-tsgolint/*"
+  - oxfmt
+  - "@oxfmt/*"
+  - vitest
+  - "@vitest/*"

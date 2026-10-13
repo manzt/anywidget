@@ -196,8 +196,8 @@ React that take control of the DOM and require proper cleanup to prevent
 exceptions when elements are unmounted. For example:
 
 ```javascript
-import * as React from "https://esm.sh/react@18";
 import * as ReactDOM from "https://esm.sh/react-dom@18/client";
+import * as React from "https://esm.sh/react@18";
 
 function App(props) {
   return <h1>Hello, world</h1>;

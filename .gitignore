@@ -20,3 +20,4 @@ _build/
 .coverage
 .venv
 .DS_Store
+.vitest/
