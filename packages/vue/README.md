@@ -13,6 +13,7 @@ npm install @anywidget/vue
 ```javascript
 // src/index.js
 import { createRender } from "@anywidget/vue";
+
 import CounterWidget from "./CounterWidget.vue";
 
 const render = createRender(CounterWidget);
@@ -52,8 +53,9 @@ pnpm add -D @types/node @vitejs/plugin-vue vite
 // vite.config.js
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+
 import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -13,8 +13,8 @@ npm install -D vite @anywidget/vite
 
 ```javascript
 // vite.config.js
-import { defineConfig } from "vite";
 import anywidget from "@anywidget/vite";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [anywidget()],
