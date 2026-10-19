@@ -269,3 +269,51 @@ export default { render };
     globalThis.getComputedStyle(view.el).getPropertyValue("background-color"),
   ).toMatchInlineSnapshot(`"rgb(255, 0, 0)"`);
 });
+
+it("renders a view after its element is attached", async () => {
+  let widgetManager = new Manager();
+  let esm = `\
+function render({ el }) {
+	el.innerText = el.isConnected ? "attached" : "detached";
+}
+export default { render };
+`;
+  let model = await createWidget({ widgetManager, esm });
+  let view = await widgetManager.create_view(model);
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  expect(view.el.innerText).toBe("");
+  document.body.appendChild(view.el);
+  await expect.element(page.getByText("attached", { exact: true })).toBeInTheDocument();
+});
+
+it("renders a child into a slot after the parent attaches it", async () => {
+  let widgetManager = new Manager();
+  let childEsm = `\
+function render({ el }) {
+	el.innerText = el.isConnected ? "child attached" : "child detached";
+}
+export default { render };
+`;
+  let parentEsm = `\
+async function render({ model, el, signal, host }) {
+	let child = await host.getWidget(model.get("child"));
+	let slot = document.createElement("div");
+	let rendered = child.render({ el: slot, signal });
+	await new Promise((resolve) => setTimeout(resolve, 50));
+	el.dataset.slotText = slot.innerText;
+	el.appendChild(slot);
+	await rendered;
+}
+export default { render };
+`;
+  let child = await createWidget({ widgetManager, esm: childEsm });
+  let parent = await createWidget({
+    widgetManager,
+    esm: parentEsm,
+    state: { child: `anywidget:${child.model_id}` },
+  });
+  let view = await widgetManager.create_view(parent);
+  document.body.appendChild(view.el);
+  await expect.element(page.getByText("child attached", { exact: true })).toBeInTheDocument();
+  expect(view.el.dataset.slotText).toBe("");
+});
