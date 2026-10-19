@@ -8,10 +8,12 @@ import { type Awaitable, promiseWithResolvers, safeCleanup } from "./util.ts";
 /**
  * The minimal surface `createView` needs from a view-like object. The object
  * identity is used as the listener context for `modelProxy`, and `el` is the
- * render target.
+ * render target. `displayed` is the ipywidgets view promise that resolves
+ * once the host has attached `el`.
  */
 export interface ViewTarget {
   el: HTMLElement;
+  displayed?: Promise<unknown>;
 }
 
 function isSafeCleanupFunction(x: unknown): x is () => Awaitable<void> {
@@ -88,6 +90,7 @@ export class WidgetBinding {
     if (!this.#widgetDef?.render) return;
     let controller = new AbortController();
     let combined = AbortSignal.any([signal, controller.signal]);
+    if (!target.el.isConnected && !(await whenConnected(target, combined))) return;
     let model = this.#model;
     let cleanup = await this.#widgetDef.render({
       model: modelProxy(model, target),
@@ -118,6 +121,36 @@ export class WidgetBinding {
     this.#controller = undefined;
     this.#widgetDef = undefined;
   }
+}
+
+/**
+ * Waits until `target.el` is in the document, so `render` can rely on an
+ * attached `el`. Checks again whenever `target.displayed` resolves or an
+ * animation frame passes, since some hosts never trigger `displayed`.
+ *
+ * @returns `true` once connected, or `false` if `signal` aborts first.
+ */
+async function whenConnected(target: ViewTarget, signal: AbortSignal): Promise<boolean> {
+  if (signal.aborted) return false;
+  let aborted = promiseWithResolvers<void>();
+  let onAbort = (): void => aborted.resolve();
+  signal.addEventListener("abort", onAbort, { once: true });
+  let displayed = target.displayed?.then(() => {
+    displayed = undefined;
+  });
+  let frame: number | undefined;
+  try {
+    while (!target.el.isConnected && !signal.aborted) {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      let next = promiseWithResolvers<void>();
+      frame = requestAnimationFrame(() => next.resolve());
+      await Promise.race([next.promise, aborted.promise, displayed ?? next.promise]);
+    }
+  } finally {
+    if (frame !== undefined) cancelAnimationFrame(frame);
+    signal.removeEventListener("abort", onAbort);
+  }
+  return !signal.aborted;
 }
 
 class BindingManager {
