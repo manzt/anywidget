@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import traitlets.traitlets as t
 
+from ._assets import _AssetModel
 from ._descriptor import _try_get_model_id
 from ._refs import _WIDGET_REF_PREFIX
 
@@ -61,6 +62,10 @@ class WidgetTrait(t.TraitType):
     def validate(self, obj: object, value: object) -> object:
         if value is None:
             return value
+        if isinstance(value, _AssetModel):
+            # An asset has a model id but is not a peer widget: `host.*` must
+            # never be handed one.
+            self.error(obj, value)  # ty: ignore[invalid-argument-type]
         if _try_get_model_id(value) is not None:
             return value
         self.error(obj, value)  # ty: ignore[invalid-argument-type]

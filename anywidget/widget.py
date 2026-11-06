@@ -7,17 +7,16 @@ import weakref
 import ipywidgets
 import traitlets.traitlets as t
 
+from ._assets import _DEFAULT_ESM, try_file_contents
 from ._file_contents import FileContents, VirtualFileContents
 from ._refs import _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _CSS_KEY,
-    _DEFAULT_ESM,
     _ESM_KEY,
     enable_custom_widget_manager_once,
     in_colab,
     repr_mimebundle,
-    try_file_contents,
 )
 from ._version import _ANYWIDGET_SEMVER_VERSION
 from .experimental import _collect_anywidget_commands, _register_anywidget_commands

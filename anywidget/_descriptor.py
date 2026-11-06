@@ -30,17 +30,16 @@ from typing import (
     overload,
 )
 
+from ._assets import _DEFAULT_ESM, _AssetModel, try_file_contents
 from ._file_contents import FileContents, VirtualFileContents
-from ._refs import _REPR_ATTR, _WIDGET_REF_PREFIX, _anywidget_id
+from ._refs import _ASSET_REF_PREFIX, _REPR_ATTR, _WIDGET_REF_PREFIX, _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
-    _DEFAULT_ESM,
     _ESM_KEY,
     _PROTOCOL_VERSION,
     put_buffers,
     remove_buffers,
     repr_mimebundle,
-    try_file_contents,
 )
 from ._version import _ANYWIDGET_SEMVER_VERSION
 
@@ -101,7 +100,11 @@ def _try_get_model_id(obj: object) -> str | None:
 
 
 def _replace_widget_refs(obj: dict) -> dict:
-    """Recursively replace anywidget objects with ``anywidget:<model_id>`` strings."""
+    """Recursively replace anywidget objects with reference strings.
+
+    Widgets become ``anywidget:<model_id>`` and shared assets become
+    ``anywidget-asset:<model_id>``.
+    """
 
     def _replace(v: object) -> object:
         if isinstance(v, _LEAF_TYPES):
@@ -112,10 +115,10 @@ def _replace_widget_refs(obj: dict) -> dict:
             return [_replace(item) for item in v]
         if isinstance(v, tuple):
             return tuple(_replace(item) for item in v)
+        if isinstance(v, _AssetModel):
+            return f"{_ASSET_REF_PREFIX}{v.model_id}"
         model_id = _try_get_model_id(v)
-        if model_id is not None:
-            return f"{_WIDGET_REF_PREFIX}{model_id}"
-        return v
+        return f"{_WIDGET_REF_PREFIX}{model_id}" if model_id is not None else v
 
     return {k: _replace(v) for k, v in obj.items()}
 
