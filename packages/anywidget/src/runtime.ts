@@ -7,7 +7,7 @@ import { createHost } from "./host.ts";
 import { invoke } from "./invoke.ts";
 import { type AnyWidget, loadCss, loadWidget } from "./load.ts";
 import { observe } from "./observe.ts";
-import { assert, promiseWithResolvers, type Result, throwAnywidgetError } from "./util.ts";
+import { assert, type Result, throwAnywidgetError } from "./util.ts";
 
 interface State {
   [key: string]: unknown;
@@ -20,17 +20,11 @@ export class Runtime {
   // @ts-expect-error - Set synchronously in constructor.
   #widgetResult: solid.Accessor<Result<AnyWidget>>;
   #signal: AbortSignal;
-  ready: Promise<void>;
 
   constructor(model: DOMWidgetModel, options: { signal: AbortSignal }) {
-    let resolvers = promiseWithResolvers<void>();
-    this.ready = resolvers.promise;
     this.#signal = options.signal;
     this.#signal.throwIfAborted();
     this.#signal.addEventListener("abort", () => dispose());
-    AbortSignal.timeout(2000).addEventListener("abort", () => {
-      resolvers.reject(new Error("[anywidget] Failed to initialize model."));
-    });
     let binding = BINDINGS.getOrCreate(model);
     let experimental: Experimental = {
       // @ts-expect-error - invoke.bind loses generic type parameter
@@ -69,7 +63,6 @@ export class Runtime {
             await binding.bind(widget, { experimental });
             if (controller.signal.aborted) return;
             setWidgetResult({ status: "ready", data: widget });
-            resolvers.resolve();
           })
           .catch((error) => {
             if (controller.signal.aborted) return;
