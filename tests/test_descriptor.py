@@ -10,16 +10,10 @@ from unittest.mock import MagicMock, patch
 import anywidget._descriptor
 import pytest
 import watchfiles
-from anywidget._descriptor import (
-    _COMMS,
-    _WIDGET_REF_PREFIX,
-    MimeBundleDescriptor,
-    ReprMimeBundle,
-    _replace_widget_refs,
-    _try_get_model_id,
-)
+from anywidget._descriptor import _COMMS, MimeBundleDescriptor, ReprMimeBundle
 from anywidget._file_contents import FileContents
 from anywidget._protocols import AnywidgetProtocol
+from anywidget._refs import _WIDGET_REF_PREFIX, _replace_widget_refs, _try_get_model_id
 from anywidget._util import _WIDGET_MIME_TYPE
 from ipykernel.comm import Comm
 from watchfiles import Change
