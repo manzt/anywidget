@@ -62,7 +62,7 @@ if TYPE_CHECKING:  # pragma: no cover
     # catch all for types that can be serialized ... too hard to actually type
     Serializable: TypeAlias = Any
 
-__all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
+__all__ = ["MimeBundleDescriptor", "ReprMimeBundle", "get_model_id", "is_widget"]
 
 _REPR_ATTR = "_repr_mimebundle_"
 _STATE_GETTER_NAME = "_get_anywidget_state"
@@ -70,7 +70,7 @@ _STATE_SETTER_NAME = "_set_anywidget_state"
 _WIDGET_REF_PREFIX = "anywidget:"
 
 
-def _try_get_model_id(obj: object) -> str | None:
+def get_model_id(obj: object) -> str | None:
     """Get model_id from an anywidget object, or None if not an anywidget.
 
     .. note::
@@ -97,11 +97,19 @@ def _try_get_model_id(obj: object) -> str | None:
     return None
 
 
+_try_get_model_id = get_model_id
+
+
+def is_widget(obj: object) -> bool:
+    """Return whether ``obj`` exposes the anywidget composition protocol."""
+    return get_model_id(obj) is not None
+
+
 def _replace_widget_refs(obj: dict) -> dict:
     """Recursively replace anywidget objects with 'anywidget:<model_id>' strings."""
 
     def _replace(v: object) -> object:
-        model_id = _try_get_model_id(v)
+        model_id = get_model_id(v)
         if model_id is not None:
             return f"{_WIDGET_REF_PREFIX}{model_id}"
         if isinstance(v, dict):

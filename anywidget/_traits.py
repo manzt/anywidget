@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import traitlets.traitlets as t
 
-from ._descriptor import _WIDGET_REF_PREFIX, _try_get_model_id
+from ._descriptor import _WIDGET_REF_PREFIX, get_model_id
 
 
 def _widget_to_json(value: object, _obj: object) -> object:
     """Serialize a WidgetTrait value to its wire form."""
     if value is None:
         return None
-    model_id = _try_get_model_id(value)
+    model_id = get_model_id(value)
     if model_id is None:
         return value
     return f"{_WIDGET_REF_PREFIX}{model_id}"
@@ -60,7 +60,7 @@ class WidgetTrait(t.TraitType):
     def validate(self, obj: object, value: object) -> object:
         if value is None:
             return value
-        if _try_get_model_id(value) is not None:
+        if get_model_id(value) is not None:
             return value
         self.error(obj, value)  # ty: ignore[invalid-argument-type]
         return None
