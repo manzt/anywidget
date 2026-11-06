@@ -3,9 +3,10 @@ import type { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
 import * as solid from "solid-js";
 
 import { BINDINGS } from "./binding.ts";
+import { getDefinition } from "./definition.ts";
 import { createHost } from "./host.ts";
 import { invoke } from "./invoke.ts";
-import { type AnyWidget, loadCss, loadWidget } from "./load.ts";
+import { type AnyWidget, loadCss } from "./load.ts";
 import { observe } from "./observe.ts";
 import { assert, type Result, throwAnywidgetError } from "./util.ts";
 
@@ -36,7 +37,9 @@ export class Runtime {
       let typedModel = model as unknown as AnyModel<State>;
       let id = typedModel.get("_anywidget_id");
       let css = observe(typedModel, "_css", { signal: this.#signal });
-      let esm = observe(typedModel, "_esm", { signal: this.#signal });
+      // Today the definition is keyed by this model, so each instance evaluates
+      // its own module. Hoisted assets key it by the shared asset model instead.
+      let definition = getDefinition(model, "_esm");
       let [widgetResult, setWidgetResult] = solid.createSignal<Result<AnyWidget>>({
         status: "pending",
       });
@@ -45,26 +48,27 @@ export class Runtime {
       solid.createEffect(
         solid.on(css, () => console.debug(`[anywidget] css hot updated: ${id}`), { defer: true }),
       );
-      solid.createEffect(
-        solid.on(esm, () => console.debug(`[anywidget] esm hot updated: ${id}`), { defer: true }),
-      );
       solid.createEffect(() => {
         return loadCss(css(), id);
       });
       solid.createEffect(() => {
-        // Per-effect controller so a stale loadWidget resolution from a
-        // previous _esm value cannot overwrite a newer one. Solid fires
-        // onCleanup before re-running the effect, aborting the prior load.
+        let result = definition.widget();
+        if (result.status !== "ready") {
+          setWidgetResult(result);
+          return;
+        }
+        // Per-effect controller so a stale bind from a previous definition
+        // cannot overwrite a newer one. Solid fires onCleanup before re-running
+        // the effect, aborting the prior bind.
         let controller = new AbortController();
         solid.onCleanup(() => controller.abort());
-        loadWidget(esm(), id)
-          .then(async (widget) => {
+        binding
+          .bind(result.data, { experimental })
+          .then(() => {
             if (controller.signal.aborted) return;
-            await binding.bind(widget, { experimental });
-            if (controller.signal.aborted) return;
-            setWidgetResult({ status: "ready", data: widget });
+            setWidgetResult(result);
           })
-          .catch((error) => {
+          .catch((error: unknown) => {
             if (controller.signal.aborted) return;
             setWidgetResult({ status: "error", error });
           });
