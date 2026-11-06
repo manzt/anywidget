@@ -18,5 +18,7 @@ _build/
 
 .astro
 .coverage
+.vitest-attachments/
+__screenshots__/
 .venv
 .DS_Store

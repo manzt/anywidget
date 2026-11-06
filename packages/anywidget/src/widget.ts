@@ -41,14 +41,6 @@ export default function ({
       RUNTIMES.set(this, new Runtime(this, { signal: controller.signal }));
     }
 
-    async _handle_comm_msg(
-      ...msg: Parameters<InstanceType<typeof DOMWidgetModel>["_handle_comm_msg"]>
-    ): Promise<void> {
-      let runtime = RUNTIMES.get(this);
-      await runtime?.ready;
-      return super._handle_comm_msg(...msg);
-    }
-
     /**
      * We override to support binary trailets because JSON.parse(JSON.stringify())
      * does not properly clone binary data (it just returns an empty object).

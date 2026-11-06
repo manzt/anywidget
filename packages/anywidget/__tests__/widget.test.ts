@@ -269,3 +269,34 @@ export default { render };
     globalThis.getComputedStyle(view.el).getPropertyValue("background-color"),
   ).toMatchInlineSnapshot(`"rgb(255, 0, 0)"`);
 });
+
+it("applies state updates received while the widget is still loading", async () => {
+  let widgetManager = new Manager();
+  // The top-level await keeps the module loading (and the model unbound)
+  // while we send a Python->JS state update below.
+  let esm = `\
+await new Promise((resolve) => setTimeout(resolve, 100));
+globalThis.__anywidgetTestLoaded = true;
+function render({ model, el }) {
+	el.innerText = "value is " + model.get("value");
+}
+export default { render };
+`;
+  Reflect.deleteProperty(globalThis, "__anywidgetTestLoaded");
+  let model = await createWidget({
+    widgetManager,
+    esm,
+    state: { value: 0 },
+  });
+  // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- minimal IKernelCommMessage shape for a state update
+  await model._handle_comm_msg({
+    content: { data: { method: "update", state: { value: 42 } } },
+  } as unknown as Parameters<typeof model._handle_comm_msg>[0]);
+  // The update must apply without waiting for the module to finish loading.
+  expect(model.get("value")).toBe(42);
+  expect(Reflect.get(globalThis, "__anywidgetTestLoaded")).toBeUndefined();
+  // And the view renders with the pre-load state once loaded.
+  let view = await widgetManager.create_view(model);
+  document.body.appendChild(view.el);
+  await expect.element(page.getByText("value is 42")).toBeInTheDocument();
+});
