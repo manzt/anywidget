@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import weakref
+
 import ipywidgets
 import traitlets.traitlets as t
 
@@ -43,9 +45,7 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
                 value = getattr(self, key)
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
                 if isinstance(value, (VirtualFileContents, FileContents)):
-                    value.changed.connect(
-                        lambda new_contents, key=key: setattr(self, key, new_contents),
-                    )
+                    _connect_file_contents(self, key, value)
 
         # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
@@ -81,3 +81,25 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if self._view_name is None:
             return None  # type: ignore[unreachable]
         return repr_mimebundle(model_id=self.model_id, repr_text=repr(self))
+
+
+def _connect_file_contents(
+    widget: AnyWidget,
+    key: str,
+    value: FileContents | VirtualFileContents,
+) -> None:
+    """Forward `value.changed` to `widget.<key>` without keeping `widget` alive.
+
+    `value` lives on the class, so a callback that closes over the instance would
+    hold every instance for the life of the process (#929). The callback holds a
+    weak reference instead, and is disconnected when the instance is collected.
+    """
+    ref = weakref.ref(widget)
+
+    def on_change(new_contents: str) -> None:
+        instance = ref()
+        if instance is not None:
+            setattr(instance, key, new_contents)
+
+    value.changed.connect(on_change)
+    weakref.finalize(widget, value.changed.disconnect, on_change)

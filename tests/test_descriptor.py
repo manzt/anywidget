@@ -1,3 +1,4 @@
+import gc
 import pathlib
 import time
 import weakref
@@ -616,3 +617,34 @@ def test_no_view() -> None:
 
     foo = Foo()
     assert foo._repr_mimebundle_() is None
+
+
+def test_file_contents_bundle_is_collectable(
+    mock_comm: MagicMock,  # noqa: ARG001
+    tmp_path: pathlib.Path,
+) -> None:
+    """A path-backed `_esm` must not keep the bundle and its comm alive (#929)."""
+    esm = tmp_path / "widget.js"
+    esm.write_text("export default { render() {} }")
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(_esm=esm, autodetect_observer=False)
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
+    assert isinstance(file_contents, FileContents)
+
+    foo = Foo()
+    bundle = foo._repr_mimebundle_
+    assert isinstance(bundle, ReprMimeBundle)
+    assert len(file_contents.changed) == 1
+
+    ref = weakref.ref(bundle)
+    del bundle
+    del foo
+    gc.collect()
+
+    assert ref() is None
+    assert len(file_contents.changed) == 0

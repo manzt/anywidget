@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import gc
 import json
 import pathlib
 import sys
 import time
+import weakref
 from typing import TYPE_CHECKING, NoReturn
 from unittest.mock import MagicMock, patch
 
@@ -475,3 +477,24 @@ def test_repr_mimebundle_uses_repr() -> None:
     bundle = w._repr_mimebundle_()
     assert bundle is not None
     assert bundle[0]["text/plain"] == "MyCustomRepr"
+
+
+def test_file_contents_widget_is_collectable(tmp_path: pathlib.Path) -> None:
+    """A path-backed `_esm` must not keep instances alive (#929)."""
+    esm = tmp_path / "widget.js"
+    esm.write_text("export default { render() {} }")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+
+    assert isinstance(Widget._esm, FileContents)
+    w = Widget()
+    assert len(Widget._esm.changed) == 1
+
+    ref = weakref.ref(w)
+    w.close()  # ipywidgets keeps open widgets in a strong registry
+    del w
+    gc.collect()
+
+    assert ref() is None
+    assert len(Widget._esm.changed) == 0
