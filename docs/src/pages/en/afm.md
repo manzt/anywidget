@@ -486,9 +486,9 @@ frameworks while ensuring the final output is web-standard JavaScript.
 For example, using the `@anywidget/react` bridge looks like this:
 
 ```jsx
+import { useModelState, createRender } from "@anywidget/react";
 // index.jsx
 import * as React from "react";
-import { useModelState, createRender } from "@anywidget/react";
 
 function Counter() {
   let [count, setCount] = useModelState("count");

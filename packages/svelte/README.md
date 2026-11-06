@@ -13,6 +13,7 @@ npm install @anywidget/svelte
 ```javascript
 // index.js
 import { defineWidget } from "@anywidget/svelte";
+
 import Counter from "./Counter.svelte";
 
 export default defineWidget(Counter);
