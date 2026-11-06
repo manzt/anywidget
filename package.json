@@ -13,13 +13,13 @@
     "publint": "pnpm --recursive --filter=\"./packages/**\" exec publint"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.31.1",
-    "@rspack/cli": "^2.1.7",
-    "@rspack/core": "^2.1.7",
-    "@vitest/browser-playwright": "^4.1.10",
-    "playwright": "^1.62.1",
-    "publint": "^0.3.22",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
+    "@rspack/cli": "^2.3.1",
+    "@rspack/core": "^2.3.1",
+    "@vitest/browser-playwright": "^5.1.0",
+    "playwright": "^1.65.0",
+    "publint": "^0.3.25",
     "typescript": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"

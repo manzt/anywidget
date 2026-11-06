@@ -11,8 +11,8 @@ npm install @anywidget/react
 ## Usage
 
 ```javascript
-import * as React from "react";
 import { createRender, useModelState } from "@anywidget/react";
+import * as React from "react";
 
 function Counter() {
   let [value, setValue] = useModelState("value");
