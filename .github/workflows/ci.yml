@@ -16,7 +16,7 @@ concurrency:
 jobs:
   LintPython:
     name: Python / Lint
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       # Disable jupyter-builder build hook because not needed for linting/formatting, and requires pnpm
@@ -29,7 +29,7 @@ jobs:
 
   TypecheckPython:
     name: Python / Typecheck
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       # Disable jupyter-builder build hook because not needed for typechecking, and requires pnpm
@@ -62,7 +62,7 @@ jobs:
 
   CheckJavaScript:
     name: JavaScript / Check
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       - uses: voidzero-dev/setup-vp@v1
@@ -72,7 +72,7 @@ jobs:
 
   TestJavaScript:
     name: JavaScript / Test
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       - uses: voidzero-dev/setup-vp@v1
