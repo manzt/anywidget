@@ -13,8 +13,9 @@ import anywidget
 import pytest
 import traitlets.traitlets as t
 import watchfiles
+from anywidget._assets import _DEFAULT_ESM
 from anywidget._file_contents import FileContents
-from anywidget._util import _DEFAULT_ESM, _WIDGET_MIME_TYPE
+from anywidget._util import _WIDGET_MIME_TYPE
 from anywidget.experimental import command
 from traitlets import traitlets
 from watchfiles import Change

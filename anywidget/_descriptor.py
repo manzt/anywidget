@@ -30,17 +30,16 @@ from typing import (
     overload,
 )
 
+from ._assets import _DEFAULT_ESM, try_file_contents
 from ._file_contents import FileContents, VirtualFileContents
 from ._refs import _REPR_ATTR, _WIDGET_REF_PREFIX, _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
-    _DEFAULT_ESM,
     _ESM_KEY,
     _PROTOCOL_VERSION,
     put_buffers,
     remove_buffers,
     repr_mimebundle,
-    try_file_contents,
 )
 from ._version import _ANYWIDGET_SEMVER_VERSION
 
