@@ -377,11 +377,7 @@ class ReprMimeBundle:
         for key, value in self._extra_state.items():
             if isinstance(value, (VirtualFileContents, FileContents)):
                 self._extra_state[key] = str(value)
-
-                @value.changed.connect
-                def _on_change(new_contents: str, key: str = key) -> None:
-                    self._extra_state[key] = new_contents
-                    self.send_state(key)
+                self._connect_file_contents(key, value)
 
             self._comm = _get_or_create_comm(
                 obj=obj,
@@ -392,6 +388,29 @@ class ReprMimeBundle:
                     **self._extra_state,
                 },
             )
+
+    def _connect_file_contents(
+        self,
+        key: str,
+        value: FileContents | VirtualFileContents,
+    ) -> None:
+        """Forward `value.changed` to the front end without keeping `self` alive.
+
+        `value` lives on the descriptor (one per class), so a callback that closes
+        over this bundle would hold it, and its comm, for the life of the process
+        (#929). The callback holds a weak reference instead, and is disconnected
+        when the bundle is collected.
+        """
+        ref = weakref.ref(self)
+
+        def on_change(new_contents: str) -> None:
+            bundle = ref()
+            if bundle is not None:
+                bundle._extra_state[key] = new_contents  # noqa: SLF001
+                bundle.send_state(key)
+
+        value.changed.connect(on_change)
+        weakref.finalize(self, value.changed.disconnect, on_change)
 
     def _on_obj_deleted(self, ref: weakref.ReferenceType | None = None) -> None:  # noqa: ARG002
         """Called when the python object is deleted."""
