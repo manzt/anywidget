@@ -384,15 +384,15 @@ class ReprMimeBundle:
                 self._extra_state[key] = str(value)
                 self._connect_file_contents(key, value)
 
-            self._comm = _get_or_create_comm(
-                obj=obj,
-                # When creating the comm, we need to send the current state
-                # immediately to prevent race conditions.
-                get_state=lambda: {
-                    **self._get_state(obj, include=None),
-                    **self._extra_state,
-                },
-            )
+        self._comm = _get_or_create_comm(
+            obj=obj,
+            # When creating the comm, we need to send the current state
+            # immediately to prevent race conditions.
+            get_state=lambda: {
+                **self._get_state(obj, include=None),
+                **self._extra_state,
+            },
+        )
 
     def _connect_file_contents(
         self,
