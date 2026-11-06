@@ -7,7 +7,7 @@ import weakref
 import ipywidgets
 import traitlets.traitlets as t
 
-from ._assets import _DEFAULT_ESM, try_file_contents
+from ._assets import _DEFAULT_ESM, AssetTrait, _shared_assets_enabled, try_file_contents
 from ._file_contents import FileContents, VirtualFileContents
 from ._refs import _anywidget_id
 from ._util import (
@@ -39,17 +39,33 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if in_colab():
             enable_custom_widget_manager_once()
 
+        # Shared assets: the class-level `_esm`/`_css` becomes one asset model
+        # and syncs as an asset ref, so the source crosses the wire once per
+        # front end. An instance-level override stays inline. Otherwise the
+        # source is per-instance state, as before 0.12.
+        shared = _shared_assets_enabled()
+
         anywidget_traits = {}
         for key in (_ESM_KEY, _CSS_KEY):
             if hasattr(self, key) and not self.has_trait(key):
                 value = getattr(self, key)
+                if shared:
+                    anywidget_traits[key] = AssetTrait(default_value=value).tag(
+                        sync=True
+                    )
+                    continue
                 anywidget_traits[key] = t.Unicode(str(value)).tag(sync=True)
                 if isinstance(value, (VirtualFileContents, FileContents)):
                     _connect_file_contents(self, key, value)
 
         # show default _esm if not defined
         if not hasattr(self, _ESM_KEY):
-            anywidget_traits[_ESM_KEY] = t.Unicode(_DEFAULT_ESM).tag(sync=True)
+            default = (
+                AssetTrait(default_value=_DEFAULT_ESM)
+                if shared
+                else t.Unicode(_DEFAULT_ESM)
+            )
+            anywidget_traits[_ESM_KEY] = default.tag(sync=True)
 
         anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(_anywidget_id(self)).tag(
             sync=True

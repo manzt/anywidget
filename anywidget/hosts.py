@@ -56,8 +56,11 @@ def configure(
         Whether class-level ``_esm`` and ``_css`` are sent as shared asset
         references (``anywidget-asset:<id>``, one asset model per value)
         rather than inline source. Set it when the front end resolves those
-        references. Default: the ``ANYWIDGET_SHARED_ASSETS`` environment
-        variable decides.
+        references. An explicitly set ``ANYWIDGET_SHARED_ASSETS`` environment
+        variable (``"1"`` or ``"0"``) overrides this either way. Sharing also
+        stays off when ``Widget.on_widget_constructed`` is registered and no
+        ``scope`` is configured, since such a host binds each comm to one
+        session.
     """
     if not isinstance(scope, _Unset):
         _config.scope = scope

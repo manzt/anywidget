@@ -30,11 +30,18 @@ from typing import (
     overload,
 )
 
-from ._assets import _DEFAULT_ESM, _AssetModel, try_file_contents
+from ._assets import (
+    _DEFAULT_ESM,
+    _AssetModel,
+    _shared_assets_enabled,
+    asset_for,
+    try_file_contents,
+)
 from ._file_contents import FileContents, VirtualFileContents
 from ._refs import _ASSET_REF_PREFIX, _REPR_ATTR, _WIDGET_REF_PREFIX, _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
+    _CSS_KEY,
     _ESM_KEY,
     _PROTOCOL_VERSION,
     put_buffers,
@@ -382,20 +389,25 @@ class ReprMimeBundle:
         self._get_state = determine_state_getter(obj)
         self._set_state = determine_state_setter(obj)
 
+        shared = _shared_assets_enabled()
         for key, value in self._extra_state.items():
-            if isinstance(value, (VirtualFileContents, FileContents)):
+            if key in (_ESM_KEY, _CSS_KEY) and shared:
+                # Serialized as a model ref by _replace_widget_refs; the asset
+                # forwards source changes itself.
+                self._extra_state[key] = asset_for(value)
+            elif isinstance(value, (VirtualFileContents, FileContents)):
                 self._extra_state[key] = str(value)
                 self._connect_file_contents(key, value)
 
-            self._comm = _get_or_create_comm(
-                obj=obj,
-                # When creating the comm, we need to send the current state
-                # immediately to prevent race conditions.
-                get_state=lambda: {
-                    **self._get_state(obj, include=None),
-                    **self._extra_state,
-                },
-            )
+        self._comm = _get_or_create_comm(
+            obj=obj,
+            # When creating the comm, we need to send the current state
+            # immediately to prevent race conditions.
+            get_state=lambda: {
+                **self._get_state(obj, include=None),
+                **self._extra_state,
+            },
+        )
 
     def _connect_file_contents(
         self,

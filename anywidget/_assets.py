@@ -58,6 +58,27 @@ def _is_hmr_enabled() -> bool:
     return os.getenv("ANYWIDGET_HMR") == "1"
 
 
+def _shared_assets_enabled() -> bool:
+    """Whether ``_esm`` and ``_css`` are sent as shared asset refs (0.12: opt-in).
+
+    An explicitly set ``ANYWIDGET_SHARED_ASSETS`` wins, so the variable is a
+    kill switch under any host; otherwise the host's
+    ``configure(shared_assets=...)`` decides. Off either way
+    when a host intercepts widget construction (``Widget.on_widget_constructed``)
+    without naming a scope: such a host binds each comm to the session
+    constructing it, so a process-wide asset would reach one session's front
+    end and no other's.
+    """
+    env = os.getenv("ANYWIDGET_SHARED_ASSETS")
+    enabled = env == "1" if env is not None else hosts._config.shared_assets  # noqa: SLF001
+    if not enabled:
+        return False
+    rebinds_comms = (
+        getattr(ipywidgets.Widget, "_widget_construction_callback", None) is not None
+    )
+    return not (rebinds_comms and hosts._config.scope is None)  # noqa: SLF001
+
+
 def _should_start_thread(path: pathlib.Path) -> bool:
     if "site-packages" in path.parts:
         # File is inside site-packages, likely not a local development install

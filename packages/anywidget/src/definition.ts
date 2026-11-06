@@ -4,6 +4,7 @@ import * as solid from "solid-js";
 
 import { type AnyWidget, loadWidget } from "./load.ts";
 import { observe } from "./observe.ts";
+import { isModel } from "./refs.ts";
 import type { Result } from "./util.ts";
 
 /**
@@ -44,6 +45,22 @@ export function getDefinition(owner: WidgetModel, attr: string): Definition {
     byAttr.set(attr, definition);
   }
   return definition;
+}
+
+/**
+ * Where the value of `attr` lives: on the model itself (inline source), or on
+ * the shared asset model it references, whose source is its `contents`.
+ *
+ * Decided once per runtime. The kernel never swaps an asset for a string or
+ * vice versa on a live model; hot reload flows through whichever owner holds
+ * the source.
+ */
+export function locateAsset(
+  model: WidgetModel,
+  attr: string,
+): { owner: WidgetModel; attr: string } {
+  let value: unknown = model.get(attr);
+  return isModel(value) ? { owner: value, attr: "contents" } : { owner: model, attr };
 }
 
 function createDefinition(owner: WidgetModel, attr: string): Definition {

@@ -1,4 +1,7 @@
+import type { IWidgetManager } from "@jupyter-widgets/base";
+
 import { BINDINGS } from "./binding.ts";
+import { ASSET_REF_PREFIX, isAssetRef, isModel, parseAssetRef } from "./refs.ts";
 import { Runtime } from "./runtime.ts";
 import { assert } from "./util.ts";
 
@@ -8,16 +11,41 @@ let version: string = globalThis.VERSION;
 interface WidgetFactoryOptions {
   DOMWidgetModel: typeof import("@jupyter-widgets/base").DOMWidgetModel;
   DOMWidgetView: typeof import("@jupyter-widgets/base").DOMWidgetView;
+  WidgetModel: typeof import("@jupyter-widgets/base").WidgetModel;
 }
 
 interface WidgetFactoryResult {
   AnyModel: typeof import("@jupyter-widgets/base").DOMWidgetModel;
   AnyView: typeof import("@jupyter-widgets/base").DOMWidgetView;
+  /**
+   * A shared `_esm` or `_css` value: a plain model with a `contents` trait and
+   * no view. The kernel names it so hosts can recognise it; nothing on the
+   * front end needs more than the base class.
+   */
+  AnyAssetModel: typeof import("@jupyter-widgets/base").WidgetModel;
 }
+
+/**
+ * `_esm` and `_css` are inline source or an asset reference. A reference is
+ * resolved to the asset model before the widget model is constructed; plain
+ * strings pass through. `serialize` is the inverse; without it the override on
+ * `AnyModel` would `structuredClone` a model and throw when saving widget state.
+ */
+let assetSerializer = {
+  deserialize(value: unknown, manager?: IWidgetManager): unknown {
+    if (!isAssetRef(value)) return value;
+    assert(manager, "[anywidget] A widget manager is required to resolve asset references.");
+    return manager.get_model(parseAssetRef(value));
+  },
+  serialize(value: unknown): unknown {
+    return isModel(value) ? `${ASSET_REF_PREFIX}${value.model_id}` : value;
+  },
+};
 
 export default function ({
   DOMWidgetModel,
   DOMWidgetView,
+  WidgetModel,
 }: WidgetFactoryOptions): WidgetFactoryResult {
   let RUNTIMES = new WeakMap<InstanceType<typeof DOMWidgetModel>, Runtime>();
 
@@ -29,6 +57,12 @@ export default function ({
     static view_name = "AnyView";
     static view_module = "anywidget";
     static view_module_version = version;
+
+    static serializers = {
+      ...DOMWidgetModel.serializers,
+      _esm: assetSerializer,
+      _css: assetSerializer,
+    };
 
     initialize(...args: Parameters<InstanceType<typeof DOMWidgetModel>["initialize"]>): void {
       super.initialize(...args);
@@ -86,5 +120,5 @@ export default function ({
     }
   }
 
-  return { AnyModel, AnyView };
+  return { AnyModel, AnyView, AnyAssetModel: WidgetModel };
 }

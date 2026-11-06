@@ -1,9 +1,9 @@
 import type { AnyModel, Experimental } from "@anywidget/types";
-import type { DOMWidgetModel, DOMWidgetView } from "@jupyter-widgets/base";
+import type { DOMWidgetModel, DOMWidgetView, WidgetModel } from "@jupyter-widgets/base";
 import * as solid from "solid-js";
 
 import { BINDINGS } from "./binding.ts";
-import { getDefinition } from "./definition.ts";
+import { getDefinition, locateAsset } from "./definition.ts";
 import { createHost } from "./host.ts";
 import { invoke } from "./invoke.ts";
 import { type AnyWidget, loadCss } from "./load.ts";
@@ -12,10 +12,10 @@ import { assert, type Result, throwAnywidgetError } from "./util.ts";
 
 interface State {
   [key: string]: unknown;
-  _esm: string;
   _anywidget_id: string;
-  _css: string | undefined;
 }
+
+type Source = Record<string, string | undefined>;
 
 export class Runtime {
   // @ts-expect-error - Set synchronously in constructor.
@@ -36,10 +36,14 @@ export class Runtime {
       // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- see above
       let typedModel = model as unknown as AnyModel<State>;
       let id = typedModel.get("_anywidget_id");
-      let css = observe(typedModel, "_css", { signal: this.#signal });
-      // Today the definition is keyed by this model, so each instance evaluates
-      // its own module. Hoisted assets key it by the shared asset model instead.
-      let definition = getDefinition(model, "_esm");
+      // `_esm` and `_css` are inline source on this model, or references to
+      // shared asset models. Inline: one evaluation and one <style> per
+      // widget class id. Shared: one per asset, across every model using it.
+      let cssSource = locateAsset(model, "_css");
+      let css = observe(asSource(cssSource.owner), cssSource.attr, { signal: this.#signal });
+      let cssKey = cssSource.owner === model ? id : cssSource.owner.model_id;
+      let esmSource = locateAsset(model, "_esm");
+      let definition = getDefinition(esmSource.owner, esmSource.attr);
       let [widgetResult, setWidgetResult] = solid.createSignal<Result<AnyWidget>>({
         status: "pending",
       });
@@ -49,7 +53,7 @@ export class Runtime {
         solid.on(css, () => console.debug(`[anywidget] css hot updated: ${id}`), { defer: true }),
       );
       solid.createEffect(() => {
-        return loadCss(css(), id);
+        return loadCss(css(), cssKey);
       });
       solid.createEffect(() => {
         let result = definition.widget();
@@ -118,4 +122,11 @@ export class Runtime {
       return () => dispose();
     });
   }
+}
+
+function asSource(model: WidgetModel): AnyModel<Source> {
+  // WidgetModel is untyped by trait shape; `observe` needs the AnyModel
+  // surface, which WidgetModel provides structurally.
+  // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- see above
+  return model as unknown as AnyModel<Source>;
 }

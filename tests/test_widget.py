@@ -10,9 +10,11 @@ from typing import TYPE_CHECKING, NoReturn
 from unittest.mock import MagicMock, patch
 
 import anywidget
+import ipywidgets
 import pytest
 import traitlets.traitlets as t
 import watchfiles
+from anywidget import hosts
 from anywidget._assets import _DEFAULT_ESM, asset_for
 from anywidget._file_contents import FileContents
 from anywidget._util import _WIDGET_MIME_TYPE
@@ -28,6 +30,10 @@ SELF_DIR = pathlib.Path(__file__).parent
 
 def enable_hmr():  # noqa: ANN201
     return patch.dict("os.environ", {"ANYWIDGET_HMR": "1"}, clear=True)
+
+
+def enable_shared_assets():  # noqa: ANN201
+    return patch.dict("os.environ", {"ANYWIDGET_SHARED_ASSETS": "1"})
 
 
 def test_version() -> None:
@@ -510,3 +516,107 @@ def test_file_contents_widget_is_collectable(tmp_path: pathlib.Path) -> None:
 
     assert ref() is None
     assert len(Widget._esm.changed) == 0
+
+
+def test_shared_assets_are_model_refs(tmp_path: pathlib.Path) -> None:
+    esm = tmp_path / "widget.js"
+    esm.write_text("export default { render() {} }")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+        _css = ".w {}"
+
+    class Styled(Widget):
+        _css = ".styled {}"
+
+    with enable_shared_assets():
+        a, b, styled = Widget(), Widget(), Styled()
+
+    assert isinstance(Widget._esm, FileContents)
+    esm_asset = asset_for(Widget._esm)
+    assert a._esm is esm_asset
+    assert b._esm is esm_asset
+    assert styled._esm is esm_asset  # inherited module
+    assert styled._css is not a._css  # overridden style
+    assert str(a._esm) == esm.read_text()
+    assert a.get_state()["_esm"] == f"anywidget-asset:{esm_asset.model_id}"
+    assert a.get_state()["_css"] == f"anywidget-asset:{asset_for('.w {}').model_id}"
+    # The asset holds the one subscription; instances add none.
+    assert len(Widget._esm.changed) == 1
+
+
+def test_shared_assets_default_esm_and_inline_override() -> None:
+    class Widget(anywidget.AnyWidget):
+        pass
+
+    with enable_shared_assets():
+        w = Widget()
+        custom = Widget(_esm="export default { render() {} }")
+
+    assert w._esm is asset_for(_DEFAULT_ESM)
+    # An instance-level override is this instance's alone: inline, as when off.
+    assert custom._esm == "export default { render() {} }"
+    assert custom.get_state()["_esm"] == "export default { render() {} }"
+
+
+def test_shared_assets_off_when_a_host_rebinds_comms_without_a_scope() -> None:
+    """A shinywidgets-style host binds each comm to a session at construction.
+
+    Without a scope, a process-wide asset would reach one session's front end
+    and no other's, so the flag is ignored until the host names a scope.
+    """
+
+    class Widget(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+
+    ipywidgets.Widget.on_widget_constructed(lambda _w: None)
+    try:
+        with enable_shared_assets():
+            unscoped = Widget()
+            hosts.configure(scope=lambda: None)
+            scoped = Widget()
+    finally:
+        ipywidgets.Widget.on_widget_constructed(None)
+
+    assert unscoped.get_state()["_esm"] == "export default { render() {} }"
+    assert scoped.get_state()["_esm"] == f"anywidget-asset:{scoped._esm.model_id}"
+
+
+def test_shared_assets_environment_wins_over_the_host_switch() -> None:
+    """The variable is a kill switch: set, it beats the host either way."""
+
+    class Widget(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+
+    hosts.configure(shared_assets=True)
+    with patch.dict("os.environ", {"ANYWIDGET_SHARED_ASSETS": "0"}):
+        off = Widget()
+    with patch.dict("os.environ", {}, clear=True):
+        host_on = Widget()
+    hosts.configure(shared_assets=False)
+    with enable_shared_assets():
+        on = Widget()
+
+    assert off.get_state()["_esm"] == "export default { render() {} }"
+    assert host_on.get_state()["_esm"].startswith("anywidget-asset:")
+    assert on.get_state()["_esm"].startswith("anywidget-asset:")
+
+
+def test_shared_assets_hot_reload_updates_the_asset_not_the_instances(
+    tmp_path: pathlib.Path,
+) -> None:
+    esm = tmp_path / "widget.js"
+    esm.write_text("v1")
+
+    class Widget(anywidget.AnyWidget):
+        _esm = esm
+
+    with enable_shared_assets():
+        w = Widget()
+    before = w.get_state()["_esm"]
+
+    assert isinstance(Widget._esm, FileContents)
+    Widget._esm.changed.emit("v2")
+
+    assert str(w._esm) == "v2"
+    assert w.get_state()["_esm"] == before
