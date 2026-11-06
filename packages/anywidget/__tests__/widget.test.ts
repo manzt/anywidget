@@ -89,6 +89,32 @@ function render({ model, el }) {
 export default { render };
 `;
 
+declare global {
+  var __anywidgetHoistedEvaluations: number | undefined;
+}
+
+/** A shared `_esm`/`_css` asset: a plain model holding `contents`. */
+async function createAsset(widgetManager: Manager, contents: string) {
+  return widgetManager.new_widget(
+    {
+      model_name: "AnyAssetModel",
+      model_module: "anywidget",
+      model_module_version: "0.1.0",
+      view_name: null,
+      view_module: null,
+      view_module_version: "",
+      model_id: widgets.uuid(),
+    },
+    {
+      _model_name: "AnyAssetModel",
+      _model_module: "anywidget",
+      _model_module_version: "0.1.0",
+      _view_name: null,
+      contents,
+    },
+  );
+}
+
 async function createWidget(options: {
   widgetManager: Manager;
   esm: string;
@@ -352,4 +378,61 @@ export default {
   let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("reply: pong")).toBeInTheDocument();
+});
+
+it("shares one module and one stylesheet across models that reference the same assets", async () => {
+  let widgetManager = new Manager();
+  let esm = await createAsset(
+    widgetManager,
+    `\
+globalThis.__anywidgetHoistedEvaluations = (globalThis.__anywidgetHoistedEvaluations ?? 0) + 1;
+function render({ model, el }) {
+	el.classList.add("hoisted-test");
+	el.innerText = "hoisted " + model.get("value");
+}
+export default { render };
+`,
+  );
+  let css = await createAsset(widgetManager, `.hoisted-test { background-color: lightgreen }`);
+  let ref = (model: widgets.WidgetModel) => `anywidget-asset:${model.model_id}`;
+  let a = await createWidget({ widgetManager, esm: ref(esm), css: ref(css), state: { value: 1 } });
+  let b = await createWidget({ widgetManager, esm: ref(esm), css: ref(css), state: { value: 2 } });
+
+  // References are resolved to the asset models before construction.
+  expect(a.get("_esm")).toBe(esm);
+  expect(b.get("_css")).toBe(css);
+
+  let viewA = await widgetManager.create_view(a);
+  let viewB = await widgetManager.create_view(b);
+  document.body.appendChild(viewA.el);
+  document.body.appendChild(viewB.el);
+  await expect.element(page.getByText("hoisted 1")).toBeInTheDocument();
+  await expect.element(page.getByText("hoisted 2")).toBeInTheDocument();
+  expect(globalThis.__anywidgetHoistedEvaluations).toBe(1);
+  expect(
+    globalThis.getComputedStyle(viewB.el).getPropertyValue("background-color"),
+  ).toMatchInlineSnapshot(`"rgb(144, 238, 144)"`);
+  expect(document.querySelectorAll(`style[id='${css.model_id}']`)).toHaveLength(1);
+
+  // Hot reload flows through the asset and reaches every model using it.
+  esm.set(
+    "contents",
+    `\
+function render({ model, el }) {
+	el.innerText = "HOISTED " + model.get("value");
+}
+export default { render };
+`,
+  );
+  await expect.element(page.getByText("HOISTED 1")).toBeInTheDocument();
+  await expect.element(page.getByText("HOISTED 2")).toBeInTheDocument();
+  css.set("contents", `.hoisted-test { background-color: red }`);
+  expect(
+    globalThis.getComputedStyle(viewA.el).getPropertyValue("background-color"),
+  ).toMatchInlineSnapshot(`"rgb(255, 0, 0)"`);
+
+  // Saved widget state carries the reference, not the model.
+  let saved = await widgetManager.get_state();
+  expect(saved.state[a.model_id].state._esm).toBe(ref(esm));
+  expect(saved.state[a.model_id].state._css).toBe(ref(css));
 });

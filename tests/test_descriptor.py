@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 import anywidget._descriptor
 import pytest
 import watchfiles
+from anywidget._assets import asset_for
 from anywidget._descriptor import (
     _COMMS,
     MimeBundleDescriptor,
@@ -648,3 +649,75 @@ def test_file_contents_bundle_is_collectable(
 
     assert ref() is None
     assert len(file_contents.changed) == 0
+
+
+def test_shared_assets_descriptor_sends_asset_refs(
+    mock_comm: MagicMock,
+    tmp_path: pathlib.Path,
+) -> None:
+    esm = tmp_path / "widget.js"
+    esm.write_text("export default { render() {} }")
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(
+            _esm=esm, _css=".foo {}", autodetect_observer=False
+        )
+
+        def _get_anywidget_state(self, include: set[str] | None):  # noqa: ANN202, ARG002
+            return {}
+
+    # Resolved at first repr, not at class definition: no comm opens on import.
+    file_contents = Foo._repr_mimebundle_._extra_state["_esm"]
+    assert isinstance(file_contents, FileContents)
+
+    with patch.dict("os.environ", {"ANYWIDGET_SHARED_ASSETS": "1"}):
+        foo, bar = Foo(), Foo()
+        bundle = foo._repr_mimebundle_
+        bar._repr_mimebundle_
+
+    esm_asset = asset_for(file_contents)
+    assert bundle._extra_state["_esm"] is esm_asset
+
+    mock_comm.send.reset_mock()
+    bundle.send_state()
+    state = mock_comm.send.call_args.kwargs["data"]["state"]
+    assert state["_esm"] == f"anywidget-asset:{esm_asset.model_id}"
+    assert state["_css"] == f"anywidget-asset:{asset_for('.foo {}').model_id}"
+    # Two instances, one subscription: the asset's.
+    assert len(file_contents.changed) == 1
+
+
+def test_shared_assets_comm_open_carries_asset_refs(tmp_path: pathlib.Path) -> None:
+    """Both assets open before the widget, and `comm_open` already refers to them."""
+    esm = tmp_path / "w.js"
+    esm.write_text("export default {}")
+    opened: list[dict] = []
+
+    def create_comm(*, data: dict, **_: object) -> MagicMock:
+        opened.append(data["state"])
+        return MagicMock(comm_id=f"c{len(opened)}")
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(
+            _esm=esm, _css=".a {}", autodetect_observer=False
+        )
+
+        def _get_anywidget_state(self, include: set[str] | None) -> dict:  # noqa: ARG002
+            return {}
+
+    with (
+        patch("comm.create_comm", side_effect=create_comm),
+        patch.dict("os.environ", {"ANYWIDGET_SHARED_ASSETS": "1"}),
+    ):
+        foo = Foo()
+        foo._repr_mimebundle_
+
+    assert [s["_model_name"] for s in opened] == [
+        "AnyAssetModel",
+        "AnyAssetModel",
+        "AnyModel",
+    ]
+    assert opened[0]["contents"] == "export default {}"
+    assert opened[1]["contents"] == ".a {}"
+    assert opened[2]["_esm"] == "anywidget-asset:c1"
+    assert opened[2]["_css"] == "anywidget-asset:c2"

@@ -421,6 +421,27 @@ inside A's `render` will deadlock, since each parent waits for the other's
 `initialize` to complete before its own can proceed. Circular composition
 chains are not supported.
 
+## Assets
+
+A widget's source module and stylesheet are **assets**: content a host fetches
+by id, as opposed to state it syncs. A host receives them as the `_esm` and
+`_css` entries of a model's synced state, as inline text or a URL. A kernel MAY
+instead put an **asset reference** there, a string of the form
+`"anywidget-asset:<id>"`. The host MUST resolve it to the asset's `contents`
+(the text or URL that would otherwise have been inline) before running
+`initialize`, and MUST treat a later change to `contents` as a
+[hot module replacement](#hot-module-replacement) for every widget that
+references the asset.
+
+One asset is shared by every widget that references it, so a host loads and
+evaluates a module once per asset rather than once per widget. Module-scope
+code therefore runs once per asset; per-widget state belongs in `initialize`.
+
+Asset references are not [widget references](#widget-references), and
+`host.getWidget` / `host.getModel` MUST reject them. How a host stores an
+asset is outside AFM; Jupyter widget managers use a model named
+`AnyAssetModel` with a single `contents` trait.
+
 ## Host requirements
 
 Consolidated normative checklist for an AFM-compatible host implementation.
@@ -445,8 +466,12 @@ A host MUST:
    `host.getWidget` / `host.getModel`. Reject with descriptive errors on
    malformed refs, unknown models, or stalled child `initialize` (see
    [Composition errors](#errors-1)).
-9. Cascade view teardown: descendant views rendered with a parent's `signal`
-   SHOULD tear down when that parent signal aborts.
+9. Resolve [asset references](#assets) (`"anywidget-asset:<id>"`) under
+   `_esm` or `_css` to their `contents` before running `initialize`, and treat
+   a change to `contents` as a module or style replacement for every widget
+   that references the asset.
+10. Cascade view teardown: descendant views rendered with a parent's `signal`
+    SHOULD tear down when that parent signal aborts.
 
 A host SHOULD:
 
