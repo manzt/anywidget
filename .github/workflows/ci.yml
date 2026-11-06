@@ -79,5 +79,5 @@ jobs:
         with:
           cache: true
       - run: |
-          vp dlx playwright install
+          vp exec playwright install
           vp test
