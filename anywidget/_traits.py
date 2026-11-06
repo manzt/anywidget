@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import traitlets.traitlets as t
 
-from ._descriptor import _WIDGET_REF_PREFIX, _try_get_model_id
+from ._refs import _WIDGET_REF_PREFIX, _try_get_model_id
 
 
 def _widget_to_json(value: object, _obj: object) -> object:

@@ -8,6 +8,7 @@ import ipywidgets
 import traitlets.traitlets as t
 
 from ._file_contents import FileContents, VirtualFileContents
+from ._refs import _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _CSS_KEY,
@@ -51,12 +52,9 @@ class AnyWidget(ipywidgets.DOMWidget):  # type: ignore [misc]
         if not hasattr(self, _ESM_KEY):
             anywidget_traits[_ESM_KEY] = t.Unicode(_DEFAULT_ESM).tag(sync=True)
 
-        # TODO(manzt): a better way to uniquely identify this subclasses?  # noqa: TD003
-        # We use the fully-qualified name to get an id which we
-        # can use to update CSS if necessary.
-        anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(
-            f"{self.__class__.__module__}.{self.__class__.__name__}",
-        ).tag(sync=True)
+        anywidget_traits[_ANYWIDGET_ID_KEY] = t.Unicode(_anywidget_id(self)).tag(
+            sync=True
+        )
 
         self.add_traits(**anywidget_traits)
         super().__init__(*args, **kwargs)
