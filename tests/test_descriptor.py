@@ -648,3 +648,38 @@ def test_file_contents_bundle_is_collectable(
 
     assert ref() is None
     assert len(file_contents.changed) == 0
+
+
+def test_comm_open_carries_every_converted_extra_state(
+    tmp_path: pathlib.Path,
+) -> None:
+    """Every `_extra_state` value is converted before the comm opens.
+
+    The comm used to open inside the conversion loop, so only the first key was
+    converted and `comm_open` carried a raw `FileContents` for the others.
+    """
+    esm = tmp_path / "w.js"
+    esm.write_text("export default {}")
+    css = tmp_path / "w.css"
+    css.write_text(".a {}")
+    opened: list[dict] = []
+
+    def create_comm(*, data: dict, **_: object) -> MagicMock:
+        opened.append(data["state"])
+        return MagicMock(comm_id=f"c{len(opened)}")
+
+    class Foo:
+        _repr_mimebundle_ = MimeBundleDescriptor(
+            _esm=esm, _css=css, autodetect_observer=False
+        )
+
+        def _get_anywidget_state(self, include: set[str] | None) -> dict:  # noqa: ARG002
+            return {}
+
+    with patch("comm.create_comm", side_effect=create_comm):
+        foo = Foo()
+        foo._repr_mimebundle_
+
+    assert len(opened) == 1
+    assert opened[0]["_esm"] == "export default {}"
+    assert opened[0]["_css"] == ".a {}"
