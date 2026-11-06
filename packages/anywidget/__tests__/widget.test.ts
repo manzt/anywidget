@@ -8,11 +8,15 @@ import createAnywidget from "../src/widget.js";
 let anywidget = createAnywidget(widgets);
 let numComms = 0;
 
+type CommData = Parameters<widgets.IClassicComm["send"]>[0];
+
 class MockComm implements widgets.IClassicComm {
   comm_id = `mock-${numComms++}`;
   target_name = "dummy";
   #onOpen: ((x?: unknown) => void) | null = null;
   #onClose: ((x?: unknown) => void) | null = null;
+  /** The model's comm message handler, once registered. */
+  onMsg: ((msg: unknown) => void) | null = null;
 
   on_open(fn: () => void): void {
     this.#onOpen = fn;
@@ -22,7 +26,9 @@ class MockComm implements widgets.IClassicComm {
     this.#onClose = fn;
   }
 
-  on_msg(): void {}
+  on_msg(fn: (msg: unknown) => void): void {
+    this.onMsg = fn;
+  }
 
   open(): string {
     this.#onOpen?.();
@@ -34,7 +40,7 @@ class MockComm implements widgets.IClassicComm {
     return "";
   }
 
-  send(): string {
+  send(_data: CommData): string {
     return "";
   }
 }
@@ -299,4 +305,51 @@ export default { render };
   let view = await widgetManager.create_view(model);
   document.body.appendChild(view.el);
   await expect.element(page.getByText("value is 42")).toBeInTheDocument();
+});
+
+it("delivers kernel replies awaited inside initialize", async () => {
+  // Answers every anywidget command through the model's own message handler,
+  // the way a kernel reply arrives. Holding comm messages until the widget was
+  // bound (removed in #1032) made this a cycle: the reply waited on bind, bind
+  // waited on `initialize`, and `initialize` waited on the reply.
+  class ReplyComm extends MockComm {
+    send(data: CommData): string {
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- `WidgetModel.send` wraps the payload as `{ method: "custom", content }`
+      let msg = data as { method?: string; content?: { id?: string; kind?: string } };
+      if (msg.method !== "custom" || msg.content?.kind !== "anywidget-command") return "";
+      let id = msg.content.id;
+      queueMicrotask(() => {
+        this.onMsg?.({
+          content: {
+            data: {
+              method: "custom",
+              content: { id, kind: "anywidget-command-response", response: "pong" },
+            },
+          },
+        });
+      });
+      return "";
+    }
+  }
+  class ReplyManager extends Manager {
+    async _create_comm(): Promise<MockComm> {
+      return new ReplyComm();
+    }
+  }
+  let widgetManager = new ReplyManager();
+  let esm = `\
+let reply;
+export default {
+	async initialize({ experimental }) {
+		[reply] = await experimental.invoke("ping");
+	},
+	render({ el }) {
+		el.innerText = "reply: " + reply;
+	},
+};
+`;
+  let model = await createWidget({ widgetManager, esm });
+  let view = await widgetManager.create_view(model);
+  document.body.appendChild(view.el);
+  await expect.element(page.getByText("reply: pong")).toBeInTheDocument();
 });
