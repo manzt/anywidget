@@ -13,7 +13,7 @@ import anywidget
 import pytest
 import traitlets.traitlets as t
 import watchfiles
-from anywidget._assets import _DEFAULT_ESM
+from anywidget._assets import _DEFAULT_ESM, asset_for
 from anywidget._file_contents import FileContents
 from anywidget._util import _WIDGET_MIME_TYPE
 from anywidget.experimental import command
@@ -422,6 +422,17 @@ def test_widget_trait_rejects_non_widget() -> None:
 
     with pytest.raises(t.TraitError):
         parent.child = 42
+
+
+def test_widget_trait_rejects_assets() -> None:
+    """An asset has a model id but is not a peer widget; `host.*` never gets one."""
+
+    class Parent(anywidget.AnyWidget):
+        _esm = "export default { render() {} }"
+        child = anywidget.WidgetTrait().tag(sync=True)
+
+    with pytest.raises(t.TraitError):
+        Parent(child=asset_for("export default {}"))
 
 
 def test_widget_trait_accepts_protocol_object() -> None:
