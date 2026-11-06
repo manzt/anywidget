@@ -272,8 +272,8 @@ export default { render };
 
 it("applies state updates received while the widget is still loading", async () => {
   let widgetManager = new Manager();
-  // The top-level await keeps the module (and thus the model's internal
-  // "ready") pending while we send a Python->JS state update below.
+  // The top-level await keeps the module loading (and the model unbound)
+  // while we send a Python->JS state update below.
   let esm = `\
 await new Promise((resolve) => setTimeout(resolve, 100));
 globalThis.__anywidgetTestLoaded = true;
