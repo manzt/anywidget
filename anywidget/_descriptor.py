@@ -31,7 +31,7 @@ from typing import (
 )
 
 from ._file_contents import FileContents, VirtualFileContents
-from ._refs import _REPR_ATTR, _anywidget_id, _replace_widget_refs
+from ._refs import _REPR_ATTR, _WIDGET_REF_PREFIX, _anywidget_id
 from ._util import (
     _ANYWIDGET_ID_KEY,
     _DEFAULT_ESM,
@@ -67,6 +67,57 @@ __all__ = ["MimeBundleDescriptor", "ReprMimeBundle"]
 
 _STATE_GETTER_NAME = "_get_anywidget_state"
 _STATE_SETTER_NAME = "_set_anywidget_state"
+
+# Values that can never hold a widget. Checked first so that a large state is
+# walked without probing every leaf for widget attributes.
+_LEAF_TYPES = (str, int, float, bool, type(None), bytes, bytearray, memoryview)
+
+
+def _try_get_model_id(obj: object) -> str | None:
+    """Get model_id from an anywidget object, or None if not an anywidget.
+
+    .. note::
+       For protocol objects backed by a ``MimeBundleDescriptor`` (e.g.
+       dataclasses), this forces the descriptor's ``__get__`` to run, which
+       opens the object's comm. ``ipywidgets``-based widgets open their comm
+       eagerly in ``__init__``, so the ``hasattr(obj, "model_id")`` branch
+       short-circuits without side effects for them. The descriptor-driven
+       side effect only matters if a protocol-based widget is assigned to a
+       ``WidgetTrait`` (or otherwise inspected) and its parent is never
+       displayed — otherwise the comm would have opened at display time
+       anyway.
+    """
+    # ipywidgets-based AnyWidget has model_id directly
+    if hasattr(obj, "model_id") and isinstance(obj.model_id, str):
+        return obj.model_id
+    # Protocol objects: access _repr_mimebundle_ to force comm creation
+    bundle = getattr(obj, _REPR_ATTR, None)
+    if isinstance(bundle, MimeBundleDescriptor):
+        # Force creation of ReprMimeBundle (and its comm)
+        bundle = bundle.__get__(obj, type(obj))
+    if isinstance(bundle, ReprMimeBundle):
+        return bundle.model_id
+    return None
+
+
+def _replace_widget_refs(obj: dict) -> dict:
+    """Recursively replace anywidget objects with ``anywidget:<model_id>`` strings."""
+
+    def _replace(v: object) -> object:
+        if isinstance(v, _LEAF_TYPES):
+            return v
+        if isinstance(v, dict):
+            return {k: _replace(val) for k, val in v.items()}
+        if isinstance(v, list):
+            return [_replace(item) for item in v]
+        if isinstance(v, tuple):
+            return tuple(_replace(item) for item in v)
+        model_id = _try_get_model_id(v)
+        if model_id is not None:
+            return f"{_WIDGET_REF_PREFIX}{model_id}"
+        return v
+
+    return {k: _replace(v) for k, v in obj.items()}
 
 
 def open_comm(
